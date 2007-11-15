@@ -1,0 +1,1 @@
+E:\Release\Source\LinFu\LinFu.Delegates\LinFu.Delegates.Tests\obj\Release\ResolveAssemblyReference.cache
