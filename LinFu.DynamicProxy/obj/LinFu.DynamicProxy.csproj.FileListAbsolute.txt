@@ -1,5 +1,0 @@
-E:\Release\Source\LinFu\LinFu.DynamicProxy\bin\Release\LinFu.DynamicProxy.dll
-E:\Release\Source\LinFu\LinFu.DynamicProxy\bin\Release\LinFu.DynamicProxy.pdb
-E:\Release\Source\LinFu\LinFu.DynamicProxy\obj\Release\ResolveAssemblyReference.cache
-E:\Release\Source\LinFu\LinFu.DynamicProxy\obj\Release\LinFu.DynamicProxy.dll
-E:\Release\Source\LinFu\LinFu.DynamicProxy\obj\Release\LinFu.DynamicProxy.pdb
