@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Reflection;
 
 namespace Simple.IoC
 {
@@ -27,7 +28,23 @@ namespace Simple.IoC
 #endif
             _factories[itemType] = factory;
         }
+        public bool Contains(Type serviceType)
+        {
+            MethodInfo getServiceDefinition = typeof(SimpleContainer).GetMethod("GetService",
+                BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(bool) }, null);
+
+            // This is equivalent to: return GetService<T>() != null;
+            MethodInfo getService = getServiceDefinition.MakeGenericMethod(serviceType);
+            object result = getService.Invoke(this, new object[] { false });
+
+            return result != null;
+        }
         public virtual T GetService<T>() where T : class
+        {
+            return GetService<T>(true);
+        }
+
+        public virtual T GetService<T>(bool throwOnError) where T : class
         {
             Type serviceType = typeof(T);
             if (!_factories.ContainsKey(serviceType))
@@ -50,7 +67,7 @@ namespace Simple.IoC
                 }
             }
 
-            if (result == null)
+            if (result == null && throwOnError)
                 throw new ServiceNotFoundException(serviceType);
 
             if (TypeInjectors.Count == 0)
@@ -67,7 +84,7 @@ namespace Simple.IoC
                 // Make sure that there is always a valid reference returned
                 if (currentResult == null)
                     continue;
-                
+
                 result = (T)currentResult;
             }
 
