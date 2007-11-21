@@ -8,8 +8,8 @@ namespace Simple.IoC
     {
         private readonly Dictionary<Type, object> _factories = new Dictionary<Type, object>();
         private readonly List<IPropertyInjector> _propertyInjectors = new List<IPropertyInjector>();
-        private readonly IList<ITypeInjector> _injectors = new List<ITypeInjector>();
-
+        private readonly List<ITypeInjector> _injectors = new List<ITypeInjector>();
+        private readonly List<ITypeSurrogate> _surrogates = new List<ITypeSurrogate>();
         public SimpleContainer()
         {
             _propertyInjectors.Add(new DefaultPropertyInjector());
@@ -34,7 +34,25 @@ namespace Simple.IoC
                 return null;
 
             T result = CreateInstance<T>();
-                                               
+
+            if (result == null && _surrogates.Count > 0)
+            {
+                // Find a surrogate for the given type
+                foreach (ITypeSurrogate surrogate in _surrogates)
+                {
+                    if (surrogate == null)
+                        continue;
+
+                    if (!surrogate.CanSurrogate(serviceType))
+                        continue;
+
+                    result = surrogate.ProvideSurrogate(serviceType) as T;
+                }
+            }
+
+            if (result == null)
+                throw new ServiceNotFoundException(serviceType);
+
             if (TypeInjectors.Count == 0)
                 return result;
 
@@ -58,6 +76,10 @@ namespace Simple.IoC
         public virtual IList<ITypeInjector> TypeInjectors
         {
             get { return _injectors; }
+        }
+        public virtual IList<ITypeSurrogate> TypeSurrogates
+        {
+            get { return _surrogates; }
         }
         private T CreateInstance<T>() where T : class
         {

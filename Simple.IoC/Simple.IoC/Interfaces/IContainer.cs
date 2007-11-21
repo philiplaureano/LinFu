@@ -12,5 +12,6 @@ namespace Simple.IoC
 
         IList<IPropertyInjector> PropertyInjectors { get; }
         IList<ITypeInjector> TypeInjectors { get; }
+        IList<ITypeSurrogate> TypeSurrogates { get; }
     }
 }

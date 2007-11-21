@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.IoC", "Simple.IoC\Simple.IoC.csproj", "{457039BF-4B57-4553-AC4F-81B11B59610E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.IoC.Loaders", "Simple.IoC.Loaders\Simple.IoC.Loaders.csproj", "{F6B9BAAF-89AB-419D-B256-BB1EA38D799A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.IoC.Tests", "Simple.IoC.Tests\Simple.IoC.Tests.csproj", "{B86740C9-8859-4F3A-8D51-2C7C222EA467}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{457039BF-4B57-4553-AC4F-81B11B59610E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{457039BF-4B57-4553-AC4F-81B11B59610E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{457039BF-4B57-4553-AC4F-81B11B59610E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{457039BF-4B57-4553-AC4F-81B11B59610E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6B9BAAF-89AB-419D-B256-BB1EA38D799A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6B9BAAF-89AB-419D-B256-BB1EA38D799A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6B9BAAF-89AB-419D-B256-BB1EA38D799A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6B9BAAF-89AB-419D-B256-BB1EA38D799A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B86740C9-8859-4F3A-8D51-2C7C222EA467}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B86740C9-8859-4F3A-8D51-2C7C222EA467}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B86740C9-8859-4F3A-8D51-2C7C222EA467}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B86740C9-8859-4F3A-8D51-2C7C222EA467}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
