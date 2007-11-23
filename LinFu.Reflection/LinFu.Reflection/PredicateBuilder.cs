@@ -177,7 +177,7 @@ namespace LinFu.Reflection
 
 
             // Check for zero parameters
-            if (_matchParameters && _parameterTypes.Count == 0)
+            if (_matchParameters && _parameterTypes.Count == 0 && !_matchRuntimeArguments)
             {
                 result += delegate(MethodInfo currentMethod)
                               {
