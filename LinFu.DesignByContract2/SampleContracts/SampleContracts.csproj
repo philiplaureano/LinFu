@@ -1,0 +1,74 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CC3391A9-4834-429E-A232-829257ABBF88}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SampleContracts</RootNamespace>
+    <AssemblyName>SampleContracts</AssemblyName>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="IConnectionContract.cs" />
+    <Compile Include="ConnectionStringNotEmptyAttribute.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\LinFu.DynamicProxy\LinFu.DynamicProxy.csproj">
+      <Project>{859EF99C-D959-4485-B24E-05AEAB9B54CF}</Project>
+      <Name>LinFu.DynamicProxy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LinFu.Common\LinFu.Common.csproj">
+      <Project>{12E74908-C9CF-45CB-A996-7784846C3A53}</Project>
+      <Name>LinFu.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LinFu.DesignByContract2.Attributes\LinFu.DesignByContract2.Attributes.csproj">
+      <Project>{90EE5327-EE55-4E27-9AFC-6253696159A6}</Project>
+      <Name>LinFu.DesignByContract2.Attributes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LinFu.DesignByContract2.Core\LinFu.DesignByContract2.Core.csproj">
+      <Project>{63C8B741-B66A-43BA-B826-990E4A90686C}</Project>
+      <Name>LinFu.DesignByContract2.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LinFu.DesignByContract2.Injectors\LinFu.DesignByContract2.Injectors.csproj">
+      <Project>{6D084FCC-AD4C-42AD-8A21-055243D0F7B7}</Project>
+      <Name>LinFu.DesignByContract2.Injectors</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

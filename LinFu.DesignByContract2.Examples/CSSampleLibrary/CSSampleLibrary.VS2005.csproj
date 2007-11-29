@@ -1,0 +1,107 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{EDE2C619-7D98-46EA-8E07-F832D2BA9B2C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CSSampleLibrary</RootNamespace>
+    <AssemblyName>CSSampleLibrary</AssemblyName>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="LinFu.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\bin\Release\LinFu.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.Delegates, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\bin\Release\LinFu.Delegates.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.DesignByContract2.Attributes, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\bin\Release\LinFu.DesignByContract2.Attributes.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.DesignByContract2.Contracts, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\bin\Release\LinFu.DesignByContract2.Contracts.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.DesignByContract2.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\bin\Release\LinFu.DesignByContract2.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.DesignByContract2.Injectors, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\bin\Release\LinFu.DesignByContract2.Injectors.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.DynamicProxy, Version=1.0.2871.9751, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\bin\Release\LinFu.DynamicProxy.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.Reflection, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\bin\Release\LinFu.Reflection.dll</HintPath>
+    </Reference>
+    <Reference Include="Simple.IoC, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\bin\Release\Simple.IoC.dll</HintPath>
+    </Reference>
+    <Reference Include="Simple.IoC.Loaders, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\bin\Release\Simple.IoC.Loaders.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BankAccount.cs" />
+    <Compile Include="IContractForBankAccount.cs" />
+    <Compile Include="Person.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ContractAssertions\CSContractAssertions.VS2005.csproj">
+      <Project>{2BAB9F9A-E201-4889-8D38-6BF1A158911C}</Project>
+      <Name>CSContractAssertions.VS2005</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LibraryInterfaces\LibraryInterfaces.VS2005.csproj">
+      <Project>{5511A15F-A803-491E-B09D-BBC1A29C9E4E}</Project>
+      <Name>LibraryInterfaces.VS2005</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

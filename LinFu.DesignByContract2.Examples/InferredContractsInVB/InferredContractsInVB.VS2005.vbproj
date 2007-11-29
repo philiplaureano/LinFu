@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{40F8C6CA-78BE-4A33-81A5-8DE4F42E0D20}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <StartupObject>InferredContractsInVB.Module1</StartupObject>
+    <RootNamespace>InferredContractsInVB</RootNamespace>
+    <AssemblyName>InferredContractsInVB</AssemblyName>
+    <MyType>Console</MyType>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>InferredContractsInVB.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>InferredContractsInVB.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="LinFu.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\bin\Release\LinFu.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.Delegates, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\bin\Release\LinFu.Delegates.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.DesignByContract2.Attributes, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\bin\Release\LinFu.DesignByContract2.Attributes.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.DesignByContract2.Contracts, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\bin\Release\LinFu.DesignByContract2.Contracts.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.DesignByContract2.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\bin\Release\LinFu.DesignByContract2.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.DesignByContract2.Injectors, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\bin\Release\LinFu.DesignByContract2.Injectors.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.DynamicProxy, Version=1.0.2871.9751, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\bin\Release\LinFu.DynamicProxy.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.Reflection, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\bin\Release\LinFu.Reflection.dll</HintPath>
+    </Reference>
+    <Reference Include="Simple.IoC, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\bin\Release\Simple.IoC.dll</HintPath>
+    </Reference>
+    <Reference Include="Simple.IoC.Loaders, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\bin\Release\Simple.IoC.Loaders.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Module1.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ContractAssertions\CSContractAssertions.VS2005.csproj">
+      <Project>{2BAB9F9A-E201-4889-8D38-6BF1A158911C}</Project>
+      <Name>CSContractAssertions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CSSampleLibrary\CSSampleLibrary.VS2005.csproj">
+      <Project>{EDE2C619-7D98-46EA-8E07-F832D2BA9B2C}</Project>
+      <Name>CSSampleLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LibraryInterfaces\LibraryInterfaces.csproj">
+      <Project>{5511A15F-A803-491E-B09D-BBC1A29C9E4E}</Project>
+      <Name>LibraryInterfaces</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
