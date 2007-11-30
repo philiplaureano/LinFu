@@ -36,7 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NMock2, Version=1.0.2313.18049, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="NMock2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=e48327a9f6ac0f49, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\output\NMock2.dll</HintPath>
     </Reference>

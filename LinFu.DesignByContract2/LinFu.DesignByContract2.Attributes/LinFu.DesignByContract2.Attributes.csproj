@@ -62,7 +62,7 @@
       <Project>{CD5E9841-5A3C-47E4-BADC-9CA297AA7948}</Project>
       <Name>LinFu.Reflection</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LinFu.Common\LinFu.Common.csproj">
+    <ProjectReference Include="..\..\LinFu.Common\LinFu.Common.csproj">
       <Project>{12E74908-C9CF-45CB-A996-7784846C3A53}</Project>
       <Name>LinFu.Common</Name>
     </ProjectReference>

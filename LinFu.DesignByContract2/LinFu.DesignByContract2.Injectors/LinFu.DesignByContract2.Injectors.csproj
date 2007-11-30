@@ -56,15 +56,15 @@
       <Project>{859EF99C-D959-4485-B24E-05AEAB9B54CF}</Project>
       <Name>LinFu.DynamicProxy</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Simple.IoC.root\Simple.IoC\Simple.IoC.Loaders\Simple.IoC.Loaders.csproj">
+    <ProjectReference Include="..\..\Simple.IoC\Simple.IoC.Loaders\Simple.IoC.Loaders.csproj">
       <Project>{F6B9BAAF-89AB-419D-B256-BB1EA38D799A}</Project>
       <Name>Simple.IoC.Loaders</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Simple.IoC.root\Simple.IoC\Simple.IoC\Simple.IoC.csproj">
+    <ProjectReference Include="..\..\Simple.IoC\Simple.IoC\Simple.IoC.csproj">
       <Project>{457039BF-4B57-4553-AC4F-81B11B59610E}</Project>
       <Name>Simple.IoC</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LinFu.Common\LinFu.Common.csproj">
+    <ProjectReference Include="..\..\LinFu.Common\LinFu.Common.csproj">
       <Project>{12E74908-C9CF-45CB-A996-7784846C3A53}</Project>
       <Name>LinFu.Common</Name>
     </ProjectReference>

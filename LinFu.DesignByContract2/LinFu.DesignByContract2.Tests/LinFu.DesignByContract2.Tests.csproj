@@ -32,9 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NMock2, Version=1.0.2313.18049, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="NMock2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=e48327a9f6ac0f49, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\tools\NMock2.dll</HintPath>
+      <HintPath>..\..\output\NMock2.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.4.3.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
@@ -76,15 +76,15 @@
       <Project>{CD5E9841-5A3C-47E4-BADC-9CA297AA7948}</Project>
       <Name>LinFu.Reflection</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Simple.IoC.root\Simple.IoC\Simple.IoC.Loaders\Simple.IoC.Loaders.csproj">
+    <ProjectReference Include="..\..\Simple.IoC\Simple.IoC.Loaders\Simple.IoC.Loaders.csproj">
       <Project>{F6B9BAAF-89AB-419D-B256-BB1EA38D799A}</Project>
       <Name>Simple.IoC.Loaders</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Simple.IoC.root\Simple.IoC\Simple.IoC\Simple.IoC.csproj">
+    <ProjectReference Include="..\..\Simple.IoC\Simple.IoC\Simple.IoC.csproj">
       <Project>{457039BF-4B57-4553-AC4F-81B11B59610E}</Project>
       <Name>Simple.IoC</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LinFu.Common\LinFu.Common.csproj">
+    <ProjectReference Include="..\..\LinFu.Common\LinFu.Common.csproj">
       <Project>{12E74908-C9CF-45CB-A996-7784846C3A53}</Project>
       <Name>LinFu.Common</Name>
     </ProjectReference>
