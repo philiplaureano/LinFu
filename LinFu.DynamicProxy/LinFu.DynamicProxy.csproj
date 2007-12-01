@@ -70,6 +70,7 @@
     <Compile Include="Interfaces\IMethodBodyEmitter.cs" />
     <Compile Include="Interfaces\IProxy.cs" />
     <Compile Include="Interfaces\IProxyMethodBuilder.cs" />
+    <Compile Include="Interfaces\IWithTarget.cs" />
     <Compile Include="InvocationHandler.cs" />
     <Compile Include="InvocationInfo.cs" />
     <Compile Include="IProxyCache.cs" />

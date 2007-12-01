@@ -5,7 +5,7 @@ using LinFu.DynamicProxy;
 
 namespace LinFu.DesignByContract2.Core
 {
-    public class ContractChecker : IContractChecker
+    public class ContractChecker : IContractChecker, IWithTarget
     {
         private IContractProvider _provider;
         private IErrorView _errorView;
@@ -62,6 +62,7 @@ namespace LinFu.DesignByContract2.Core
         {
             if (_provider == null)
                 return;
+
             Type targetType = _target.GetType();
             ITypeContract typeContract = _provider.GetTypeContract(targetType);
             
