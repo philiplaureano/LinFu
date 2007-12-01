@@ -6,10 +6,10 @@ using LinFu.DynamicProxy;
 
 namespace LinFu.DesignByContract2.Attributes
 {
-    internal class CompositePrecondition : IPrecondition
+    public class CompositePrecondition : IPrecondition
     {
-        private List<IPrecondition> _preconditions = new List<IPrecondition>();
-        private Queue<IPrecondition> _failedPreconditions = new Queue<IPrecondition>();
+        private readonly List<IPrecondition> _preconditions = new List<IPrecondition>();
+        private readonly Queue<IPrecondition> _failedPreconditions = new Queue<IPrecondition>();
         public IList<IPrecondition> Preconditions
         {
             get { return _preconditions;  }   
