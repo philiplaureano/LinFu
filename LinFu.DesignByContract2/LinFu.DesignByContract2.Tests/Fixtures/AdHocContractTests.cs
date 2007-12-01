@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
 using LinFu.DesignByContract2.Contracts;
+using LinFu.DesignByContract2.Contracts.Postconditions;
 using LinFu.DesignByContract2.Core;
 using NMock2;
 using NUnit.Framework;
@@ -56,6 +57,91 @@ namespace LinFu.DesignByContract2.Tests
         }
 
         [Test]
+        public void ShouldBeAbleToCreatePostConditionsAgainstReturnValues()
+        {
+            AdHocContract contract = new AdHocContract();
+
+            Predicate<MethodInfo> givenName = delegate(MethodInfo method)
+                                      {
+                                          return method.Name == "Open";
+                                      };
+
+            Predicate<object> condition = delegate(object test)
+                                              {
+                                                  return test != null;
+                                              };
+
+            Ensure.On(contract).ForMethodWith(givenName)
+                .ReturnValueIs(condition)
+                .OtherwisePrint("Postcondition failed!");
+            Assert.IsTrue(contract.Postconditions.Count > 0);
+            Assert.IsNotNull(contract.Postconditions[0]);
+        }
+        [Test]
+        public void ShouldBeAbleToSpecifyCompoundPostconditions()
+        {
+            AdHocContract contract = new AdHocContract();
+
+            Predicate<MethodInfo> givenName = delegate(MethodInfo method)
+                                      {
+                                          return method.Name == "Open";
+                                      };
+
+            Predicate<IDbConnection> isConnected = delegate(IDbConnection connection)
+                                                       {
+                                                           return connection.State == ConnectionState.Open;
+                                                       };
+
+            Predicate<object> notNull = delegate(object test)
+                                              {
+                                                  return test != null;
+                                              };
+
+            PropertyComparisonHandler<int> propertyCondition = delegate(int old, int newValue)
+                                                            {
+                                                                return old != newValue;
+                                                            };
+            Ensure.On(contract)
+                .ForMethodWith(givenName)
+                .That<IDbConnection>(isConnected)
+                .And
+                .ReturnValueIs(notNull)
+                .And
+                .ThatProperty<int>("SomeProperty")
+                .ComparedToOldValue
+                .ShouldBe(propertyCondition)
+                .OtherwisePrint("Postcondition failed!");
+
+            Assert.IsTrue(contract.Postconditions.Count == 3);
+            Assert.IsNotNull(contract.Postconditions[0]);
+            Assert.IsNotNull(contract.Postconditions[1]);
+            Assert.IsNotNull(contract.Postconditions[2]);
+        }
+        [Test]
+        public void ShouldBeAbleToCreatePostconditionThatComparesAnOldPropertyValueToTheNewValue()
+        {
+            AdHocContract contract = new AdHocContract();
+            Predicate<MethodInfo> givenName = delegate(MethodInfo method)
+                                      {
+                                          return method.Name == "Open";
+                                      };
+
+            PropertyComparisonHandler<object> incrementedByOne = delegate(object oldValue, object newValue)
+                                                                     {
+                                                                         return oldValue == newValue;
+                                                                     };
+            Ensure.On(contract)
+            .ForMethodWith(givenName)
+            .ThatProperty<object>("SomeProperty")
+            .ComparedToOldValue
+            .ShouldBe(incrementedByOne)
+            .OtherwisePrint("There is something wrong here!");
+
+            Assert.IsTrue(contract.Postconditions.Count > 0);
+            Assert.IsNotNull(contract.Postconditions[0]);
+        }
+        
+        [Test]
         public void ShouldBeAbleToCreateInvariants()
         {
             Type testType = typeof (IList<int>);
@@ -91,7 +177,7 @@ namespace LinFu.DesignByContract2.Tests
                 .OtherwisePrint("Invariant error");
                                                
         }
-
+        
         private static bool ListNotEmpty(IList<int> list)
         {
             return list.Count > 0;

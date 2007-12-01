@@ -9,12 +9,19 @@ namespace LinFu.DesignByContract2.Contracts.Postconditions
 {
     public class ShowErrorAction
     {
-        private AdHocPostcondition<object> _postcondition;
+        private readonly AdHocPostcondition<object> _postcondition;
+        private readonly IMethodContract _contract;
         public ShowErrorAction(AdHocPostcondition<object> postcondition, IMethodContract contract)
         {
             _postcondition = postcondition;
-
+            _contract = contract;
             contract.Postconditions.Add(_postcondition);
+            
+        }
+
+        public PostconditionMethodFilter And
+        {
+            get { return new PostconditionMethodFilter(_postcondition, _contract); }
         }
 
         public void OtherwisePrint(string text)

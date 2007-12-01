@@ -50,6 +50,9 @@
     <Compile Include="Postconditions\AdHocPostcondition.cs" />
     <Compile Include="Postconditions\CheckHandler.cs" />
     <Compile Include="Postconditions\PostconditionMethodFilter.cs" />
+    <Compile Include="Postconditions\PropertyComparison.cs" />
+    <Compile Include="Postconditions\PropertyComparisonHandler.cs" />
+    <Compile Include="Postconditions\PropertyNameFilter.cs" />
     <Compile Include="Postconditions\SetMethodFilter.cs" />
     <Compile Include="Postconditions\ShowErrorAction.cs" />
     <Compile Include="Postconditions\ShowErrorHandler.cs" />
@@ -67,6 +70,10 @@
     <ProjectReference Include="..\..\LinFu.DynamicProxy\LinFu.DynamicProxy.csproj">
       <Project>{859EF99C-D959-4485-B24E-05AEAB9B54CF}</Project>
       <Name>LinFu.DynamicProxy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\LinFu.Reflection\LinFu.Reflection\LinFu.Reflection.csproj">
+      <Project>{CD5E9841-5A3C-47E4-BADC-9CA297AA7948}</Project>
+      <Name>LinFu.Reflection</Name>
     </ProjectReference>
     <ProjectReference Include="..\LinFu.DesignByContract2.Core\LinFu.DesignByContract2.Core.csproj">
       <Project>{63C8B741-B66A-43BA-B826-990E4A90686C}</Project>

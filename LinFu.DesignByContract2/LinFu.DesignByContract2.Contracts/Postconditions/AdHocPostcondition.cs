@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using LinFu.DesignByContract2.Core;
 using LinFu.DynamicProxy;
+using LinFu.Reflection;
 
 namespace LinFu.DesignByContract2.Contracts.Postconditions
 {
@@ -13,7 +14,8 @@ namespace LinFu.DesignByContract2.Contracts.Postconditions
         private CheckHandler<TTarget> _checker;
         private AppliesToHandler _appliesTo;
         private ShowErrorHandler<TTarget> _showError;
-        
+        private readonly Dictionary<string, object> _oldValues = new Dictionary<string, object>();
+        private readonly List<string> _saveList = new List<string>();
         public CheckHandler<TTarget> Checker
         {
             get { return _checker; }
@@ -36,7 +38,18 @@ namespace LinFu.DesignByContract2.Contracts.Postconditions
 
         public void BeforeMethodCall(object target, InvocationInfo info)
         {
-            // TODO: Save the object state here
+            if (target == null)
+                return;
+
+            // Clear the old values
+            _oldValues.Clear();
+
+            // Save the old values
+            DynamicObject dynamic = new DynamicObject(target);
+            foreach(string propertyName in _saveList)
+            {
+                _oldValues[propertyName] = dynamic.Properties[propertyName];
+            }
         }
 
         public bool Check(object target, InvocationInfo info, object returnValue)
@@ -79,5 +92,15 @@ namespace LinFu.DesignByContract2.Contracts.Postconditions
             
         }
         #endregion
+
+        internal void SaveProperty(string propertyName)
+        {
+            if (!_saveList.Contains(propertyName))
+                _saveList.Add(propertyName);
+        }
+        internal object GetOldValue(string propertyName)
+        {
+            return _oldValues[propertyName];
+        }
     }
 }

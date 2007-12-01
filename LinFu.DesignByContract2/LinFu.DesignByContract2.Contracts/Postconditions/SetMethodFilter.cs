@@ -25,6 +25,6 @@ namespace LinFu.DesignByContract2.Contracts.Postconditions
 
             PostconditionMethodFilter filter = new PostconditionMethodFilter(adHoc, _contract);
             return filter;
-        }
+        }      
     }
 }

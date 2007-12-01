@@ -8,8 +8,8 @@ namespace LinFu.DesignByContract2.Contracts.Postconditions
 {
     public class PostconditionMethodFilter
     {
-        private AdHocPostcondition<object> _postcondition;
-        private IMethodContract _contract;
+        private readonly AdHocPostcondition<object> _postcondition;
+        private readonly IMethodContract _contract;
         public PostconditionMethodFilter(AdHocPostcondition<object> postcondition, IMethodContract contract)
         {
             _postcondition = postcondition;
@@ -29,6 +29,23 @@ namespace LinFu.DesignByContract2.Contracts.Postconditions
 
             ShowErrorAction action = new ShowErrorAction(_postcondition, _contract);
             return action;
+        }
+        public ShowErrorAction ReturnValueIs<T>(Predicate<T> check)
+        {
+            _postcondition.Checker = delegate(object target, InvocationInfo info, object returnValue)
+                                             {
+                                                 T result = (T)returnValue;
+
+                                                 return check(result);
+                                             };
+
+            ShowErrorAction action = new ShowErrorAction(_postcondition, _contract);
+            return action;
+        }
+        public PropertyNameFilter<T> ThatProperty<T>(string propertyName)
+        {
+            PropertyNameFilter<T> nameFilter = new PropertyNameFilter<T>(propertyName, _contract);
+            return nameFilter;
         }
     }
 }
