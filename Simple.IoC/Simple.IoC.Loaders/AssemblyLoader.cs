@@ -6,17 +6,17 @@ using System.Text;
 
 namespace Simple.IoC
 {
-    internal class AssemblyLoader : IAssemblyLoader 
+    public class AssemblyLoader : IAssemblyLoader 
     {
         #region IAssemblyLoader Members
 
-        public System.Reflection.Assembly LoadAssembly(string assemblyFile)
+        public Assembly LoadAssembly(string assemblyFile)
         {
             Assembly currentAssembly = null;
 
             try
             {
-                currentAssembly = Assembly.LoadFile(assemblyFile);
+                currentAssembly = LoadFile(assemblyFile);
             }
             catch (Exception ex)
             {
@@ -25,6 +25,11 @@ namespace Simple.IoC
             return currentAssembly;
         }
 
-        #endregion        
+        #endregion
+   
+        protected virtual Assembly LoadFile(string assemblyFile)
+        {
+            return Assembly.LoadFile(assemblyFile);
+        }
     }
 }
