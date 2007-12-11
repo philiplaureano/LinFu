@@ -36,6 +36,8 @@ namespace LinFu.DynamicProxy
 
             infoConstructor = typeof (InvocationInfo).GetConstructor(constructorTypes);
             _opCodeMap.Add(typeof (Boolean), OpCodes.Ldind_I1);
+            _opCodeMap.Add(typeof(Byte), OpCodes.Ldind_I1);
+            _opCodeMap.Add(typeof(SByte), OpCodes.Ldind_I1);
             _opCodeMap.Add(typeof (Int16), OpCodes.Ldind_I2);
             _opCodeMap.Add(typeof (Int32), OpCodes.Ldind_I4);
             _opCodeMap.Add(typeof (Int64), OpCodes.Ldind_I8);
@@ -43,10 +45,12 @@ namespace LinFu.DynamicProxy
             _opCodeMap.Add(typeof (Single), OpCodes.Ldind_R4);
             _opCodeMap.Add(typeof (UInt16), OpCodes.Ldind_U2);
             _opCodeMap.Add(typeof (UInt32), OpCodes.Ldind_U4);
+            _opCodeMap.Add(typeof(UInt64), OpCodes.Ldind_I8);
 
             stindMap["Bool&"] = OpCodes.Stind_I1;
+            stindMap["Int8&"] = OpCodes.Stind_I1;
             stindMap["Uint8&"] = OpCodes.Stind_I1;
-
+           
             stindMap["Int16&"] = OpCodes.Stind_I2;
             stindMap["Uint16&"] = OpCodes.Stind_I2;
 
@@ -220,18 +224,19 @@ namespace LinFu.DynamicProxy
 
         private void PackageReturnType(MethodInfo method, ILGenerator IL)
         {
+            Type returnType = method.ReturnType;
             // Unbox the return value if necessary
-            if (method.ReturnType == typeof (void))
+            if (returnType == typeof (void))
             {
                 IL.Emit(OpCodes.Pop);
                 return;
             }
 
             // Unbox the return value if necessary
-            if (!method.ReturnType.IsValueType)
+            if (!returnType.IsValueType)
                 return;
 
-            IL.Emit(OpCodes.Unbox, method.ReturnType);
+            IL.Emit(OpCodes.Unbox, returnType);
             if (method.ReturnType.IsEnum)
             {
                 IL.Emit(OpCodes.Ldind_I4);
@@ -240,11 +245,11 @@ namespace LinFu.DynamicProxy
 
             if (!method.ReturnType.IsPrimitive)
             {
-                IL.Emit(OpCodes.Ldobj, method.ReturnType);
+                IL.Emit(OpCodes.Ldobj, returnType);
                 return;
             }
-
-            IL.Emit(_opCodeMap[method.ReturnType]);
+            if (_opCodeMap.ContainsKey(returnType))
+                IL.Emit(_opCodeMap[method.ReturnType]);
         }
     }
 }
