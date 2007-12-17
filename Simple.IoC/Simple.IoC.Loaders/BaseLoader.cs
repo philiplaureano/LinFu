@@ -38,8 +38,6 @@ namespace Simple.IoC.Loaders
         {
             string[] assemblyFiles = Directory.GetFiles(Path.GetFullPath(directory), Path.GetFileName(fileSpec));
 
-            // Load each assembly and search for types that
-            // implement IFactory<T>
             List<Type> loadedTypes = new List<Type>();
             foreach (string assemblyFile in assemblyFiles)
             {

@@ -8,7 +8,7 @@ namespace Simple.IoC.Loaders
 {
     public class LoadPluginStrategy : ILoadStrategy
     {
-        private ILoadStrategy _strategy;
+        private readonly ILoadStrategy _strategy;
         public LoadPluginStrategy() {}
         public LoadPluginStrategy(ILoadStrategy innerStrategy)
         {

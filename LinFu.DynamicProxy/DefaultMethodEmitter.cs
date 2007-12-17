@@ -8,7 +8,6 @@ namespace LinFu.DynamicProxy
 {
     internal class DefaultMethodEmitter : IMethodBodyEmitter
     {
-        private static Dictionary<Type, OpCode> _opCodeMap = new Dictionary<Type, OpCode>();
         private static MethodInfo getInterceptor = null;
 
         private static MethodInfo getMethodFromHandle =
@@ -35,17 +34,7 @@ namespace LinFu.DynamicProxy
                 };
 
             infoConstructor = typeof (InvocationInfo).GetConstructor(constructorTypes);
-            _opCodeMap.Add(typeof (Boolean), OpCodes.Ldind_I1);
-            _opCodeMap.Add(typeof(Byte), OpCodes.Ldind_I1);
-            _opCodeMap.Add(typeof(SByte), OpCodes.Ldind_I1);
-            _opCodeMap.Add(typeof (Int16), OpCodes.Ldind_I2);
-            _opCodeMap.Add(typeof (Int32), OpCodes.Ldind_I4);
-            _opCodeMap.Add(typeof (Int64), OpCodes.Ldind_I8);
-            _opCodeMap.Add(typeof (Double), OpCodes.Ldind_R8);
-            _opCodeMap.Add(typeof (Single), OpCodes.Ldind_R4);
-            _opCodeMap.Add(typeof (UInt16), OpCodes.Ldind_U2);
-            _opCodeMap.Add(typeof (UInt32), OpCodes.Ldind_U4);
-            _opCodeMap.Add(typeof(UInt64), OpCodes.Ldind_I8);
+ 
 
             stindMap["Bool&"] = OpCodes.Stind_I1;
             stindMap["Int8&"] = OpCodes.Stind_I1;
@@ -232,24 +221,7 @@ namespace LinFu.DynamicProxy
                 return;
             }
 
-            // Unbox the return value if necessary
-            if (!returnType.IsValueType)
-                return;
-
-            IL.Emit(OpCodes.Unbox, returnType);
-            if (method.ReturnType.IsEnum)
-            {
-                IL.Emit(OpCodes.Ldind_I4);
-                return;
-            }
-
-            if (!method.ReturnType.IsPrimitive)
-            {
-                IL.Emit(OpCodes.Ldobj, returnType);
-                return;
-            }
-            if (_opCodeMap.ContainsKey(returnType))
-                IL.Emit(_opCodeMap[method.ReturnType]);
+            IL.Emit(OpCodes.Unbox_Any, returnType);
         }
     }
 }
