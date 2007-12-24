@@ -13,8 +13,7 @@ namespace LinFu.Delegates
         {
             List<object> combinedArguments = GetCombinedArguments(targetMethod, curriedArguments, invokeArguments);
             
-            // HACK: Coerce the argument list into an object array if
-            // necessary
+
             ParameterInfo[] parameters = targetMethod.GetParameters();
             int parameterCount = parameters == null ? 0 : parameters.Length;
 
@@ -24,6 +23,8 @@ namespace LinFu.Delegates
                 args[i] = combinedArguments[i];
             }
 
+            // HACK: Coerce the argument list into an object array if
+            // necessary
             bool isObjectArray = parameters != null && parameters.Length == 1 &&
                                   parameters[0].ParameterType == typeof (object[]);
 

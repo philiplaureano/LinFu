@@ -60,6 +60,9 @@ namespace LinFu.DesignByContract2.Injectors
 
         public void Initialize(IContainer container)
         {
+            if (container == null)
+                throw new ArgumentNullException("container");
+
             if (_storage == null)
                 _storage = container.GetService<IContractStorage>();
             
@@ -73,6 +76,9 @@ namespace LinFu.DesignByContract2.Injectors
         
         public void Attach(IContainer container)
         {
+            if (container == null)
+                throw new ArgumentNullException("container");
+
             if (container.TypeInjectors.Contains(this))
                 return;
 

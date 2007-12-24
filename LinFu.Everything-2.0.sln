@@ -85,6 +85,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.Reflection", "LinFu.R
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.IoC.Tests", "Simple.IoC\Simple.IoC.Tests\Simple.IoC.Tests.csproj", "{B86740C9-8859-4F3A-8D51-2C7C222EA467}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SourceCodeControl) = preSolution
 		SccNumberOfProjects = 12
@@ -203,6 +209,10 @@ Global
 		{CD5E9841-5A3C-47E4-BADC-9CA297AA7948}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD5E9841-5A3C-47E4-BADC-9CA297AA7948}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD5E9841-5A3C-47E4-BADC-9CA297AA7948}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B86740C9-8859-4F3A-8D51-2C7C222EA467}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B86740C9-8859-4F3A-8D51-2C7C222EA467}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B86740C9-8859-4F3A-8D51-2C7C222EA467}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B86740C9-8859-4F3A-8D51-2C7C222EA467}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

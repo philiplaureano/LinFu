@@ -8,6 +8,7 @@ namespace Simple.IoC
     public class SimpleContainer : IContainer
     {
         private readonly Dictionary<Type, object> _factories = new Dictionary<Type, object>();
+        private readonly List<ICustomizeInstance> _customizers = new List<ICustomizeInstance>();
         private readonly List<IPropertyInjector> _propertyInjectors = new List<IPropertyInjector>();
         private readonly List<ITypeInjector> _injectors = new List<ITypeInjector>();
         private readonly List<ITypeSurrogate> _surrogates = new List<ITypeSurrogate>();
@@ -44,6 +45,30 @@ namespace Simple.IoC
             return GetService<T>(true);
         }
 
+        public virtual T GetService<T>(string serviceName) where T : class
+        {
+            // Search for a customizer for this current service type
+            ICustomizeInstance targetCustomizer = null;
+            foreach (ICustomizeInstance customizer in _customizers)
+            {
+                if (customizer == null)
+                    continue;
+
+                if (!customizer.CanCustomize(serviceName, typeof(T)))
+                    continue;
+
+                targetCustomizer = customizer;
+                break;
+            }
+            if (targetCustomizer == null)
+                throw new ServiceNotFoundException(serviceName, typeof(T));
+
+            T result = GetService<T>();
+
+            targetCustomizer.Customize(serviceName, typeof(T), result);
+
+            return result;
+        }
         public virtual T GetService<T>(bool throwOnError) where T : class
         {
             Type serviceType = typeof(T);
@@ -89,6 +114,11 @@ namespace Simple.IoC
             }
 
             return result;
+        }
+
+        public virtual IList<ICustomizeInstance> Customizers
+        {
+            get { return _customizers; }
         }
         public virtual IList<ITypeInjector> TypeInjectors
         {

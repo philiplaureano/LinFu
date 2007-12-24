@@ -51,6 +51,7 @@
     <Compile Include="DefaultPropertyInjector.cs" />
     <Compile Include="InstanceFactoryOfT.cs" />
     <Compile Include="Interfaces\IContainer.cs" />
+    <Compile Include="Interfaces\ICustomizeInstance.cs" />
     <Compile Include="Interfaces\IFactory.cs" />
     <Compile Include="Interfaces\IFactoryOfT.cs" />
     <Compile Include="Interfaces\IInitialize.cs" />
