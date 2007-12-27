@@ -10,9 +10,13 @@ namespace LinFu.DynamicProxy
     {
         private static MethodInfo getInterceptor = null;
 
-        private static MethodInfo getMethodFromHandle =
-            typeof (MethodBase).GetMethod("GetMethodFromHandle", new Type[] {typeof (RuntimeMethodHandle)});
+        private static MethodInfo getCurrentMethod =
+            typeof (MethodBase).GetMethod("GetCurrentMethod", BindingFlags.Public | BindingFlags.Static);
+        
+        private static MethodInfo getGenericMethodFromHandle = typeof(MethodBase).GetMethod("GetMethodFromHandle",
+                    BindingFlags.Public | BindingFlags.Static, null, new Type[] { typeof(RuntimeMethodHandle), typeof(RuntimeTypeHandle) }, null);
 
+        private static MethodInfo getMethodFromHandle = typeof(MethodBase).GetMethod("GetMethodFromHandle", new Type[] { typeof(RuntimeMethodHandle) });
         private static MethodInfo getTypeFromHandle = typeof (Type).GetMethod("GetTypeFromHandle");
         private static MethodInfo handlerMethod = typeof (IInterceptor).GetMethod("Intercept");
         private static ConstructorInfo infoConstructor;
@@ -90,11 +94,21 @@ namespace LinFu.DynamicProxy
             IL.MarkLabel(skipThrow);
             // Push the 'this' pointer onto the stack
             IL.Emit(OpCodes.Ldarg_0);
-            IL.Emit(OpCodes.Ldtoken, method);
 
             // Push the MethodInfo onto the stack            
-            Debug.Assert(getMethodFromHandle != null);
-            IL.Emit(OpCodes.Call, getMethodFromHandle);
+            Type declaringType = method.DeclaringType;
+            
+            IL.Emit(OpCodes.Ldtoken, method);
+            if (declaringType.IsGenericType)
+            {
+                IL.Emit(OpCodes.Ldtoken, declaringType);
+                IL.Emit(OpCodes.Call, getGenericMethodFromHandle);
+            }
+            else
+            {
+                IL.Emit(OpCodes.Call, getMethodFromHandle);
+            }
+
             IL.Emit(OpCodes.Castclass, typeof (MethodInfo));
 
             PushStackTrace(IL);
@@ -106,7 +120,7 @@ namespace LinFu.DynamicProxy
             IL.Emit(OpCodes.Newobj, infoConstructor);
             IL.Emit(OpCodes.Stloc_1);
             IL.Emit(OpCodes.Ldloc_1);
-            IL.Emit(OpCodes.Call, handlerMethod);
+            IL.Emit(OpCodes.Callvirt, handlerMethod);
 
             SaveRefArguments(IL, parameters);
             PackageReturnType(method, IL);
