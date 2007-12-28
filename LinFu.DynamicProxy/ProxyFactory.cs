@@ -145,6 +145,11 @@ namespace LinFu.DynamicProxy
             proxyList.ForEach(
                 delegate(MethodInfo method) { _proxyMethodBuilder.CreateProxiedMethod(implementor.InterceptorField, method, typeBuilder); });
 
+            // Make the proxy serializable
+            ConstructorInfo serializableConstructor = typeof(SerializableAttribute).GetConstructor(new Type[0]);
+            CustomAttributeBuilder customAttributeBuilder = new CustomAttributeBuilder(serializableConstructor, new object[0]);
+            typeBuilder.SetCustomAttribute(customAttributeBuilder);
+
             Type proxyType = typeBuilder.CreateType();
 
 #if DEBUG_PROXY_OUTPUT
