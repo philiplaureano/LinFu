@@ -15,12 +15,14 @@ namespace LinFu.DesignByContract2.Injectors
         public void ProcessLoadedTypes(IContainer hostContainer, List<Type> loadedTypes)
         {
             IContractStorage storage = hostContainer.GetService<IContractStorage>();
-            Debug.Assert(storage != null);
             if (storage == null)
                 return;
             
             foreach(Type currentType in loadedTypes)
             {
+                if (currentType == null)
+                    continue;
+
                 object[] attributes = currentType.GetCustomAttributes(typeof (ContractForAttribute), false);
                 if (attributes == null || attributes.Length == 0)
                     continue;

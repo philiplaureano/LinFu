@@ -48,7 +48,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\output\</OutputPath>
+    <OutputPath>..\output\2.0\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -63,7 +63,7 @@
     <Compile Include="CallAdapter.cs" />
     <Compile Include="DefaultArgumentHandler.cs" />
     <Compile Include="DefaultMethodEmitter.cs" />
-    <Compile Include="DefaultyProxyMethodBuilder.cs" />
+    <Compile Include="DefaultProxyMethodBuilder.cs" />
     <Compile Include="Interceptor.cs" />
     <Compile Include="InterceptorHandler.cs" />
     <Compile Include="Interfaces\IArgumentHandler.cs" />
@@ -82,6 +82,7 @@
     <Compile Include="ProxyDummy.cs" />
     <Compile Include="ProxyFactory.cs" />
     <Compile Include="ProxyImplementor.cs" />
+    <Compile Include="ProxyObjectReference.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
