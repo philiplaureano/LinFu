@@ -87,6 +87,7 @@
     <Compile Include="ProxyFactory.cs" />
     <Compile Include="ProxyImplementor.cs" />
     <Compile Include="ProxyObjectReference.cs" />
+    <Compile Include="TypeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">

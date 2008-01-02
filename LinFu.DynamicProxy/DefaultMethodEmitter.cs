@@ -9,9 +9,6 @@ namespace LinFu.DynamicProxy
     internal class DefaultMethodEmitter : IMethodBodyEmitter
     {
         private static MethodInfo getInterceptor = null;
-
-        private static MethodInfo getCurrentMethod =
-            typeof (MethodBase).GetMethod("GetCurrentMethod", BindingFlags.Public | BindingFlags.Static);
         
         private static MethodInfo getGenericMethodFromHandle = typeof(MethodBase).GetMethod("GetMethodFromHandle",
                     BindingFlags.Public | BindingFlags.Static, null, new Type[] { typeof(RuntimeMethodHandle), typeof(RuntimeTypeHandle) }, null);
