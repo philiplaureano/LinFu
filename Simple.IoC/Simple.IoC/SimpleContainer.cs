@@ -106,7 +106,7 @@ namespace Simple.IoC
                 if (!typeof(ITypeInjector).IsAssignableFrom(serviceType) && currentInjector.CanInject(serviceType, result))
                     currentResult = currentInjector.Inject(serviceType, result);
 
-                // Make sure that there is always a valid reference returned
+                // Make sure that the result is always a valid reference
                 if (currentResult == null)
                     continue;
 
