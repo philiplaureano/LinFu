@@ -47,6 +47,7 @@ namespace LinFu.DynamicProxy
             stindMap["Uint32&"] = OpCodes.Stind_I4;
             stindMap["Int32&"] = OpCodes.Stind_I4;
 
+            stindMap["IntPtr"] = OpCodes.Stind_I4;
             stindMap["Uint64&"] = OpCodes.Stind_I8;
             stindMap["Int64&"] = OpCodes.Stind_I8;
             stindMap["Float32&"] = OpCodes.Stind_R4;
