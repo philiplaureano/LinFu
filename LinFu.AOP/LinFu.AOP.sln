@@ -1,0 +1,68 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.AOP.Interfaces", "LinFu.AOP.Interfaces\LinFu.AOP.Interfaces.csproj", "{5896B2B5-CE3C-4600-BB54-F7F0175DE05A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.AOP.CecilExtensions", "LinFu.AOP.CecilExtensions\LinFu.AOP.CecilExtensions.csproj", "{A2E3FB7B-1734-43EF-9CB7-2A22A0A27E24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.AOP.Tasks", "LinFu.AOP.Tasks\LinFu.AOP.Tasks.csproj", "{C4C2E568-0A5B-4AC5-A0A4-ECA44CC2AA9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.AOP.Weavers.Cecil", "LinFu.AOP.Weavers.Cecil\LinFu.AOP.Weavers.Cecil.csproj", "{DA841F60-9F64-40D9-842C-E2116A381872}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bin", "bin", "{35345016-30E2-4498-B15E-3108E567EAA6}"
+	ProjectSection(SolutionItems) = preProject
+		Mono.Cecil.dll = Mono.Cecil.dll
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostWeaver", "PostWeaver\PostWeaver.csproj", "{68374F7F-9398-4ACF-B4BB-E15F790674E6}"
+EndProject
+Global
+	GlobalSection(SourceCodeControl) = preSolution
+		SccNumberOfProjects = 6
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = LinFu.AOP.Interfaces\\LinFu.AOP.Interfaces.csproj
+		SccProjectName1 = \u0022$/AopBench2.root/AopBench2/LinFu.AOP2/LinFu.AOP.Interfaces\u0022,\u0020NTGAAAAA
+		SccLocalPath1 = LinFu.AOP.Interfaces
+		SccProjectUniqueName2 = LinFu.AOP.CecilExtensions\\LinFu.AOP.CecilExtensions.csproj
+		SccProjectName2 = \u0022$/AopBench2.root/AopBench2/LinFu.AOP.CecilExtensions\u0022,\u0020NUGAAAAA
+		SccLocalPath2 = LinFu.AOP.CecilExtensions
+		SccProjectUniqueName3 = LinFu.AOP.Tasks\\LinFu.AOP.Tasks.csproj
+		SccProjectName3 = \u0022$/AopBench2.root/AopBench2/LinFu.AOP.Tasks\u0022,\u0020IVGAAAAA
+		SccLocalPath3 = LinFu.AOP.Tasks
+		SccProjectUniqueName4 = LinFu.AOP.Weavers.Cecil\\LinFu.AOP.Weavers.Cecil.csproj
+		SccProjectName4 = \u0022$/AopBench2.root/AopBench2/LinFu.AOP.Weavers.Cecil\u0022,\u0020QUGAAAAA
+		SccLocalPath4 = LinFu.AOP.Weavers.Cecil
+		SccProjectUniqueName5 = PostWeaver\\PostWeaver.csproj
+		SccProjectName5 = \u0022$/AopBench2.root/AopBench2/PostWeaver\u0022,\u0020QVGAAAAA
+		SccLocalPath5 = PostWeaver
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5896B2B5-CE3C-4600-BB54-F7F0175DE05A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5896B2B5-CE3C-4600-BB54-F7F0175DE05A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5896B2B5-CE3C-4600-BB54-F7F0175DE05A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5896B2B5-CE3C-4600-BB54-F7F0175DE05A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2E3FB7B-1734-43EF-9CB7-2A22A0A27E24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2E3FB7B-1734-43EF-9CB7-2A22A0A27E24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2E3FB7B-1734-43EF-9CB7-2A22A0A27E24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2E3FB7B-1734-43EF-9CB7-2A22A0A27E24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4C2E568-0A5B-4AC5-A0A4-ECA44CC2AA9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4C2E568-0A5B-4AC5-A0A4-ECA44CC2AA9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4C2E568-0A5B-4AC5-A0A4-ECA44CC2AA9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4C2E568-0A5B-4AC5-A0A4-ECA44CC2AA9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA841F60-9F64-40D9-842C-E2116A381872}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA841F60-9F64-40D9-842C-E2116A381872}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA841F60-9F64-40D9-842C-E2116A381872}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA841F60-9F64-40D9-842C-E2116A381872}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68374F7F-9398-4ACF-B4BB-E15F790674E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68374F7F-9398-4ACF-B4BB-E15F790674E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68374F7F-9398-4ACF-B4BB-E15F790674E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68374F7F-9398-4ACF-B4BB-E15F790674E6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
