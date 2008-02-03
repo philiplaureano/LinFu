@@ -206,18 +206,18 @@ namespace LinFu.Reflection
 
             return result;
         }
-        public T CreateDuck<T>()
+        public T CreateDuck<T>(params Type[] baseInterfaces)
             where T : class
         {
             IInterceptor interceptor = new DuckType(this);
-            T result = _factory.CreateProxy<T>(interceptor);
+            T result = _factory.CreateProxy<T>(interceptor, baseInterfaces);
             return result;
         }
 
-        public object CreateDuck(Type duckType)
+        public object CreateDuck(Type duckType, params Type[] baseInterfaces)
         {
             IInterceptor interceptor = new DuckType(this);
-            object result = _factory.CreateProxy(duckType, interceptor);
+            object result = _factory.CreateProxy(duckType, interceptor, baseInterfaces);
             return result;
         }
         #region IMethodMissingCallback Members
