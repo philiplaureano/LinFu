@@ -33,7 +33,7 @@ namespace LinFu.Reflection
 
             Predicate<MethodInfo> finderPredicate = builder.CreatePredicate();
             FuzzyFinder<MethodInfo> finder = new FuzzyFinder<MethodInfo>();
-            finder.Tolerance = .60;
+            finder.Tolerance = .66;
 
             // Match the criteria against the target delegate
             List<MethodInfo> searchList = new List<MethodInfo>(new MethodInfo[] {_target.Method});

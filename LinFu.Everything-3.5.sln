@@ -41,9 +41,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.AOP.Tasks", "LinFu.AO
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.AOP.Weavers.Cecil", "LinFu.AOP\LinFu.AOP.Weavers.Cecil\LinFu.AOP.Weavers.Cecil.csproj", "{DA841F60-9F64-40D9-842C-E2116A381872}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostWeaver", "LinFu.AOP\PostWeaver\PostWeaver.csproj", "{68374F7F-9398-4ACF-B4BB-E15F790674E6}"
+EndProject
 Global
 	GlobalSection(SourceCodeControl) = preSolution
-		SccNumberOfProjects = 11
+		SccNumberOfProjects = 12
 		SccProjectUniqueName0 = LinFu.DynamicProxy\\LinFu.DynamicProxy.VS2008.csproj
 		SccProjectName0 = \u0022$/LinFu.DesignByContract2.Extensions.root/LinFu.DesignByContract2.Extensions/Release/Source/LinFu/LinFu.DynamicProxy\u0022,\u0020MPGAAAAA
 		SccLocalPath0 = LinFu.DynamicProxy
@@ -88,6 +90,10 @@ Global
 		SccProjectName10 = \u0022$/AopBench2.root/AopBench2/LinFu.AOP.Weavers.Cecil\u0022,\u0020QUGAAAAA
 		SccLocalPath10 = LinFu.AOP\\LinFu.AOP.Weavers.Cecil
 		SccProvider10 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		SccProjectUniqueName11 = LinFu.AOP\\PostWeaver\\PostWeaver.csproj
+		SccProjectName11 = \u0022$/AopBench2.root/AopBench2/PostWeaver\u0022,\u0020QVGAAAAA
+		SccLocalPath11 = LinFu.AOP\\PostWeaver
+		SccProvider11 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -170,6 +176,10 @@ Global
 		{DA841F60-9F64-40D9-842C-E2116A381872}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA841F60-9F64-40D9-842C-E2116A381872}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA841F60-9F64-40D9-842C-E2116A381872}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68374F7F-9398-4ACF-B4BB-E15F790674E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68374F7F-9398-4ACF-B4BB-E15F790674E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68374F7F-9398-4ACF-B4BB-E15F790674E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68374F7F-9398-4ACF-B4BB-E15F790674E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
