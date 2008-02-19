@@ -12,13 +12,19 @@ namespace LinFu.Reflection
         private bool _matchRuntimeArguments;
         private bool? _isPublic;
         private bool? _isProtected;
+        private bool _matchParameterTypes;
         private string _methodName;
         private Type _returnType;
+        private readonly List<Type> _argumentTypes = new List<Type>();
         private readonly List<Type> _typeArguments = new List<Type>();
         private readonly List<ParameterInfo> _parameterTypes = new List<ParameterInfo>();
         private readonly List<object> _arguments = new List<object>();
         private bool _matchParameters = true;
 
+        public List<Type> ArgumentTypes
+        {
+            get { return _argumentTypes; }
+        } 
         public List<object> RuntimeArguments
         {
             get { return _arguments; }
@@ -69,6 +75,11 @@ namespace LinFu.Reflection
             set { _matchParameters = value; }
         }
 
+        public bool MatchParameterTypes
+        {
+            get { return _matchParameterTypes; }
+            set { _matchParameterTypes = value; }
+        }
         public bool MatchCovariantParameterTypes
         {
             get { return _matchCovariantParameterTypes; }
@@ -278,6 +289,18 @@ namespace LinFu.Reflection
                                   int parameterCount = currentParameters != null ? currentParameters.Length : 0;
                                   return parameterCount == 0;
                               };
+            }
+            #endregion
+
+            #region Match the parameter types
+            if (MatchParameterTypes && _argumentTypes.Count > 0)
+            {
+                int position = 0;
+                foreach (Type currentType in _argumentTypes)
+                {
+                    result += MakeParameterPredicate(position, currentType, false);
+                    position++;
+                }
             }
             #endregion
             return result;

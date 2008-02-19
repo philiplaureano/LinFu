@@ -54,7 +54,7 @@ namespace Simple.IoC
                 if (customizer == null)
                     continue;
 
-                if (!customizer.CanCustomize(serviceName, typeof(T)))
+                if (!customizer.CanCustomize(serviceName, typeof(T), this))
                     continue;
 
                 targetCustomizer = customizer;
@@ -65,7 +65,7 @@ namespace Simple.IoC
 
             T result = GetService<T>();
 
-            targetCustomizer.Customize(serviceName, typeof(T), result);
+            targetCustomizer.Customize(serviceName, typeof(T), result, this);
 
             return result;
         }

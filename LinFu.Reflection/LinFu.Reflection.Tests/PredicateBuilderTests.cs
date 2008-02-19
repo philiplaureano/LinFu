@@ -106,6 +106,19 @@ namespace LinFu.Reflection.Tests
 
             FindMatch();
         }
+        [Test]
+        public void ShouldReturnMatchBasedOnReturnTypeAndParameterTypes()
+        {
+            targetMethod = typeof(MethodFinderTargetDummy).GetMethod("DoSomething");
+            Type[] argumentTypes = new Type[] { typeof(int), typeof(int) };
+            
+            builder.MethodName = "DoSomething";
+            builder.ReturnType = typeof(void);
+            builder.ArgumentTypes.AddRange(argumentTypes);
+            builder.MatchParameterTypes = true;
+
+            FindMatch(.88);
+        }
         private void RunTest()
         {
             Predicate<MethodInfo> predicate = builder.CreatePredicate();
@@ -118,10 +131,15 @@ namespace LinFu.Reflection.Tests
         }
         private void FindMatch()
         {
+            FindMatch(.51);
+        }
+        private void FindMatch(double tolerance)
+        {
             // The builder should give a list of predicates
             // that match the target method
             Predicate<MethodInfo> predicate = builder.CreatePredicate();
             FuzzyFinder<MethodInfo> finder = new FuzzyFinder<MethodInfo>();
+            finder.Tolerance = tolerance;
 
             MethodInfo[] methods =
                 typeof(MethodFinderTargetDummy).GetMethods(BindingFlags.Public | BindingFlags.NonPublic |

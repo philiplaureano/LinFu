@@ -13,6 +13,7 @@ namespace LinFu.AOP.Weavers.Cecil
     public partial class AspectWeaver : MethodPrologEpilogWeaver
     {
         private Instruction _skipOriginalCall;
+        public IMethodFilter MethodFilter { get; set; }
         public override bool ShouldWeave(MethodDefinition methodDef)
         {
             // Only public methods will be intercepted
@@ -46,6 +47,10 @@ namespace LinFu.AOP.Weavers.Cecil
             // Methods with out parameters are not supported
             int count = results.ToList().Count;
             if (count > 0)
+                return false;
+
+            // Apply the method filter
+            if (MethodFilter != null && !MethodFilter.ShouldWeave(methodDef))
                 return false;
 
             return true;
@@ -159,8 +164,8 @@ namespace LinFu.AOP.Weavers.Cecil
             Instruction skipToTheEnd = IL.Create(OpCodes.Nop);
 
             // If the last instruction is a Throw instruction,
-            // then there's no need to place a Ret instruction
-            // there to end the original method body
+            // then there's no need to insert a Ret instruction
+            // to end the original method body
             FlowControl flowControl = lastInstruction.OpCode.FlowControl;
             if (flowControl != FlowControl.Throw)
             {

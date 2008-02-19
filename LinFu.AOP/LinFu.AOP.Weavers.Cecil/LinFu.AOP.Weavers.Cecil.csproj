@@ -57,6 +57,7 @@
     <Compile Include="AspectWeaver.Implementation.cs" />
     <Compile Include="AssemblyDefinitionExtensions.cs" />
     <Compile Include="ConstructorCrossCutter.cs" />
+    <Compile Include="IMethodFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
