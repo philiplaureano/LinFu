@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.DynamicProxy", "LinFu.DynamicProxy.csproj", "{859EF99C-D959-4485-B24E-05AEAB9B54CF}"
+EndProject
+Global
+	GlobalSection(SourceCodeControl) = preSolution
+		SccNumberOfProjects = 1
+		SccProjectUniqueName0 = LinFu.DynamicProxy.csproj
+		SccProjectName0 = \u0022$/LinFu.DesignByContract2.root/LinFu.DesignByContract2/LinFu.DynamicProxy\u0022,\u0020BBCAAAAA
+		SccLocalPath0 = .
+		SccProvider0 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{859EF99C-D959-4485-B24E-05AEAB9B54CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{859EF99C-D959-4485-B24E-05AEAB9B54CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{859EF99C-D959-4485-B24E-05AEAB9B54CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{859EF99C-D959-4485-B24E-05AEAB9B54CF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
