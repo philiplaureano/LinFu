@@ -1,0 +1,77 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CD5E9841-5A3C-47E4-BADC-9CA297AA7948}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LinFu.Reflection</RootNamespace>
+    <AssemblyName>LinFu.Reflection</AssemblyName>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\output\2.0\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Binder.cs" />
+    <Compile Include="DelegateMixin.cs" />
+    <Compile Include="DuckType.cs" />
+    <Compile Include="DynamicObject.cs" />
+    <Compile Include="IMethodFinder.cs" />
+    <Compile Include="IMissingMethodCallback.cs" />
+    <Compile Include="IMixinAware.cs" />
+    <Compile Include="IObjectMethods.cs" />
+    <Compile Include="IObjectProperties.cs" />
+    <Compile Include="LateBoundMethod.cs" />
+    <Compile Include="MethodFinder.cs" />
+    <Compile Include="MethodMissingParameters.cs" />
+    <Compile Include="PredicateBuilder.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\LinFu.Common\LinFu.Common.csproj">
+      <Project>{12E74908-C9CF-45CB-A996-7784846C3A53}</Project>
+      <Name>LinFu.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\LinFu.Delegates\LinFu.Delegates\LinFu.Delegates.csproj">
+      <Project>{65A26586-FE64-411D-999D-EC328DFF8986}</Project>
+      <Name>LinFu.Delegates</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\LinFu.DynamicProxy\LinFu.DynamicProxy.csproj">
+      <Project>{859EF99C-D959-4485-B24E-05AEAB9B54CF}</Project>
+      <Name>LinFu.DynamicProxy</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

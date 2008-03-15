@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleLibrary", "SampleLibrary\SampleLibrary.csproj", "{7460B746-C177-42C1-B8A4-130D744826D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleProgram", "SampleProgram\SampleProgram.csproj", "{D021F339-7495-4F53-AF51-E14709929914}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.AOP.Interfaces", "..\LinFu.AOP.Interfaces\LinFu.AOP.Interfaces.csproj", "{5896B2B5-CE3C-4600-BB54-F7F0175DE05A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenchmarkProgram", "BenchmarkProgram\BenchmarkProgram.csproj", "{FE6AD6C5-0A16-48B0-97D4-6FD7A2999507}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenchmarkTestLibrary", "BenchmarkTestLibrary\BenchmarkTestLibrary.csproj", "{952B045F-E8A6-4DC0-91A0-3E0CCF10C524}"
+EndProject
+Global
+	GlobalSection(SourceCodeControl) = preSolution
+		SccNumberOfProjects = 1
+		SccProjectUniqueName0 = ..\\LinFu.AOP.Interfaces\\LinFu.AOP.Interfaces.csproj
+		SccProjectName0 = \u0022$/AopBench2.root/AopBench2/LinFu.AOP2/LinFu.AOP.Interfaces\u0022,\u0020NTGAAAAA
+		SccLocalPath0 = ..\\LinFu.AOP.Interfaces
+		SccProvider0 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7460B746-C177-42C1-B8A4-130D744826D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7460B746-C177-42C1-B8A4-130D744826D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7460B746-C177-42C1-B8A4-130D744826D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7460B746-C177-42C1-B8A4-130D744826D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D021F339-7495-4F53-AF51-E14709929914}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D021F339-7495-4F53-AF51-E14709929914}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D021F339-7495-4F53-AF51-E14709929914}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D021F339-7495-4F53-AF51-E14709929914}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5896B2B5-CE3C-4600-BB54-F7F0175DE05A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5896B2B5-CE3C-4600-BB54-F7F0175DE05A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5896B2B5-CE3C-4600-BB54-F7F0175DE05A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5896B2B5-CE3C-4600-BB54-F7F0175DE05A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE6AD6C5-0A16-48B0-97D4-6FD7A2999507}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE6AD6C5-0A16-48B0-97D4-6FD7A2999507}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE6AD6C5-0A16-48B0-97D4-6FD7A2999507}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE6AD6C5-0A16-48B0-97D4-6FD7A2999507}.Release|Any CPU.Build.0 = Release|Any CPU
+		{952B045F-E8A6-4DC0-91A0-3E0CCF10C524}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{952B045F-E8A6-4DC0-91A0-3E0CCF10C524}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{952B045F-E8A6-4DC0-91A0-3E0CCF10C524}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{952B045F-E8A6-4DC0-91A0-3E0CCF10C524}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

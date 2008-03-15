@@ -1,0 +1,220 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.Common", "LinFu.Common\LinFu.Common.csproj", "{12E74908-C9CF-45CB-A996-7784846C3A53}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.Delegates", "LinFu.Delegates\LinFu.Delegates\LinFu.Delegates.csproj", "{65A26586-FE64-411D-999D-EC328DFF8986}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.Delegates.Tests", "LinFu.Delegates\LinFu.Delegates.Tests\LinFu.Delegates.Tests.csproj", "{27BCE59A-A0F0-43DE-8695-B4A63FAD7444}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.DynamicProxy", "LinFu.DynamicProxy\LinFu.DynamicProxy.csproj", "{859EF99C-D959-4485-B24E-05AEAB9B54CF}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.DesignByContract2.Tests", "LinFu.DesignByContract2\LinFu.DesignByContract2.Tests\LinFu.DesignByContract2.Tests.csproj", "{55ABFCA3-D216-4264-A1A2-7CA9C287C18C}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.DesignByContract2.Core", "LinFu.DesignByContract2\LinFu.DesignByContract2.Core\LinFu.DesignByContract2.Core.csproj", "{63C8B741-B66A-43BA-B826-990E4A90686C}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8DCDFFAC-9EE9-4579-AED1-C8AB63971125}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.DesignByContract2.Attributes", "LinFu.DesignByContract2\LinFu.DesignByContract2.Attributes\LinFu.DesignByContract2.Attributes.csproj", "{90EE5327-EE55-4E27-9AFC-6253696159A6}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.DesignByContract2.Injectors", "LinFu.DesignByContract2\LinFu.DesignByContract2.Injectors\LinFu.DesignByContract2.Injectors.csproj", "{6D084FCC-AD4C-42AD-8A21-055243D0F7B7}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleContracts", "LinFu.DesignByContract2\SampleContracts\SampleContracts.csproj", "{CC3391A9-4834-429E-A232-829257ABBF88}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.DesignByContract2.Contracts", "LinFu.DesignByContract2\LinFu.DesignByContract2.Contracts\LinFu.DesignByContract2.Contracts.csproj", "{2EF4403C-5E10-4B39-8EA7-D4F3C5824DB5}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.IoC", "Simple.IoC\Simple.IoC\Simple.IoC.csproj", "{457039BF-4B57-4553-AC4F-81B11B59610E}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.IoC.Loaders", "Simple.IoC\Simple.IoC.Loaders\Simple.IoC.Loaders.csproj", "{F6B9BAAF-89AB-419D-B256-BB1EA38D799A}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.Reflection", "LinFu.Reflection\LinFu.Reflection\LinFu.Reflection.csproj", "{CD5E9841-5A3C-47E4-BADC-9CA297AA7948}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.IoC.Tests", "Simple.IoC\Simple.IoC.Tests\Simple.IoC.Tests.csproj", "{B86740C9-8859-4F3A-8D51-2C7C222EA467}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SourceCodeControl) = preSolution
+		SccNumberOfProjects = 12
+		SccProjectUniqueName0 = LinFu.Common\\LinFu.Common.csproj
+		SccProjectName0 = \u0022$/LinFu.DesignByContract2.root/LinFu.DesignByContract2/LinFu.Common\u0022,\u0020QCGAAAAA
+		SccLocalPath0 = LinFu.Common
+		SccProvider0 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		SccProjectUniqueName1 = LinFu.Delegates\\LinFu.Delegates\\LinFu.Delegates.csproj
+		SccProjectName1 = \u0022$/LinFu.DesignByContract2.root/LinFu.DesignByContract2/LinFu.Delegates/LinFu.Delegates\u0022,\u0020UCGAAAAA
+		SccLocalPath1 = LinFu.Delegates\\LinFu.Delegates
+		SccProvider1 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		SccProjectUniqueName2 = LinFu.DynamicProxy\\LinFu.DynamicProxy.csproj
+		SccProjectName2 = \u0022$/LinFu.DesignByContract2.root/LinFu.DesignByContract2/LinFu.DynamicProxy\u0022,\u0020BBCAAAAA
+		SccLocalPath2 = LinFu.DynamicProxy
+		SccProvider2 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		SccProjectUniqueName3 = LinFu.DesignByContract2\\LinFu.DesignByContract2.Tests\\LinFu.DesignByContract2.Tests.csproj
+		SccProjectName3 = \u0022$/LinFu.DesignByContract2.root/LinFu.DesignByContract2\u0022,\u0020BYBAAAAA
+		SccLocalPath3 = .
+		SccProvider3 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		SccProjectFilePathRelativizedFromConnection3 = LinFu.DesignByContract2\\LinFu.DesignByContract2.Tests\\
+		SccProjectUniqueName4 = LinFu.DesignByContract2\\LinFu.DesignByContract2.Core\\LinFu.DesignByContract2.Core.csproj
+		SccProjectName4 = \u0022$/LinFu.DesignByContract2.root/LinFu.DesignByContract2\u0022,\u0020BYBAAAAA
+		SccLocalPath4 = .
+		SccProvider4 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		SccProjectFilePathRelativizedFromConnection4 = LinFu.DesignByContract2\\LinFu.DesignByContract2.Core\\
+		SccProjectUniqueName5 = LinFu.DesignByContract2\\LinFu.DesignByContract2.Attributes\\LinFu.DesignByContract2.Attributes.csproj
+		SccProjectName5 = \u0022$/LinFu.DesignByContract2.root/LinFu.DesignByContract2\u0022,\u0020BYBAAAAA
+		SccLocalPath5 = .
+		SccProvider5 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		SccProjectFilePathRelativizedFromConnection5 = LinFu.DesignByContract2\\LinFu.DesignByContract2.Attributes\\
+		SccProjectUniqueName6 = LinFu.DesignByContract2\\LinFu.DesignByContract2.Injectors\\LinFu.DesignByContract2.Injectors.csproj
+		SccProjectName6 = \u0022$/LinFu.DesignByContract2.root/LinFu.DesignByContract2\u0022,\u0020BYBAAAAA
+		SccLocalPath6 = .
+		SccProvider6 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		SccProjectFilePathRelativizedFromConnection6 = LinFu.DesignByContract2\\LinFu.DesignByContract2.Injectors\\
+		SccProjectUniqueName7 = LinFu.DesignByContract2\\SampleContracts\\SampleContracts.csproj
+		SccProjectName7 = \u0022$/LinFu.DesignByContract2.root/LinFu.DesignByContract2\u0022,\u0020BYBAAAAA
+		SccLocalPath7 = .
+		SccProvider7 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		SccProjectFilePathRelativizedFromConnection7 = LinFu.DesignByContract2\\SampleContracts\\
+		SccProjectUniqueName8 = LinFu.DesignByContract2\\LinFu.DesignByContract2.Contracts\\LinFu.DesignByContract2.Contracts.csproj
+		SccProjectName8 = \u0022$/LinFu.DesignByContract2.root/LinFu.DesignByContract2\u0022,\u0020BYBAAAAA
+		SccLocalPath8 = .
+		SccProvider8 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		SccProjectFilePathRelativizedFromConnection8 = LinFu.DesignByContract2\\LinFu.DesignByContract2.Contracts\\
+		SccProjectUniqueName9 = Simple.IoC\\Simple.IoC\\Simple.IoC.csproj
+		SccProjectName9 = \u0022$/LinFu.DesignByContract2.root/LinFu.DesignByContract2\u0022,\u0020BYBAAAAA
+		SccLocalPath9 = .
+		SccProvider9 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		SccProjectFilePathRelativizedFromConnection9 = Simple.IoC\\Simple.IoC\\
+		SccProjectUniqueName10 = Simple.IoC\\Simple.IoC.Loaders\\Simple.IoC.Loaders.csproj
+		SccProjectName10 = \u0022$/LinFu.DesignByContract2.root/LinFu.DesignByContract2\u0022,\u0020BYBAAAAA
+		SccLocalPath10 = .
+		SccProvider10 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		SccProjectFilePathRelativizedFromConnection10 = Simple.IoC\\Simple.IoC.Loaders\\
+		SccProjectUniqueName11 = LinFu.Reflection\\LinFu.Reflection\\LinFu.Reflection.csproj
+		SccProjectName11 = \u0022$/LinFu.DesignByContract2.root/LinFu.DesignByContract2\u0022,\u0020BYBAAAAA
+		SccLocalPath11 = .
+		SccProvider11 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		SccProjectFilePathRelativizedFromConnection11 = LinFu.Reflection\\LinFu.Reflection\\
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{12E74908-C9CF-45CB-A996-7784846C3A53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12E74908-C9CF-45CB-A996-7784846C3A53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12E74908-C9CF-45CB-A996-7784846C3A53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12E74908-C9CF-45CB-A996-7784846C3A53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65A26586-FE64-411D-999D-EC328DFF8986}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65A26586-FE64-411D-999D-EC328DFF8986}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65A26586-FE64-411D-999D-EC328DFF8986}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65A26586-FE64-411D-999D-EC328DFF8986}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27BCE59A-A0F0-43DE-8695-B4A63FAD7444}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27BCE59A-A0F0-43DE-8695-B4A63FAD7444}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27BCE59A-A0F0-43DE-8695-B4A63FAD7444}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27BCE59A-A0F0-43DE-8695-B4A63FAD7444}.Release|Any CPU.Build.0 = Release|Any CPU
+		{859EF99C-D959-4485-B24E-05AEAB9B54CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{859EF99C-D959-4485-B24E-05AEAB9B54CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{859EF99C-D959-4485-B24E-05AEAB9B54CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{859EF99C-D959-4485-B24E-05AEAB9B54CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55ABFCA3-D216-4264-A1A2-7CA9C287C18C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55ABFCA3-D216-4264-A1A2-7CA9C287C18C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55ABFCA3-D216-4264-A1A2-7CA9C287C18C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55ABFCA3-D216-4264-A1A2-7CA9C287C18C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63C8B741-B66A-43BA-B826-990E4A90686C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63C8B741-B66A-43BA-B826-990E4A90686C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63C8B741-B66A-43BA-B826-990E4A90686C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63C8B741-B66A-43BA-B826-990E4A90686C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90EE5327-EE55-4E27-9AFC-6253696159A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90EE5327-EE55-4E27-9AFC-6253696159A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90EE5327-EE55-4E27-9AFC-6253696159A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90EE5327-EE55-4E27-9AFC-6253696159A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D084FCC-AD4C-42AD-8A21-055243D0F7B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D084FCC-AD4C-42AD-8A21-055243D0F7B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D084FCC-AD4C-42AD-8A21-055243D0F7B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D084FCC-AD4C-42AD-8A21-055243D0F7B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC3391A9-4834-429E-A232-829257ABBF88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC3391A9-4834-429E-A232-829257ABBF88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC3391A9-4834-429E-A232-829257ABBF88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC3391A9-4834-429E-A232-829257ABBF88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EF4403C-5E10-4B39-8EA7-D4F3C5824DB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EF4403C-5E10-4B39-8EA7-D4F3C5824DB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EF4403C-5E10-4B39-8EA7-D4F3C5824DB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EF4403C-5E10-4B39-8EA7-D4F3C5824DB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{457039BF-4B57-4553-AC4F-81B11B59610E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{457039BF-4B57-4553-AC4F-81B11B59610E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{457039BF-4B57-4553-AC4F-81B11B59610E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{457039BF-4B57-4553-AC4F-81B11B59610E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6B9BAAF-89AB-419D-B256-BB1EA38D799A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6B9BAAF-89AB-419D-B256-BB1EA38D799A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6B9BAAF-89AB-419D-B256-BB1EA38D799A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6B9BAAF-89AB-419D-B256-BB1EA38D799A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD5E9841-5A3C-47E4-BADC-9CA297AA7948}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD5E9841-5A3C-47E4-BADC-9CA297AA7948}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD5E9841-5A3C-47E4-BADC-9CA297AA7948}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD5E9841-5A3C-47E4-BADC-9CA297AA7948}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B86740C9-8859-4F3A-8D51-2C7C222EA467}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B86740C9-8859-4F3A-8D51-2C7C222EA467}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B86740C9-8859-4F3A-8D51-2C7C222EA467}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B86740C9-8859-4F3A-8D51-2C7C222EA467}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
