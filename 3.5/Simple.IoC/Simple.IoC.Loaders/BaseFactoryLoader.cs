@@ -12,6 +12,8 @@ namespace Simple.IoC.Loaders
 
         public virtual void LoadFactory(IContainer container, Type loadedType)
         {
+            LoadAdditionalFactories(container, loadedType);
+
             if (!CanLoad(loadedType))
                 return;
 
@@ -35,7 +37,9 @@ namespace Simple.IoC.Loaders
                 InsertFactory(container, itemType, loadedType, factoryInstance);
             }
         }
-
+        protected virtual void LoadAdditionalFactories(IContainer container, Type loadedType)
+        {
+        }
         protected virtual void InsertFactory(IContainer container, Type itemType, Type loadedType, object factoryInstance)
         {
             // Add the object factory to the container

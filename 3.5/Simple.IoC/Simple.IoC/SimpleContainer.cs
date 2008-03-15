@@ -42,6 +42,17 @@ namespace Simple.IoC
 
             return result != null;
         }
+        public bool Contains(string serviceName, Type serviceType)
+        {
+            MethodInfo getServiceDefinition = typeof(SimpleContainer).GetMethod("GetService",
+                BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(string) }, null);
+
+            // This is equivalent to: return GetService<T>(serviceName) != null;
+            MethodInfo getService = getServiceDefinition.MakeGenericMethod(serviceType);
+            object result = getService.Invoke(this, new object[] { serviceName });
+
+            return result != null;
+        }
         public virtual T GetService<T>() where T : class
         {
             return GetService<T>(true);
@@ -62,16 +73,18 @@ namespace Simple.IoC
                 targetCustomizer = customizer;
                 break;
             }
-            if (targetCustomizer == null)
-                throw new ServiceNotFoundException(serviceName, typeof(T));
+
 
             T result = null;
 
-            if (_storage == null || !_storage.ContainsFactory<T>(serviceName))
+            if (_storage == null || !_storage.ContainsFactory<T>(serviceName) 
+                || string.IsNullOrEmpty(serviceName))
             {
                 // Use the nameless implementation by default
                 result = GetService<T>();
-                targetCustomizer.Customize(serviceName, typeof(T), result, this);
+
+                if (targetCustomizer != null && result != null)
+                    targetCustomizer.Customize(serviceName, typeof(T), result, this);
 
                 return result;
             }
@@ -80,10 +93,13 @@ namespace Simple.IoC
             IFactory<T> factory = _storage.Retrieve<T>(serviceName);
             result = factory.CreateInstance(this);
 
-            result = PostProcess(result, true);
+            result = PostProcess(serviceName, result, true);
 
-            if (result != null)
+            if (targetCustomizer != null && result != null)
                 targetCustomizer.Customize(serviceName, typeof(T), result, this);
+
+            if (result == null)
+                throw new ServiceNotFoundException(serviceName, typeof(T));
 
             return result;
         }
@@ -95,7 +111,7 @@ namespace Simple.IoC
 
             T result = CreateInstance<T>();
 
-            return PostProcess(result, throwOnError);
+            return PostProcess(string.Empty, result, throwOnError);
         }
 
         public INamedFactoryStorage NamedFactoryStorage
@@ -122,7 +138,7 @@ namespace Simple.IoC
             get { return _surrogates; }
         }
 
-        private T PostProcess<T>(T originalResult, bool throwOnError) where T : class
+        private T PostProcess<T>(string serviceName, T originalResult, bool throwOnError) where T : class
         {
             Type serviceType = typeof(T);
             T result = originalResult;
@@ -134,10 +150,10 @@ namespace Simple.IoC
                     if (surrogate == null)
                         continue;
 
-                    if (!surrogate.CanSurrogate(serviceType))
+                    if (!surrogate.CanSurrogate(serviceName, serviceType))
                         continue;
 
-                    result = surrogate.ProvideSurrogate(serviceType) as T;
+                    result = surrogate.ProvideSurrogate(serviceName, serviceType) as T;
                 }
             }
 

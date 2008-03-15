@@ -38,7 +38,7 @@ namespace Simple.IoC.Loaders
             return factoryInstance;
         }
 
-        public override void LoadFactory(IContainer container, Type loadedType)
+        protected override void LoadAdditionalFactories(IContainer container, Type loadedType)
         {
             // Load any custom factories associated with the assembly
             CustomFactoryLoader factoryLoader = new CustomFactoryLoader();
@@ -47,8 +47,6 @@ namespace Simple.IoC.Loaders
             // Load any named services associated with the assembly
             NamedFactoryLoader namedFactoryLoader = new NamedFactoryLoader();
             namedFactoryLoader.LoadFactory(container, loadedType);
-
-            base.LoadFactory(container, loadedType);
         }
         protected override bool CanLoad(Type loadedType)
         {

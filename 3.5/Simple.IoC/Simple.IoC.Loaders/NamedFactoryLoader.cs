@@ -34,5 +34,9 @@ namespace Simple.IoC.Loaders
             MethodInfo storeFactory = addFactoryDefinition.MakeGenericMethod(itemType);
             storeFactory.Invoke(container.NamedFactoryStorage, new object[] { serviceName, factoryInstance});
         }
+        protected override void LoadAdditionalFactories(IContainer container, Type loadedType)
+        {
+            // Load nothing
+        }
     }
 }
