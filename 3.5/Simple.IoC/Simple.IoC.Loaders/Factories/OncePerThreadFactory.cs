@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace Simple.IoC.Factories
 {
-    public class OncePerThreadFactory<TService, TImplementor> : IFactory<TService>
+    public class OncePerThreadFactory<TService, TImplementor> : IFactory<TService>, IFactory 
         where TService : class
         where TImplementor : TService, new()
     {
@@ -25,6 +25,16 @@ namespace Simple.IoC.Factories
                 result = _storage[threadId];
             }
 
+            return result;
+        }
+
+        #endregion
+
+        #region IFactory Members
+
+        object IFactory.CreateInstance(IContainer container)
+        {
+            TService result = CreateInstance(container);
             return result;
         }
 

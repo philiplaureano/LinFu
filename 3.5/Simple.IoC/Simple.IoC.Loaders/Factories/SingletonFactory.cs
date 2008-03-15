@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Simple.IoC.Factories
 {
-    public class SingletonFactory<TService, TImplementor> : IFactory<TService>
+    public class SingletonFactory<TService, TImplementor> : IFactory<TService>, IFactory
         where TService : class
         where TImplementor : TService, new()
     {
@@ -16,10 +16,20 @@ namespace Simple.IoC.Factories
         }
 
         #endregion
+        #region IFactory Members
 
+        object IFactory.CreateInstance(IContainer container)
+        {
+            TService result = CreateInstance(container);
+            return result;
+        }
+
+        #endregion
         private static class SingletonCreator
         {
             internal static readonly TService Instance = new TImplementor();
         }
+
+
     }
 }

@@ -9,6 +9,7 @@ namespace Simple.IoC.Loaders
     {
         private Type _serviceType;
         private LifecycleType _lifeCycleType;
+        public string ServiceName;
         public ImplementsAttribute(Type serviceType, LifecycleType lifeCycleType)
         {
             _serviceType = serviceType;

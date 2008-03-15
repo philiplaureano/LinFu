@@ -12,6 +12,8 @@ namespace Simple.IoC
         private readonly List<IPropertyInjector> _propertyInjectors = new List<IPropertyInjector>();
         private readonly List<ITypeInjector> _injectors = new List<ITypeInjector>();
         private readonly List<ITypeSurrogate> _surrogates = new List<ITypeSurrogate>();
+        private INamedFactoryStorage _storage = new DefaultNamedFactoryStorage();
+
         public SimpleContainer()
         {
             _propertyInjectors.Add(new DefaultPropertyInjector());
@@ -63,9 +65,25 @@ namespace Simple.IoC
             if (targetCustomizer == null)
                 throw new ServiceNotFoundException(serviceName, typeof(T));
 
-            T result = GetService<T>();
+            T result = null;
 
-            targetCustomizer.Customize(serviceName, typeof(T), result, this);
+            if (_storage == null || !_storage.ContainsFactory<T>(serviceName))
+            {
+                // Use the nameless implementation by default
+                result = GetService<T>();
+                targetCustomizer.Customize(serviceName, typeof(T), result, this);
+
+                return result;
+            }
+
+            // Use the named factory instance, if possible
+            IFactory<T> factory = _storage.Retrieve<T>(serviceName);
+            result = factory.CreateInstance(this);
+
+            result = PostProcess(result, true);
+
+            if (result != null)
+                targetCustomizer.Customize(serviceName, typeof(T), result, this);
 
             return result;
         }
@@ -77,6 +95,37 @@ namespace Simple.IoC
 
             T result = CreateInstance<T>();
 
+            return PostProcess(result, throwOnError);
+        }
+
+        public INamedFactoryStorage NamedFactoryStorage
+        {
+            get
+            {
+                return _storage; 
+            }
+            set
+            {
+                _storage = value;
+            }
+        }
+        public virtual IList<ICustomizeInstance> Customizers
+        {
+            get { return _customizers; }
+        }
+        public virtual IList<ITypeInjector> TypeInjectors
+        {
+            get { return _injectors; }
+        }
+        public virtual IList<ITypeSurrogate> TypeSurrogates
+        {
+            get { return _surrogates; }
+        }
+
+        private T PostProcess<T>(T originalResult, bool throwOnError) where T : class
+        {
+            Type serviceType = typeof(T);
+            T result = originalResult;
             if (result == null && _surrogates.Count > 0)
             {
                 // Find a surrogate for the given type
@@ -114,19 +163,6 @@ namespace Simple.IoC
             }
 
             return result;
-        }
-
-        public virtual IList<ICustomizeInstance> Customizers
-        {
-            get { return _customizers; }
-        }
-        public virtual IList<ITypeInjector> TypeInjectors
-        {
-            get { return _injectors; }
-        }
-        public virtual IList<ITypeSurrogate> TypeSurrogates
-        {
-            get { return _surrogates; }
         }
         private T CreateInstance<T>() where T : class
         {

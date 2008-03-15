@@ -32,15 +32,20 @@ namespace Simple.IoC.Loaders
 	            if (factoryInstance == null)
 	                continue;
 
-	            // Add the object factory to the container
-	            MethodInfo addFactoryDefinition =
-	                typeof(BaseFactoryLoader).GetMethod("AddFactory", BindingFlags.NonPublic | BindingFlags.Static);
-
-	            Debug.Assert(addFactoryDefinition.IsGenericMethodDefinition);
-
-	            MethodInfo addFactory = addFactoryDefinition.MakeGenericMethod(itemType);
-	            addFactory.Invoke(null, new object[] { factoryInstance, container });
+                InsertFactory(container, itemType, loadedType, factoryInstance);
             }
+        }
+
+        protected virtual void InsertFactory(IContainer container, Type itemType, Type loadedType, object factoryInstance)
+        {
+            // Add the object factory to the container
+            MethodInfo addFactoryDefinition =
+                typeof(BaseFactoryLoader).GetMethod("AddFactory", BindingFlags.NonPublic | BindingFlags.Static);
+
+            Debug.Assert(addFactoryDefinition.IsGenericMethodDefinition);
+
+            MethodInfo addFactory = addFactoryDefinition.MakeGenericMethod(itemType);
+            addFactory.Invoke(null, new object[] { factoryInstance, container });
         }
 
         #endregion

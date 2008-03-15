@@ -72,13 +72,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultNamedFactoryStorage.cs" />
     <Compile Include="DefaultPropertyInjector.cs" />
+    <Compile Include="FactoryStorage.cs" />
     <Compile Include="InstanceFactoryOfT.cs" />
     <Compile Include="Interfaces\IContainer.cs" />
     <Compile Include="Interfaces\ICustomizeInstance.cs" />
     <Compile Include="Interfaces\IFactory.cs" />
     <Compile Include="Interfaces\IFactoryOfT.cs" />
+    <Compile Include="Interfaces\IFactoryStorage.cs" />
     <Compile Include="Interfaces\IInitialize.cs" />
+    <Compile Include="Interfaces\INamedFactoryStorage.cs" />
     <Compile Include="Interfaces\IPropertyInjector.cs" />
     <Compile Include="Interfaces\ITypeInjector.cs" />
     <Compile Include="Interfaces\ITypeSurrogate.cs" />
