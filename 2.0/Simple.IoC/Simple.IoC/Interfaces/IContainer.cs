@@ -8,9 +8,12 @@ namespace Simple.IoC
         void AddService<T>(T serviceInstance);
         void AddFactory<T>(IFactory<T> factory);
         void AddFactory(Type itemType, IFactory factory);
+        bool Contains(string serviceName, Type serviceType);
         bool Contains(Type serviceType);
         T GetService<T>() where T : class;
         T GetService<T>(string serviceName) where T : class;
+
+        INamedFactoryStorage NamedFactoryStorage { get; set; }
 
         IList<ICustomizeInstance> Customizers { get; }
         IList<IPropertyInjector> PropertyInjectors { get; }

@@ -48,7 +48,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultNamedFactoryStorage.cs" />
     <Compile Include="DefaultPropertyInjector.cs" />
+    <Compile Include="FactoryStorage.cs" />
+    <Compile Include="IFactoryStorage.cs" />
+    <Compile Include="INamedFactoryStorage.cs" />
     <Compile Include="InstanceFactoryOfT.cs" />
     <Compile Include="Interfaces\IContainer.cs" />
     <Compile Include="Interfaces\ICustomizeInstance.cs" />

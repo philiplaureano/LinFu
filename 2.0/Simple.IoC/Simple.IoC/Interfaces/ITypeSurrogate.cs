@@ -6,7 +6,7 @@ namespace Simple.IoC
 {
     public interface ITypeSurrogate
     {
-        bool CanSurrogate(Type serviceType);
-        object ProvideSurrogate(Type serviceType);
+        bool CanSurrogate(string serviceName, Type serviceType);
+        object ProvideSurrogate(string serviceName, Type serviceType);
     }
 }

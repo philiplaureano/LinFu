@@ -38,13 +38,15 @@ namespace Simple.IoC.Loaders
             return factoryInstance;
         }
 
-        public override void LoadFactory(IContainer container, Type loadedType)
+        protected override void LoadAdditionalFactories(IContainer container, Type loadedType)
         {
             // Load any custom factories associated with the assembly
             CustomFactoryLoader factoryLoader = new CustomFactoryLoader();
             factoryLoader.LoadFactory(container, loadedType);
 
-            base.LoadFactory(container, loadedType);
+            // Load any named services associated with the assembly
+            NamedFactoryLoader namedFactoryLoader = new NamedFactoryLoader();
+            namedFactoryLoader.LoadFactory(container, loadedType);
         }
         protected override bool CanLoad(Type loadedType)
         {
@@ -54,9 +56,21 @@ namespace Simple.IoC.Loaders
             if (!loadedType.IsDefined(typeof(ImplementsAttribute), true))
                 return false;
 
+            ImplementsAttribute attribute = (ImplementsAttribute)loadedType.GetCustomAttributes(typeof(ImplementsAttribute), true)[0];
+
+            if (!ShouldLoad(attribute.ServiceName, loadedType))
+                return false;
+
             return true;
         }
+        protected virtual bool ShouldLoad(string serviceName, Type loadedType)
+        {
+            // Load only nameless services
+            if (!string.IsNullOrEmpty(serviceName))
+                return false;
 
+            return true;
+        }
         protected override IEnumerable<Type> GetItemTypes(Type currentType)
         {
             List<Type> results = new List<Type>();
