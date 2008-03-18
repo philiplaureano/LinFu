@@ -23,7 +23,10 @@ namespace Simple.IoC.Loaders
 
             return true;
         }
-
+        protected override void LoadAdditionalFactories(IContainer container, Type loadedType)
+        {
+            // Load nothing
+        }
         protected override IEnumerable<Type> GetItemTypes(Type loadedType)
         {
             List<Type> results = new List<Type>();
