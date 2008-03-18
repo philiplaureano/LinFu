@@ -68,6 +68,7 @@
     <Compile Include="Args.cs" />
     <Compile Include="Closure.cs" />
     <Compile Include="CustomDelegate.cs" />
+    <Compile Include="CustomDelegateInvoker.cs" />
     <Compile Include="CustomDelegateRedirector.cs" />
     <Compile Include="DefaultInvoker.cs" />
     <Compile Include="DelegateFactory.cs" />

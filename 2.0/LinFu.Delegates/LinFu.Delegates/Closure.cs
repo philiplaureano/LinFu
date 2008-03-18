@@ -25,6 +25,12 @@ namespace LinFu.Delegates
 
             _suppliedArguments.AddRange(suppliedArguments);
         }
+        public Closure(CustomDelegate target, params object[] suppliedArguments)
+            : this((MulticastDelegate)target, suppliedArguments)
+        {
+            CustomDelegate customDelegate = (CustomDelegate)target;
+            _invoker = new CustomDelegateInvoker(customDelegate, suppliedArguments);
+        }
         public Closure(MethodInfo staticMethod, 
             params object[] suppliedArguments) 
         {
@@ -55,13 +61,14 @@ namespace LinFu.Delegates
         public Closure(MulticastDelegate target)
         {
             _target = target;
-        }
+        }       
         public Closure(MulticastDelegate target, params object[] suppliedArguments)
         {
             _target = target;
 
             if (suppliedArguments == null || suppliedArguments.Length == 0)
                 return;
+
 
             _suppliedArguments.AddRange(suppliedArguments);
         }
