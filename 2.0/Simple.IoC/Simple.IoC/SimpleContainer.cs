@@ -77,11 +77,10 @@ namespace Simple.IoC
 
             T result = null;
 
-            if (_storage == null || !_storage.ContainsFactory<T>(serviceName) 
-                || string.IsNullOrEmpty(serviceName))
+            if (_storage == null || string.IsNullOrEmpty(serviceName))
             {
                 // Use the nameless implementation by default
-                result = GetService<T>();
+                result = GetService<T>(false);
 
                 if (targetCustomizer != null && result != null)
                     targetCustomizer.Customize(serviceName, typeof(T), result, this);
@@ -90,8 +89,11 @@ namespace Simple.IoC
             }
 
             // Use the named factory instance, if possible
-            IFactory<T> factory = _storage.Retrieve<T>(serviceName);
-            result = factory.CreateInstance(this);
+            if (_storage.ContainsFactory<T>(serviceName))
+            {
+                IFactory<T> factory = _storage.Retrieve<T>(serviceName);
+                result = factory.CreateInstance(this);
+            }
 
             result = PostProcess(serviceName, result, true);
 
@@ -105,11 +107,9 @@ namespace Simple.IoC
         }
         public virtual T GetService<T>(bool throwOnError) where T : class
         {
-            Type serviceType = typeof(T);
-            if (!_factories.ContainsKey(serviceType))
-                return null;
+            T result = null;
 
-            T result = CreateInstance<T>();
+            result = CreateInstance<T>();
 
             return PostProcess(string.Empty, result, throwOnError);
         }
@@ -182,7 +182,10 @@ namespace Simple.IoC
         }
         private T CreateInstance<T>() where T : class
         {
-            Type serviceType = typeof (T);
+            Type serviceType = typeof(T);
+            if (!_factories.ContainsKey(serviceType))
+                return null;
+
             // Retrieve the factory
             object factoryInstance = _factories[serviceType];
             IFactory<T> factory = factoryInstance as IFactory<T>;
