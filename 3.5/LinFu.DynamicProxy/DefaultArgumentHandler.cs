@@ -44,7 +44,10 @@ namespace LinFu.DynamicProxy
                 }
 
                 IL.Emit(OpCodes.Ldarg, argumentPosition);
-                if (parameterType.IsValueType)
+
+                bool isGeneric = parameterType.IsGenericParameter;
+
+                if (parameterType.IsValueType || isGeneric)
                     IL.Emit(OpCodes.Box, parameterType);
 
                 IL.Emit(OpCodes.Stelem_Ref);
