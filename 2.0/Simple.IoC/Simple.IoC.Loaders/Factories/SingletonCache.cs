@@ -12,7 +12,7 @@ namespace Simple.IoC.Factories
         {
             lock (_singletons)
             {
-                if (_singletons.ContainsKey(typeof(T)))
+                if (!_singletons.ContainsKey(typeof(T)))
                     _singletons[typeof(T)] = new T();
             }
 
