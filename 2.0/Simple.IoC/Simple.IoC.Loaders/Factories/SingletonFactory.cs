@@ -4,22 +4,28 @@ using System.Text;
 
 namespace Simple.IoC.Factories
 {
-    public class SingletonFactory<TService, TImplementor> : IFactory<TService>
+    public class SingletonFactory<TService, TImplementor> : IFactory<TService>, IFactory
         where TService : class
-        where TImplementor : TService, new()
+        where TImplementor : class, TService, new()
     {
+        private static readonly Dictionary<Type, object> _singletons = new Dictionary<Type, object>();
         #region IFactory<T> Members
 
         public virtual TService CreateInstance(IContainer container)
         {
-            return SingletonCreator.Instance;
+            return SingletonCache.CreateInstance<TImplementor>();
         }
 
         #endregion
 
-        private static class SingletonCreator
+        #region IFactory Members
+
+        object IFactory.CreateInstance(IContainer container)
         {
-            internal static readonly TService Instance = new TImplementor();
+            TService result = CreateInstance(container);
+            return result;
         }
+
+        #endregion
     }
 }
