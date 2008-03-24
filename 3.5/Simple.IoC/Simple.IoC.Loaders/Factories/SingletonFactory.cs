@@ -6,16 +6,18 @@ namespace Simple.IoC.Factories
 {
     public class SingletonFactory<TService, TImplementor> : IFactory<TService>, IFactory
         where TService : class
-        where TImplementor : TService, new()
+        where TImplementor : class, TService, new()
     {
+        private static readonly Dictionary<Type, object> _singletons = new Dictionary<Type, object>();
         #region IFactory<T> Members
 
         public virtual TService CreateInstance(IContainer container)
         {
-            return SingletonCreator.Instance;
+            return SingletonCache.CreateInstance<TImplementor>();
         }
 
         #endregion
+
         #region IFactory Members
 
         object IFactory.CreateInstance(IContainer container)
@@ -25,11 +27,5 @@ namespace Simple.IoC.Factories
         }
 
         #endregion
-        private static class SingletonCreator
-        {
-            internal static readonly TService Instance = new TImplementor();
-        }
-
-
     }
 }
