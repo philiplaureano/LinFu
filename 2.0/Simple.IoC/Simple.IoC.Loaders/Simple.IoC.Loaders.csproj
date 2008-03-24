@@ -56,6 +56,7 @@
     <Compile Include="DefaultLoadStrategy.cs" />
     <Compile Include="Factories\OncePerRequestFactory.cs" />
     <Compile Include="Factories\OncePerThreadFactory.cs" />
+    <Compile Include="Factories\SingletonCache.cs" />
     <Compile Include="Factories\SingletonFactory.cs" />
     <Compile Include="FactoryAttribute.cs" />
     <Compile Include="CustomFactoryLoader.cs" />
