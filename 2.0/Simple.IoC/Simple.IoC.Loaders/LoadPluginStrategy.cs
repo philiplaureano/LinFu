@@ -22,12 +22,26 @@ namespace Simple.IoC.Loaders
             List<IContainerPlugin> plugins = new List<IContainerPlugin>();
             foreach(Type current in loadedTypes)
             {
-                if (current == null || !current.IsDefined(typeof(ContainerPluginAttribute), true))
+                if (current == null)
                     continue;
 
                 // Each plugin must have a default constructor
                 ConstructorInfo defaultConstructor = current.GetConstructor(new Type[0]);
                 if (defaultConstructor == null)
+                    continue;
+
+                // Load any additional type injectors
+                if (current.IsDefined(typeof(TypeInjectorAttribute), true))
+                {
+                    ITypeInjector typeInjector = Activator.CreateInstance(current) as ITypeInjector;
+                    
+                    if (typeInjector != null)
+                        hostContainer.TypeInjectors.Add(typeInjector);
+                    
+                    continue;
+                }
+
+                if (!current.IsDefined(typeof(ContainerPluginAttribute), true))
                     continue;
 
                 IContainerPlugin plugin = Activator.CreateInstance(current) as IContainerPlugin;
