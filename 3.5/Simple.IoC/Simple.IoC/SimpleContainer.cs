@@ -225,8 +225,11 @@ namespace Simple.IoC
         {
             Type serviceType = typeof (T);
             _factories[serviceType] = new InstanceFactory<T>(serviceInstance);
-        }                
-
+        }
+        public void AddService<T>(string serviceName, T serviceInstance)
+        {
+            _storage.Store<T>(serviceName, new InstanceFactory<T>(serviceInstance));
+        }
         public IList<IPropertyInjector> PropertyInjectors
         {
             get { return _propertyInjectors; }
