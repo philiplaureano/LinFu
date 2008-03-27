@@ -6,6 +6,7 @@ namespace Simple.IoC
     public interface IContainer
     {
         void AddService<T>(T serviceInstance);
+        void AddService<T>(string serviceName, T serviceInstance);
         void AddFactory<T>(IFactory<T> factory);
         void AddFactory(Type itemType, IFactory factory);
         bool Contains(string serviceName, Type serviceType);
