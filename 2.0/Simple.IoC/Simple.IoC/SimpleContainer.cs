@@ -142,6 +142,7 @@ namespace Simple.IoC
         {
             Type serviceType = typeof(T);
             T result = originalResult;
+            
             if (result == null && _surrogates.Count > 0)
             {
                 // Find a surrogate for the given type
@@ -159,6 +160,20 @@ namespace Simple.IoC
 
             if (result == null && throwOnError)
                 throw new ServiceNotFoundException(serviceType);
+
+            // Allow external clients to inject
+            // properties into the objects as they see fit
+            foreach (IPropertyInjector propertyInjector in _propertyInjectors)
+            {
+                // HACK: Skip property injection if the result is null
+                if (result == null)
+                    break;
+
+                if (propertyInjector == null || !propertyInjector.CanInject(result, this))
+                    continue;
+
+                propertyInjector.InjectProperties(result, this);
+            }
 
             if (TypeInjectors.Count == 0)
                 return result;
@@ -207,16 +222,7 @@ namespace Simple.IoC
 
             if (_propertyInjectors.Count == 0)
                 return result;
-
-            // Allow external clients to inject
-            // properties into the objects as they see fit
-            foreach (IPropertyInjector propertyInjector in _propertyInjectors)
-            {
-                if (propertyInjector == null || !propertyInjector.CanInject(result, this))
-                    continue;
-
-                propertyInjector.InjectProperties(result, this);
-            }
+            
 
             return result;
         }
