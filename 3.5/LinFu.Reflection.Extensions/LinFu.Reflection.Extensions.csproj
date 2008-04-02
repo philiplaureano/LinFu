@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4C3D5EFA-51C5-455F-ABDE-B2488AC3A76A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LinFu.Reflection.Extensions</RootNamespace>
+    <AssemblyName>LinFu.Reflection.Extensions</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\output\3.5\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DynamicModel\Property.cs" />
+    <Compile Include="Extensions\ActionExtensions.cs" />
+    <Compile Include="Extensions\AssemblyExtensions.cs" />
+    <Compile Include="Callbacks\BaseCompositeMissingMethodCallback.cs" />
+    <Compile Include="Callbacks\CompositeMissingMethodCallback.cs" />
+    <Compile Include="DynamicModel\CompositeDynamicType.cs" />
+    <Compile Include="DynamicModel\CompositeTypeSpec.cs" />
+    <Compile Include="DynamicModel\DynamicMethod.cs" />
+    <Compile Include="DynamicModel\DynamicProperty.cs" />
+    <Compile Include="DynamicModel\DynamicType.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Interfaces\IMethodBody.cs" />
+    <Compile Include="Interfaces\IMethodSignature.cs" />
+    <Compile Include="InvalidReturnTypeException.cs" />
+    <Compile Include="DynamicModel\MethodSignature.cs" />
+    <Compile Include="DynamicModel\MethodSpec.cs" />
+    <Compile Include="Interfaces\IPropertyTypingStrategy.cs" />
+    <Compile Include="IPropertyBehavior.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Callbacks\PropertyGetterCallback.cs" />
+    <Compile Include="Callbacks\PropertySetterCallback.cs" />
+    <Compile Include="DynamicModel\PropertySpec.cs" />
+    <Compile Include="DynamicModel\TypeSpec.cs" />
+    <Compile Include="PropertyBag.cs" />
+    <Compile Include="Extensions\TypeSpecExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LinFu.Common\LinFu.Common.VS2008.csproj">
+      <Project>{12E74908-C9CF-45CB-A996-7784846C3A53}</Project>
+      <Name>LinFu.Common.VS2008</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LinFu.DynamicProxy\LinFu.DynamicProxy.VS2008.csproj">
+      <Project>{859EF99C-D959-4485-B24E-05AEAB9B54CF}</Project>
+      <Name>LinFu.DynamicProxy.VS2008</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LinFu.Reflection\LinFu.Reflection\LinFu.Reflection.VS2008.csproj">
+      <Project>{CD5E9841-5A3C-47E4-BADC-9CA297AA7948}</Project>
+      <Name>LinFu.Reflection.VS2008</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Simple.IoC\Simple.IoC\Simple.IoC.VS2008.csproj">
+      <Project>{457039BF-4B57-4553-AC4F-81B11B59610E}</Project>
+      <Name>Simple.IoC.VS2008</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

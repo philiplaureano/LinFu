@@ -43,9 +43,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.AOP.Weavers.Cecil", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostWeaver", "LinFu.AOP\PostWeaver\PostWeaver.csproj", "{68374F7F-9398-4ACF-B4BB-E15F790674E6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.MxClone", "LinFu.MxClone\LinFu.MxClone.csproj", "{E615EEBA-0EE7-4A19-9C69-CE8BA6E266CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.MxClone.Interfaces", "LinFu.MxClone.Interfaces\LinFu.MxClone.Interfaces.csproj", "{79AF1CBD-4EAE-4826-B7C9-9BEEAA6FC0D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.IoC.Extensions", "Simple.IoC.Extensions\Simple.IoC.Extensions.csproj", "{B46F6D47-454A-477D-9B1A-D26977250C01}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.Reflection.Extensions", "LinFu.Reflection.Extensions\LinFu.Reflection.Extensions.csproj", "{4C3D5EFA-51C5-455F-ABDE-B2488AC3A76A}"
+EndProject
 Global
 	GlobalSection(SourceCodeControl) = preSolution
-		SccNumberOfProjects = 12
+		SccNumberOfProjects = 14
 		SccProjectUniqueName0 = LinFu.DynamicProxy\\LinFu.DynamicProxy.VS2008.csproj
 		SccProjectName0 = \u0022$/LinFu.DesignByContract2.Extensions.root/LinFu.DesignByContract2.Extensions/Release/Source/LinFu/LinFu.DynamicProxy\u0022,\u0020MPGAAAAA
 		SccLocalPath0 = LinFu.DynamicProxy
@@ -94,6 +102,14 @@ Global
 		SccProjectName11 = \u0022$/AopBench2.root/AopBench2/PostWeaver\u0022,\u0020QVGAAAAA
 		SccLocalPath11 = LinFu.AOP\\PostWeaver
 		SccProvider11 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		SccProjectUniqueName12 = Simple.IoC.Extensions\\Simple.IoC.Extensions.csproj
+		SccProjectName12 = \u0022$/TestBed4.root/TestBed4/Simple.IoC.Extensions\u0022,\u0020LYGAAAAA
+		SccLocalPath12 = Simple.IoC.Extensions
+		SccProvider12 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		SccProjectUniqueName13 = LinFu.Reflection.Extensions\\LinFu.Reflection.Extensions.csproj
+		SccProjectName13 = \u0022$/TestBed4.root/TestBed4/LinFu.Reflection.Extensions\u0022,\u0020OXGAAAAA
+		SccLocalPath13 = LinFu.Reflection.Extensions
+		SccProvider13 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -180,6 +196,22 @@ Global
 		{68374F7F-9398-4ACF-B4BB-E15F790674E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68374F7F-9398-4ACF-B4BB-E15F790674E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68374F7F-9398-4ACF-B4BB-E15F790674E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E615EEBA-0EE7-4A19-9C69-CE8BA6E266CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E615EEBA-0EE7-4A19-9C69-CE8BA6E266CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E615EEBA-0EE7-4A19-9C69-CE8BA6E266CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E615EEBA-0EE7-4A19-9C69-CE8BA6E266CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79AF1CBD-4EAE-4826-B7C9-9BEEAA6FC0D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79AF1CBD-4EAE-4826-B7C9-9BEEAA6FC0D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79AF1CBD-4EAE-4826-B7C9-9BEEAA6FC0D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79AF1CBD-4EAE-4826-B7C9-9BEEAA6FC0D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B46F6D47-454A-477D-9B1A-D26977250C01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B46F6D47-454A-477D-9B1A-D26977250C01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B46F6D47-454A-477D-9B1A-D26977250C01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B46F6D47-454A-477D-9B1A-D26977250C01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C3D5EFA-51C5-455F-ABDE-B2488AC3A76A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C3D5EFA-51C5-455F-ABDE-B2488AC3A76A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C3D5EFA-51C5-455F-ABDE-B2488AC3A76A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C3D5EFA-51C5-455F-ABDE-B2488AC3A76A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
