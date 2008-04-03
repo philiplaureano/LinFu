@@ -40,6 +40,10 @@ namespace LinFu.Reflection
                 // for an existing match
                 IEnumerable<MethodInfo> methods = GetMethods(targetType);
                 bestMatch = finder.Find(finderPredicate, methods);
+
+                // Cache the result
+                if (bestMatch != null)
+                    _cachedResults.Add(bestMatch);
             }
 
             return bestMatch;
