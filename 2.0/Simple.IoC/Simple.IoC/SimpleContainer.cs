@@ -24,7 +24,7 @@ namespace Simple.IoC
                 if (method == null)
                     continue;
 
-                if (method.Name != "GetService" || method.IsGenericMethod)
+                if (method.Name != "GetService" || !method.IsGenericMethod)
                     continue;
 
                 if (method.ReturnType != typeof(object))
@@ -35,11 +35,11 @@ namespace Simple.IoC
                 if (parameterCount == 0)
                     continue;
 
-                // Find the non-generic GetService() method
-                if (parameterCount == 1)
+                // Find the generic GetService() method
+                if (parameterCount == 1 && parameters[0].ParameterType == typeof(Type))
                     _getServiceMethod = method;
 
-                // Find the non-generic GetService() method that uses
+                // Find the generic GetService() method that uses
                 // named services
                 if (parameterCount == 2)
                     _getNamedServiceMethod = method;
@@ -276,8 +276,9 @@ namespace Simple.IoC
         {
             if (_getServiceMethod == null)
                 throw new NotImplementedException();
-
-            return _getServiceMethod.Invoke(this, new object[] { serviceType });
+            
+            MethodInfo getServiceMethod = _getServiceMethod.MakeGenericMethod(serviceType);
+            return getServiceMethod.Invoke(this, new object[] { serviceType });
         }
 
         public object GetService(Type serviceType, string serviceName)
@@ -285,7 +286,8 @@ namespace Simple.IoC
             if (_getNamedServiceMethod == null)
                 throw new NotImplementedException();
 
-            return _getNamedServiceMethod.Invoke(this, new object[] { serviceType, serviceName });
+            MethodInfo getNamedServiceMethod = _getNamedServiceMethod.MakeGenericMethod(serviceType);
+            return getNamedServiceMethod.Invoke(this, new object[] { serviceType, serviceName });
         }
         #endregion
     }
