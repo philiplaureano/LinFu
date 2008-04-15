@@ -13,6 +13,9 @@ namespace Simple.IoC
         bool Contains(Type serviceType);
         T GetService<T>() where T : class;
         T GetService<T>(string serviceName) where T : class;
+        
+        object GetService(Type serviceType);
+        object GetService(Type serviceType, string serviceName);
 
         INamedFactoryStorage NamedFactoryStorage { get; set; }
 

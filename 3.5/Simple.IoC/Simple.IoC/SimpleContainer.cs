@@ -14,6 +14,37 @@ namespace Simple.IoC
         private readonly List<ITypeSurrogate> _surrogates = new List<ITypeSurrogate>();
         private INamedFactoryStorage _storage = new DefaultNamedFactoryStorage();
 
+        private static readonly MethodInfo _getServiceMethod;
+        private static readonly MethodInfo _getNamedServiceMethod;
+        static SimpleContainer()
+        {
+
+            foreach (MethodInfo method in typeof(IContainer).GetMethods())
+            {
+                if (method == null)
+                    continue;
+
+                if (method.Name != "GetService" || method.IsGenericMethod)
+                    continue;
+
+                if (method.ReturnType != typeof(object))
+                    continue;
+
+                ParameterInfo[] parameters = method.GetParameters();
+                int parameterCount = parameters == null ? 0 : parameters.Length;
+                if (parameterCount == 0)
+                    continue;
+
+                // Find the non-generic GetService() method
+                if (parameterCount == 1)
+                    _getServiceMethod = method;
+
+                // Find the non-generic GetService() method that uses
+                // named services
+                if (parameterCount == 2)
+                    _getNamedServiceMethod = method;
+            }
+        }
         public SimpleContainer()
         {
             _propertyInjectors.Add(new DefaultPropertyInjector());
@@ -241,6 +272,21 @@ namespace Simple.IoC
             get { return _propertyInjectors; }
         }
 
+        public object GetService(Type serviceType)
+        {
+            if (_getServiceMethod == null)
+                throw new NotImplementedException();
+
+            return _getServiceMethod.Invoke(this, new object[] { serviceType });
+        }
+
+        public object GetService(Type serviceType, string serviceName)
+        {
+            if (_getNamedServiceMethod == null)
+                throw new NotImplementedException();
+
+            return _getNamedServiceMethod.Invoke(this, new object[] { serviceType, serviceName });
+        }
         #endregion
     }
 }
