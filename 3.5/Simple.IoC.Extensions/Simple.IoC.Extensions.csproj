@@ -53,6 +53,9 @@
     <Compile Include="CollectableListExtensions.cs" />
     <Compile Include="CollectableLoader.cs" />
     <Compile Include="CollectableLoadStrategy.cs" />
+    <Compile Include="ContainerExtensions.cs" />
+    <Compile Include="FactorySurrogate.cs" />
+    <Compile Include="NamedCustomizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
