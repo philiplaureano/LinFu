@@ -41,6 +41,18 @@ namespace Simple.IoC.Loaders
                     continue;
                 }
 
+                // Load any additional type customizers
+                if (current.IsDefined(typeof(CustomizerAttribute), true))
+                {
+                    ICustomizeInstance customizer = Activator.CreateInstance(current) as ICustomizeInstance;
+
+                    if (customizer != null)
+                        hostContainer.Customizers.Add(customizer);
+
+                    continue;
+                }
+
+
                 if (!current.IsDefined(typeof(ContainerPluginAttribute), true))
                     continue;
 
