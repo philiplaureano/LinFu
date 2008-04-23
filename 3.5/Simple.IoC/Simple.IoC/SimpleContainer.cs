@@ -91,21 +91,6 @@ namespace Simple.IoC
 
         public virtual T GetService<T>(string serviceName) where T : class
         {
-            // Search for a customizer for this current service type
-            ICustomizeInstance targetCustomizer = null;
-            foreach (ICustomizeInstance customizer in _customizers)
-            {
-                if (customizer == null)
-                    continue;
-
-                if (!customizer.CanCustomize(serviceName, typeof(T), this))
-                    continue;
-
-                targetCustomizer = customizer;
-                break;
-            }
-
-
             T result = null;
 
             if (_storage == null || string.IsNullOrEmpty(serviceName))
@@ -113,8 +98,7 @@ namespace Simple.IoC
                 // Use the nameless implementation by default
                 result = GetService<T>(false);
 
-                if (targetCustomizer != null && result != null)
-                    targetCustomizer.Customize(serviceName, typeof(T), result, this);
+                result = PostProcess<T>(string.Empty, result, true);
 
                 return result;
             }
@@ -128,13 +112,28 @@ namespace Simple.IoC
 
             result = PostProcess(serviceName, result, true);
 
-            if (targetCustomizer != null && result != null)
-                targetCustomizer.Customize(serviceName, typeof(T), result, this);
-
             if (result == null)
                 throw new ServiceNotFoundException(serviceName, typeof(T));
 
             return result;
+        }
+
+        private ICustomizeInstance GetCustomizer<T>(string serviceName) where T : class
+        {
+            // Search for a customizer for this current service type
+            ICustomizeInstance targetCustomizer = null;
+            foreach (ICustomizeInstance customizer in _customizers)
+            {
+                if (customizer == null)
+                    continue;
+
+                if (!customizer.CanCustomize(serviceName, typeof(T), this))
+                    continue;
+
+                targetCustomizer = customizer;
+                break;
+            }
+            return targetCustomizer;
         }
         public virtual T GetService<T>(bool throwOnError) where T : class
         {
@@ -205,6 +204,10 @@ namespace Simple.IoC
 
                 propertyInjector.InjectProperties(result, this);
             }
+
+            ICustomizeInstance targetCustomizer = GetCustomizer<T>(serviceName);
+            if (targetCustomizer != null && result != null)
+                targetCustomizer.Customize(serviceName, typeof(T), result, this);
 
             if (TypeInjectors.Count == 0)
                 return result;
