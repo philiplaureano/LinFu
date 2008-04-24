@@ -9,7 +9,7 @@ namespace Simple.IoC.Loaders
     public class LoadPluginStrategy : ILoadStrategy
     {
         private readonly ILoadStrategy _strategy;
-        public LoadPluginStrategy() {}
+        public LoadPluginStrategy() { }
         public LoadPluginStrategy(ILoadStrategy innerStrategy)
         {
             _strategy = innerStrategy;
@@ -20,7 +20,7 @@ namespace Simple.IoC.Loaders
         {
             #region Scan for plugins
             List<IContainerPlugin> plugins = new List<IContainerPlugin>();
-            foreach(Type current in loadedTypes)
+            foreach (Type current in loadedTypes)
             {
                 if (current == null)
                     continue;
@@ -34,10 +34,10 @@ namespace Simple.IoC.Loaders
                 if (current.IsDefined(typeof(TypeInjectorAttribute), true))
                 {
                     ITypeInjector typeInjector = Activator.CreateInstance(current) as ITypeInjector;
-                    
+
                     if (typeInjector != null)
                         hostContainer.TypeInjectors.Add(typeInjector);
-                    
+
                     continue;
                 }
 
@@ -62,22 +62,22 @@ namespace Simple.IoC.Loaders
 
                 plugins.Add(plugin);
             }
-            #endregion                       
-            
+            #endregion
+
             // Signal the beginning of the load
             plugins.ForEach(delegate(IContainerPlugin currentPlugin)
-                                {
-                                    currentPlugin.BeginLoad(hostContainer);
-                                });
+            {
+                currentPlugin.BeginLoad(hostContainer);
+            });
 
             if (_strategy != null)
                 _strategy.ProcessLoadedTypes(hostContainer, loadedTypes);
-            
+
             // Signal the end of the load
             plugins.ForEach(delegate(IContainerPlugin currentPlugin)
-                                {
-                                    currentPlugin.EndLoad(hostContainer);
-                                });
+            {
+                currentPlugin.EndLoad(hostContainer);
+            });
         }
 
         #endregion
