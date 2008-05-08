@@ -110,6 +110,9 @@ namespace Simple.IoC
                 result = factory.CreateInstance(this);
             }
 
+            if (result == null)
+                result = CreateInstance<T>();
+
             result = PostProcess(serviceName, result, true);
 
             if (result == null)

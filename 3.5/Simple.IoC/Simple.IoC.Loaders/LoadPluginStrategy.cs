@@ -52,6 +52,14 @@ namespace Simple.IoC.Loaders
                     continue;
                 }
 
+                if (current.IsDefined(typeof(TypeSurrogateAttribute), true))
+                {
+                    ITypeSurrogate surrogate = Activator.CreateInstance(current) as ITypeSurrogate;
+                    if (surrogate != null)
+                        hostContainer.TypeSurrogates.Add(surrogate);
+
+                    continue;
+                }
 
                 if (!current.IsDefined(typeof(ContainerPluginAttribute), true))
                     continue;
