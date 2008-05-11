@@ -9,19 +9,19 @@ namespace LinFu.DynamicProxy
 
         #region IProxyCache Members
 
-        public bool Contains(Type baseType, Type[] interfaces)
+        public bool Contains(Type baseType, params Type[] baseInterfaces)
         {
-            ProxyCacheEntry entry = new ProxyCacheEntry(baseType, interfaces);
+            ProxyCacheEntry entry = new ProxyCacheEntry(baseType, baseInterfaces);
             return _cache.ContainsKey(entry);
         }
 
-        public Type GetProxyType(Type baseType, Type[] interfaces)
+        public Type GetProxyType(Type baseType, params Type[] baseInterfaces)
         {
-            ProxyCacheEntry entry = new ProxyCacheEntry(baseType, interfaces);
+            ProxyCacheEntry entry = new ProxyCacheEntry(baseType, baseInterfaces);
             return _cache[entry];
         }
 
-        public void StoreProxyType(Type result, Type baseType, Type[] baseInterfaces)
+        public void StoreProxyType(Type result, Type baseType, params Type[] baseInterfaces)
         {
             ProxyCacheEntry entry = new ProxyCacheEntry(baseType, baseInterfaces);
             _cache[entry] = result;
