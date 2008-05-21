@@ -158,16 +158,23 @@ namespace LinFu.AOP.Weavers.Cecil
 
             Instruction skipEarlyReturn = IL.Create(OpCodes.Nop);
 
-            Instruction lastInstruction = originalInstructions.Last();
+            Instruction lastInstruction = originalInstructions.LastOrDefault();
             TypeReference returnType = methodDef.ReturnType.ReturnType;
 
             Instruction skipToTheEnd = IL.Create(OpCodes.Nop);
 
+            
+            FlowControl flowControl = default(FlowControl);
+
+            // Append a Ret instruction to empty method bodies
+            // by default
+            if (lastInstruction != null)
+                flowControl = lastInstruction.OpCode.FlowControl;
+
             // If the last instruction is a Throw instruction,
             // then there's no need to insert a Ret instruction
             // to end the original method body
-            FlowControl flowControl = lastInstruction.OpCode.FlowControl;
-            if (flowControl != FlowControl.Throw)
+            if (lastInstruction == null || flowControl != FlowControl.Throw)
             {
                 // if (aroundInvoke == null)
                 instructions.Enqueue(IL.Create(OpCodes.Ldloc, _aroundInvoke));
