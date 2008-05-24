@@ -28,17 +28,34 @@ namespace LinFu.AOP.CecilExtensions
             List<Instruction> originalInstructions = new List<Instruction>();
             foreach (Instruction current in methodBody.Instructions)
             {
-                if (current.OpCode == OpCodes.Ret)
-                    continue;
-
                 originalInstructions.Add(current);
+            }
+
+            var lastInstruction = originalInstructions.LastOrDefault();
+            if (lastInstruction != null && lastInstruction.OpCode == OpCodes.Ret)
+            {
+                // HACK: Convert the Ret instruction into a Nop
+                // instruction so that the code will
+                // fall through to the epilog
+                lastInstruction.OpCode = OpCodes.Nop;
+            }
+
+            CilWorker IL = methodBody.CilWorker;
+            foreach (var instruction in originalInstructions)
+            {
+                if (instruction.OpCode == OpCodes.Ret)
+                {
+                    // HACK: Modify all ret instructions to call
+                    // the epilog after execution
+                    instruction.OpCode = OpCodes.Br;
+                    instruction.Operand = lastInstruction;
+                }
             }
 
             methodBody.Instructions.Clear();
             IEnumerable<Instruction> prolog = CreateProlog(item, originalInstructions);
             IEnumerable<Instruction> epilog = CreateEpilog(item, originalInstructions);
 
-            CilWorker IL = methodBody.CilWorker;
             IL.AppendInstructions(prolog);
             IL.AppendInstructions(originalInstructions);
             IL.AppendInstructions(epilog);
