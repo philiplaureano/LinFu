@@ -7,6 +7,8 @@ using Mono.Cecil;
 using LinFu.AOP.CecilExtensions;
 using LinFu.AOP.Weavers.Cecil;
 using System.IO;
+using Simple.IoC;
+using Simple.IoC.Loaders;
 namespace PostWeaver
 {
     class Program
@@ -25,9 +27,20 @@ namespace PostWeaver
 
             Console.WriteLine("PostWeaving Assembly '{0}' -> '{1}'", targetFile, targetFile);
 
+            // Search for any custom method filters that might
+            // be located in the same directory as the postweaver
+            var programLocation = Path.GetDirectoryName(typeof(Program).Assembly.Location);
+            SimpleContainer container = new SimpleContainer();
+            
+            var loader = new Loader(container);
+            loader.LoadDirectory(programLocation, "*.dll");
+
+            IMethodFilter filter = null;
+            filter = container.GetService<IMethodFilter>(false);
+
             var assembly = AssemblyFactory.GetAssembly(targetFile);
-            assembly.InjectAspectFramework(true);
-            assembly.Save(targetFile);            
+            assembly.InjectAspectFramework(filter, true);
+            assembly.Save(targetFile); 
         }
 
 

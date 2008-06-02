@@ -13,11 +13,12 @@ namespace LinFu.AOP.Weavers.Cecil
     public partial class AspectWeaver : MethodPrologEpilogWeaver
     {
         private Instruction _skipOriginalCall;
+        private InvocationContextBuilder _contextBuilder = new InvocationContextBuilder();
         public IMethodFilter MethodFilter { get; set; }
         public override bool ShouldWeave(MethodDefinition methodDef)
         {
-            // Only public methods will be intercepted
-            if (!methodDef.IsPublic)
+            // By default, only public methods will be intercepted
+            if (!methodDef.IsPublic && MethodFilter == null)
                 return false;
 
             TypeReference declaringType = methodDef.DeclaringType;
@@ -69,11 +70,8 @@ namespace LinFu.AOP.Weavers.Cecil
         }
         public override void AddLocals(MethodDefinition method)
         {
-            _typeArguments = method.AddLocal(typeof(Type[]));
-            _currentMethod = method.AddLocal(typeof(MethodBase));
-            _arguments = method.AddLocal(typeof(object[]));
             _context = method.AddLocal(typeof(IInvocationContext));
-            _parameterTypes = method.AddLocal(typeof(Type[]));
+            
             _aroundInvoke = method.AddLocal(typeof(IAroundInvoke));
             _methodReplacement = method.AddLocal(typeof(IMethodReplacement));
             _returnValue = method.AddLocal(typeof(object));
@@ -105,9 +103,9 @@ namespace LinFu.AOP.Weavers.Cecil
                 instructions.Enqueue(IL.Create(OpCodes.Brfalse, callOriginalImplementation));
                 instructions.Enqueue(skipGetEnabledFlag);
             }
-            // Save the InstructionContext local variable
-            BuildInvocationContext(methodDef, module, instructions, IL);
 
+            // Save the InstructionContext local variable                       
+            _contextBuilder.BuildContext(IL, methodDef, _context, instructions);
 
             GetMethodReplacement(methodDef, instructions, IL);
             GetAroundInvoke(methodDef, instructions, IL);
@@ -140,7 +138,7 @@ namespace LinFu.AOP.Weavers.Cecil
             instructions.Enqueue(IL.Create(OpCodes.Ldloc, _methodReplacement));
             instructions.Enqueue(IL.Create(OpCodes.Ldloc, _context));
             instructions.Enqueue(IL.Create(OpCodes.Callvirt, _invokeReplacement));
-            PackageReturnType(IL, instructions, returnType);
+            IL.PackageReturnValue(module, instructions, returnType);
             // }
 
             _skipOriginalCall = IL.Create(OpCodes.Nop);
@@ -155,7 +153,7 @@ namespace LinFu.AOP.Weavers.Cecil
             Queue<Instruction> instructions = new Queue<Instruction>();
             CilWorker IL = methodDef.Body.CilWorker;
 
-
+            ModuleDefinition module = methodDef.DeclaringType.Module;
             Instruction skipEarlyReturn = IL.Create(OpCodes.Nop);
 
             Instruction lastInstruction = originalInstructions.LastOrDefault();
@@ -210,7 +208,7 @@ namespace LinFu.AOP.Weavers.Cecil
             if (returnType != _voidType)
             {
                 instructions.Enqueue(IL.Create(OpCodes.Ldloc, _returnValue));
-                PackageReturnType(IL, instructions, returnType);
+                IL.PackageReturnValue(module, instructions, returnType);
             }
             return instructions;
         }

@@ -36,10 +36,7 @@ namespace LinFu.AOP.Weavers.Cecil
         private MethodReference _isEnabled;
         private MethodReference _canReplace;
 
-        private VariableDefinition _parameterTypes;
-        private VariableDefinition _typeArguments;
-        private VariableDefinition _currentMethod;
-        private VariableDefinition _arguments;
+        
         private VariableDefinition _context;
         private VariableDefinition _methodReplacement;
         private VariableDefinition _aroundInvoke;
@@ -48,160 +45,6 @@ namespace LinFu.AOP.Weavers.Cecil
         private VariableDefinition _aroundInvokeArray;
         private VariableDefinition _aroundInvokeProvider;
 
-        private void BuildInvocationContext(MethodDefinition methodDef, ModuleDefinition module, Queue<Instruction> prolog, CilWorker IL)
-        {
-            #region Initialize the InvocationInfo constructor arguments
-            // Type[] typeArguments = new Type[genericTypeCount];
-            int genericParameterCount = methodDef.GenericParameters.Count;
-            prolog.Enqueue(IL.Create(OpCodes.Ldc_I4, genericParameterCount));
-            prolog.Enqueue(IL.Create(OpCodes.Newarr, _systemType));
-            prolog.Enqueue(IL.Create(OpCodes.Stloc, _typeArguments));
-
-            // Push the generic type arguments onto the stack
-            if (genericParameterCount > 0)
-                PushGenericArguments(methodDef, IL, prolog, genericParameterCount);
-
-            // object[] arguments = new object[argumentCount];            
-            PushArguments(methodDef, prolog, IL);
-
-            // object target = this;
-            PushInstance(methodDef, prolog, IL);
-
-            PushCurrentMethod(methodDef, prolog, IL);
-
-            prolog.Enqueue(IL.Create(OpCodes.Stloc, _currentMethod));
-
-            // MethodInfo targetMethod = currentMethod as MethodInfo;
-            prolog.Enqueue(IL.Create(OpCodes.Ldloc, _currentMethod));
-            prolog.Enqueue(IL.Create(OpCodes.Isinst, _methodInfoType));
-
-            // Get the current stack trace
-            PushStackTrace(prolog, IL, module);
-
-            // Push the type arguments back onto the stack
-            prolog.Enqueue(IL.Create(OpCodes.Ldloc, _typeArguments));
-
-            // Save the parameter types
-            prolog.Enqueue(IL.Create(OpCodes.Ldc_I4, methodDef.Parameters.Count));
-            prolog.Enqueue(IL.Create(OpCodes.Newarr, _systemType));
-            prolog.Enqueue(IL.Create(OpCodes.Stloc, _parameterTypes));
-            SaveParameterTypes(methodDef, IL, prolog);
-            prolog.Enqueue(IL.Create(OpCodes.Ldloc, _parameterTypes));
-
-            // Save the return type
-            TypeReference returnType = methodDef.ReturnType.ReturnType;
-            prolog.Enqueue(IL.Create(OpCodes.Ldtoken, returnType));
-            prolog.Enqueue(IL.Create(OpCodes.Call, _getTypeFromHandle));
-
-            // Push the arguments back onto the stack
-            prolog.Enqueue(IL.Create(OpCodes.Ldloc, _arguments));
-            #endregion
-
-
-            prolog.Enqueue(IL.Create(OpCodes.Newobj, _contextCtor));
-            prolog.Enqueue(IL.Create(OpCodes.Stloc, _context));
-        }
-        private void PushCurrentMethod(MethodDefinition method, Queue<Instruction> prolog, CilWorker IL)
-        {
-            TypeReference declaringType = method.DeclaringType;
-
-            // Instantiate the generic type before determining
-            // the current method
-            if (declaringType.GenericParameters.Count > 0)
-            {
-                GenericInstanceType genericType = new GenericInstanceType(declaringType);
-                foreach (GenericParameter parameter in declaringType.GenericParameters)
-                {
-                    genericType.GenericArguments.Add(parameter);
-                }
-
-                declaringType = genericType;
-            }
-
-            prolog.Enqueue(IL.Create(OpCodes.Ldtoken, method));
-            prolog.Enqueue(IL.Create(OpCodes.Ldtoken, declaringType));
-            prolog.Enqueue(IL.Create(OpCodes.Call, _getMethodFromHandle));
-        }
-        private static void PushStackTrace(Queue<Instruction> prolog, CilWorker IL, ModuleDefinition module)
-        {
-            ConstructorInfo stackTraceConstructor = typeof(StackTrace).GetConstructor(new Type[] { typeof(int), typeof(bool) });
-            Debug.Assert(stackTraceConstructor != null);
-
-            MethodReference stackTraceCtor = module.Import(stackTraceConstructor);
-
-            OpCode addDebugSymbols = OpCodes.Ldc_I4_0;
-            prolog.Enqueue(IL.Create(OpCodes.Ldc_I4_1));
-            prolog.Enqueue(IL.Create(addDebugSymbols));
-            prolog.Enqueue(IL.Create(OpCodes.Newobj, stackTraceCtor));
-        }
-        private static void PushInstance(MethodDefinition method, Queue<Instruction> prolog, CilWorker IL)
-        {
-            OpCode opCode = method.IsStatic ? OpCodes.Ldnull : OpCodes.Ldarg_0;
-            prolog.Enqueue(IL.Create(opCode));
-        }
-        private void SaveParameterTypes(MethodDefinition methodDef, CilWorker IL, Queue<Instruction> prolog)
-        {
-            int parameterCount = methodDef.Parameters.Count;
-            for (int index = 0; index < parameterCount; index++)
-            {
-                ParameterDefinition current = methodDef.Parameters[index];
-                prolog.Enqueue(IL.Create(OpCodes.Ldloc, _parameterTypes));
-                prolog.Enqueue(IL.Create(OpCodes.Ldc_I4, index));
-                prolog.Enqueue(IL.Create(OpCodes.Ldtoken, current.ParameterType));
-                prolog.Enqueue(IL.Create(OpCodes.Call, _getTypeFromHandle));
-                prolog.Enqueue(IL.Create(OpCodes.Stelem_Ref));
-            }
-        }
-        private void PushGenericArguments(IGenericParameterProvider methodDef, CilWorker IL, Queue<Instruction> prolog, int genericParameterCount)
-        {
-            GenericParameterCollection genericParameters = methodDef.GenericParameters;
-
-            for (int index = 0; index < genericParameterCount; index++)
-            {
-                GenericParameter current = genericParameters[index];
-
-                prolog.Enqueue(IL.Create(OpCodes.Ldloc, _typeArguments));
-                prolog.Enqueue(IL.Create(OpCodes.Ldc_I4, index));
-                prolog.Enqueue(IL.Create(OpCodes.Ldtoken, current));
-                prolog.Enqueue(IL.Create(OpCodes.Call, _getTypeFromHandle));
-                prolog.Enqueue(IL.Create(OpCodes.Stelem_Ref));
-            }
-        }
-        private void PackageReturnType(CilWorker IL, Queue<Instruction> prolog, TypeReference returnType)
-        {
-            if (returnType == _voidType)
-            {
-                prolog.Enqueue(IL.Create(OpCodes.Pop));
-                return;
-            }
-
-            prolog.Enqueue(IL.Create(OpCodes.Unbox_Any, returnType));
-        }
-        private void PushArguments(IMethodSignature methodDef, Queue<Instruction> prolog, CilWorker IL)
-        {
-            int parameterCount = methodDef.Parameters.Count;
-            prolog.Enqueue(IL.Create(OpCodes.Ldc_I4, parameterCount));
-            prolog.Enqueue(IL.Create(OpCodes.Newarr, _objectType));
-            prolog.Enqueue(IL.Create(OpCodes.Stloc, _arguments));
-
-
-            if (parameterCount == 0)
-                return;
-
-            foreach (ParameterDefinition param in methodDef.Parameters)
-            {
-                int index = param.Sequence - 1;
-                TypeReference parameterType = param.ParameterType;
-                prolog.Enqueue(IL.Create(OpCodes.Ldloc, _arguments));
-                prolog.Enqueue(IL.Create(OpCodes.Ldc_I4, index));
-                prolog.Enqueue(IL.Create(OpCodes.Ldarg, param));
-
-                if (parameterType.IsValueType || parameterType is GenericParameter)
-                    prolog.Enqueue(IL.Create(OpCodes.Box, param.ParameterType));
-
-                prolog.Enqueue(IL.Create(OpCodes.Stelem_Ref));
-            }
-        }
         public override void ImportReferences(ModuleDefinition module)
         {
             #region Type References
@@ -224,7 +67,7 @@ namespace LinFu.AOP.Weavers.Cecil
             _getSurroundingImplementation = module.ImportMethod("GetSurroundingImplementation", typeof(AroundInvokeRegistry), BindingFlags.Public | BindingFlags.Static);
 
             _getInstanceBasedSurroundingImplementation = module.ImportMethod<IAroundInvokeProvider>("GetSurroundingImplementation");
-            _getAroundInvokeProvider = module.ImportMethod <IModifiableType>("get_AroundInvokeProvider");
+            _getAroundInvokeProvider = module.ImportMethod<IModifiableType>("get_AroundInvokeProvider");
             _beforeInvoke = module.ImportMethod<IAroundInvoke>("BeforeInvoke", BindingFlags.Public | BindingFlags.Instance);
             _afterInvoke = module.ImportMethod<IAroundInvoke>("AfterInvoke", BindingFlags.Public | BindingFlags.Instance);
 
@@ -267,12 +110,12 @@ namespace LinFu.AOP.Weavers.Cecil
             {
                 Instruction skipInstanceBasedAroundInvoke = IL.Create(OpCodes.Nop);
 
-                PushInstance(method, instructions, IL);
+                IL.PushInstance(method, instructions);
                 instructions.Enqueue(IL.Create(OpCodes.Isinst, _modifiableType));
                 instructions.Enqueue(IL.Create(OpCodes.Brfalse, skipInstanceBasedAroundInvoke));
 
                 // aroundInvokeProvider = this.AroundInvokeProvider;
-                PushInstance(method, instructions, IL);
+                IL.PushInstance(method, instructions);
                 instructions.Enqueue(IL.Create(OpCodes.Isinst, _modifiableType));
                 instructions.Enqueue(IL.Create(OpCodes.Callvirt, _getAroundInvokeProvider));
                 instructions.Enqueue(IL.Create(OpCodes.Stloc, _aroundInvokeProvider));
@@ -332,13 +175,13 @@ namespace LinFu.AOP.Weavers.Cecil
             {
                 // Get the method replacement provider attached to the current instance
                 Instruction skipInstanceReplacement = IL.Create(OpCodes.Nop);
-                PushInstance(method, instructions, IL);
+                IL.PushInstance(method, instructions);
                 instructions.Enqueue(IL.Create(OpCodes.Isinst, _modifiableType));
                 instructions.Enqueue(IL.Create(OpCodes.Brfalse, skipInstanceReplacement));
 
                 // IModifiableType type = this as IModifiableType;
                 // if (type != null) {
-                PushInstance(method, instructions, IL);
+                IL.PushInstance(method, instructions);
                 instructions.Enqueue(IL.Create(OpCodes.Isinst, _modifiableType));
 
                 //     IMethodReplacementProvider provider = type.MethodReplacementProvider;
