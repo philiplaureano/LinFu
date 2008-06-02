@@ -20,9 +20,9 @@ namespace LinFu.AOP.Weavers.Cecil
         public ConstructorCrossCutter()
         {
         }
-        public bool ShouldWeave(TypeDefinition item)
+        public virtual bool ShouldWeave(TypeDefinition item)
         {
-            return item.IsClass && item.IsPublic;
+            return item.IsClass && !item.IsPublic;
         }
         public void ImportReferences(ModuleDefinition module)
         {
@@ -64,12 +64,28 @@ namespace LinFu.AOP.Weavers.Cecil
             Mono.Cecil.Cil.MethodBody methodBody = ctor.Body;
             foreach (Instruction instruction in methodBody.Instructions)
             {
-                // Ignore the return instruction since
-                // we'll be adding a epilog to this constructor
-                if (instruction.OpCode == OpCodes.Ret)
-                    continue;
-
                 originalInstructions.Add(instruction);
+            }
+
+            var lastInstruction = originalInstructions.LastOrDefault();
+            if (lastInstruction != null && lastInstruction.OpCode == OpCodes.Ret)
+            {
+                // HACK: Convert the Ret instruction into a Nop
+                // instruction so that the code will
+                // fall through to the initializer
+                lastInstruction.OpCode = OpCodes.Nop;
+            }
+
+            foreach (var instruction in originalInstructions)
+            {
+                if (instruction.OpCode == OpCodes.Ret)
+                {
+                    // HACK: Modify all ret instructions to branch
+                    // to the last ret instruction instead of exiting
+                    // the method
+                    instruction.OpCode = OpCodes.Br;
+                    instruction.Operand = lastInstruction;
+                }
             }
 
             methodBody.Instructions.Clear();
