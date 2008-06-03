@@ -64,9 +64,18 @@
     <Compile Include="ConstructorCrossCutter.cs" />
     <Compile Include="IMethodFilter.cs" />
     <Compile Include="InvocationContextBuilder.cs" />
+    <Compile Include="ITypeFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Simple.IoC\Simple.IoC.Loaders\Simple.IoC.Loaders.VS2008.csproj">
+      <Project>{F6B9BAAF-89AB-419D-B256-BB1EA38D799A}</Project>
+      <Name>Simple.IoC.Loaders.VS2008</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Simple.IoC\Simple.IoC\Simple.IoC.VS2008.csproj">
+      <Project>{457039BF-4B57-4553-AC4F-81B11B59610E}</Project>
+      <Name>Simple.IoC.VS2008</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LinFu.AOP.CecilExtensions\LinFu.AOP.CecilExtensions.csproj">
       <Project>{A2E3FB7B-1734-43EF-9CB7-2A22A0A27E24}</Project>
       <Name>LinFu.AOP.CecilExtensions</Name>

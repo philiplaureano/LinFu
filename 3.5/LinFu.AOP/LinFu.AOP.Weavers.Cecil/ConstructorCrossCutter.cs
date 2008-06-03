@@ -8,6 +8,9 @@ using Mono.Cecil.Cil;
 using System.Reflection;
 using LinFu.AOP.Interfaces;
 using System.Diagnostics;
+using Simple.IoC;
+using Simple.IoC.Loaders;
+using System.IO;
 
 namespace LinFu.AOP.Weavers.Cecil
 {
@@ -16,13 +19,30 @@ namespace LinFu.AOP.Weavers.Cecil
         private MethodReference _initInstance;
         private MethodReference _initType;
         private MethodReference _getTypeFromHandle;
-
+        private IContainer  _container;
         public ConstructorCrossCutter()
         {
+            _container = new SimpleContainer();
+            var currentLocation = Path.GetFullPath(typeof(ConstructorCrossCutter).Assembly.Location);
+            
+            var loader = new Loader(_container);
+            loader.LoadDirectory(currentLocation, "*.dll");
         }
         public virtual bool ShouldWeave(TypeDefinition item)
         {
-            return item.IsClass && item.IsPublic;
+            var defaultResult = item.IsClass && item.IsPublic;
+
+            // Use the type filter if it exists
+            ITypeFilter typeFilter = null;
+            if (_container.Contains(typeof(ITypeFilter)))
+                typeFilter = _container.GetService<ITypeFilter>();
+
+            if (typeFilter == null)
+                return defaultResult;
+
+            var result = typeFilter.ShouldWeave(item);
+
+            return result;
         }
         public void ImportReferences(ModuleDefinition module)
         {
