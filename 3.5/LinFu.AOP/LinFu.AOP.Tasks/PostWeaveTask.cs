@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.AOP.Weavers.Cecil;
-using Mono.Cecil;
-
+using System.IO;
 using LinFu.AOP.CecilExtensions;
-using Microsoft.Build.BuildEngine;
-using Microsoft.Build.Utilities;
+using LinFu.AOP.Weavers.Cecil;
 using Microsoft.Build.Framework;
-using Simple.IoC.Loaders;
+using Microsoft.Build.Utilities;
+using Mono.Cecil;
 using Simple.IoC;
+using Simple.IoC.Loaders;
 
 namespace LinFu.AOP.Tasks
 {
@@ -37,7 +33,7 @@ namespace LinFu.AOP.Tasks
             {
                 Log.LogMessage("PostWeaving Assembly '{0}' -> '{1}'", TargetFile, outputFile);
 
-                string taskLocation = typeof(AspectWeaver).Assembly.Location;
+                string taskLocation = Path.GetFullPath(typeof(AspectWeaver).Assembly.Location);
 
                 // Search for any custom method filters that might
                 // be located in the same directory as the aspect weaver

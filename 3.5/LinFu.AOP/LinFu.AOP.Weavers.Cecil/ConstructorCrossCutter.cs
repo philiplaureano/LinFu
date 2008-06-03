@@ -22,7 +22,7 @@ namespace LinFu.AOP.Weavers.Cecil
         }
         public virtual bool ShouldWeave(TypeDefinition item)
         {
-            return item.IsClass && !item.IsPublic;
+            return item.IsClass && item.IsPublic;
         }
         public void ImportReferences(ModuleDefinition module)
         {

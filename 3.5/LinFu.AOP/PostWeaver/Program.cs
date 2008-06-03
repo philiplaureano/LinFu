@@ -29,7 +29,7 @@ namespace PostWeaver
 
             // Search for any custom method filters that might
             // be located in the same directory as the postweaver
-            var programLocation = Path.GetDirectoryName(typeof(Program).Assembly.Location);
+            var programLocation = Path.GetFullPath(typeof(Program).Assembly.Location);
             SimpleContainer container = new SimpleContainer();
             
             var loader = new Loader(container);
