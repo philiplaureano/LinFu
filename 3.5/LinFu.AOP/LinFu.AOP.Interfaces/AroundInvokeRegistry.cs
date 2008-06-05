@@ -10,17 +10,11 @@ namespace LinFu.AOP.Interfaces
         private static readonly List<IAroundInvokeProvider> _providers = new List<IAroundInvokeProvider>();
         public static IAroundInvoke GetSurroundingImplementation(IInvocationContext context)
         {
-            List<IAroundInvoke> resultList = new List<IAroundInvoke>();
-
-            foreach (var provider in _providers)
-            {
-                var aroundInvoke = provider.GetSurroundingImplementation(context);
-
-                if (aroundInvoke == null)
-                    continue;
-
-                resultList.Add(aroundInvoke);
-            }
+            var resultList = (from p in _providers
+                             where p != null
+                             let aroundInvoke = p.GetSurroundingImplementation(context)
+                             where aroundInvoke != null
+                             select aroundInvoke).ToList();
 
             if (resultList.Count == 0)
                 return null;

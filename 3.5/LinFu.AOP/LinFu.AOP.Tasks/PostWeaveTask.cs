@@ -32,8 +32,9 @@ namespace LinFu.AOP.Tasks
             try
             {
                 Log.LogMessage("PostWeaving Assembly '{0}' -> '{1}'", TargetFile, outputFile);
-
-                string taskLocation = Path.GetFullPath(typeof(AspectWeaver).Assembly.Location);
+                
+                var assemblyLocation = Path.GetDirectoryName(typeof(AspectWeaver).Assembly.Location);
+                string taskLocation = Path.GetFullPath(assemblyLocation);
 
                 // Search for any custom method filters that might
                 // be located in the same directory as the aspect weaver

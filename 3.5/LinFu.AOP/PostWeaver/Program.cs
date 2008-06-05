@@ -20,16 +20,18 @@ namespace PostWeaver
                 ShowHelp();
                 return;
             }
-            string targetFile = args[0];
+            string inputFile = args[0];
 
-            if (!File.Exists(targetFile))
-                throw new FileNotFoundException(targetFile);
+            if (!File.Exists(inputFile))
+                throw new FileNotFoundException(inputFile);
+
+            var targetFile = inputFile;
 
             Console.WriteLine("PostWeaving Assembly '{0}' -> '{1}'", targetFile, targetFile);
 
             // Search for any custom method filters that might
             // be located in the same directory as the postweaver
-            var programLocation = Path.GetFullPath(typeof(Program).Assembly.Location);
+            var programLocation = Path.GetDirectoryName(typeof(Program).Assembly.Location);
             SimpleContainer container = new SimpleContainer();
             
             var loader = new Loader(container);

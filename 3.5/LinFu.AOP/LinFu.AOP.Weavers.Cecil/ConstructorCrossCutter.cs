@@ -23,7 +23,8 @@ namespace LinFu.AOP.Weavers.Cecil
         public ConstructorCrossCutter()
         {
             _container = new SimpleContainer();
-            var currentLocation = Path.GetFullPath(typeof(ConstructorCrossCutter).Assembly.Location);
+            var assemblyLocation = typeof(ConstructorCrossCutter).Assembly.Location;
+            var currentLocation = Path.GetFullPath(Path.GetDirectoryName(assemblyLocation));
             
             var loader = new Loader(_container);
             loader.LoadDirectory(currentLocation, "*.dll");
