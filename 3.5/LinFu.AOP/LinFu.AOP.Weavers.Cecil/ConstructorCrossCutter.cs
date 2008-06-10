@@ -88,6 +88,10 @@ namespace LinFu.AOP.Weavers.Cecil
                 originalInstructions.Add(instruction);
             }
 
+            // HACK: Skip methods that don't have any instructions
+            if (originalInstructions.Count == 0)
+                return;
+
             var lastInstruction = originalInstructions.LastOrDefault();
             if (lastInstruction != null && lastInstruction.OpCode == OpCodes.Ret)
             {
@@ -95,12 +99,12 @@ namespace LinFu.AOP.Weavers.Cecil
                 // instruction so that the code will
                 // fall through to the initializer
                 lastInstruction.OpCode = OpCodes.Nop;
-            }
 
-            foreach (var instruction in originalInstructions)
-            {
-                if (instruction.OpCode == OpCodes.Ret)
+                foreach (var instruction in originalInstructions)
                 {
+                    if (instruction.OpCode != OpCodes.Ret)
+                        continue;
+
                     // HACK: Modify all ret instructions to branch
                     // to the last ret instruction instead of exiting
                     // the method
@@ -108,6 +112,7 @@ namespace LinFu.AOP.Weavers.Cecil
                     instruction.Operand = lastInstruction;
                 }
             }
+            
 
             methodBody.Instructions.Clear();
             CilWorker IL = methodBody.CilWorker;
