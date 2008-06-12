@@ -17,6 +17,14 @@ namespace LinFu.AOP.Weavers.Cecil
         public IMethodFilter MethodFilter { get; set; }
         public override bool ShouldWeave(MethodDefinition methodDef)
         {
+            // Methods handled by the runtime will not be intercepted
+            if (methodDef.IsRuntime && methodDef.IsManaged)
+                return false;
+
+            // The target method must have a body
+            if (methodDef.Body == null)
+                return false;
+
             // By default, only public methods will be intercepted
             if (!methodDef.IsPublic && MethodFilter == null)
                 return false;

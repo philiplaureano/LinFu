@@ -30,7 +30,7 @@ namespace LinFu.AOP.Weavers.Cecil
             loader.LoadDirectory(currentLocation, "*.dll");
         }
         public virtual bool ShouldWeave(TypeDefinition item)
-        {
+        {           
             var defaultResult = item.IsClass && item.IsPublic;
 
             // Use the type filter if it exists
@@ -81,6 +81,14 @@ namespace LinFu.AOP.Weavers.Cecil
         }
         private void Weave(MethodDefinition ctor)
         {
+            // The target method must have a body
+            if (ctor.Body == null)
+                return;
+
+            // Skip constructors that are handled by the runtime
+            if (ctor.IsRuntime && ctor.IsManaged)
+                return;
+
             List<Instruction> originalInstructions = new List<Instruction>();
             Mono.Cecil.Cil.MethodBody methodBody = ctor.Body;
             foreach (Instruction instruction in methodBody.Instructions)
