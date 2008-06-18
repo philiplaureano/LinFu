@@ -12,6 +12,7 @@ namespace Simple.IoC
         bool Contains(string serviceName, Type serviceType);
         bool Contains(Type serviceType);
         T GetService<T>() where T : class;
+        T GetService<T>(bool throwOnError) where T : class;
         T GetService<T>(string serviceName) where T : class;
         
         object GetService(Type serviceType);
