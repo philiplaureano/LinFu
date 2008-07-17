@@ -8,9 +8,27 @@ namespace Simple.IoC.Loaders
 {
     public class CustomFactoryLoader : BaseFactoryLoader
     {
+        private Dictionary<Type, object> _factoryInstances = new Dictionary<Type, object>();
         protected override object CreateFactory(Type factoryType, Type implementingType, Type serviceType)
         {
-            return Activator.CreateInstance(implementingType);
+            object instance = null;
+
+            // Create a new factory instance, if necessary
+            if (!_factoryInstances.ContainsKey(implementingType))
+            {
+                // Make sure that each implementing type
+                // only has one and only one instance
+                instance = Activator.CreateInstance(implementingType);
+
+                lock (_factoryInstances)
+                {
+                    _factoryInstances[implementingType] = instance;
+                }
+            }
+
+            instance = _factoryInstances[implementingType];
+
+            return result;
         }
 
         protected override bool CanLoad(Type loadedType)
