@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Simple.IoC
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple=false)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple=true)]
     public class FactoryAttribute : Attribute
     {
         private Type _instanceType;
