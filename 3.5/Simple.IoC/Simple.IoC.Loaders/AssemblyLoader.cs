@@ -29,7 +29,7 @@ namespace Simple.IoC
    
         protected virtual Assembly LoadFile(string assemblyFile)
         {
-            return Assembly.LoadFile(assemblyFile);
+            return Assembly.LoadFrom(assemblyFile);
         }
     }
 }
