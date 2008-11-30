@@ -1,0 +1,22 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <MainAssembly>$(MSBuildProjectDirectory)\..\build\LinFu.IoC.dll</MainAssembly>
+	<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    </PropertyGroup>
+    <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
+        <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\Release\LinFu.IoC*.dll"/>
+        <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\Release\LinFu.Finders*.dll"/>
+        <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\Release\LinFu.Reflection.dll"/>        
+    </ItemGroup>
+    <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\Debug\LinFu.IoC*.dll"/>
+        <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\Debug\LinFu.Finders*.dll"/>
+        <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\Debug\LinFu.Reflection.dll"/>        
+    </ItemGroup>
+
+    <Target Name="iocmerge">
+	<Message Text="-- Begin LinFu.IOC ILMerge --" />
+	<Exec Command="&quot;$(ProgramFiles)\Microsoft\Ilmerge\Ilmerge.exe&quot; /xmldocs /v2 /log /out:&quot;$(MainAssembly)&quot; @(ILMergeAssemblies->'&quot;%(FullPath)&quot;', ' ')" />
+	<Message Text="-- End LinFu.IOC ILMerge --" />
+    </Target>
+</Project>

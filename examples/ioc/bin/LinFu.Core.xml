@@ -1,0 +1,1781 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>LinFu.Core</name>
+  </assembly>
+  <members>
+    <member name="T:LinFu.AOP.Interfaces.IInterceptor">
+      <summary>
+            Represents a class that can dynamically intercept method calls.
+            </summary>
+    </member>
+    <member name="M:LinFu.AOP.Interfaces.IInterceptor.Intercept(LinFu.AOP.Interfaces.IInvocationInfo)">
+      <summary>
+            Intercepts a method call using the given
+            <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance.
+            </summary>
+      <param name="info">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance that will 
+            contain all the necessary information associated with a 
+            particular method call.</param>
+      <returns>The return value of the target method. If the return type of the target
+            method is <see cref="T:System.Void" />, then the return value will be ignored.</returns>
+    </member>
+    <member name="T:LinFu.AOP.Interfaces.IInvokeWrapper">
+      <summary>
+            Represents a special type of interceptor that can
+            wrap itself around a method call.
+            </summary>
+    </member>
+    <member name="M:LinFu.AOP.Interfaces.IInvokeWrapper.BeforeInvoke(LinFu.AOP.Interfaces.IInvocationInfo)">
+      <summary>
+            This method will be called just before the actual
+            <see cref="M:LinFu.AOP.Interfaces.IInvokeWrapper.DoInvoke(LinFu.AOP.Interfaces.IInvocationInfo)">method call</see> is executed.
+            </summary>
+      <param name="info">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> associated with the method call.</param>
+      <seealso cref="T:LinFu.AOP.Interfaces.IInvocationInfo" />
+    </member>
+    <member name="M:LinFu.AOP.Interfaces.IInvokeWrapper.AfterInvoke(LinFu.AOP.Interfaces.IInvocationInfo,System.Object)">
+      <summary>
+            This method will be called immediately after the actual
+            <see cref="M:LinFu.AOP.Interfaces.IInvokeWrapper.DoInvoke(LinFu.AOP.Interfaces.IInvocationInfo)">method call</see> is executed.
+            </summary>
+      <param name="info">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> associated with the method call.</param>
+      <param name="returnValue">The value returned from the actual method call.</param>
+    </member>
+    <member name="T:LinFu.AOP.Interfaces.IInvocationInfo">
+      <summary>
+            Represents the information associated with 
+            a single method call.
+            </summary>
+    </member>
+    <member name="P:LinFu.AOP.Interfaces.IInvocationInfo.Target">
+      <summary>
+            The target instance currently being called.
+            </summary>
+      <remarks>This typically is a reference to a proxy object.</remarks>
+    </member>
+    <member name="P:LinFu.AOP.Interfaces.IInvocationInfo.TargetMethod">
+      <summary>
+            The method currently being called.
+            </summary>
+    </member>
+    <member name="P:LinFu.AOP.Interfaces.IInvocationInfo.StackTrace">
+      <summary>
+            The <see cref="P:LinFu.AOP.Interfaces.IInvocationInfo.StackTrace" /> associated
+            with the method call when the call was made.
+            </summary>
+    </member>
+    <member name="P:LinFu.AOP.Interfaces.IInvocationInfo.CallingMethod">
+      <summary>
+            This is the actual calling method that invoked the <see cref="P:LinFu.AOP.Interfaces.IInvocationInfo.TargetMethod" />.
+            </summary>
+    </member>
+    <member name="P:LinFu.AOP.Interfaces.IInvocationInfo.ReturnType">
+      <summary>
+            The return type of the <see cref="P:LinFu.AOP.Interfaces.IInvocationInfo.TargetMethod" />.
+            </summary>
+    </member>
+    <member name="P:LinFu.AOP.Interfaces.IInvocationInfo.ParameterTypes">
+      <summary>
+            The parameter types for the current target method.
+            </summary>
+      <remarks>
+        <para>
+            This could be very useful in cases where the actual target method
+            is based on a generic type definition. In such cases, 
+            the <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance needs to be able
+            to describe the actual parameter types being used by the
+            current generic type instantiation. This property helps
+            users determine which parameter types are actually being used
+            at the time of the method call.
+            </para>
+      </remarks>
+    </member>
+    <member name="P:LinFu.AOP.Interfaces.IInvocationInfo.TypeArguments">
+      <summary>
+            If the <see cref="P:LinFu.AOP.Interfaces.IInvocationInfo.TargetMethod" /> method is a generic method, 
+            this will hold the generic type arguments used to construct the
+            method.
+            </summary>
+    </member>
+    <member name="P:LinFu.AOP.Interfaces.IInvocationInfo.Arguments">
+      <summary>
+            The arguments used in the method call.
+            </summary>
+    </member>
+    <member name="T:LinFu.DynamicProxy2.Interfaces.IProxyFactory">
+      <summary>
+            Represents the basic interface for creating
+            dynamic proxy instances.
+            </summary>
+    </member>
+    <member name="M:LinFu.DynamicProxy2.Interfaces.IProxyFactory.CreateProxyType(System.Type,System.Collections.Generic.IEnumerable{System.Type})">
+      <summary>
+            Generates a dynamic proxy type
+            that derives from the <paramref name="baseType" />
+            and implements the given <paramref name="baseInterfaces">interfaces</paramref>.
+            </summary>
+      <param name="baseType">The base class from which the generated dynamic proxy will be derived.</param>
+      <param name="baseInterfaces">The list of interfaces that the generated dynamic proxy will implement.</param>
+      <returns>A dynamic proxy type.</returns>
+    </member>
+    <member name="T:LinFu.DynamicProxy2.Interfaces.IProxy">
+      <summary>
+            Represents a dynamically generated proxy instance.
+            </summary>
+    </member>
+    <member name="P:LinFu.DynamicProxy2.Interfaces.IProxy.Interceptor">
+      <summary>
+            The interceptor that will handle all
+            calls made to the proxy instance.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.Configuration.FactoryAttribute">
+      <summary>
+            An attribute that marks a type as a custom factory.
+            </summary>
+    </member>
+    <member name="F:LinFu.IoC.Configuration.FactoryAttribute.ServiceName">
+      <summary>
+            The service name that will be associated
+            with the service type.
+            </summary>
+    </member>
+    <member name="M:LinFu.IoC.Configuration.FactoryAttribute.#ctor(System.Type)">
+      <summary>
+            Marks a target type as a custom factory
+            that can create object instances that
+            can implement the <paramref name="serviceType" />.
+            </summary>
+      <param name="serviceType">The service type to create.</param>
+    </member>
+    <member name="P:LinFu.IoC.Configuration.FactoryAttribute.ServiceType">
+      <summary>
+            Gets the service type that can be created
+            using the factory instance.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.Configuration.ImplementsAttribute">
+      <summary>
+            The attribute used to specify how a service should be implemented
+            in addition to its instancing behavior.
+            </summary>
+    </member>
+    <member name="F:LinFu.IoC.Configuration.ImplementsAttribute.ServiceName">
+      <summary>
+            The name to associate with the given service.
+            </summary>
+    </member>
+    <member name="M:LinFu.IoC.Configuration.ImplementsAttribute.#ctor(System.Type,LinFu.IoC.Configuration.LifecycleType)">
+      <summary>
+            Allows users to add services to a container using a 
+            given <paramref name="serviceType">service type</paramref> and 
+            <paramref name="lifeCycleType">lifecycle type</paramref>.
+            </summary>
+      <param name="serviceType">The <see cref="T:System.Type" /> of service to implement.</param>
+      <param name="lifeCycleType">The instancing behavior to use with this implementation.</param>
+    </member>
+    <member name="P:LinFu.IoC.Configuration.ImplementsAttribute.ServiceType">
+      <summary>
+            The type of service that will be implemented.
+            </summary>
+    </member>
+    <member name="P:LinFu.IoC.Configuration.ImplementsAttribute.LifecycleType">
+      <summary>
+            The instancing behavior of the service instance.        
+            </summary>
+      <seealso cref="P:LinFu.IoC.Configuration.ImplementsAttribute.LifecycleType" />
+    </member>
+    <member name="T:LinFu.IoC.Configuration.LifecycleType">
+      <summary>
+            An enumeration that denotes the instance behavior
+            of a particular object reference.
+            </summary>
+    </member>
+    <member name="F:LinFu.IoC.Configuration.LifecycleType.OncePerRequest">
+      <summary>
+            This means that a new object instance 
+            will be created on each call.
+            </summary>
+    </member>
+    <member name="F:LinFu.IoC.Configuration.LifecycleType.OncePerThread">
+      <summary>
+            This means that a new object instance 
+            will be created only once per thread.
+            </summary>
+    </member>
+    <member name="F:LinFu.IoC.Configuration.LifecycleType.Singleton">
+      <summary>
+            This means that only a single object instance
+            will ever be created in spite of the number of
+            subsequent requests for a new object instance.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.Configuration.Loader">
+      <summary>
+            Represents a class that can dynamically configure
+            <see cref="T:LinFu.IoC.Interfaces.IServiceContainer" /> instances at runtime.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.Configuration.PostProcessorAttribute">
+      <summary>
+            Marks a target type as an <see cref="T:LinFu.IoC.Interfaces.IPostProcessor" />
+            instance that can be injected into a
+            <see cref="T:LinFu.IoC.Interfaces.IServiceContainer" /> instance.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.Configuration.IContainerLoader">
+      <summary>
+            Represents a loader that reads a file and converts it
+            into an equivalent set of a set of <see cref="T:System.Action`1" />
+            instances that can be applied to a particular
+            instance of an <see cref="T:LinFu.IoC.Interfaces.IServiceContainer" /> class.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.Configuration.IInitialize">
+      <summary>
+            Represents service classes that need to be initialized
+            every time a particular <see cref="T:LinFu.IoC.Interfaces.IServiceContainer" />
+            instance creates that type.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.Configuration.ITypeLoader">
+      <summary>
+            Generates one or more <see cref="T:System.Action`1" /> instances
+            from a given source type so that it can be used
+            against an <see cref="T:LinFu.IoC.Interfaces.IContainer" /> instance.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.BaseContainer">
+      <summary>
+            Represents a basic inversion of control container
+            with support for creating custom service instances.
+            </summary>
+    </member>
+    <member name="M:LinFu.IoC.BaseContainer.AddFactory(System.Type,LinFu.IoC.Interfaces.IFactory)">
+      <summary>
+            Adds an <see cref="T:LinFu.IoC.Interfaces.IFactory" /> instance and associates it
+            with the given <paramref name="serviceType">service type</paramref>.
+            </summary>
+      <param name="serviceType">The service type to associate with the factory</param>
+      <param name="factory">The <see cref="T:LinFu.IoC.Interfaces.IFactory" /> instance that will be responsible for creating the service instance</param>
+    </member>
+    <member name="M:LinFu.IoC.BaseContainer.Contains(System.Type)">
+      <summary>
+            Determines whether or not the container can create
+            the given <paramref name="serviceType">service type</paramref>.
+            </summary>
+      <param name="serviceType">The type of service used to determine whether or not the given service can actually be created</param>
+      <returns>A <see cref="T:System.Boolean">boolean</see> value that indicates whether or not the service exists.</returns>
+    </member>
+    <member name="M:LinFu.IoC.BaseContainer.GetService(System.Type)">
+      <summary>
+            Causes the container to instantiate the service with the given
+            <paramref name="serviceType">service type</paramref>. If the service type cannot be created, then an
+            exception will be thrown if the <see cref="P:LinFu.IoC.BaseContainer.SuppressErrors" /> property
+            is set to false. Otherwise, it will simply return null.
+            </summary>
+      <param name="serviceType">The service type to instantiate.</param>
+      <returns>If successful, it will return a service instance that is compatible with the given type;
+            otherwise, it will just return a null value.</returns>
+    </member>
+    <member name="P:LinFu.IoC.BaseContainer.SuppressErrors">
+      <summary>
+            Gets or sets a <see cref="T:System.Boolean">System.Boolean</see> value
+            that determines whether or not the container should throw
+            a <see cref="T:LinFu.IoC.ServiceNotFoundException" /> if a requested service
+            cannot be found or created.
+            </summary>
+    </member>
+    <member name="M:LinFu.IoC.ServiceContainerBase.AddFactory(System.String,System.Type,LinFu.IoC.Interfaces.IFactory)">
+      <summary>
+            Adds an <see cref="T:LinFu.IoC.Interfaces.IFactory" /> instance and associates it
+            with the given <paramref name="serviceType">service type</paramref> and
+            <paramref name="serviceName">service name</paramref>.
+            </summary>
+      <param name="serviceName">The name of the service to associate with the given <see cref="T:LinFu.IoC.Interfaces.IFactory" /> instance.</param>
+      <param name="serviceType">The type of service that the factory will be able to create.</param>
+      <param name="factory">The <see cref="T:LinFu.IoC.Interfaces.IFactory" /> instance that will create the object instance.</param>
+    </member>
+    <member name="M:LinFu.IoC.ServiceContainerBase.Contains(System.String,System.Type)">
+      <summary>
+            Determines whether or not a service can be created using
+            the given <paramref name="serviceName">service name</paramref>
+            and <paramref name="serviceType">service type</paramref>.
+            </summary>
+      <param name="serviceName">The name of the service to associate with the given <see cref="T:LinFu.IoC.Interfaces.IFactory" /> instance.</param>
+      <param name="serviceType">The type of service that the factory will be able to create.</param>
+      <returns>Returns <c>true</c> if the service exists; otherwise, it will return <c>false</c>.</returns>
+    </member>
+    <member name="M:LinFu.IoC.ServiceContainerBase.GetService(System.String,System.Type)">
+      <summary>
+            Causes the container to instantiate the service with the given
+            <paramref name="serviceType">service type</paramref>. If the service type cannot be created, then an
+            exception will be thrown if the <see cref="P:LinFu.IoC.Interfaces.IContainer.SuppressErrors" /> property
+            is set to false. Otherwise, it will simply return null.
+            </summary>
+      <param name="serviceName">The name of the service to instantiate.</param>
+      <param name="serviceType">The service type to instantiate.</param>
+      <returns>If successful, it will return a service instance that is compatible with the given type;
+            otherwise, it will just return a <c>null</c> value.</returns>
+    </member>
+    <member name="P:LinFu.IoC.ServiceContainerBase.PostProcessors">
+      <summary>
+            The list of postprocessors that will handle every
+            service request result.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.ServiceContainer">
+      <summary>
+            Represents a service container with additional
+            extension points for customizing service instances
+            </summary>
+    </member>
+    <member name="M:LinFu.IoC.ServiceContainer.GetService(System.String,System.Type)">
+      <summary>
+            Overridden. This method modifies the original
+            <see cref="M:LinFu.IoC.BaseContainer.GetService(System.Type)" /> method
+            so that its results can be handled by the 
+            postprocessors.
+            </summary>
+      <param name="serviceName">The name of the service to instantiate.</param>
+      <param name="serviceType">The service type to instantiate.</param>
+      <returns>If successful, it will return a service instance that is compatible with the given type;
+            otherwise, it will just return a <c>null</c> value.</returns>
+    </member>
+    <member name="M:LinFu.IoC.ServiceContainer.GetService(System.Type)">
+      <summary>
+            Overridden. Causes the container to instantiate the service with the given
+            <paramref name="serviceType">service type</paramref>. If the service type cannot be created, then an
+            exception will be thrown if the <see cref="P:LinFu.IoC.Interfaces.IContainer.SuppressErrors" /> property
+            is set to false. Otherwise, it will simply return null.
+            </summary>
+      <remarks>
+            This overload of the <c>GetService</c> method has been overridden
+            so that its results can be handled by the postprocessors.
+            </remarks>
+      <seealso cref="T:LinFu.IoC.Interfaces.IPostProcessor" />
+      <param name="serviceType">The service type to instantiate.</param>
+      <returns>If successful, it will return a service instance that is compatible with the given type;
+            otherwise, it will just return a null value.</returns>
+    </member>
+    <member name="M:LinFu.IoC.ServiceContainer.PostProcess(System.String,System.Type,System.Object)">
+      <summary>
+            A method that searches the current container for
+            postprocessors and passes every request result made
+            to the list of <see cref="P:LinFu.IoC.Interfaces.IServiceContainer.PostProcessors" />.
+            </summary>
+      <param name="serviceName">The name of the service being requested. By default, this is usually blank.</param>
+      <param name="serviceType">The type of service being requested.</param>
+      <param name="instance">The original instance returned by container's service instantiation attempt.</param>
+      <returns>A <see cref="T:LinFu.IoC.Interfaces.IServiceRequestResult" /> representing the results returned as a result of the postprocessors.</returns>
+    </member>
+    <member name="T:LinFu.IoC.ServiceNotFoundException">
+      <summary>
+            The exception thrown when a service type is
+            requested from a container and that named container
+            is unable to find or create that particular service instance.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.NamedServiceNotFoundException">
+      <summary>
+            The exception thrown when a service name and a service type is
+            requested from a named container and that named container
+            is unable to find or create that particular service instance.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.ServiceRequestResult">
+      <summary>
+            Represents the results returned when a service request
+            is made against an <see cref="T:LinFu.IoC.Interfaces.IContainer" /> instance.
+            </summary>
+    </member>
+    <member name="P:LinFu.IoC.ServiceRequestResult.ServiceName">
+      <summary>
+            The name of the service being created. By default, this property is blank.
+            </summary>
+    </member>
+    <member name="P:LinFu.IoC.ServiceRequestResult.OriginalResult">
+      <summary>
+            The raw object reference created by the container itself.
+            </summary>
+    </member>
+    <member name="P:LinFu.IoC.ServiceRequestResult.ActualResult">
+      <summary>
+            The result that will be returned from the container
+            instead of the <see cref="P:LinFu.IoC.ServiceRequestResult.OriginalResult" />. 
+            
+            If this property is null, then the original result will be used.
+            </summary>
+    </member>
+    <member name="P:LinFu.IoC.ServiceRequestResult.ServiceType">
+      <summary>
+            The type of service being requested.
+            </summary>
+    </member>
+    <member name="P:LinFu.IoC.ServiceRequestResult.Container">
+      <summary>
+            The container that will handle the service request.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.FluentExtensions">
+      <summary>
+            A class that adds fluent syntax support to <see cref="T:LinFu.IoC.Interfaces.IServiceContainer" />
+            instances.
+            </summary>
+    </member>
+    <member name="M:LinFu.IoC.FluentExtensions.Inject``1(LinFu.IoC.Interfaces.IServiceContainer,System.String)">
+      <summary>
+            Injects a <typeparamref name="TService" /> type
+            into a <paramref name="container" /> using the
+            given <paramref name="serviceName" /></summary>
+      <typeparam name="TService">The type of service to inject.</typeparam>
+      <param name="container">The container that will hold the actual service service instance.</param>
+      <param name="serviceName">The name of the service to create.</param>
+      <returns>A non-null <see cref="T:LinFu.IoC.Extensions.IUsingLambda`1" /> instance.</returns>
+    </member>
+    <member name="M:LinFu.IoC.FluentExtensions.Inject``1(LinFu.IoC.Interfaces.IServiceContainer)">
+      <summary>
+            Injects a <typeparamref name="TService" /> type
+            into a <paramref name="container" />.
+            </summary>
+      <typeparam name="TService">The type of service to inject.</typeparam>
+      <param name="container">The container that will hold the actual service service instance.</param>
+      <returns>A non-null <see cref="T:LinFu.IoC.Extensions.IUsingLambda`1" /> instance.</returns>
+    </member>
+    <member name="M:LinFu.IoC.FluentExtensions.Initialize``1(LinFu.IoC.Interfaces.IServiceContainer)">
+      <summary>
+            Initializes services that match the given <typeparamref name="TService" /> type.
+            </summary>
+      <typeparam name="TService">The service type to initialize.</typeparam>
+      <param name="container">The container that will create the service itself.</param>
+      <returns>A <see cref="T:LinFu.IoC.Extensions.Interfaces.IPropertyInjectionLambda`1" /> instance. This cannot be <c>null</c>.</returns>
+    </member>
+    <member name="M:LinFu.IoC.FluentExtensions.Initialize``1(LinFu.IoC.Interfaces.IServiceContainer,System.String)">
+      <summary>
+            Initializes services that match the given <paramref name="serviceName" /> and <typeparamref name="TService" /> type.
+            </summary>
+      <typeparam name="TService">The service type to initialize.</typeparam>
+      <param name="container">The container that will create the service itself.</param>
+      <param name="serviceName">The name of the service to initialize.</param>
+      <returns>A <see cref="T:LinFu.IoC.Extensions.Interfaces.IPropertyInjectionLambda`1" /> instance. This cannot be <c>null</c>.</returns>
+    </member>
+    <member name="M:LinFu.IoC.FluentExtensions.CreateAdapter``1(System.Func{System.Type,LinFu.IoC.Interfaces.IServiceContainer,``0})">
+      <summary>
+            Converts a <see cref="T:System.Func`3" />
+            lambda into an equivalent <see cref="T:System.Func`3" />
+            instance.
+            </summary>
+      <typeparam name="TService">The type of service to create.</typeparam>
+      <param name="func">The lambda function to be converted.</param>
+      <returns>The equivalent <see cref="T:System.Func`3" />
+            that delegates its calls back to the <paramref name="func" /> lambda function.</returns>
+    </member>
+    <member name="T:LinFu.IoC.Extensions.Interfaces.IPropertyInjectionLambda`1">
+      <summary>
+            Represents a fluent class that creates
+            a method that initializes a <typeparamref name="TService" />
+            instance.
+            </summary>
+      <typeparam name="TService">The service type being instantiated.</typeparam>
+    </member>
+    <member name="M:LinFu.IoC.Extensions.Interfaces.IPropertyInjectionLambda`1.With(System.Action{`0})">
+      <summary>
+            Initializes service instances with the given
+            <paramref name="action" />.
+            </summary>
+      <param name="action">An <see cref="T:System.Action`1" /> delegate that will be used to initialize newly created services.</param>
+    </member>
+    <member name="M:LinFu.IoC.Extensions.Interfaces.IPropertyInjectionLambda`1.With(LinFu.IoC.Extensions.Action{LinFu.IoC.Interfaces.IServiceContainer,`0})">
+      <summary>
+            Uses an action delegate to initialize a given service using
+            the given <see cref="T:LinFu.IoC.Interfaces.IServiceContainer" /> and <typeparamref name="TService" />
+            instances.
+            </summary>
+      <param name="action">An <see cref="T:System.Func`2" /> delegate that will be used to initialize newly created services.</param>
+    </member>
+    <member name="T:LinFu.IoC.Extensions.PropertyInjectionLambda`1">
+      <summary>
+            Represents a fluent class that creates
+            a method that initializes a <typeparamref name="TService" />
+            instance.
+            </summary>
+      <typeparam name="TService">The service type being instantiated.</typeparam>
+    </member>
+    <member name="M:LinFu.IoC.Extensions.PropertyInjectionLambda`1.#ctor(LinFu.IoC.Extensions.ActionContext{`0})">
+      <summary>
+            Initializes the class with the <paramref name="context" />.
+            </summary>
+      <param name="context">The context that will be associated with the target container.</param>
+    </member>
+    <member name="M:LinFu.IoC.Extensions.PropertyInjectionLambda`1.With(System.Action{`0})">
+      <summary>
+            Initializes service instances with the given
+            <paramref name="action" />.
+            </summary>
+      <param name="action">An <see cref="T:System.Action`1" /> delegate that will be used to initialize newly created services.</param>
+    </member>
+    <member name="M:LinFu.IoC.Extensions.PropertyInjectionLambda`1.With(LinFu.IoC.Extensions.Action{LinFu.IoC.Interfaces.IServiceContainer,`0})">
+      <summary>
+            Uses an action delegate to initialize a given service using
+            the given <see cref="T:LinFu.IoC.Interfaces.IServiceContainer" /> and <typeparamref name="TService" />
+            instances.
+            </summary>
+      <param name="action">An <see cref="T:System.Func`2" /> delegate that will be used to initialize newly created services.</param>
+    </member>
+    <member name="M:LinFu.IoC.Extensions.PropertyInjectionLambda`1.AddPostProcessor(LinFu.IoC.Extensions.ActionContext{`0})">
+      <summary>
+            Attaches the action associated with the <see cref="T:LinFu.IoC.Extensions.ActionContext`1" />
+            instance to the target container embedded within the <see cref="T:LinFu.IoC.Extensions.ActionContext`1" />
+            class itself.
+            </summary>
+      <param name="context">The context that will be associated with the target container.</param>
+    </member>
+    <member name="T:LinFu.IoC.Extensions.BaseContext`1">
+      <summary>
+            Represents a class that provides the most basic information
+            for executing a fluent command against a 
+            <see cref="T:LinFu.IoC.Interfaces.IServiceContainer" /> instance.
+            </summary>
+      <typeparam name="TService">
+      </typeparam>
+    </member>
+    <member name="P:LinFu.IoC.Extensions.BaseContext`1.ServiceType">
+      <summary>
+            The service type to be created.
+            </summary>
+    </member>
+    <member name="P:LinFu.IoC.Extensions.BaseContext`1.ServiceName">
+      <summary>
+            The name of the service to be created.
+            </summary>
+    </member>
+    <member name="P:LinFu.IoC.Extensions.BaseContext`1.Container">
+      <summary>
+            The actual <see cref="T:LinFu.IoC.Interfaces.IServiceContainer" />
+            that ultimately will hold the service instance.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.Extensions.InjectionContext`1">
+      <summary>
+            Represents the <c>internal</c> context class that will be used to 
+            incrementally build enough information to inject a specific
+            <see cref="T:LinFu.IoC.Interfaces.IFactory`1" /> instance into a container.
+            </summary>
+      <typeparam name="TService">The service type to be created.</typeparam>
+    </member>
+    <member name="P:LinFu.IoC.Extensions.InjectionContext`1.FactoryMethod">
+      <summary>
+            The factory method that will be used to
+            instantiate the actual <typeparam name="TService" />
+            instance.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.Extensions.ActionContext`1">
+      <summary>
+            Represents the <c>internal</c> context class that will be used to 
+            incrementally build enough information to initialize
+            a specific <typeparamref name="TService" /> type once
+            that service has been instantiated.
+            </summary>
+      <typeparam name="TService">The service type to be created.</typeparam>
+    </member>
+    <member name="P:LinFu.IoC.Extensions.ActionContext`1.Action">
+      <summary>
+            The action that will be performed on an <see cref="T:LinFu.IoC.Interfaces.IServiceContainer" />
+            instance once the fluent command executes.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.Extensions.IUsingLambda`1">
+      <summary>
+            Represents a fluent class that creates
+            a factory method that will be used
+            in instantiating a specific service instance.
+            </summary>
+      <typeparam name="TService">The service type being instantiated.</typeparam>
+    </member>
+    <member name="M:LinFu.IoC.Extensions.IUsingLambda`1.Using``1">
+      <summary>
+            Creates a service instance using the
+            concrete <typeparamref name="TConcrete" /> type 
+            as the implementation for the <typeparamref name="TService" />
+            type.
+            </summary>
+      <typeparam name="TConcrete">The concrete implementation that implements <typeparamref name="TService" />. This class must have a default constructor.</typeparam>
+      <returns>A non-null <see cref="T:LinFu.IoC.Extensions.IGenerateFactory`1" /> instance that will be used to create a factory and add it to a specific container.</returns>
+    </member>
+    <member name="M:LinFu.IoC.Extensions.IUsingLambda`1.Using(System.Func{LinFu.IoC.Interfaces.IServiceContainer,`0})">
+      <summary>
+            Creates a service instance using the
+            <paramref name="factoryMethod" /> to
+            instantiate the service instance
+            with a particular factory type.
+            </summary>
+      <seealso cref="T:LinFu.IoC.Extensions.IGenerateFactory`1" />
+      <param name="factoryMethod">The factory method that will be used to instantiate the actual service instance.</param>
+      <returns>A non-null <see cref="T:LinFu.IoC.Extensions.IGenerateFactory`1" /> instance that will be used to create a factory and add it to a specific container.</returns>
+    </member>
+    <member name="M:LinFu.IoC.Extensions.IUsingLambda`1.Using(System.Func{`0})">
+      <summary>
+            Creates a service instance using the
+            <paramref name="factoryMethod" /> to
+            instantiate the service instance
+            with a particular factory type.
+            </summary>
+      <param name="factoryMethod">The factory method that will be used to instantiate the actual service instance.</param>
+      <returns>A non-null <see cref="T:LinFu.IoC.Extensions.IGenerateFactory`1" /> instance that will be used to create a factory and add it to a specific container.</returns>
+    </member>
+    <member name="T:LinFu.IoC.Extensions.UsingLambda`1">
+      <summary>
+            Represents a fluent class that creates
+            a factory method that will be used
+            in instantiating a specific service instance.
+            </summary>
+      <typeparam name="TService">The service type being instantiated.</typeparam>
+    </member>
+    <member name="M:LinFu.IoC.Extensions.UsingLambda`1.#ctor(LinFu.IoC.Extensions.InjectionContext{`0})">
+      <summary>
+            Initializes the class using the given <paramref name="context" />.
+            </summary>
+      <param name="context">the <c>internal</c> context class that will be used to 
+            incrementally build enough information to inject a specific
+            <see cref="T:LinFu.IoC.Interfaces.IFactory`1" /> instance into a container.</param>
+    </member>
+    <member name="M:LinFu.IoC.Extensions.UsingLambda`1.Using``1">
+      <summary>
+            Creates a service instance using the
+            concrete <typeparamref name="TConcrete" /> type 
+            as the implementation for the <typeparamref name="TService" />
+            type.
+            </summary>
+      <typeparam name="TConcrete">The concrete implementation that implements <typeparamref name="TService" />. This class must have a default constructor.</typeparam>
+      <returns>A non-null <see cref="T:LinFu.IoC.Extensions.IGenerateFactory`1" /> instance that will be used to create a factory and add it to a specific container.</returns>
+    </member>
+    <member name="M:LinFu.IoC.Extensions.UsingLambda`1.Using(System.Func{LinFu.IoC.Interfaces.IServiceContainer,`0})">
+      <summary>
+            Creates a service instance using the
+            <paramref name="factoryMethod" /> to
+            instantiate the service instance
+            with a particular factory type.
+            </summary>
+      <seealso cref="T:LinFu.IoC.Extensions.IGenerateFactory`1" />
+      <param name="factoryMethod">The factory method that will be used to instantiate the actual service instance.</param>
+      <returns>A non-null <see cref="T:LinFu.IoC.Extensions.IGenerateFactory`1" /> instance that will be used to create a factory and add it to a specific container.</returns>
+    </member>
+    <member name="M:LinFu.IoC.Extensions.UsingLambda`1.Using(System.Func{`0})">
+      <summary>
+            Creates a service instance using the
+            <paramref name="factoryMethod" /> to
+            instantiate the service instance
+            with a particular factory type.
+            </summary>
+      <param name="factoryMethod">The factory method that will be used to instantiate the actual service instance.</param>
+      <returns>A non-null <see cref="T:LinFu.IoC.Extensions.IGenerateFactory`1" /> instance that will be used to create a factory and add it to a specific container.</returns>
+    </member>
+    <member name="T:LinFu.IoC.Extensions.IGenerateFactory`1">
+      <summary>
+            Represents a fluent class that allows
+            users to create specific types of factories.
+            </summary>
+      <typeparam name="TService">The type of service being created.</typeparam>
+    </member>
+    <member name="M:LinFu.IoC.Extensions.IGenerateFactory`1.AsSingleton">
+      <summary>
+            Creates a singleton factory.
+            </summary>
+      <seealso cref="T:LinFu.IoC.Factories.SingletonFactory`1" />
+    </member>
+    <member name="M:LinFu.IoC.Extensions.IGenerateFactory`1.OncePerThread">
+      <summary>
+            Creates a once per thread factory.
+            </summary>
+      <seealso cref="T:LinFu.IoC.Factories.OncePerThreadFactory`1" />
+    </member>
+    <member name="M:LinFu.IoC.Extensions.IGenerateFactory`1.OncePerRequest">
+      <summary>
+            Creates a once per request factory.
+            </summary>
+      <seealso cref="T:LinFu.IoC.Factories.OncePerRequestFactory`1" />
+    </member>
+    <member name="T:LinFu.IoC.ContainerExtensions">
+      <summary>
+            A class that adds generics support to existing 
+            <see cref="T:LinFu.IoC.Interfaces.IContainer" /> and <see cref="T:LinFu.IoC.Interfaces.IServiceContainer" />
+            instances.
+            </summary>
+    </member>
+    <member name="M:LinFu.IoC.ContainerExtensions.GetService``1(LinFu.IoC.Interfaces.IContainer)">
+      <summary>
+            Creates an instance of <typeparamref name="T" />
+            using the given <paramref name="container" />.
+            </summary>
+      <typeparam name="T">The service type to create.</typeparam>
+      <param name="container">The container that will instantiate the service.</param>
+      <returns>If successful, it will return a service instance that is compatible with the given type;
+            otherwise, it will just return a <c>null</c> value.</returns>
+    </member>
+    <member name="M:LinFu.IoC.ContainerExtensions.GetService``1(LinFu.IoC.Interfaces.IServiceContainer,System.String)">
+      <summary>
+            Creates an instance of <typeparamref name="T" />
+            using the given <paramref name="container" />.
+            </summary>
+      <typeparam name="T">The service type to create.</typeparam>
+      <param name="container">The container that will instantiate the service.</param>
+      <param name="serviceName">The name of the service to instantiate.</param>
+      <returns>If successful, it will return a service instance that is compatible with the given type;
+            otherwise, it will just return a <c>null</c> value.</returns>
+    </member>
+    <member name="M:LinFu.IoC.ContainerExtensions.AddService``1(LinFu.IoC.Interfaces.IContainer,``0)">
+      <summary>
+            Adds an existing service instance to the container.
+            </summary>
+      <typeparam name="T">The type of service being added.</typeparam>
+      <param name="container">The container that will hold the service instance.</param>
+      <param name="instance">The service instance itself.</param>
+    </member>
+    <member name="M:LinFu.IoC.ContainerExtensions.AddService``1(LinFu.IoC.Interfaces.IServiceContainer,System.String,``0)">
+      <summary>
+            Adds an existing service instance to the container and
+            associates it with the <paramref name="serviceName" />.
+            </summary>
+      <typeparam name="T">The type of service being added.</typeparam>
+      <param name="container">The container that will hold the service instance.</param>
+      <param name="instance">The service instance itself.</param>
+    </member>
+    <member name="M:LinFu.IoC.ContainerExtensions.LoadFrom(LinFu.IoC.Interfaces.IServiceContainer,System.String,System.String)">
+      <summary>
+            Loads a set of <paramref name="searchPattern">files</paramref> from the <paramref name="directory">target directory</paramref>.
+            </summary>
+      <param name="container">The container to be loaded.</param>
+      <param name="directory">The target directory.</param>
+      <param name="searchPattern">The search pattern that describes the list of files to be loaded.</param>
+    </member>
+    <member name="T:LinFu.IoC.Extensions.GenerateFactory`1">
+      <summary>
+            Represents a fluent class that allows
+            users to create specific types of factories.
+            </summary>
+      <typeparam name="TService">The type of service being created.</typeparam>
+    </member>
+    <member name="M:LinFu.IoC.Extensions.GenerateFactory`1.#ctor(LinFu.IoC.Extensions.InjectionContext{`0})">
+      <summary>
+            Instantiates the class using the given
+            <paramref name="context" />.
+            </summary>
+      <param name="context">The <see cref="T:LinFu.IoC.Extensions.InjectionContext`1" /> instance
+            which will contain the information necessary to build a fluent command.</param>
+    </member>
+    <member name="M:LinFu.IoC.Extensions.GenerateFactory`1.AsSingleton">
+      <summary>
+            Creates a singleton factory.
+            </summary>
+      <seealso cref="T:LinFu.IoC.Factories.SingletonFactory`1" />
+    </member>
+    <member name="M:LinFu.IoC.Extensions.GenerateFactory`1.OncePerThread">
+      <summary>
+            Creates a once per thread factory.
+            </summary>
+      <seealso cref="T:LinFu.IoC.Factories.OncePerThreadFactory`1" />
+    </member>
+    <member name="M:LinFu.IoC.Extensions.GenerateFactory`1.OncePerRequest">
+      <summary>
+            Creates a once per request factory.
+            </summary>
+      <seealso cref="T:LinFu.IoC.Factories.OncePerRequestFactory`1" />
+    </member>
+    <member name="M:LinFu.IoC.Extensions.GenerateFactory`1.AddFactory(System.Func{System.Func{System.Type,LinFu.IoC.Interfaces.IContainer,`0},LinFu.IoC.Interfaces.IFactory{`0}})">
+      <summary>
+            Adds a factory to the container by using the 
+            <paramref name="createFactory" /> delegate to
+            create the actual <see cref="T:LinFu.IoC.Interfaces.IFactory`1" />
+            instance.
+            </summary>
+      <param name="createFactory">The delegate that will create the actual factory instance.</param>
+    </member>
+    <member name="T:LinFu.IoC.Extensions.ActionPostProcessor`1">
+      <summary>
+            Represents a postprocessor that will execute
+            the action associated with the given <see cref="T:LinFu.IoC.Extensions.ActionContext`1" />
+            instance every time the target container returns a 
+            service with particular service name and service type.
+            </summary>
+      <typeparam name="TService">
+      </typeparam>
+    </member>
+    <member name="T:LinFu.IoC.Factories.BaseFactory`1">
+      <summary>
+            A factory base class that combines both the IFactory and
+            the IFactory&lt;T&gt; interfaces into a single class.
+            </summary>
+      <typeparam name="T">
+      </typeparam>
+    </member>
+    <member name="M:LinFu.IoC.Factories.BaseFactory`1.CreateInstance(LinFu.IoC.Interfaces.IContainer)">
+      <summary>
+            Creates a service instance using the given container.
+            </summary>
+      <remarks>
+        <see cref="T:LinFu.IoC.Interfaces.IFactory" /> developers can inherit from this class
+            instead of having to write their own custom factories
+            from scratch. This should cut down on some of the boilerplate
+            code necessary to get a factory class up and running.
+            </remarks>
+      <param name="container">The <see cref="T:LinFu.IoC.Interfaces.IContainer" /> instance that will ultimately instantiate the service.</param>
+      <returns>An object instance that represents the service to be created. This cannot be <c>null</c>.</returns>
+    </member>
+    <member name="T:LinFu.IoC.FactoryAdapter`1">
+      <summary>
+            An adapter that converts strongly-typed IFactory&lt;T&gt; 
+            instances into an equivalent IFactory instance.
+            </summary>
+      <typeparam name="T">
+      </typeparam>
+    </member>
+    <member name="M:LinFu.IoC.FactoryAdapter`1.#ctor(LinFu.IoC.Interfaces.IFactory{`0})">
+      <summary>
+            Creates the factory adapter using the given
+            IFactory&lt;T&gt; instance.
+            </summary>
+      <param name="factory">The strongly-typed factory instance that
+            will be called every time the <see cref="M:LinFu.IoC.Interfaces.IFactory.CreateInstance(System.Type,LinFu.IoC.Interfaces.IContainer)" /> method
+            is called. </param>
+    </member>
+    <member name="M:LinFu.IoC.FactoryAdapter`1.CreateInstance(System.Type,LinFu.IoC.Interfaces.IContainer)">
+      <summary>
+            Overridden. Uses the strongly-typed factory
+            to create the service instance every time
+            the <see cref="M:LinFu.IoC.Interfaces.IFactory.CreateInstance(System.Type,LinFu.IoC.Interfaces.IContainer)" /> method 
+            is called.
+            </summary>
+      <param name="container">The <see cref="T:LinFu.IoC.Interfaces.IContainer" /> instance that will ultimately instantiate the service.</param>
+      <param name="serviceType">The type of service to create.</param>
+      <returns>An object instance that represents the service to be created. This cannot be <c>null</c>.</returns>
+    </member>
+    <member name="P:LinFu.IoC.FactoryAdapter`1.Factory">
+      <summary>
+            The factory that will create the service instance.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.InstanceFactory">
+      <summary>
+            A factory that uses an existing object reference
+            instead of creating a new service.
+            </summary>
+    </member>
+    <member name="M:LinFu.IoC.InstanceFactory.#ctor(System.Object)">
+      <summary>
+            Creates a factory using the existing <paramref name="instance" />.
+            </summary>
+      <param name="instance">The existing object reference that the factory will return.</param>
+    </member>
+    <member name="M:LinFu.IoC.InstanceFactory.CreateInstance(System.Type,LinFu.IoC.Interfaces.IContainer)">
+      <summary>
+            A method that returns the existing object reference associated with
+            this factory. 
+            </summary>
+      <param name="container">The <see cref="T:LinFu.IoC.Interfaces.IContainer" /> instance that will ultimately instantiate the service.</param>
+      <returns>A non-null object reference.</returns>
+    </member>
+    <member name="T:LinFu.IoC.Factories.OncePerRequestFactory`1">
+      <summary>
+            A factory that creates a unique service instance every time
+            the <see cref="M:LinFu.IoC.Factories.OncePerRequestFactory`1.CreateInstance(LinFu.IoC.Interfaces.IContainer)" /> method is called.
+            </summary>
+      <typeparam name="T">The type of service to instantiate.</typeparam>
+    </member>
+    <member name="M:LinFu.IoC.Factories.OncePerRequestFactory`1.#ctor(System.Func{System.Type,LinFu.IoC.Interfaces.IContainer,`0})">
+      <summary>
+            Initializes the factory class using the <paramref name="createInstance" />
+            parameter as a factory delegate.
+            </summary>
+      <example>
+            The following is an example of initializing a <c>OncePerRequestFactory&lt;T&gt;</c>
+            type:
+            <code>
+                // Define the factory delegate
+                Func&lt;IContainer, ISomeService&gt; createService = container=&gt;new SomeServiceImplementation();
+            
+                // Create the factory
+                var factory = new OncePerRequestFactory&lt;ISomeService&gt;(createService);
+            
+                // Use the service instance
+                var service = factory.CreateInstance(null);
+                
+                // ...
+            </code></example>
+      <param name="createInstance">The delegate that will be used to create each new service instance.</param>
+    </member>
+    <member name="M:LinFu.IoC.Factories.OncePerRequestFactory`1.CreateInstance(LinFu.IoC.Interfaces.IContainer)">
+      <summary>
+            This method creates a new service instance every time
+            it is invoked. 
+            </summary>
+      <param name="container">The <see cref="T:LinFu.IoC.Interfaces.IContainer" /> instance that will ultimately instantiate the service.</param>
+      <returns>A non-null object reference.</returns>
+    </member>
+    <member name="T:LinFu.IoC.Factories.OncePerThreadFactory`1">
+      <summary>
+            A factory that creates service instances that are unique
+            from within the same thread as the factory itself.
+            </summary>
+      <typeparam name="T">The type of service to instantiate.</typeparam>
+    </member>
+    <member name="M:LinFu.IoC.Factories.OncePerThreadFactory`1.#ctor(System.Func{System.Type,LinFu.IoC.Interfaces.IContainer,`0})">
+      <summary>
+            Initializes the factory class using the <paramref name="createInstance" />
+            parameter as a factory delegate.
+            </summary>
+      <example>
+            The following is an example of initializing a <c>OncePerThreadFactory&lt;T&gt;</c>
+            type:
+            <code>
+                // Define the factory delegate
+                Func&lt;IContainer, ISomeService&gt; createService = container=&gt;new SomeServiceImplementation();
+            
+                // Create the factory
+                var factory = new OncePerThreadFactory&lt;ISomeService&gt;(createService);
+            
+                // Use the service instance
+                var service = factory.CreateInstance(null);
+                
+                // ...
+            </code></example>
+      <param name="createInstance">The delegate that will be used to create each new service instance.</param>
+    </member>
+    <member name="M:LinFu.IoC.Factories.OncePerThreadFactory`1.CreateInstance(LinFu.IoC.Interfaces.IContainer)">
+      <summary>
+            Creates the service instance using the given <paramref name="container" />
+            instance. Every service instance created from this factory will
+            only be created once per thread.
+            </summary>
+      <param name="container">The <see cref="T:LinFu.IoC.Interfaces.IContainer" /> instance that will ultimately instantiate the service.</param>
+      <returns>A a service instance as thread-wide singleton.</returns>
+    </member>
+    <member name="T:LinFu.IoC.Factories.SingletonFactory`1">
+      <summary>
+            A factory that creates Singletons. Each service that this factory creates will only be created once.
+            </summary>
+      <typeparam name="T">The type of service to instantiate.</typeparam>
+    </member>
+    <member name="M:LinFu.IoC.Factories.SingletonFactory`1.#ctor(System.Func{System.Type,LinFu.IoC.Interfaces.IContainer,`0})">
+      <summary>
+            Initializes the factory class using the <paramref name="createInstance" />
+            parameter as a factory delegate.
+            </summary>
+      <example>
+            The following is an example of initializing a <c>SingletonFactory&lt;T&gt;</c>
+            type:
+            <code>
+                // Define the factory delegate
+                Func&lt;IContainer, ISomeService&gt; createService = container=&gt;new SomeServiceImplementation();
+            
+                // Create the factory
+                var factory = new SingletonFactory&lt;ISomeService&gt;(createService);
+            
+                // Use the service instance
+                var service = factory.CreateInstance(null);
+                
+                // ...
+            </code></example>
+      <param name="createInstance">The delegate that will be used to create each new service instance.</param>
+    </member>
+    <member name="M:LinFu.IoC.Factories.SingletonFactory`1.CreateInstance(LinFu.IoC.Interfaces.IContainer)">
+      <summary>
+            A method that creates a service instance as a singleton.
+            </summary>
+      <param name="container">The <see cref="T:LinFu.IoC.Interfaces.IContainer" /> instance that will ultimately instantiate the service.</param>
+      <returns>A service instance as a singleton.</returns>
+    </member>
+    <member name="T:LinFu.IoC.Interfaces.IContainer">
+      <summary>
+            An inversion of control container interface.
+            </summary>
+    </member>
+    <member name="M:LinFu.IoC.Interfaces.IContainer.AddFactory(System.Type,LinFu.IoC.Interfaces.IFactory)">
+      <summary>
+            Adds an <see cref="T:LinFu.IoC.Interfaces.IFactory" /> instance and associates it
+            with the given <paramref name="serviceType">service type</paramref>.
+            </summary>
+      <param name="serviceType">The service type to associate with the factory</param>
+      <param name="factory">The <see cref="T:LinFu.IoC.Interfaces.IFactory" /> instance that will be responsible for creating the service instance</param>
+    </member>
+    <member name="M:LinFu.IoC.Interfaces.IContainer.Contains(System.Type)">
+      <summary>
+            Determines whether or not the container can create
+            the given <paramref name="serviceType">service type</paramref>.
+            </summary>
+      <param name="serviceType">The type of service used to determine whether or not the given service can actually be created</param>
+      <returns>A <see cref="T:System.Boolean">boolean</see> value that indicates whether or not the service exists.</returns>
+    </member>
+    <member name="M:LinFu.IoC.Interfaces.IContainer.GetService(System.Type)">
+      <summary>
+            Causes the container to instantiate the service with the given
+            <paramref name="serviceType">service type</paramref>. If the service type cannot be created, then an
+            exception will be thrown if the <see cref="P:LinFu.IoC.Interfaces.IContainer.SuppressErrors" /> property
+            is set to false. Otherwise, it will simply return null.
+            </summary>
+      <param name="serviceType">The service type to instantiate.</param>
+      <returns>If successful, it will return a service instance that is compatible with the given type;
+            otherwise, it will just return a null value.</returns>
+    </member>
+    <member name="P:LinFu.IoC.Interfaces.IContainer.SuppressErrors">
+      <summary>
+            Determines whether or not a container will throw an exception
+            if the requested service is not found.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.Interfaces.IFactory">
+      <summary>
+            Allows an object to create its own service instances.
+            </summary>
+    </member>
+    <member name="M:LinFu.IoC.Interfaces.IFactory.CreateInstance(System.Type,LinFu.IoC.Interfaces.IContainer)">
+      <summary>
+            Creates a service instance using the given <paramref name="container" />.
+            </summary>
+      <param name="container">The container that will ultimately hold the given service instance</param>
+      <param name="serviceType">The type of service to create.</param>
+      <returns>An object instance that represents the service to be created. This cannot be <c>null</c>.</returns>
+    </member>
+    <member name="T:LinFu.IoC.Interfaces.IFactory`1">
+      <summary>
+            A strongly-typed version of <see cref="T:LinFu.IoC.Interfaces.IFactory" />. Allows users
+            to create their own service instances
+            </summary>
+      <typeparam name="T">The instance type that can be created by this factory.</typeparam>
+    </member>
+    <member name="M:LinFu.IoC.Interfaces.IFactory`1.CreateInstance(LinFu.IoC.Interfaces.IContainer)">
+      <summary>
+            Creates a service instance using the given <paramref name="container" />.
+            </summary>
+      <param name="container">The container that will ultimately hold the given service instance</param>
+      <returns>An object instance that represents the service to be created. This cannot be <c>null</c>.</returns>
+    </member>
+    <member name="M:LinFu.IoC.Interfaces.IServiceContainer.AddFactory(System.String,System.Type,LinFu.IoC.Interfaces.IFactory)">
+      <summary>
+            Adds an <see cref="T:LinFu.IoC.Interfaces.IFactory" /> instance and associates it
+            with the given <paramref name="serviceType">service type</paramref> and
+            <paramref name="serviceName">service name</paramref>.
+            </summary>
+      <param name="serviceName">The name of the service to associate with the given <see cref="T:LinFu.IoC.Interfaces.IFactory" /> instance.</param>
+      <param name="serviceType">The type of service that the factory will be able to create.</param>
+      <param name="factory">The <see cref="T:LinFu.IoC.Interfaces.IFactory" /> instance that will create the object instance.</param>
+    </member>
+    <member name="M:LinFu.IoC.Interfaces.IServiceContainer.Contains(System.String,System.Type)">
+      <summary>
+            Determines whether or not a service can be created using
+            the given <paramref name="serviceName">service name</paramref>
+            and <paramref name="serviceType">service type</paramref>.
+            </summary>
+      <param name="serviceName">The name of the service to associate with the given <see cref="T:LinFu.IoC.Interfaces.IFactory" /> instance.</param>
+      <param name="serviceType">The type of service that the factory will be able to create.</param>
+      <returns>Returns <c>true</c> if the service exists; otherwise, it will return <c>false</c>.</returns>
+    </member>
+    <member name="M:LinFu.IoC.Interfaces.IServiceContainer.GetService(System.String,System.Type)">
+      <summary>
+            Causes the container to instantiate the service with the given
+            <paramref name="serviceType">service type</paramref>. If the service type cannot be created, then an
+            exception will be thrown if the <see cref="P:LinFu.IoC.Interfaces.IContainer.SuppressErrors" /> property
+            is set to false. Otherwise, it will simply return null.
+            </summary>
+      <param name="serviceName">The name of the service to instantiate.</param>
+      <param name="serviceType">The service type to instantiate.</param>
+      <returns>If successful, it will return a service instance that is compatible with the given type;
+            otherwise, it will just return a <c>null</c> value.</returns>
+    </member>
+    <member name="P:LinFu.IoC.Interfaces.IServiceContainer.PostProcessors">
+      <summary>
+            The list of postprocessors that will handle every
+            service request result.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.Interfaces.IPostProcessor">
+      <summary>
+            Represents a class that can inspect or modify service requests
+            from a given container.
+            </summary>
+    </member>
+    <member name="M:LinFu.IoC.Interfaces.IPostProcessor.PostProcess(LinFu.IoC.Interfaces.IServiceRequestResult)">
+      <summary>
+            Allows a <see cref="T:LinFu.IoC.Interfaces.IPostProcessor" /> instance
+            to inspect or modify the result of a service request.
+            </summary>
+      <seealso cref="T:LinFu.IoC.Interfaces.IServiceRequestResult" />
+      <param name="result">The <see cref="T:LinFu.IoC.Interfaces.IServiceRequestResult" /> created as a result of the container operation.</param>
+    </member>
+    <member name="T:LinFu.IoC.Interfaces.IServiceInfo">
+      <summary>
+            A class that describes a single service
+            provided by a container.
+            </summary>
+    </member>
+    <member name="P:LinFu.IoC.Interfaces.IServiceInfo.ServiceName">
+      <summary>
+            The name of the service being created. By default, this property is blank.
+            </summary>
+    </member>
+    <member name="P:LinFu.IoC.Interfaces.IServiceInfo.ServiceType">
+      <summary>
+            The type of service being requested.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.Interfaces.IServiceRequestResult">
+      <summary>
+            Represents the results returned when a service request
+            is made against an <see cref="T:LinFu.IoC.Interfaces.IServiceContainer" /> instance.
+            </summary>
+    </member>
+    <member name="P:LinFu.IoC.Interfaces.IServiceRequestResult.OriginalResult">
+      <summary>
+            The raw object reference created by the container itself.
+            </summary>
+    </member>
+    <member name="P:LinFu.IoC.Interfaces.IServiceRequestResult.ActualResult">
+      <summary>
+            The result that will be returned from the container
+            instead of the <see cref="P:LinFu.IoC.Interfaces.IServiceRequestResult.OriginalResult" />. 
+            
+            If this property is null, then the original result will be used.
+            </summary>
+    </member>
+    <member name="P:LinFu.IoC.Interfaces.IServiceRequestResult.Container">
+      <summary>
+            The container that will handle the service request.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.Plugins.PostProcessorPlugin">
+      <summary>
+            A plugin that injects postprocessors marked
+            with the PostProcessorAttribute into any
+            container currently being configured.
+            </summary>
+    </member>
+    <member name="M:LinFu.IoC.Plugins.PostProcessorPlugin.Initialize(LinFu.Reflection.ILoader{LinFu.IoC.Interfaces.IServiceContainer},LinFu.Reflection.IAssemblyTargetLoader{LinFu.IoC.Interfaces.IServiceContainer})">
+      <summary>
+            Initializes a <paramref name="loader" /> so that
+            every <see cref="T:LinFu.IoC.Interfaces.IPostProcessor" /> class that is marked
+            with the <see cref="T:LinFu.IoC.Configuration.PostProcessorAttribute" /> will
+            automatically be loaded into memory.
+            </summary>
+      <param name="loader">The loader currently being configured.</param>
+      <param name="assemblyLoader">The <see cref="T:LinFu.Reflection.IAssemblyTargetLoader`1" /> 
+            instance that will configure the container using the type information 
+            embedded in an assembly.</param>
+    </member>
+    <member name="T:LinFu.IoC.Plugins.FactoryAttributePlugin">
+      <summary>
+            A plugin that adds support for injecting factory types marked with the
+            <see cref="T:LinFu.IoC.Configuration.FactoryAttribute" /> into a <see cref="T:LinFu.IoC.Interfaces.IServiceContainer" />
+            instance.
+            </summary>
+    </member>
+    <member name="M:LinFu.IoC.Plugins.FactoryAttributePlugin.Initialize(LinFu.Reflection.ILoader{LinFu.IoC.Interfaces.IServiceContainer},LinFu.Reflection.IAssemblyTargetLoader{LinFu.IoC.Interfaces.IServiceContainer})">
+      <summary>
+            Injects an <see cref="T:LinFu.IoC.Plugins.FactoryAttributeLoader" /></summary>
+      <param name="loader">The loader that will be used to configure the service containers.</param>
+      <param name="assemblyLoader">The assembly loader that will configure the service container instance.</param>
+    </member>
+    <member name="T:LinFu.IoC.Plugins.GenericTypeSurrogate">
+      <summary>
+            A postprocessor that routes all service requests
+            for a generic type to a single <see cref="T:LinFu.IoC.Interfaces.IFactory" /> class.    
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.Plugins.ImplementsAttributeLoader">
+      <summary>
+            A loader class that scans a type for <see cref="T:LinFu.IoC.Configuration.ImplementsAttribute" />
+            attribute declarations and creates a factory for each corresponding 
+            attribute instance.
+            </summary>
+      <seealso cref="T:LinFu.IoC.Interfaces.IFactory" />
+    </member>
+    <member name="M:LinFu.IoC.Plugins.ImplementsAttributeLoader.Load(System.Type)">
+      <summary>
+            Converts a given <see cref="T:System.Type" /> into
+            a set of <see cref="T:System.Action`1" /> instances so that
+            the <see cref="T:LinFu.IoC.Interfaces.IContainer" /> instance can be loaded
+            with the given factories.
+            </summary>
+      <param name="sourceType">The input type from which one or more factories will be created.</param>
+      <returns>A set of <see cref="T:System.Action`1" /> instances. This cannot be null.</returns>
+    </member>
+    <member name="M:LinFu.IoC.Plugins.ImplementsAttributeLoader.CreateFactory(System.Type,System.Type,LinFu.IoC.Configuration.LifecycleType)">
+      <summary>
+            Creates a factory instance that can create instaces of the given
+            <paramref name="serviceType" />  using the <paramref name="implementingType" />
+            as the implementation.
+            </summary>
+      <param name="serviceType">The service being implemented.</param>
+      <param name="implementingType">The actual type that will implement the service.</param>
+      <param name="lifecycle">The <see cref="T:LinFu.IoC.Configuration.LifecycleType" /> that determines the lifetime of each instance being created.</param>
+      <returns>
+      </returns>
+    </member>
+    <member name="M:LinFu.IoC.Plugins.ImplementsAttributeLoader.CreateFactoryMethod(System.Type,System.Type)">
+      <summary>
+            A <c>private</c> method that creates the factory method delegate
+            for use with a particular factory class.
+            </summary>
+      <seealso cref="T:LinFu.IoC.Factories.SingletonFactory`1" />
+      <seealso cref="T:LinFu.IoC.Factories.OncePerRequestFactory`1" />
+      <seealso cref="T:LinFu.IoC.Factories.OncePerThreadFactory`1" />
+      <param name="serviceType">The service type being instantiated.</param>
+      <param name="implementingType">The type that will provide the implementation for the actual service.</param>
+      <returns>A factory method delegate that can create the given service.</returns>
+    </member>
+    <member name="M:LinFu.IoC.Plugins.ImplementsAttributeLoader.CreateFactoryMethodInternal``2">
+      <summary>
+            A method that generates the actual lambda function that creates
+            the new service instance.
+            </summary>
+      <typeparam name="TService">The service type being instantiated.</typeparam>
+      <typeparam name="TImplementation">The type that will provide the implementation for the actual service.</typeparam>
+      <returns>A strongly-typed factory method delegate that can create the given service.</returns>
+    </member>
+    <member name="T:LinFu.IoC.Plugins.AssemblyContainerLoader">
+      <summary>
+            Represents a class that loads configuration information
+            from a given assembly.
+            </summary>
+    </member>
+    <member name="T:LinFu.IoC.Plugins.Initializer">
+      <summary>
+            A class that initializes service instances that use
+            the <see cref="T:LinFu.IoC.Configuration.IInitialize" /> interface.
+            </summary>
+    </member>
+    <member name="M:LinFu.IoC.Plugins.Initializer.PostProcess(LinFu.IoC.Interfaces.IServiceRequestResult)">
+      <summary>
+            Initializes every service that implements
+            the <see cref="T:LinFu.IoC.Configuration.IInitialize" /> interface.
+            </summary>
+      <param name="result">The <see cref="T:LinFu.IoC.Interfaces.IServiceRequestResult" /> instance that contains the service instance to be initialized.</param>
+    </member>
+    <member name="T:LinFu.IoC.Plugins.PostProcessorLoader">
+      <summary>
+            A class that automatically loads <see cref="T:LinFu.IoC.Interfaces.IPostProcessor" />
+            instances and configures a loader to inject those postprocessors
+            into a container upon initialization.
+            </summary>
+    </member>
+    <member name="M:LinFu.IoC.Plugins.PostProcessorLoader.CanLoad(System.Type)">
+      <summary>
+            Determines if the plugin loader can load the <paramref name="inputType" />.
+            </summary>
+      <remarks>The target type must implement the <see cref="T:LinFu.IoC.Interfaces.IPostProcessor" /> interface before it can be loaded into memory.</remarks>
+      <param name="inputType">The target type that might contain the target <typeparamref name="TAttribute" /> instance.</param>
+      <returns>
+        <c>true</c> if the type can be loaded; otherwise, it returns <c>false</c>.</returns>
+    </member>
+    <member name="M:LinFu.IoC.Plugins.PostProcessorLoader.Load(System.Type)">
+      <summary>
+            Loads a set of <see cref="T:LinFu.IoC.Interfaces.IPostProcessor" /> instances
+            so that they can be loaded into a container upon initialization.
+            </summary>
+      <param name="inputType">The type that will be used to configure the target loader.</param>
+      <returns>A set of <see cref="T:System.Action`1" /> instances. This cannot be <c>null</c>.</returns>
+    </member>
+    <member name="T:LinFu.IoC.Plugins.FactoryAttributeLoader">
+      <summary>
+            A class that injects custom <see cref="T:LinFu.IoC.Interfaces.IFactory" /> and <see cref="T:LinFu.IoC.Interfaces.IFactory`1" />
+            instances into an <see cref="T:LinFu.IoC.Interfaces.IServiceContainer" /> instance.
+            </summary>
+    </member>
+    <member name="M:LinFu.IoC.Plugins.FactoryAttributeLoader.Load(System.Type)">
+      <summary>
+            Loads an <see cref="T:LinFu.IoC.Interfaces.IFactory" /> and <see cref="T:LinFu.IoC.Interfaces.IFactory`1" /> instance
+            into a <see cref="T:LinFu.IoC.Interfaces.IServiceContainer" /> instance using the given
+            <paramref name="sourceType" />.
+            </summary>
+      <param name="sourceType">The input type from which one or more factories will be created.</param>
+      <returns>A set of <see cref="T:System.Action`1" /> instances. This cannot be null.</returns>
+    </member>
+    <member name="T:LinFu.Reflection.AssemblyLoader">
+      <summary>
+            Represents a class that loads assemblies into memory
+            from disk.
+            </summary>
+    </member>
+    <member name="M:LinFu.Reflection.AssemblyLoader.Load(System.String)">
+      <summary>
+            Loads the target assembly into memory.
+            </summary>
+      <param name="assemblyFile">The full path and filename of the assembly to load.</param>
+      <returns>A loaded <see cref="T:System.Reflection.Assembly" /> instance.</returns>
+    </member>
+    <member name="T:LinFu.Reflection.AssemblyTargetLoader`1">
+      <summary>
+            Represents a loader class that takes <see cref="T:System.Type" />
+            instances as input and generates <see cref="T:System.Action`1" />
+            instances that can be used to configure a <typeparamref name="TTarget" />
+            instance.
+            </summary>
+      <typeparam name="TTarget">The target type to configure.</typeparam>
+    </member>
+    <member name="M:LinFu.Reflection.AssemblyTargetLoader`1.#ctor">
+      <summary>
+            Initializes the class with the default property values.
+            </summary>
+    </member>
+    <member name="M:LinFu.Reflection.AssemblyTargetLoader`1.CanLoad(System.String)">
+      <summary>
+            Determines whether or not the current type loader
+            instance can load the current file type.
+            </summary>
+      <remarks>
+            This class only loads assemblies with the ".dll" extension.
+            </remarks>
+      <param name="filename">The filename and full path of the target file.</param>
+      <returns>Returns <c>true</c> if the file can be loaded; otherwise, the result is <c>false</c>.</returns>
+    </member>
+    <member name="M:LinFu.Reflection.AssemblyTargetLoader`1.Load(System.String)">
+      <summary>
+            Reads an input file using the given <paramref name="filename" />
+            and converts it into a set of <see cref="T:System.Action`1" />
+            instances that can be applied to a target class instance..
+            </summary>
+      <remarks>This class can only load valid .NET Assemblies.</remarks>
+      <param name="filename">The target file to be loaded.</param>
+      <returns>A set of <see cref="T:System.Action`1" /> instances to apply to a target type.</returns>
+    </member>
+    <member name="M:LinFu.Reflection.AssemblyTargetLoader`1.LoadResultsFromType(System.Type,System.Collections.Generic.List{System.Action{`0}})">
+      <summary>
+            Generates the list of <see cref="T:System.Action`1" />
+            instances which will be used to configure a target instance.
+            </summary>
+      <param name="type">The <see cref="T:System.Type" /> instance that holds the configuration information.</param>
+      <param name="results">The list that will hold the actions which will configure the container.</param>
+    </member>
+    <member name="P:LinFu.Reflection.AssemblyTargetLoader`1.AssemblyLoader">
+      <summary>
+            The <see cref="T:LinFu.Reflection.IAssemblyLoader" /> instance that will load
+            the target assemblies.
+            </summary>
+    </member>
+    <member name="P:LinFu.Reflection.AssemblyTargetLoader`1.TypeExtractor">
+      <summary>
+            The <see cref="T:LinFu.Reflection.ITypeExtractor" /> instance that will
+            determine which types will be extracted from an assembly.
+            </summary>
+    </member>
+    <member name="P:LinFu.Reflection.AssemblyTargetLoader`1.TypeLoaders">
+      <summary>
+            The list of ActionLoaders that will be used to
+            configure the target.
+            </summary>
+    </member>
+    <member name="T:LinFu.Reflection.BasePluginLoader`2">
+      <summary>
+            Implements the basic functionality of a plugin loader.
+            </summary>
+      <typeparam name="TTarget">The target type being configured.</typeparam>
+      <typeparam name="TAttribute">The attribute type that will be used to mark a type as a plugin.</typeparam>
+    </member>
+    <member name="M:LinFu.Reflection.BasePluginLoader`2.CanLoad(System.Type)">
+      <summary>
+            Determines if the plugin loader can load the <paramref name="inputType" />.
+            </summary>
+      <param name="inputType">The target type that might contain the target <typeparamref name="TAttribute" /> instance.</param>
+      <returns>
+        <c>true</c> if the type can be loaded; otherwise, it returns <c>false</c>.</returns>
+    </member>
+    <member name="M:LinFu.Reflection.BasePluginLoader`2.Load(System.Type)">
+      <summary>
+            Generates a set of <see cref="T:System.Action`1" /> instances
+            using the given <paramref name="input" />.
+            </summary>
+      <param name="input">The input that will be used to configure the target.</param>
+      <returns>A set of <see cref="T:System.Action`1" /> instances. This cannot be <c>null</c>.</returns>
+    </member>
+    <member name="T:LinFu.Reflection.DefaultDirectoryLister">
+      <summary>
+            A class that lists the contents of a given directory.
+            </summary>
+    </member>
+    <member name="M:LinFu.Reflection.DefaultDirectoryLister.GetFiles(System.String,System.String)">
+      <summary>
+            Returns a list of files that match the <paramref name="searchPattern" />
+            from the given directory <paramref name="path" />.
+            </summary>
+      <param name="path">The target directory to search.</param>
+      <param name="searchPattern">The search string to match against the names of the files in the <paramref name="path" />.</param>
+      <returns>The list of files that match the <paramref name="path" /> and <paramref name="searchPattern" /></returns>
+    </member>
+    <member name="T:LinFu.Reflection.Loader`1">
+      <summary>
+            Represents a generic loader class that can
+            load multiple <see cref="T:System.Action`1" /> delegates from multiple files and
+            apply them to a particular <typeparamref name="TTarget" /> instance.
+            </summary>
+      <typeparam name="TTarget">
+      </typeparam>
+    </member>
+    <member name="M:LinFu.Reflection.Loader`1.#ctor">
+      <summary>
+            Initializes the target with the default settings.
+            </summary>
+    </member>
+    <member name="M:LinFu.Reflection.Loader`1.LoadDirectory(System.String,System.String)">
+      <summary>
+            Loads the container with the files listed in 
+            the target <paramref name="directory" /> that match 
+            the given <paramref name="filespec">file pattern</paramref>.
+            </summary>
+      <param name="directory">The full path of the location to scan.</param>
+      <param name="filespec">The wildcard file pattern string to use when specifying the target files.</param>
+    </member>
+    <member name="M:LinFu.Reflection.Loader`1.LoadInto(`0)">
+      <summary>
+            Loads the current configuration into the <paramref name="target" />
+            instance.
+            </summary>
+      <param name="target">
+      </param>
+    </member>
+    <member name="M:LinFu.Reflection.Loader`1.Reset">
+      <summary>
+            Clears the currently loaded configuration
+            and resets the loader back to its defaults.
+            </summary>
+    </member>
+    <member name="M:LinFu.Reflection.Loader`1.Load(System.String)">
+      <summary>
+            Loads the <paramref name="currentFile">current file</paramref>
+            using the list of associated <see cref="P:LinFu.Reflection.Loader`1.FileLoaders" />.
+            </summary>
+      <param name="currentFile">The full path and filename being loaded.</param>
+    </member>
+    <member name="P:LinFu.Reflection.Loader`1.QueuedActions">
+      <summary>
+            The list of actions that will execute
+            every time a target instance is configured.
+            </summary>
+    </member>
+    <member name="P:LinFu.Reflection.Loader`1.CustomLoaderActions">
+      <summary>
+            The custom list of actions that will be
+            performed prior to the beginning of the first load operation.
+            </summary>
+      <remarks>
+            These actions will be performed only once per reset.
+            </remarks>
+    </member>
+    <member name="P:LinFu.Reflection.Loader`1.Plugins">
+      <summary>
+            The list of <see cref="T:LinFu.Reflection.ILoaderPlugin`1" />
+            instances that will be used to
+            signal the beginning and end of the
+            load sequence.
+            </summary>
+    </member>
+    <member name="P:LinFu.Reflection.Loader`1.FileLoaders">
+      <summary>
+            The list of <see cref="T:LinFu.Reflection.IActionLoader`2" />
+            instances responsible for configuring the target instance.
+            </summary>
+    </member>
+    <member name="P:LinFu.Reflection.Loader`1.DirectoryLister">
+      <summary>
+            Gets or sets the <see cref="T:LinFu.Reflection.IDirectoryListing" /> instance 
+            responsible for returning a list of filenames
+            to the loader for processing.
+            </summary>
+    </member>
+    <member name="T:LinFu.Reflection.LoaderPluginAttribute">
+      <summary>
+            Marks a class as a loader plugin type.
+            </summary>
+    </member>
+    <member name="T:LinFu.Reflection.PluginLoader`2">
+      <summary>
+            Represents a loader class that can load
+            <see cref="T:LinFu.Reflection.ILoaderPlugin`1" /> instances
+            marked with a particular <typeparamref name="TAttribute" />
+            type.
+            </summary>
+      <typeparam name="TTarget">The target type being configured.</typeparam>
+      <typeparam name="TAttribute">The attribute type that marks a type as a plugin type.</typeparam>
+    </member>
+    <member name="M:LinFu.Reflection.PluginLoader`2.CanLoad(System.Type)">
+      <summary>
+            Determines if the plugin loader can load the <paramref name="inputType" />.
+            </summary>
+      <remarks>The target type must implement <see cref="T:LinFu.Reflection.ILoaderPlugin`1" /> before it can be loaded.</remarks>
+      <param name="inputType">The target type that might contain the target <typeparamref name="TAttribute" /> instance.</param>
+      <returns>
+        <c>true</c> if the type can be loaded; otherwise, it returns <c>false</c>.</returns>
+    </member>
+    <member name="M:LinFu.Reflection.PluginLoader`2.Load(System.Type)">
+      <summary>
+            Loads a set of actions from a <see cref="T:System.Type" />
+            instance.
+            </summary>
+      <param name="input">The target type to scan.</param>
+      <returns>A set of actions which will be applied to the target <see cref="T:LinFu.Reflection.ILoader`1" /> instance.</returns>
+    </member>
+    <member name="T:LinFu.Reflection.TypeExtractor">
+      <summary>
+            Represents a type that can extract <see cref="T:System.Type" />
+            objects from an <see cref="T:System.Reflection.Assembly" /> instance.
+            </summary>
+    </member>
+    <member name="M:LinFu.Reflection.TypeExtractor.GetTypes(System.Reflection.Assembly)">
+      <summary>
+            Returns a set of types from a given assembly.
+            </summary>
+      <param name="targetAssembly">The <see cref="T:System.Reflection.Assembly" /> that contains the target types.</param>
+      <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1" /> of types from the target assembly.</returns>
+    </member>
+    <member name="T:LinFu.Reflection.IActionLoader`2">
+      <summary>
+            Represents a class that can configure 
+            a target of type <typeparamref name="TTarget" />
+            using an input type of <typeparamref name="TInput" />.
+            </summary>
+      <typeparam name="TTarget">The target type to configure.</typeparam>
+      <typeparam name="TInput">The input that will be used to configure the target.</typeparam>
+    </member>
+    <member name="M:LinFu.Reflection.IActionLoader`2.Load(`1)">
+      <summary>
+            Generates a set of <see cref="T:System.Action`1" /> instances
+            using the given <paramref name="input" />.
+            </summary>
+      <param name="input">The input that will be used to configure the target.</param>
+      <returns>A set of <see cref="T:System.Action`1" /> instances. This cannot be <c>null</c>.</returns>
+    </member>
+    <member name="M:LinFu.Reflection.IActionLoader`2.CanLoad(`1)">
+      <summary>
+            Determines if the PluginLoader can load the <paramref name="inputType" />.
+            </summary>
+      <param name="inputType">The target type that might contain the target <typeparamref name="TAttribute" /> instance.</param>
+      <returns>
+        <c>true</c> if the type can be loaded; otherwise, it returns <c>false</c>.</returns>
+    </member>
+    <member name="T:LinFu.Reflection.IAssemblyLoader">
+      <summary>
+            Represents a class that loads assemblies into memory
+            from disk.
+            </summary>
+    </member>
+    <member name="M:LinFu.Reflection.IAssemblyLoader.Load(System.String)">
+      <summary>
+            Loads the target assembly into memory.
+            </summary>
+      <param name="assemblyFile">The full path and filename of the assembly to load.</param>
+      <returns>A loaded <see cref="T:System.Reflection.Assembly" /> instance.</returns>
+    </member>
+    <member name="T:LinFu.Reflection.IAssemblyTargetLoader`1">
+      <summary>
+            Represents a specific <see cref="T:LinFu.Reflection.IActionLoader`2" />
+            type that can load configuration information from an assembly
+            and apply it to a <typeparamref name="TTarget" /> instance.
+            </summary>
+      <typeparam name="TTarget">The target type to configure.</typeparam>
+    </member>
+    <member name="M:LinFu.Reflection.IAssemblyTargetLoader`1.CanLoad(System.String)">
+      <summary>
+            Determines whether or not the current type loader
+            instance can load the current file type.
+            </summary>
+      <remarks>
+            This class only loads assemblies with the ".dll" extension.
+            </remarks>
+      <param name="filename">The filename and full path of the target file.</param>
+      <returns>Returns <c>true</c> if the file can be loaded; otherwise, the result is <c>false</c>.</returns>
+    </member>
+    <member name="M:LinFu.Reflection.IAssemblyTargetLoader`1.Load(System.String)">
+      <summary>
+            Reads an input file using the given <paramref name="filename" />
+            and converts it into a set of <see cref="T:System.Action`1" />
+            instances that can be applied to a target class instance..
+            </summary>
+      <remarks>This class can only load valid .NET Assemblies.</remarks>
+      <param name="filename">The target file to be loaded.</param>
+      <returns>A set of <see cref="T:System.Action`1" /> instances to apply to a target type.</returns>
+    </member>
+    <member name="P:LinFu.Reflection.IAssemblyTargetLoader`1.AssemblyLoader">
+      <summary>
+            The <see cref="T:LinFu.Reflection.IAssemblyLoader" /> instance that will load
+            the target assemblies.
+            </summary>
+    </member>
+    <member name="P:LinFu.Reflection.IAssemblyTargetLoader`1.TypeExtractor">
+      <summary>
+            The <see cref="T:LinFu.Reflection.ITypeExtractor" /> instance that will
+            determine which types will be extracted from an assembly.
+            </summary>
+    </member>
+    <member name="P:LinFu.Reflection.IAssemblyTargetLoader`1.TypeLoaders">
+      <summary>
+            The list of ActionLoaders that will be used to
+            configure the target.
+            </summary>
+    </member>
+    <member name="T:LinFu.Reflection.IDirectoryListing">
+      <summary>
+            Represents a class that can list the files
+            in a given directory.
+            </summary>
+    </member>
+    <member name="M:LinFu.Reflection.IDirectoryListing.GetFiles(System.String,System.String)">
+      <summary>
+            Returns the names of the files in the specified directory
+            that match the specified search pattern.
+            </summary>
+      <param name="path">The directory to search.</param>
+      <param name="searchPattern">The search string to match against the names of the files in the <paramref name="path" />.</param>
+      <returns>The list of files that match the <paramref name="path" /> and <paramref name="searchPattern" /></returns>
+    </member>
+    <member name="T:LinFu.Reflection.IInitialize`1">
+      <summary>
+            Represents classes that need to be initialized
+            every time a particular 
+            instance creates that type.
+            </summary>
+    </member>
+    <member name="M:LinFu.Reflection.IInitialize`1.Initialize(`0)">
+      <summary>
+            Initializes the target with the
+            particular <typeparamref cref="!:T" /> instance.
+            </summary>
+      <param name="source">The <typeparamref cref="!:T" /> instance that will hold the target type.</param>
+    </member>
+    <member name="T:LinFu.Reflection.ILoader`1">
+      <summary>
+            Represents a generic interface for an abstract loader
+            that can read configuration information from disk
+            and apply it to a <typeparamref name="TTarget" /> instance.
+            </summary>
+      <typeparam name="TTarget">The class type being configured.</typeparam>
+    </member>
+    <member name="M:LinFu.Reflection.ILoader`1.LoadDirectory(System.String,System.String)">
+      <summary>
+            Loads the configuration using the files listed in 
+            the target <paramref name="directory" /> that match 
+            the given <paramref name="filespec">file pattern</paramref>.
+            </summary>
+      <param name="directory">The full path of the location to scan.</param>
+      <param name="filespec">The wildcard file pattern string to use when specifying the target files.</param>
+    </member>
+    <member name="M:LinFu.Reflection.ILoader`1.LoadInto(`0)">
+      <summary>
+            Configures the <paramref name="target" /> instance 
+            using the configuration currently loaded from disk.
+            </summary>
+      <param name="target">The <typeparamref name="TTarget" /> instance to be configured.</param>
+    </member>
+    <member name="M:LinFu.Reflection.ILoader`1.Reset">
+      <summary>
+            Clears the currently loaded configuration
+            and resets the loader back to its defaults.
+            </summary>
+    </member>
+    <member name="P:LinFu.Reflection.ILoader`1.Plugins">
+      <summary>
+            The list of <see cref="T:LinFu.Reflection.ILoaderPlugin`1" />
+            instances that will be used to
+            signal the beginning and end of the
+            load sequence.
+            </summary>
+    </member>
+    <member name="P:LinFu.Reflection.ILoader`1.FileLoaders">
+      <summary>
+            The list of <see cref="T:LinFu.Reflection.IActionLoader`2" />
+            instances responsible for configuring the <typeparamref name="TTarget" /> instance.
+            </summary>
+    </member>
+    <member name="P:LinFu.Reflection.ILoader`1.DirectoryLister">
+      <summary>
+            Gets or sets the <see cref="T:LinFu.Reflection.IDirectoryListing" /> instance 
+            responsible for returning a list of filenames
+            to the loader for processing.
+            </summary>
+    </member>
+    <member name="P:LinFu.Reflection.ILoader`1.CustomLoaderActions">
+      <summary>
+            The custom list of actions that will be
+            performed prior to the beginning of a load operation.
+            </summary>
+    </member>
+    <member name="P:LinFu.Reflection.ILoader`1.QueuedActions">
+      <summary>
+            The list of actions that will execute
+            every time a target instance is configured.
+            </summary>
+    </member>
+    <member name="T:LinFu.Reflection.ILoaderPlugin`1">
+      <summary>
+            Represents a component that can monitor
+            a target instance as it loads.
+            </summary>
+      <typeparam name="TTarget">The target instance type.</typeparam>
+    </member>
+    <member name="M:LinFu.Reflection.ILoaderPlugin`1.BeginLoad(`0)">
+      <summary>
+            Signals the beginning of a load.
+            </summary>
+      <param name="target">The target being loaded.</param>
+    </member>
+    <member name="M:LinFu.Reflection.ILoaderPlugin`1.EndLoad(`0)">
+      <summary>
+            Signals the end of a load.
+            </summary>
+      <param name="target">The target being loaded.</param>
+    </member>
+    <member name="T:LinFu.Reflection.ITypeExtractor">
+      <summary>
+            Represents a type that can extract <see cref="T:System.Type" />
+            objects from an <see cref="T:System.Reflection.Assembly" /> instance.
+            </summary>
+    </member>
+    <member name="M:LinFu.Reflection.ITypeExtractor.GetTypes(System.Reflection.Assembly)">
+      <summary>
+            Returns a set of types from a given assembly.
+            </summary>
+      <param name="targetAssembly">The <see cref="T:System.Reflection.Assembly" /> that contains the target types.</param>
+      <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1" /> of types from the target assembly.</returns>
+    </member>
+    <member name="T:LinFu.Reflection.Plugins.BaseLoaderPlugin`1">
+      <summary>
+            A class that implements the basic functionality of
+            a loader plugin.
+            </summary>
+      <typeparam name="TTarget">The type being loaded.</typeparam>
+    </member>
+    <member name="M:LinFu.Reflection.Plugins.BaseLoaderPlugin`1.BeginLoad(`0)">
+      <summary>
+            Signals the beginning of a load.
+            </summary>
+      <param name="target">The target being loaded.</param>
+    </member>
+    <member name="M:LinFu.Reflection.Plugins.BaseLoaderPlugin`1.EndLoad(`0)">
+      <summary>
+            Signals the end of a load.
+            </summary>
+      <param name="target">The target being loaded.</param>
+    </member>
+    <member name="T:LinFu.Reflection.Plugins.BaseTargetLoaderPlugin`1">
+      <summary>
+            A plugin class that provides the basic implementation
+            for plugins that work with <see cref="T:LinFu.Reflection.IAssemblyTargetLoader`1" /> instances.
+            </summary>
+      <typeparam name="TTarget">The target type being configured.</typeparam>
+    </member>
+    <member name="M:LinFu.Reflection.Plugins.BaseTargetLoaderPlugin`1.Initialize(LinFu.Reflection.ILoader{`0})">
+      <summary>
+            Searches the loader for an <see cref="T:LinFu.Reflection.IAssemblyTargetLoader`1" />
+            instance and uses its derived classes to initialize
+            the assembly target loader.
+            </summary>
+      <param name="source">The <see cref="T:LinFu.Reflection.ILoader`1" /> instance that will hold the plugin.</param>
+    </member>
+    <member name="M:LinFu.Reflection.Plugins.BaseTargetLoaderPlugin`1.Initialize(LinFu.Reflection.ILoader{`0},LinFu.Reflection.IAssemblyTargetLoader{`0})">
+      <summary>
+            Initializes the <paramref name="loader" /> instance
+            with the given <paramref name="assemblyLoader" /> instance.
+            </summary>
+      <param name="loader">The loader being configured.</param>
+      <param name="assemblyLoader">The assembly loader that will load the types into the loader itself.</param>
+    </member>
+  </members>
+</doc>
