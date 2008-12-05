@@ -6,8 +6,18 @@ namespace LinFu.IoC.Interfaces
     /// Represents the results returned when a service request
     /// is made against an <see cref="IServiceContainer"/> instance.
     /// </summary>
-    public interface IServiceRequestResult : IServiceInfo
+    public interface IServiceRequestResult 
     {
+        /// <summary>
+        /// The name of the service being created. By default, this property is blank.
+        /// </summary>
+        string ServiceName { get; }
+
+        /// <summary>
+        /// The type of service being requested.
+        /// </summary>
+        Type ServiceType { get; }
+
         /// <summary>
         /// The raw object reference created by the container itself.
         /// </summary>

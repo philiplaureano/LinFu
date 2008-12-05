@@ -99,22 +99,24 @@ namespace LinFu.IoC.Configuration
             var servicesToImplement = from f in attributeList
                                       let serviceName = f.ServiceName
                                       let serviceType = f.ServiceType
+                                      let argumentTypes = f.ArgumentTypes ?? new Type[0]
                                       let factory = createFactory(serviceType, factoryInstance)
                                       where factory != null
                                       select new
                                                  {
                                                      ServiceName = serviceName,
                                                      ServiceType = serviceType,
+                                                     ArgumentTypes = argumentTypes,
                                                      FactoryInstance = factory
                                                  };
 
-
             var results = new List<Action<IServiceContainer>>();
             foreach (var currentService in servicesToImplement)
-            {
-                string serviceName = currentService.ServiceName;
-                Type serviceType = currentService.ServiceType;
-                IFactory factory = currentService.FactoryInstance;
+            {                
+                var serviceName = currentService.ServiceName;
+                var serviceType = currentService.ServiceType;
+                var argumentTypes = currentService.ArgumentTypes;
+                var factory = currentService.FactoryInstance;
 
                 // HACK: Unnamed custom factories should be able to
                 // intercept every request for the given service type
@@ -124,7 +126,7 @@ namespace LinFu.IoC.Configuration
                     results.Add(container => container.PreProcessors.Add(injector));
                 }
                 // Add each service to the container on initialization
-                results.Add(container => container.AddFactory(serviceName, serviceType, factory));
+                results.Add(container => container.AddFactory(serviceName, serviceType, argumentTypes, factory));
             }
 
             return results;

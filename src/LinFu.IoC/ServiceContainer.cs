@@ -38,10 +38,11 @@ namespace LinFu.IoC
         /// </summary>
         /// <param name="serviceName">The name of the service to associate with the given <see cref="IFactory"/> instance.</param>
         /// <param name="serviceType">The type of service that the factory will be able to create.</param>
+        /// <param name="additionalParameterTypes">The list of additional parameters that this factory type will support.</param>
         /// <param name="factory">The <see cref="IFactory"/> instance that will create the object instance.</param>
-        public virtual void AddFactory(string serviceName, Type serviceType, IFactory factory)
+        public virtual void AddFactory(string serviceName, Type serviceType, IEnumerable<Type> additionalParameterTypes, IFactory factory)
         {
-            FactoryStorage.AddFactory(serviceName, serviceType, factory);
+            FactoryStorage.AddFactory(serviceName, serviceType, additionalParameterTypes, factory);
         }
 
         /// <summary>
@@ -49,10 +50,11 @@ namespace LinFu.IoC
         /// with the given <paramref name="serviceType">service type</paramref>.
         /// </summary>
         /// <param name="serviceType">The service type to associate with the factory</param>
+        /// <param name="additionalParameterTypes">The list of additional parameters that this factory type will support.</param>
         /// <param name="factory">The <see cref="IFactory"/> instance that will be responsible for creating the service instance</param>
-        public virtual void AddFactory(Type serviceType, IFactory factory)
+        public virtual void AddFactory(Type serviceType, IEnumerable<Type> additionalParameterTypes, IFactory factory)
         {
-            FactoryStorage.AddFactory(null, serviceType, factory);
+            FactoryStorage.AddFactory(null, serviceType, additionalParameterTypes, factory);
         }
 
         /// <summary>
@@ -60,10 +62,11 @@ namespace LinFu.IoC
         /// can be instantiated by the container.
         /// </summary>
         /// <param name="serviceType">The type of service to instantiate.</param>
+        /// <param name="additionalParameterTypes">The list of additional parameters that this factory type will support.</param>
         /// <returns>Returns <c>true</c> if the service exists; otherwise, it will return <c>false</c>.</returns>
-        public virtual bool Contains(Type serviceType)
+        public virtual bool Contains(Type serviceType, IEnumerable<Type> additionalParameterTypes)
         {
-            return Contains(null, serviceType);
+            return Contains(null, serviceType, additionalParameterTypes);
         }
 
         /// <summary>
@@ -103,15 +106,19 @@ namespace LinFu.IoC
             var suppressErrors = SuppressErrors;
 
             // Attempt to create the service type using
-            // the generic factories, if possible
-            var factory = FactoryStorage.GetFactory(serviceName, serviceType);
+            // the strongly-typed arguments
+            var factory = FactoryStorage.GetFactory(serviceName, serviceType, additionalArguments);
+
+            // Use the default factory for this service type if no other factory exists
+            if (factory == null && FactoryStorage.ContainsFactory(serviceName, serviceType, new Type[0]))
+                factory = FactoryStorage.GetFactory(serviceName, serviceType, new List<Type>());
 
             // Attempt to create the service type using
             // the generic factories, if possible
             if (factory == null && serviceType.IsGenericType)
             {
                 var definitionType = serviceType.GetGenericTypeDefinition();
-                factory = FactoryStorage.GetFactory(serviceName, definitionType);
+                factory = FactoryStorage.GetFactory(serviceName, definitionType, additionalArguments);
             }
 
             // Allow users to intercept the instantiation process
@@ -155,19 +162,20 @@ namespace LinFu.IoC
         /// </summary>
         /// <param name="serviceName">The name of the service to associate with the given <see cref="IFactory"/> instance.</param>
         /// <param name="serviceType">The type of service that the factory will be able to create.</param>
+        /// <param name="additionalParameterTypes">The list of additional parameters that this factory type will support.</param>
         /// <returns>Returns <c>true</c> if the service exists; otherwise, it will return <c>false</c>.</returns>
-        public virtual bool Contains(string serviceName, Type serviceType)
+        public virtual bool Contains(string serviceName, Type serviceType, IEnumerable<Type> additionalParameterTypes)
         {
             // Use the default implementation for
             // non-generic types
             if (!serviceType.IsGenericType && !serviceType.IsGenericTypeDefinition)
-                return FactoryStorage.ContainsFactory(serviceName, serviceType);
+                return FactoryStorage.ContainsFactory(serviceName, serviceType, additionalParameterTypes);
 
             // If the service type is a generic type, determine
             // if the service type can be created by a 
             // standard factory that can create an instance
             // of that generic type (e.g., IFactory<IGeneric<T>>            
-            var result = FactoryStorage.ContainsFactory(serviceName, serviceType);
+            var result = FactoryStorage.ContainsFactory(serviceName, serviceType, additionalParameterTypes);
 
             // Immediately return a positive match, if possible
             if (result)
@@ -181,7 +189,7 @@ namespace LinFu.IoC
                 // Check if there are any generic factories that can create
                 // the entire family of services whose type definitions
                 // match the base type
-                result = FactoryStorage.ContainsFactory(serviceName, baseDefinition);
+                result = FactoryStorage.ContainsFactory(serviceName, baseDefinition, additionalParameterTypes);
             }
 
             return result;
@@ -248,7 +256,7 @@ namespace LinFu.IoC
         /// Gets the value indicating the <see cref="IFactoryStorage"/> instance
         /// that will be used to store each <see cref="IFactory"/> instance.
         /// </summary>
-        protected IFactoryStorage FactoryStorage
+        internal IFactoryStorage FactoryStorage
         {
             get
             {

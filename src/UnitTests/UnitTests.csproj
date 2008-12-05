@@ -65,6 +65,7 @@
     <Compile Include="AOP\ParameterDefinitionExtensionTests.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="BaseTestFixture.cs" />
+    <Compile Include="IOC\FactoryStorageTests.cs" />
     <Compile Include="IOC\FieldInjectionTests.cs" />
     <Compile Include="IOC\MethodInjectionTests.cs" />
     <Compile Include="IOC\PropertyInjectionTests.cs" />

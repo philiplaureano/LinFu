@@ -244,7 +244,7 @@ namespace LinFu.IoC
                 container.PostProcessors.Add(new Initializer());
 
             // Add the scope object by default
-            container.AddFactory(null, typeof(IScope), new FunctorFactory(f => new Scope()));           
+            container.AddFactory(null, typeof(IScope), new FunctorFactory(f => new Scope()));
         }
 
         /// <summary>
@@ -295,10 +295,9 @@ namespace LinFu.IoC
         /// <returns>If successful, it will return a service instance that is compatible with the given type;
         /// otherwise, it will just return a <c>null</c> value.</returns>
         public static T GetService<T>(this IServiceContainer container, params object[] additionalArguments)
-            where T : class
         {
             Type serviceType = typeof(T);
-            return container.GetService(serviceType, additionalArguments) as T;
+            return (T)container.GetService(serviceType, additionalArguments);
         }
 
         /// <summary>
@@ -325,9 +324,8 @@ namespace LinFu.IoC
         /// <returns>If successful, it will return a service instance that is compatible with the given type;
         /// otherwise, it will just return a <c>null</c> value.</returns>
         public static T GetService<T>(this IServiceContainer container, string serviceName, params object[] additionalArguments)
-            where T : class
         {
-            return container.GetService(serviceName, typeof(T), additionalArguments) as T;
+            return (T)container.GetService(serviceName, typeof(T), additionalArguments);
         }
 
         /// <summary>
@@ -471,6 +469,33 @@ namespace LinFu.IoC
         }
 
         /// <summary>
+        /// Adds an <see cref="IFactory"/> instance and associates it with the given
+        /// <paramref name="serviceName"/> and <see cref="serviceType"/>.
+        /// </summary>
+        /// <param name="container">The target container.</param>
+        /// <param name="serviceName">The service name.</param>
+        /// <param name="serviceType">The service type.</param>
+        /// <param name="factory">The factory instance that will be responsible for creating the service itself.</param>
+        public static void AddFactory(this IServiceContainer container, string serviceName,
+            Type serviceType, IFactory factory)
+        {
+            container.AddFactory(serviceName, serviceType, new Type[0], factory);
+        }
+
+        /// <summary>
+        /// Adds an <see cref="IFactory"/> instance and associates it with the given
+        /// <see cref="serviceType"/>.
+        /// </summary>
+        /// <param name="container">The target container.</param>
+        /// <param name="serviceType">The service type.</param>
+        /// <param name="factory">The factory instance that will be responsible for creating the service itself.</param>
+        public static void AddFactory(this IServiceContainer container, 
+            Type serviceType, IFactory factory)
+        {
+            container.AddFactory(serviceType, new Type[0], factory);
+        }
+
+        /// <summary>
         /// Registers the <paramref name="factory"/> as the default factory instance
         /// that will be used if no other factory can be found for the current <paramref name="serviceType"/>.
         /// </summary>
@@ -481,6 +506,106 @@ namespace LinFu.IoC
         {
             var injector = new CustomFactoryInjector(serviceType, factory);
             container.PreProcessors.Add(injector);
+        }
+
+        /// <summary>
+        /// Adds a service to the container by using the given <paramref name="factoryMethod"/> 
+        /// to instantiate the service instance.
+        /// </summary>
+        /// <typeparam name="TResult">The service type itself.</typeparam>
+        /// <param name="serviceName">The name that will be associated with the service instance.</param>
+        /// <param name="container">The host container that will instantiate the service type.</param>
+        /// <param name="factoryMethod">The factory method that will be used to create the actual service instance.</param>
+        public static void AddService<TResult>(this IServiceContainer container, string serviceName,
+            Func<TResult> factoryMethod)
+        {
+            container.AddService(serviceName, typeof(TResult), factoryMethod);
+        }
+
+        /// <summary>
+        /// Adds a service to the container by using the given <paramref name="factoryMethod"/> 
+        /// to instantiate the service instance.
+        /// </summary>
+        /// <typeparam name="TResult">The service type itself.</typeparam>
+        /// <typeparam name="T1">The first parameter type of the <paramref name="factoryMethod"/>.</typeparam>
+        /// <param name="serviceName">The name that will be associated with the service instance.</param>
+        /// <param name="container">The host container that will instantiate the service type.</param>
+        /// <param name="factoryMethod">The factory method that will be used to create the actual service instance.</param>
+        public static void AddService<T1, TResult>(this IServiceContainer container, string serviceName,
+            Func<T1, TResult> factoryMethod)
+        {
+            container.AddService(serviceName, typeof (TResult), factoryMethod);
+        }
+
+        /// <summary>
+        /// Adds a service to the container by using the given <paramref name="factoryMethod"/> 
+        /// to instantiate the service instance.
+        /// </summary>
+        /// <param name="serviceName">The name that will be associated with the service instance.</param>
+        /// <param name="container">The host container that will instantiate the service type.</param>
+        /// <param name="factoryMethod">The factory method that will be used to create the actual service instance.</param>
+        public static void AddService(this IServiceContainer container, string serviceName, Type serviceType,
+            MulticastDelegate factoryMethod)
+        {
+            //// Register the functor that will generate the service instance
+            //container.AddService<Func<T1, TResult>>(serviceName, factoryMethod);
+            var parameterTypes = from p in factoryMethod.Method.GetParameters()
+                                 where p != null
+                                 select p.ParameterType;
+
+            var factory = new DelegateFactory(factoryMethod);
+            container.AddFactory(serviceName, serviceType, parameterTypes, factory);
+        }
+
+        /// <summary>
+        /// Adds a service to the container by using the given <paramref name="factoryMethod"/> 
+        /// to instantiate the service instance.
+        /// </summary>
+        /// <typeparam name="TResult">The service type itself.</typeparam>
+        /// <typeparam name="T1">The first parameter type of the <paramref name="factoryMethod"/>.</typeparam>
+        /// <typeparam name="T2">The second parameter type of the <paramref name="factoryMethod"/>.</typeparam>
+        /// <param name="serviceName">The name that will be associated with the service instance.</param>
+        /// <param name="container">The host container that will instantiate the service type.</param>
+        /// <param name="factoryMethod">The factory method that will be used to create the actual service instance.</param>
+        public static void AddService<T1, T2, TResult>(this IServiceContainer container, string serviceName, 
+            Func<T1, T2, TResult> factoryMethod)
+        {
+            container.AddService(serviceName, typeof(TResult), factoryMethod);
+        }
+
+        /// <summary>
+        /// Adds a service to the container by using the given <paramref name="factoryMethod"/> 
+        /// to instantiate the service instance.
+        /// </summary>
+        /// <typeparam name="TResult">The service type itself.</typeparam>
+        /// <typeparam name="T1">The first parameter type of the <paramref name="factoryMethod"/>.</typeparam>
+        /// <typeparam name="T2">The second parameter type of the <paramref name="factoryMethod"/>.</typeparam>
+        /// <typeparam name="T3">The third parameter type of the <paramref name="factoryMethod"/>.</typeparam>
+        /// <typeparam name="T4">The third parameter type of the <paramref name="factoryMethod"/>.</typeparam>
+        /// <param name="serviceName">The name that will be associated with the service instance.</param>
+        /// <param name="container">The host container that will instantiate the service type.</param>
+        /// <param name="factoryMethod">The factory method that will be used to create the actual service instance.</param>
+        public static void AddService<T1, T2, T3, T4, TResult>(this IServiceContainer container, string serviceName,
+            Func<T1, T2, T3, T4, TResult> factoryMethod)
+        {
+            container.AddService(serviceName, typeof(TResult), factoryMethod);
+        }
+
+        /// <summary>
+        /// Adds a service to the container by using the given <paramref name="factoryMethod"/> 
+        /// to instantiate the service instance.
+        /// </summary>
+        /// <typeparam name="TResult">The service type itself.</typeparam>
+        /// <typeparam name="T1">The first parameter type of the <paramref name="factoryMethod"/>.</typeparam>
+        /// <typeparam name="T2">The second parameter type of the <paramref name="factoryMethod"/>.</typeparam>
+        /// <typeparam name="T3">The third parameter type of the <paramref name="factoryMethod"/>.</typeparam>
+        /// <param name="serviceName">The name that will be associated with the service instance.</param>
+        /// <param name="container">The host container that will instantiate the service type.</param>
+        /// <param name="factoryMethod">The factory method that will be used to create the actual service instance.</param>
+        public static void AddService<T1, T2, T3, TResult>(this IServiceContainer container, string serviceName,
+            Func<T1, T2, T3, TResult> factoryMethod)
+        {
+            container.AddService(serviceName, typeof(TResult), factoryMethod);
         }
 
         /// <summary>
@@ -586,6 +711,51 @@ namespace LinFu.IoC
                                   } as IServiceInstance;
 
             return results;
+        }
+
+        
+        /// <summary>
+        /// Determines whether or not the container can instantiate the given <paramref name="serviceName"/>
+        /// and <paramref name="serviceType"/> using the given <paramref name="sampleArguments"/>.
+        /// </summary>
+        /// <param name="container">The target container.</param>
+        /// <param name="serviceName">The name of the requested service.</param>
+        /// <param name="serviceType">The requested service type.</param>
+        /// <param name="sampleArguments">The potential arguments for the service type.</param>
+        /// <returns>Returns <c>true</c> if the requested services exist; otherwise, it will return <c>false</c>.</returns>
+        public static bool Contains(this IServiceContainer container, string serviceName, 
+            Type serviceType, params object[] sampleArguments)
+        {
+            // Convert the sample arguments into the parameter types
+            var parameterTypes = from arg in sampleArguments
+                                 let argType = arg != null ? arg.GetType() : typeof (object)
+                                 select argType;
+
+            return container.Contains(serviceName, serviceType, parameterTypes);
+        }
+        /// <summary>
+        /// Determines whether or not the container contains a service that matches
+        /// the given <paramref name="serviceType"/>.
+        /// </summary>
+        /// <param name="container">The target container.</param>
+        /// <param name="serviceType">The requested service type.</param>
+        /// <returns>Returns <c>true</c> if the requested services exist; otherwise, it will return <c>false</c>.</returns>
+        public static bool Contains(this IServiceContainer container, Type serviceType)
+        {
+            return container.Contains(serviceType, new Type[0]);
+        }
+
+        /// <summary>
+        /// Determines whether or not the container contains a service that matches
+        /// the given <paramref name="serviceType"/>.
+        /// </summary>
+        /// <param name="container">The target container.</param>
+        /// <param name="serviceName">The requested service name.</param>
+        /// <param name="serviceType">The requested service type.</param>
+        /// <returns>Returns <c>true</c> if the requested services exist; otherwise, it will return <c>false</c>.</returns>
+        public static bool Contains(this IServiceContainer container, string serviceName, Type serviceType)
+        {
+            return container.Contains(serviceName, serviceType, new Type[0]);
         }
 
         /// <summary>

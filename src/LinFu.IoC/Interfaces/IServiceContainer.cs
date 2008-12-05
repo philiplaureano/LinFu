@@ -30,8 +30,9 @@ namespace LinFu.IoC.Interfaces
         /// </summary>
         /// <param name="serviceName">The name of the service to associate with the given <see cref="IFactory"/> instance.</param>
         /// <param name="serviceType">The type of service that the factory will be able to create.</param>
+        /// <param name="additionalParameterTypes">The list of additional parameters that this factory type will support.</param>
         /// <param name="factory">The <see cref="IFactory"/> instance that will create the object instance.</param>
-        void AddFactory(string serviceName, Type serviceType, IFactory factory);
+        void AddFactory(string serviceName, Type serviceType, IEnumerable<Type> additionalParameterTypes, IFactory factory);
 
         /// <summary>
         /// Determines whether or not a service can be created using
@@ -40,8 +41,9 @@ namespace LinFu.IoC.Interfaces
         /// </summary>
         /// <param name="serviceName">The name of the service to associate with the given <see cref="IFactory"/> instance.</param>
         /// <param name="serviceType">The type of service that the factory will be able to create.</param>
+        /// <param name="additionalParameterTypes">The list of additional parameters that the factory type must support.</param>
         /// <returns>Returns <c>true</c> if the service exists; otherwise, it will return <c>false</c>.</returns>
-        bool Contains(string serviceName, Type serviceType);
+        bool Contains(string serviceName, Type serviceType, IEnumerable<Type> additionalParameterTypes);
 
         /// <summary>
         /// Causes the container to instantiate the service with the given

@@ -11,11 +11,8 @@ namespace LinFu.IoC
     /// </summary>
     public class FactoryStorage : IFactoryStorage
     {
-        private readonly Dictionary<string, Dictionary<Type, IFactory>> _namedStorage =
-            new Dictionary<string, Dictionary<Type, IFactory>>();
-
-        private readonly Dictionary<Type, IFactory> _anonymousStorage = new Dictionary<Type, IFactory>();
         private readonly object _lock = new object();
+        private readonly Dictionary<IServiceInfo, IFactory> _entries = new Dictionary<IServiceInfo, IFactory>();
 
         /// <summary>
         /// Determines which factories should be used
@@ -25,15 +22,8 @@ namespace LinFu.IoC
         /// <returns>A factory instance.</returns>
         public IFactory GetFactory(IServiceInfo serviceInfo)
         {
-            var serviceName = serviceInfo.ServiceName;
-            var serviceType = serviceInfo.ServiceType;
-
-            if (serviceName == null && _anonymousStorage.ContainsKey(serviceType))
-                return _anonymousStorage[serviceType];
-
-            if (serviceName != null && _namedStorage.ContainsKey(serviceName) 
-                && _namedStorage[serviceName].ContainsKey(serviceType))
-                return _namedStorage[serviceName][serviceType];
+            if (_entries.ContainsKey(serviceInfo))
+                return _entries[serviceInfo];
 
             return null;
         }
@@ -45,27 +35,9 @@ namespace LinFu.IoC
         /// <param name="factory">The <see cref="IFactory"/> instance that will create the object instance.</param>
         public void AddFactory(IServiceInfo serviceInfo, IFactory factory)
         {
-            var serviceName = serviceInfo.ServiceName;
-            var serviceType = serviceInfo.ServiceType;
-
             lock (_lock)
-            {
-                Dictionary<Type, IFactory> targetStorage = null;
-
-                if (serviceName == null)
-                    targetStorage = _anonymousStorage;
-
-                if (serviceName != null)
-                {
-                    // If necessary, create a new entry
-                    if (!_namedStorage.ContainsKey(serviceName))
-                        _namedStorage[serviceName] = new Dictionary<Type, IFactory>();
-
-                    targetStorage = _namedStorage[serviceName];
-                }
-
-                // Store the factory
-                targetStorage[serviceType] = factory;
+            {               
+                _entries[serviceInfo] = factory;
             }
         }
 
@@ -75,17 +47,8 @@ namespace LinFu.IoC
         /// <param name="serviceInfo">The <see cref="IServiceInfo"/> object that describes the target factory.</param>
         /// <returns>Returns <c>true</c> if the factory exists; otherwise, it will return <c>false</c>.</returns>
         public bool ContainsFactory(IServiceInfo serviceInfo)
-        {
-            var serviceName = serviceInfo.ServiceName;
-            var serviceType = serviceInfo.ServiceType;
-
-            if (serviceName == null)
-                return _anonymousStorage.ContainsKey(serviceType);
-
-            if (_namedStorage.ContainsKey(serviceName) && _namedStorage[serviceName].ContainsKey(serviceType))
-                return true;
-
-            return false;
+        {            
+            return _entries.ContainsKey(serviceInfo);
         }
 
         /// <summary>
@@ -96,23 +59,8 @@ namespace LinFu.IoC
         public IEnumerable<IServiceInfo> AvailableFactories
         {
             get
-            {
-                // Add the anonymous services
-                var unnamedServices = from serviceType in _anonymousStorage.Keys
-                                      where serviceType != null
-                                      select new ServiceInfo(null, serviceType) as IServiceInfo;
-
-                // Add the named services
-                var namedServices = from serviceName in _namedStorage.Keys
-                                    from serviceType in _namedStorage[serviceName].Keys
-                                    let serviceInfo = new ServiceInfo(serviceName, serviceType)
-                                    select serviceInfo as IServiceInfo;
-
-                var results = new List<IServiceInfo>();
-                results.AddRange(unnamedServices);
-                results.AddRange(namedServices);
-
-                return results;
+            {                
+                return _entries.Keys;
             }
         }
     }

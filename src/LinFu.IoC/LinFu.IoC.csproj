@@ -106,6 +106,7 @@
     <Compile Include="Configuration\ServiceInstance.cs" />
     <Compile Include="Configuration\TypeCounter.cs" />
     <Compile Include="Factories\BaseFactory.cs" />
+    <Compile Include="Factories\DelegateFactory.cs" />
     <Compile Include="Factories\FactoryAdapter.cs" />
     <Compile Include="Factories\FunctorFactory.cs" />
     <Compile Include="Factories\InstanceFactory.cs" />
