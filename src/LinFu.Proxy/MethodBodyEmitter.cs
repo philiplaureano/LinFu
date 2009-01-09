@@ -66,9 +66,7 @@ namespace LinFu.Proxy
             IL.Emit(OpCodes.Brfalse, noImplementationFound);
 
             var endLabel = IL.Create(OpCodes.Nop);
-            IL.Emit(OpCodes.Ldarg_0);
-            IL.Emit(OpCodes.Isinst, proxyType);
-            IL.Emit(OpCodes.Callvirt, getInterceptorMethod);
+            EmitGetInterceptorInstruction(IL, proxyType, getInterceptorMethod);
             IL.Emit(OpCodes.Stloc, interceptor);
 
             //If (interceptor == null)
@@ -108,10 +106,23 @@ namespace LinFu.Proxy
         }
 
         /// <summary>
+        /// Emits the IL instructions to obtain an <see cref="IInterceptor"/> instance for the proxy type.
+        /// </summary>
+        /// <param name="IL">The <see cref="CilWorker"/> responsible for emitting the method body.</param>
+        /// <param name="proxyType">The proxy type.</param>
+        /// <param name="getInterceptorMethod">The getter method for the interceptor.</param>
+        protected virtual void EmitGetInterceptorInstruction(CilWorker IL, TypeReference proxyType, MethodReference getInterceptorMethod)
+        {
+            IL.Emit(OpCodes.Ldarg_0);
+            IL.Emit(OpCodes.Isinst, proxyType);
+            IL.Emit(OpCodes.Callvirt, getInterceptorMethod);
+        }
+
+        /// <summary>
         /// Causes the <see cref="CilWorker"/> to make the method throw a
         /// <see cref="NotImplementedException"/> if the method cannot be found.
         /// </summary>
-        /// <param name="IL"></param>
+        /// <param name="IL">The <see cref="CilWorker"/> responsible for emitting the method body.</param>
         protected virtual void ImplementNotFound(CilWorker IL)
         {
             var body = IL.GetBody();
