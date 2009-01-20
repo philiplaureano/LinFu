@@ -188,6 +188,8 @@ namespace LinFu.IoC
             // parameters
             var constructor = resolver.ResolveFrom(concreteType, container, additionalArguments);
 
+            // TODO: Allow users to insert their own custom constructor resolution routines here
+
             var parameterTypes = GetMissingParameterTypes(constructor, additionalArguments);
 
             // Generate the arguments for the target constructor
@@ -489,7 +491,7 @@ namespace LinFu.IoC
         /// <param name="container">The target container.</param>
         /// <param name="serviceType">The service type.</param>
         /// <param name="factory">The factory instance that will be responsible for creating the service itself.</param>
-        public static void AddFactory(this IServiceContainer container, 
+        public static void AddFactory(this IServiceContainer container,
             Type serviceType, IFactory factory)
         {
             container.AddFactory(serviceType, new Type[0], factory);
@@ -534,7 +536,7 @@ namespace LinFu.IoC
         public static void AddService<T1, TResult>(this IServiceContainer container, string serviceName,
             Func<T1, TResult> factoryMethod)
         {
-            container.AddService(serviceName, typeof (TResult), factoryMethod);
+            container.AddService(serviceName, typeof(TResult), factoryMethod);
         }
 
         /// <summary>
@@ -567,7 +569,7 @@ namespace LinFu.IoC
         /// <param name="serviceName">The name that will be associated with the service instance.</param>
         /// <param name="container">The host container that will instantiate the service type.</param>
         /// <param name="factoryMethod">The factory method that will be used to create the actual service instance.</param>
-        public static void AddService<T1, T2, TResult>(this IServiceContainer container, string serviceName, 
+        public static void AddService<T1, T2, TResult>(this IServiceContainer container, string serviceName,
             Func<T1, T2, TResult> factoryMethod)
         {
             container.AddService(serviceName, typeof(TResult), factoryMethod);
@@ -713,7 +715,7 @@ namespace LinFu.IoC
             return results;
         }
 
-        
+
         /// <summary>
         /// Determines whether or not the container can instantiate the given <paramref name="serviceName"/>
         /// and <paramref name="serviceType"/> using the given <paramref name="sampleArguments"/>.
@@ -723,12 +725,12 @@ namespace LinFu.IoC
         /// <param name="serviceType">The requested service type.</param>
         /// <param name="sampleArguments">The potential arguments for the service type.</param>
         /// <returns>Returns <c>true</c> if the requested services exist; otherwise, it will return <c>false</c>.</returns>
-        public static bool Contains(this IServiceContainer container, string serviceName, 
+        public static bool Contains(this IServiceContainer container, string serviceName,
             Type serviceType, params object[] sampleArguments)
         {
             // Convert the sample arguments into the parameter types
             var parameterTypes = from arg in sampleArguments
-                                 let argType = arg != null ? arg.GetType() : typeof (object)
+                                 let argType = arg != null ? arg.GetType() : typeof(object)
                                  select argType;
 
             return container.Contains(serviceName, serviceType, parameterTypes);

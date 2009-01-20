@@ -160,6 +160,20 @@ namespace LinFu.UnitTests.IOC
         }
 
         [Test]
+        public void ShouldResolveClassWithMultipleNonServiceArgumentConstructors()
+        {
+            IServiceContainer container = new ServiceContainer();
+            container.AddDefaultServices();
+            container.AddService("ClassWithMultipleNonServiceArgumentConstructors",
+                                 typeof(ISampleService), typeof (SampleClassWithMultipleNonServiceArgumentConstructors),
+                                 LifecycleType.OncePerRequest);
+
+            // Match the correct constructor
+            var sampleService = container.GetService<ISampleService>("ClassWithMultipleNonServiceArgumentConstructors", "test", 42, SampleEnum.One, (decimal)3.14, 42);
+            Assert.IsNotNull(sampleService);         
+        }
+
+        [Test]
         public void ShouldCreateTypeWithAdditionalParameters()
         {
             var mockSampleService = new Mock<ISampleService>();
