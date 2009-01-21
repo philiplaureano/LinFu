@@ -181,16 +181,17 @@ namespace LinFu.IoC
             // Add the required services if necessary
             container.AddDefaultServices();
 
-            var resolver = container.GetService<IMemberResolver<ConstructorInfo>>();
+            var finderContext = new MethodFinderContext(new Type[0], additionalArguments, null);
 
             // Determine which constructor
             // contains the most resolvable
             // parameters
-            var constructor = resolver.ResolveFrom(concreteType, container, additionalArguments);
+            var resolver = container.GetService<IMemberResolver<ConstructorInfo>>();
+            var constructor = resolver.ResolveFrom(concreteType, container, finderContext);
 
             // TODO: Allow users to insert their own custom constructor resolution routines here
 
-            var parameterTypes = GetMissingParameterTypes(constructor, additionalArguments);
+            var parameterTypes = GetMissingParameterTypes(constructor, finderContext.Arguments);
 
             // Generate the arguments for the target constructor
             var argumentResolver = container.GetService<IArgumentResolver>();
@@ -257,7 +258,7 @@ namespace LinFu.IoC
         /// <param name="additionalArguments">The additional arguments that will be used to invoke the constructor.</param>
         /// <returns>The list of parameter types that are still missing parameter values.</returns>
         private static List<Type> GetMissingParameterTypes(ConstructorInfo constructor,
-            ICollection<object> additionalArguments)
+            IEnumerable<object> additionalArguments)
         {
             var parameters = from p in constructor.GetParameters()
                              select new { p.Position, Type = p.ParameterType };
@@ -265,13 +266,14 @@ namespace LinFu.IoC
             // Determine which parameters need to 
             // be supplied by the container
             var parameterTypes = new List<Type>();
-            if (additionalArguments != null && additionalArguments.Count > 0)
+            var argumentCount = additionalArguments.Count();
+            if (additionalArguments != null && argumentCount > 0)
             {
                 // Supply parameter values for the
                 // parameters that weren't supplied by the
                 // additionalArguments
                 var parameterCount = parameters.Count();
-                var maxIndex = parameterCount - additionalArguments.Count;
+                var maxIndex = parameterCount - argumentCount;
                 var targetParameters = from param in parameters.Where(p => p.Position < maxIndex)
                                        select param.Type;
 
@@ -472,7 +474,7 @@ namespace LinFu.IoC
 
         /// <summary>
         /// Adds an <see cref="IFactory"/> instance and associates it with the given
-        /// <paramref name="serviceName"/> and <see cref="serviceType"/>.
+        /// <paramref name="serviceName"/> and <paramref name="serviceType"/>
         /// </summary>
         /// <param name="container">The target container.</param>
         /// <param name="serviceName">The service name.</param>
@@ -486,7 +488,7 @@ namespace LinFu.IoC
 
         /// <summary>
         /// Adds an <see cref="IFactory"/> instance and associates it with the given
-        /// <see cref="serviceType"/>.
+        /// <paramref name="serviceType"/>
         /// </summary>
         /// <param name="container">The target container.</param>
         /// <param name="serviceType">The service type.</param>
@@ -546,6 +548,7 @@ namespace LinFu.IoC
         /// <param name="serviceName">The name that will be associated with the service instance.</param>
         /// <param name="container">The host container that will instantiate the service type.</param>
         /// <param name="factoryMethod">The factory method that will be used to create the actual service instance.</param>
+        /// <param name="serviceType">The service type that will be implemented.</param>
         public static void AddService(this IServiceContainer container, string serviceName, Type serviceType,
             MulticastDelegate factoryMethod)
         {

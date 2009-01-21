@@ -84,6 +84,7 @@
     <Compile Include="Configuration\Injectors\PropertyInjectionFilter.cs" />
     <Compile Include="Configuration\InMemoryAssemblyLoader.cs" />
     <Compile Include="Configuration\Interfaces\IFactoryBuilder.cs" />
+    <Compile Include="Configuration\Interfaces\IMethodFinderContext.cs" />
     <Compile Include="Configuration\Interfaces\IMethodFinderWithContainer.cs" />
     <Compile Include="Configuration\LifecycleType.cs" />
     <Compile Include="Configuration\Loaders\AssemblyContainerLoader.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="Configuration\Loaders\PreprocessorLoader.cs" />
     <Compile Include="Configuration\MethodBuilder.cs" />
     <Compile Include="Configuration\BaseMethodInvoke.cs" />
+    <Compile Include="Configuration\MethodFinderContext.cs" />
     <Compile Include="Configuration\MethodInvoke.cs" />
     <Compile Include="Configuration\PropertySetter.cs" />
     <Compile Include="Configuration\RecursiveDependencyException.cs" />

@@ -19,6 +19,10 @@ namespace LinFu.IoC
         private int _threadId;
         private readonly List<IDisposable> _disposables = new List<IDisposable>();
         private bool _disposed;
+
+        /// <summary>
+        /// Disposes the services that have been created while the scope has been active.
+        /// </summary>
         public void Dispose()
         {
             if (_disposed)
@@ -40,6 +44,11 @@ namespace LinFu.IoC
             _container.PostProcessors.Remove(this);
         }
 
+        /// <summary>
+        /// Monitors the <see cref="IServiceContainer"/> for any services that are created and automatically disposes them
+        /// once the <see cref="IScope"/> is disposed.
+        /// </summary>
+        /// <param name="result">The <see cref="IServiceRequestResult"/> that describes the service being instantiated.</param>
         public void PostProcess(IServiceRequestResult result)
         {
             if (_disposed)
@@ -57,6 +66,10 @@ namespace LinFu.IoC
             _disposables.Add(disposable);
         }
 
+        /// <summary>
+        /// Inserts the scope into the target <paramref name="source">container</paramref>.
+        /// </summary>
+        /// <param name="source">The container that will hold the scope instance.</param>
         public void Initialize(IServiceContainer source)
         {
             lock(this)

@@ -21,9 +21,9 @@ namespace LinFu.IoC.Configuration.Interfaces
         /// </summary>
         /// <param name="concreteType">The target type.</param>
         /// <param name="container">The container that contains the service instances that will be used to invoke the target member.</param>
-        /// <param name="additionalArguments">The additional arguments that will be used to evaluate the best member for service assignment.</param>
+        /// <param name="finderContext">The <see cref="IMethodFinderContext"/> that describes the target method.</param>        
         /// <returns>A <typeparamref name="TMember"/> instance if a match is found; otherwise, it will return <c>null</c>.</returns>
         TMember ResolveFrom(Type concreteType, IServiceContainer container,
-                            params object[] additionalArguments);
+                            IMethodFinderContext finderContext);
     }
 }

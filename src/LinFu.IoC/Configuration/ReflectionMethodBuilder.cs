@@ -14,6 +14,11 @@ namespace LinFu.IoC.Configuration
     public class ReflectionMethodBuilder<TMethod> : IMethodBuilder<TMethod>
         where TMethod : MethodBase
     {
+        /// <summary>
+        /// Returns the <paramref name="existingMethod"/> unmodified.
+        /// </summary>
+        /// <param name="existingMethod">The method to be modified.</param>
+        /// <returns>The modified method.</returns>
         public MethodBase CreateMethod(TMethod existingMethod)
         {
             return existingMethod;

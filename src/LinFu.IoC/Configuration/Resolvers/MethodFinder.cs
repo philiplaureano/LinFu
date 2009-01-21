@@ -25,23 +25,24 @@ namespace LinFu.IoC.Configuration
         /// services currently in the target container.
         /// </summary>
         /// <param name="items">The list of methods to search.</param>
-        /// <param name="additionalArguments">The additional arguments that will be passed to the method.</param>
+        /// <param name="finderContext">The <see cref="IMethodFinderContext"/> that describes the target method.</param>        
         /// <returns>Returns the method with the most resolvable parameters from the target <see cref="IServiceContainer"/> instance.</returns>
-        public T GetBestMatch(IEnumerable<T> items, IEnumerable<object> additionalArguments)
+        public T GetBestMatch(IEnumerable<T> items, IMethodFinderContext finderContext)
         {
             T bestMatch = null;
             var fuzzyList = items.AsFuzzyList();
 
-            // Return the first constructor
+            // Return the first item
             // if there is no other alternative
             if (fuzzyList.Count == 1)
                 return fuzzyList[0].Item;
 
+            var additionalArguments = finderContext.Arguments;
             var additionalArgumentTypes = (from argument in additionalArguments
                                            let argumentType = argument == null ? typeof(object) : argument.GetType()
                                            select argumentType).ToList();
 
-            Rank(fuzzyList, additionalArgumentTypes);
+            Rank(fuzzyList, finderContext);
 
             var candidates = fuzzyList.Where(fuzzy => fuzzy.Confidence > 0);
 
@@ -49,33 +50,39 @@ namespace LinFu.IoC.Configuration
 
             // If all else fails, find the method
             // that matches only the additional arguments
-            if (bestMatch == null)
-            {
-                var additionalArgumentCount = additionalArgumentTypes.Count;
-                fuzzyList.Reset();
-                // Match the number of arguments
-                Func<T, bool> matchParameterCount = method =>
-                                                       {
-                                                           var parameters = method.GetParameters();
-                                                           var parameterCount = parameters != null
-                                                                                    ? parameters.Length
-                                                                                    : 0;
+            if (bestMatch != null)
+                return bestMatch;
 
-                                                           return parameterCount == additionalArgumentCount;
-                                                       };
+            return GetNextBestMatch(fuzzyList, additionalArgumentTypes, bestMatch);
+        }
 
-                // Remove any methods that do not match
-                // the parameter count
-                fuzzyList.AddCriteria(matchParameterCount, CriteriaType.Critical);
+        private T GetNextBestMatch(IList<IFuzzyItem<T>> fuzzyList, List<Type> additionalArgumentTypes, T bestMatch)
+        {
+            var additionalArgumentCount = additionalArgumentTypes.Count;
+            fuzzyList.Reset();
 
-                CheckArguments(fuzzyList, additionalArgumentTypes);
-                var nextBestMatch = fuzzyList.BestMatch();
+            // Match the number of arguments
+            Func<T, bool> matchParameterCount = method =>
+                                                    {
+                                                        var parameters = method.GetParameters();
+                                                        var parameterCount = parameters != null
+                                                                                 ? parameters.Length
+                                                                                 : 0;
 
-                if (nextBestMatch != null)
-                    bestMatch = nextBestMatch.Item;
-            }
+                                                        return parameterCount == additionalArgumentCount;
+                                                    };
 
-            return bestMatch;
+            // Remove any methods that do not match
+            // the parameter count
+            fuzzyList.AddCriteria(matchParameterCount, CriteriaType.Critical);
+
+            CheckArguments(fuzzyList, additionalArgumentTypes);
+            var nextBestMatch = fuzzyList.BestMatch();
+
+            if (nextBestMatch == null)
+                return null;
+
+            return nextBestMatch.Item;
         }
 
         /// <summary>
@@ -111,8 +118,8 @@ namespace LinFu.IoC.Configuration
         /// Adds additional <see cref="ICriteria{T}"/> to the fuzzy search list.
         /// </summary>
         /// <param name="methods">The list of methods to rank.</param>
-        /// <param name="argumentTypes">The list of <see cref="Type"/> objects that describe the arguments passed to the method.</param>
-        protected virtual void Rank(IList<IFuzzyItem<T>> methods, IList<Type> argumentTypes)
+        /// <param name="finderContext">The <see cref="IMethodFinderContext"/> that describes the target method.</param>        
+        protected virtual void Rank(IList<IFuzzyItem<T>> methods, IMethodFinderContext finderContext)
         {
         }
 

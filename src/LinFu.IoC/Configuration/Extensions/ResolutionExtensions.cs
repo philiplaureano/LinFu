@@ -114,7 +114,8 @@ namespace LinFu.IoC.Configuration
             var resolver = container.GetService<IArgumentResolver>();
             return resolver.ResolveFrom(method, container);
         }
-        
+
+
         /// <summary>
         /// Builds an argument list for the target <paramref name="method"/> from
         /// services embedded inside the <paramref name="container"/> instance.
@@ -124,7 +125,7 @@ namespace LinFu.IoC.Configuration
         /// <param name="container">The container that will provide the method arguments.</param>
         /// <param name="additionalArguments">The additional arguments that will be passed to the target method.</param>
         /// <returns>An array of objects to be used with the target method.</returns>
-        public static object[] ResolveFrom(this IArgumentResolver resolver, MethodBase method, 
+        public static object[] ResolveFrom(this IArgumentResolver resolver, MethodBase method,
             IServiceContainer container, params object[] additionalArguments)
         {
             var parameterTypes = from p in method.GetParameters()
@@ -132,6 +133,8 @@ namespace LinFu.IoC.Configuration
 
             return resolver.ResolveFrom(parameterTypes, container, additionalArguments);
         }
+
+    
         /// <summary>
         /// Casts an <see cref="IEnumerable"/> set of items into an array of
         /// <paramref name="targetElementType"/> items.
@@ -158,9 +161,9 @@ namespace LinFu.IoC.Configuration
         private static T[] Cast<T>(IEnumerable items)
         {
             var results = new List<T>();
-            foreach(var item in items)
+            foreach (var item in items)
             {
-                var currentItem = (T) item;
+                var currentItem = (T)item;
                 results.Add(currentItem);
             }
 

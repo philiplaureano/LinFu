@@ -20,8 +20,8 @@ namespace LinFu.IoC.Configuration.Interfaces
         /// services currently in the target container.
         /// </summary>
         /// <param name="items">The list of methods to search.</param>
-        /// <param name="additionalArguments">The additional arguments that will be passed to the method.</param>        
+        /// <param name="finderContext">The <see cref="IMethodFinderContext"/> that describes the target method.</param>        
         /// <returns>Returns the method with the most resolvable parameters from the target <see cref="IServiceContainer"/> instance.</returns>
-        T GetBestMatch(IEnumerable<T> items, IEnumerable<object> additionalArguments);
+        T GetBestMatch(IEnumerable<T> items, IMethodFinderContext finderContext);
     }
 }

@@ -64,9 +64,14 @@ namespace LinFu.IoC.Configuration.Resolvers
         /// Adds additional <see cref="ICriteria{T}"/> to the fuzzy search list.
         /// </summary>
         /// <param name="methods">The list of methods to rank.</param>
-        /// <param name="argumentTypes">The list of <see cref="Type"/> objects that describe the arguments passed to the method.</param>
-        protected override void Rank(IList<IFuzzyItem<TMethod>> methods, IList<Type> argumentTypes)
+        /// <param name="finderContext">The <see cref="IMethodFinderContext"/> that describes the target method.</param>        
+        protected override void Rank(IList<IFuzzyItem<TMethod>> methods, IMethodFinderContext finderContext)
         {
+            var additionalArguments = finderContext.Arguments ?? new object[0];
+            var argumentTypes = (from argument in additionalArguments
+                                           let argumentType = argument == null ? typeof(object) : argument.GetType()
+                                           select argumentType).ToList();
+
             int argumentCount = argumentTypes.Count;
             foreach (var fuzzyItem in methods)
             {
