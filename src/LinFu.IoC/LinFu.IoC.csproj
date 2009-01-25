@@ -70,6 +70,7 @@
     <Compile Include="Configuration\FluentInterfaces\PropertyInjectionLambda.cs" />
     <Compile Include="Configuration\FluentInterfaces\UsingLambda.cs" />
     <Compile Include="Configuration\Initializer.cs" />
+    <Compile Include="Configuration\InitializerOfT.cs" />
     <Compile Include="Configuration\InitializerPlugin.cs" />
     <Compile Include="Configuration\Injectors\AttributedFieldInjectionFilter.cs" />
     <Compile Include="Configuration\Injectors\AttributedMethodInjectionFilter.cs" />

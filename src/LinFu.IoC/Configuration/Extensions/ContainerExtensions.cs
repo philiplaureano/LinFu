@@ -226,25 +226,34 @@ namespace LinFu.IoC
 
             container.AddService<IFactoryBuilder>(new FactoryBuilder());
 
+            // Add the resolver services
             container.AddService<IMemberResolver<ConstructorInfo>>(new ConstructorResolver(ioc => ioc.GetService<IMethodFinderWithContainer<ConstructorInfo>>()));
             container.AddService<IArgumentResolver>(new ArgumentResolver());
 
+            // Add the method invocation services
             container.AddService<IMethodInvoke<MethodInfo>>(new MethodInvoke());
             container.AddService<IMethodInvoke<ConstructorInfo>>(new ConstructorInvoke());
 
+            // Add the method finder services
             container.AddService<IMethodFinder<ConstructorInfo>>(new MethodFinderFromContainer<ConstructorInfo>());
             container.AddService<IMethodFinderWithContainer<ConstructorInfo>>(new MethodFinderFromContainer<ConstructorInfo>());
             container.AddService<IMethodFinderWithContainer<MethodInfo>>(new MethodFinderFromContainer<MethodInfo>());
 
+            // Add the dynamic method builders
             container.AddService<IMethodBuilder<ConstructorInfo>>(new ConstructorMethodBuilder());
             container.AddService<IMethodBuilder<MethodInfo>>(new MethodBuilder());
 
+            // Use attribute-based injection by default
             container.AddService<IMemberInjectionFilter<MethodInfo>>(new AttributedMethodInjectionFilter());
             container.AddService<IMemberInjectionFilter<FieldInfo>>(new AttributedFieldInjectionFilter());
             container.AddService<IMemberInjectionFilter<PropertyInfo>>(new AttributedPropertyInjectionFilter());
 
+            // Initialize services that implement either IInitialize or IInitialize<ServiceRequestResult>
             if (!container.PostProcessors.HasElementWith(p => p is Initializer))
+            {
                 container.PostProcessors.Add(new Initializer());
+                container.PostProcessors.Add(new Initializer<IServiceRequestResult>(request => request));
+            }
 
             // Add the scope object by default
             container.AddFactory(null, typeof(IScope), new FunctorFactory(f => new Scope()));
