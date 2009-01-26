@@ -149,6 +149,8 @@ namespace LinFu.IoC
         /// <returns>A valid, non-null object reference.</returns>
         public static object AutoCreate(this IServiceContainer container, Type concreteType, params object[] additionalArguments)
         {
+            var currentContainer = container ?? new ServiceContainer();
+
             // Keep track of the number of pending type requests
             _counter.Increment(concreteType);
 
@@ -178,31 +180,8 @@ namespace LinFu.IoC
                 throw new RecursiveDependencyException(list);
             }
 
-            // Add the required services if necessary
-            container.AddDefaultServices();
-
-            var finderContext = new MethodFinderContext(new Type[0], additionalArguments, null);
-
-            // Determine which constructor
-            // contains the most resolvable
-            // parameters
-            var resolver = container.GetService<IMemberResolver<ConstructorInfo>>();
-            var constructor = resolver.ResolveFrom(concreteType, container, finderContext);
-
-            // TODO: Allow users to insert their own custom constructor resolution routines here
-
-            var parameterTypes = GetMissingParameterTypes(constructor, finderContext.Arguments);
-
-            // Generate the arguments for the target constructor
-            var argumentResolver = container.GetService<IArgumentResolver>();
-            var arguments = argumentResolver.ResolveFrom(parameterTypes, container,
-                additionalArguments);
-
-            // Instantiate the object
-            var constructorInvoke =
-                container.GetService<IMethodInvoke<ConstructorInfo>>();
-
-            var result = constructorInvoke.Invoke(null, constructor, arguments);
+            var activator = container.GetService<IActivator>();
+            object result = activator.CreateInstance(concreteType, currentContainer, additionalArguments);
 
             lock (_requests)
             {
@@ -214,6 +193,43 @@ namespace LinFu.IoC
             return result;
         }
 
+        //private static object CreateInstance(Type concreteType, IServiceContainer container, object[] additionalArguments)
+        //{
+        //    // Add the required services if necessary
+        //    container.AddDefaultServices();
+
+        //    var finderContext = new MethodFinderContext(new Type[0], additionalArguments, null);
+
+        //    // Determine which constructor
+        //    // contains the most resolvable
+        //    // parameters
+        //    var resolver = container.GetService<IMemberResolver<ConstructorInfo>>();
+        //    var constructor = resolver.ResolveFrom(concreteType, container, finderContext);
+
+        //    // TODO: Allow users to insert their own custom constructor resolution routines here
+
+        //    var parameterTypes = GetMissingParameterTypes(constructor, finderContext.Arguments);
+
+        //    // Generate the arguments for the target constructor
+        //    var argumentResolver = container.GetService<IArgumentResolver>();
+        //    var arguments = argumentResolver.ResolveFrom(parameterTypes, container,
+        //                                                 additionalArguments);
+
+        //    // Instantiate the object
+        //    var constructorInvoke =
+        //        container.GetService<IMethodInvoke<ConstructorInfo>>();
+
+        //    var result = constructorInvoke.Invoke(null, constructor, arguments);
+
+        //    lock (_requests)
+        //    {
+        //        _requests.Pop();
+        //    }
+
+        //    _counter.Decrement(concreteType);
+        //    return result;
+        //}
+
         /// <summary>
         /// Initializes the container with the minimum required services.
         /// </summary>
@@ -224,6 +240,7 @@ namespace LinFu.IoC
             if (container.Contains(typeof(IFactoryBuilder)))
                 return;
 
+            container.AddService<IActivator>(new DefaultActivator());
             container.AddService<IFactoryBuilder>(new FactoryBuilder());
 
             // Add the resolver services
@@ -259,44 +276,7 @@ namespace LinFu.IoC
             container.AddFactory(null, typeof(IScope), new FunctorFactory(f => new Scope()));
         }
 
-        /// <summary>
-        /// Determines which parameter types need to be supplied to invoke a particular
-        /// <paramref name="constructor"/>  instance.
-        /// </summary>
-        /// <param name="constructor">The target constructor.</param>
-        /// <param name="additionalArguments">The additional arguments that will be used to invoke the constructor.</param>
-        /// <returns>The list of parameter types that are still missing parameter values.</returns>
-        private static List<Type> GetMissingParameterTypes(ConstructorInfo constructor,
-            IEnumerable<object> additionalArguments)
-        {
-            var parameters = from p in constructor.GetParameters()
-                             select new { p.Position, Type = p.ParameterType };
-
-            // Determine which parameters need to 
-            // be supplied by the container
-            var parameterTypes = new List<Type>();
-            var argumentCount = additionalArguments.Count();
-            if (additionalArguments != null && argumentCount > 0)
-            {
-                // Supply parameter values for the
-                // parameters that weren't supplied by the
-                // additionalArguments
-                var parameterCount = parameters.Count();
-                var maxIndex = parameterCount - argumentCount;
-                var targetParameters = from param in parameters.Where(p => p.Position < maxIndex)
-                                       select param.Type;
-
-                parameterTypes.AddRange(targetParameters);
-                return parameterTypes;
-            }
-
-            var results = from param in parameters
-                          select param.Type;
-
-            parameterTypes.AddRange(results);
-
-            return parameterTypes;
-        }
+        
 
         /// <summary>
         /// Creates an instance of <typeparamref name="T"/>

@@ -50,6 +50,7 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Configuration\DefaultActivator.cs" />
     <Compile Include="Configuration\Attributes\FactoryAttribute.cs" />
     <Compile Include="Configuration\Attributes\ImplementsAttribute.cs" />
     <Compile Include="Configuration\Attributes\InjectAttribute.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Configuration\Injectors\NullMemberInjectionFilter.cs" />
     <Compile Include="Configuration\Injectors\PropertyInjectionFilter.cs" />
     <Compile Include="Configuration\InMemoryAssemblyLoader.cs" />
+    <Compile Include="Configuration\Interfaces\IActivator.cs" />
     <Compile Include="Configuration\Interfaces\IFactoryBuilder.cs" />
     <Compile Include="Configuration\Interfaces\IMethodFinderContext.cs" />
     <Compile Include="Configuration\Interfaces\IMethodFinderWithContainer.cs" />
