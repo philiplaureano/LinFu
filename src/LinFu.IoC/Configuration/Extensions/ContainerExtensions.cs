@@ -41,6 +41,16 @@ namespace LinFu.IoC
         }
 
         /// <summary>
+        /// Loads a set of <paramref name="searchPattern">files</paramref> from the application base directory.
+        /// </summary>
+        /// <param name="container">The container to be loaded.</param>
+        /// <param name="searchPattern">The search pattern that describes the list of files to be loaded.</param>
+        public static void LoadFromBaseDirectory(this IServiceContainer container, string searchPattern)
+        {
+            container.LoadFrom(AppDomain.CurrentDomain.BaseDirectory, searchPattern);
+        }
+
+        /// <summary>
         /// Automatically instantiates a <paramref name="concreteType"/>
         /// with the constructor with the most resolvable parameters from
         /// the given <paramref name="container"/> instance.
@@ -53,7 +63,7 @@ namespace LinFu.IoC
         {
             return container.AutoCreate(concreteType, additionalArguments);
         }
-
+        
         /// <summary>
         /// Loads an existing <paramref name="assembly"/> into the container.
         /// </summary>
@@ -192,43 +202,6 @@ namespace LinFu.IoC
 
             return result;
         }
-
-        //private static object CreateInstance(Type concreteType, IServiceContainer container, object[] additionalArguments)
-        //{
-        //    // Add the required services if necessary
-        //    container.AddDefaultServices();
-
-        //    var finderContext = new MethodFinderContext(new Type[0], additionalArguments, null);
-
-        //    // Determine which constructor
-        //    // contains the most resolvable
-        //    // parameters
-        //    var resolver = container.GetService<IMemberResolver<ConstructorInfo>>();
-        //    var constructor = resolver.ResolveFrom(concreteType, container, finderContext);
-
-        //    // TODO: Allow users to insert their own custom constructor resolution routines here
-
-        //    var parameterTypes = GetMissingParameterTypes(constructor, finderContext.Arguments);
-
-        //    // Generate the arguments for the target constructor
-        //    var argumentResolver = container.GetService<IArgumentResolver>();
-        //    var arguments = argumentResolver.ResolveFrom(parameterTypes, container,
-        //                                                 additionalArguments);
-
-        //    // Instantiate the object
-        //    var constructorInvoke =
-        //        container.GetService<IMethodInvoke<ConstructorInfo>>();
-
-        //    var result = constructorInvoke.Invoke(null, constructor, arguments);
-
-        //    lock (_requests)
-        //    {
-        //        _requests.Pop();
-        //    }
-
-        //    _counter.Decrement(concreteType);
-        //    return result;
-        //}
 
         /// <summary>
         /// Initializes the container with the minimum required services.
