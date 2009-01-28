@@ -6,6 +6,7 @@ using LinFu.IoC.Factories;
 using LinFu.IoC.Interfaces;
 using Moq;
 using NUnit.Framework;
+using SampleLibrary;
 
 namespace LinFu.UnitTests.IOC.Factories
 {
@@ -146,6 +147,20 @@ namespace LinFu.UnitTests.IOC.Factories
             Assert.AreSame(first, second);
             Assert.IsNotNull(first);
             Assert.IsNotNull(second);
+        }
+
+        [Test]
+        public void ShouldBeAbleToInstantiateCustomFactoryWithServiceArgumentsInConstructor()
+        {
+            var mock = new Mock<ISampleService>();
+            var container = new ServiceContainer();
+            container.LoadFromBaseDirectory("*.dll");
+            
+            container.AddService(mock.Object);
+            var result = container.GetService<string>("SampleFactoryWithConstructorArguments");
+
+            Assert.IsNotNull(result);
+            Assert.IsNotEmpty(result);
         }
     }
 }
