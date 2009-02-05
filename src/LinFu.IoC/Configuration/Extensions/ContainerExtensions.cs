@@ -55,6 +55,10 @@ namespace LinFu.IoC
         /// with the constructor with the most resolvable parameters from
         /// the given <paramref name="container"/> instance.
         /// </summary>
+        /// <remarks>
+        /// This method only performs constructor injection on the target type. If you need any other form of injection (such as property injection), you'll need to 
+        /// register your type and instantiate it with the <see cref="GetService{T}(IServiceContainer,object[])<>GetService{T}"/> method.
+        /// </remarks>
         /// <param name="container">The service container that contains the arguments that will automatically be injected into the constructor.</param>
         /// <param name="concreteType">The type to instantiate.</param>
         /// <param name="additionalArguments">The list of arguments to pass to the target type.</param>
@@ -153,6 +157,8 @@ namespace LinFu.IoC
         /// with the constructor with the most resolvable parameters from
         /// the given <paramref name="container"/> instance.
         /// </summary>
+        /// This method only performs constructor injection on the target type. If you need any other form of injection (such as property injection), you'll need to 
+        /// register your type and instantiate it with the <see cref="GetService{T}(IServiceContainer,object[])<>GetService{T}"/> method.
         /// <param name="container">The service container that contains the arguments that will automatically be injected into the constructor.</param>
         /// <param name="concreteType">The type to instantiate.</param>
         /// <param name="additionalArguments">The list of arguments to pass to the target type.</param>
