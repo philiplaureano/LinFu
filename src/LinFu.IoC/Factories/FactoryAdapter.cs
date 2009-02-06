@@ -10,16 +10,16 @@ namespace LinFu.IoC
     /// <typeparam name="T">The service type to create.</typeparam>
     public class FactoryAdapter<T> : IFactory
     {
-        private readonly IFactory<T> _factory;
+        private readonly object _factory;
 
         /// <summary>
         /// Creates the factory adapter using the given
         /// IFactory&lt;T&gt; instance.
         /// </summary>
-        /// <param name="factory">The strongly-typed factory instance that
+        /// <param name="factory">The factory instance that
         /// will be called every time the <see cref="IFactory.CreateInstance"/> method
         /// is called. </param>
-        public FactoryAdapter(IFactory<T> factory)
+        public FactoryAdapter(object factory)
         {
             _factory = factory;
         }
@@ -29,8 +29,9 @@ namespace LinFu.IoC
         /// </summary>
         public IFactory<T> Factory
         {
-            get { return _factory; }
+            get { return _factory as IFactory<T>; }
         }
+
         #region IFactory Members
 
         /// <summary>
@@ -46,7 +47,11 @@ namespace LinFu.IoC
             if (_factory == null)
                 return default(T);
 
-            return _factory.CreateInstance(request);
+            var factory = _factory as IFactory<T>;
+            if (factory == null)
+                return default(T);
+
+            return factory.CreateInstance(request);
         }
 
         #endregion

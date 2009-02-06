@@ -184,7 +184,7 @@ namespace LinFu.IoC.Configuration
 
                 // Attempt to autoresolve the constructor
                 if (serviceContainer != null)
-                    return (TService)serviceContainer.AutoCreate(typeof(TImplementation), arguments);
+                    return (TService)serviceContainer.AutoCreateInternal(typeof(TImplementation), arguments);
 
                 // Otherwise, use the default constructor
                 return (TService)Activator.CreateInstance(typeof(TImplementation), arguments);

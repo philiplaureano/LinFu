@@ -4,7 +4,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using LinFu.IoC;
+using LinFu.IoC.Configuration;
 using LinFu.IoC.Configuration.Interfaces;
+using Moq;
 using NUnit.Framework;
 using SampleLibrary;
 using SampleLibrary.IOC;
@@ -14,6 +16,23 @@ namespace LinFu.UnitTests.IOC
     [TestFixture]
     public class PropertyInjectionTests : BaseTestFixture
     {
+        [Test]
+        public void ShouldAutoInjectClassCreatedWithAutoCreate()
+        {   
+            // Configure the container
+            var container = new ServiceContainer();
+            container.LoadFromBaseDirectory("*.dll");
+
+            var sampleService = new Mock<ISampleService>();
+            container.AddService(sampleService.Object);
+
+            var instance = (SampleClassWithInjectionProperties)container.AutoCreate(typeof(SampleClassWithInjectionProperties));
+         
+            // The container should initialize the SomeProperty method to match the mock ISampleService instance
+            Assert.IsNotNull(instance.SomeProperty);
+            Assert.AreSame(instance.SomeProperty, sampleService.Object);
+        }
+
         [Test]
         public void ShouldDetermineWhichPropertiesShouldBeInjected()
         {
@@ -85,7 +104,7 @@ namespace LinFu.UnitTests.IOC
 
             // Ensure that the injection occurred
             Assert.IsNotNull(instance.SomeProperty);
-            Assert.IsInstanceOfType(typeof (SampleClass), instance.SomeProperty);
+            Assert.IsInstanceOfType(typeof(SampleClass), instance.SomeProperty);
         }
         [Test]
         public void ShouldAutoInjectProperty()
@@ -98,7 +117,7 @@ namespace LinFu.UnitTests.IOC
             // Initialize the container
             container.Inject<ISampleService>().Using<SampleClass>().OncePerRequest();
             container.Inject<ISampleService>("MyService").Using(c => instance).OncePerRequest();
-            
+
             var result = container.GetService<ISampleService>("MyService");
             Assert.AreSame(result, instance);
 

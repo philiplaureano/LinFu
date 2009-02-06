@@ -7,61 +7,68 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC
 {
     /// <summary>
-    /// Represents the default implementation of the <see cref="IFactoryStorage"/> class.
+    /// Represents an <see cref="IFactoryStorage"/> instance that adds generics support to the <see cref="BaseFactoryStorage"/> implementation.
     /// </summary>
-    public class FactoryStorage : IFactoryStorage
+    public class FactoryStorage : BaseFactoryStorage
     {
-        private readonly object _lock = new object();
-        private readonly Dictionary<IServiceInfo, IFactory> _entries = new Dictionary<IServiceInfo, IFactory>();
-
-        /// <summary>
-        /// Determines which factories should be used
-        /// for a particular service request.
-        /// </summary>
-        /// <param name="serviceInfo">The <see cref="IServiceInfo"/> object that describes the target factory.</param>
-        /// <returns>A factory instance.</returns>
-        public IFactory GetFactory(IServiceInfo serviceInfo)
-        {
-            if (_entries.ContainsKey(serviceInfo))
-                return _entries[serviceInfo];
-
-            return null;
-        }
-
-        /// <summary>
-        /// Adds a <see cref="IFactory"/> to the current <see cref="IFactoryStorage"/> object.
-        /// </summary>
-        /// <param name="serviceInfo">The <see cref="IServiceInfo"/> object that describes the target factory.</param>
-        /// <param name="factory">The <see cref="IFactory"/> instance that will create the object instance.</param>
-        public void AddFactory(IServiceInfo serviceInfo, IFactory factory)
-        {
-            lock (_lock)
-            {               
-                _entries[serviceInfo] = factory;
-            }
-        }
-
-        /// <summary>
-        /// Determines whether or not a factory exists in storage.
-        /// </summary>
-        /// <param name="serviceInfo">The <see cref="IServiceInfo"/> object that describes the target factory.</param>
-        /// <returns>Returns <c>true</c> if the factory exists; otherwise, it will return <c>false</c>.</returns>
-        public bool ContainsFactory(IServiceInfo serviceInfo)
+        public override bool ContainsFactory(IServiceInfo serviceInfo)
         {            
-            return _entries.ContainsKey(serviceInfo);
+            var serviceType = serviceInfo.ServiceType;
+            var serviceName = serviceInfo.ServiceName;
+
+            // Use the default implementation for
+            // non-generic types
+            if (!serviceType.IsGenericType && !serviceType.IsGenericTypeDefinition)
+                return base.ContainsFactory(serviceInfo);
+
+            // If the service type is a generic type, determine
+            // if the service type can be created by a 
+            // standard factory that can create an instance
+            // of that generic type (e.g., IFactory<IGeneric<T>>            
+            var result = base.ContainsFactory(serviceInfo);
+
+            // Immediately return a positive match, if possible
+            if (result)
+                return true;
+
+            if (serviceType.IsGenericType && !serviceType.IsGenericTypeDefinition)
+            {
+                // Determine the base type definition
+                var baseDefinition = serviceType.GetGenericTypeDefinition();
+
+                // Check if there are any generic factories that can create
+                // the entire family of services whose type definitions
+                // match the base type
+                var genericServiceInfo = new ServiceInfo(serviceName, baseDefinition, serviceInfo.ArgumentTypes);
+                result = base.ContainsFactory(genericServiceInfo);
+            }
+
+            return result;
         }
 
-        /// <summary>
-        /// Gets a value indicating the list of <see cref="IServiceInfo"/> objects
-        /// that describe each available factory in the current <see cref="IFactoryStorage"/>
-        /// instance.
-        /// </summary>
-        public IEnumerable<IServiceInfo> AvailableFactories
+        public override IFactory GetFactory(IServiceInfo serviceInfo)
         {
-            get
+            // Attempt to create the service type using
+            // the strongly-typed arguments
+            var factory = base.GetFactory(serviceInfo);
+            var serviceType = serviceInfo.ServiceType;
+            var serviceName = serviceInfo.ServiceName;
+
+            // Use the default factory for this service type if no other factory exists
+            var defaultServiceInfo = new ServiceInfo(serviceInfo.ServiceName, serviceInfo.ServiceType);
+            if (factory == null && base.ContainsFactory(defaultServiceInfo))
+                factory = base.GetFactory(defaultServiceInfo);
+
+            // Attempt to create the service type using
+            // the generic factories, if possible
+            if (factory == null && serviceType.IsGenericType)
             {                
-                return _entries.Keys;
+                var definitionType = serviceType.GetGenericTypeDefinition();
+                var genericServiceInfo = new ServiceInfo(serviceName, definitionType, serviceInfo.ArgumentTypes);
+                factory = base.GetFactory(genericServiceInfo);
             }
+
+            return factory;
         }
     }
 }

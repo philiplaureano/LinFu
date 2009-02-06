@@ -50,6 +50,8 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="CompositePostProcessor.cs" />
+    <Compile Include="CompositePreProcessor.cs" />
     <Compile Include="Configuration\DefaultActivator.cs" />
     <Compile Include="Configuration\Attributes\FactoryAttribute.cs" />
     <Compile Include="Configuration\Attributes\ImplementsAttribute.cs" />
@@ -110,19 +112,25 @@
     <Compile Include="Configuration\Resolvers\MethodFinderFromContainer.cs" />
     <Compile Include="Configuration\ServiceInstance.cs" />
     <Compile Include="Configuration\TypeCounter.cs" />
+    <Compile Include="CreatorFromInstance.cs" />
+    <Compile Include="DefaultCreator.cs" />
+    <Compile Include="DefaultGetServiceBehavior.cs" />
     <Compile Include="Factories\BaseFactory.cs" />
     <Compile Include="Factories\DelegateFactory.cs" />
     <Compile Include="Factories\FactoryAdapter.cs" />
     <Compile Include="Factories\FunctorFactory.cs" />
     <Compile Include="Factories\InstanceFactory.cs" />
+    <Compile Include="Factories\LazyFactory.cs" />
     <Compile Include="Factories\OncePerRequestFactory.cs" />
     <Compile Include="Factories\OncePerThreadFactory.cs" />
     <Compile Include="Factories\SingletonFactory.cs" />
     <Compile Include="FactoryExtensions.cs" />
     <Compile Include="FactoryRequest.cs" />
+    <Compile Include="BaseFactoryStorage.cs" />
     <Compile Include="FactoryStorage.cs" />
     <Compile Include="FactoryStorageExtensions.cs" />
     <Compile Include="Interceptors\LazyInterceptor.cs" />
+    <Compile Include="Interfaces\ICreateInstance.cs" />
     <Compile Include="Interfaces\IFactoryStorage.cs" />
     <Compile Include="Interceptors\AroundInvokeAdapter.cs" />
     <Compile Include="Interceptors\BaseInterceptor.cs" />
@@ -150,6 +158,7 @@
     <Compile Include="Interfaces\IFactory.cs" />
     <Compile Include="Interfaces\IFactoryOfT.cs" />
     <Compile Include="Interfaces\IFactoryRequest.cs" />
+    <Compile Include="Interfaces\IGetService.cs" />
     <Compile Include="Interfaces\IPostProcessor.cs" />
     <Compile Include="Interfaces\IPreprocessor.cs" />
     <Compile Include="Interfaces\IScope.cs" />

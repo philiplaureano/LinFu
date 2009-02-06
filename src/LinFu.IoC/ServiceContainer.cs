@@ -12,6 +12,7 @@ namespace LinFu.IoC
     public class ServiceContainer : IServiceContainer
     {
         private readonly IFactoryStorage _factoryStorage = new FactoryStorage();
+        private readonly IGetService _getServiceBehavior;
         private readonly List<IPostProcessor> _postProcessors = new List<IPostProcessor>();
         private readonly List<IPreProcessor> _preprocessors = new List<IPreProcessor>();
 
@@ -20,6 +21,26 @@ namespace LinFu.IoC
         /// </summary>
         public ServiceContainer()
         {
+            _getServiceBehavior = new DefaultGetServiceBehavior(this);
+            this.AddDefaultServices();
+        }
+
+        /// <summary>
+        /// Initializes the container with a custom <see cref="ICreateInstance"/> type.
+        /// </summary>
+        /// <param name="getServiceBehavior">The instance that will be responsible for generating service instances.</param>
+        /// <param name="factoryStorage">The <see cref="IFactoryStorage"/> instance responsible for determining which factory instance will instantiate a given service request.</param>
+        public ServiceContainer(IGetService getServiceBehavior, IFactoryStorage factoryStorage)
+        {
+            if (getServiceBehavior == null)
+                throw new ArgumentNullException("getServiceBehavior");
+
+            if (factoryStorage == null)
+                throw new ArgumentNullException("factoryStorage");
+
+            _getServiceBehavior = getServiceBehavior;
+            _factoryStorage = factoryStorage;
+
             this.AddDefaultServices();
         }
 
@@ -54,7 +75,7 @@ namespace LinFu.IoC
         /// <param name="factory">The <see cref="IFactory"/> instance that will be responsible for creating the service instance</param>
         public virtual void AddFactory(Type serviceType, IEnumerable<Type> additionalParameterTypes, IFactory factory)
         {
-            FactoryStorage.AddFactory(null, serviceType, additionalParameterTypes, factory);
+            AddFactory(null, serviceType, additionalParameterTypes, factory);
         }
 
         /// <summary>
@@ -102,54 +123,18 @@ namespace LinFu.IoC
         /// otherwise, it will just return a <c>null</c> value.</returns>
         public virtual object GetService(string serviceName, Type serviceType, params object[] additionalArguments)
         {
-            object instance = null;
-            var suppressErrors = SuppressErrors;
+            IFactory factory = null;
 
-            // Attempt to create the service type using
-            // the strongly-typed arguments
-            var factory = FactoryStorage.GetFactory(serviceName, serviceType, additionalArguments);
+            if (FactoryStorage != null)
+                factory = FactoryStorage.GetFactory(serviceName, serviceType, additionalArguments);
 
-            // Use the default factory for this service type if no other factory exists
-            if (factory == null && FactoryStorage.ContainsFactory(serviceName, serviceType, new Type[0]))
-                factory = FactoryStorage.GetFactory(serviceName, serviceType, new List<Type>());
+            var serviceRequest = new ServiceRequest(serviceName, serviceType, additionalArguments, factory, this);
+            var instance = _getServiceBehavior.GetService(serviceRequest);
 
-            // Attempt to create the service type using
-            // the generic factories, if possible
-            if (factory == null && serviceType.IsGenericType)
-            {
-                var definitionType = serviceType.GetGenericTypeDefinition();
-                factory = FactoryStorage.GetFactory(serviceName, definitionType, additionalArguments);
-            }
-
-            // Allow users to intercept the instantiation process
-            IServiceRequest serviceRequest = Preprocess(serviceName, serviceType, additionalArguments, factory);
-
-            factory = serviceRequest.ActualFactory;
-            var actualArguments = serviceRequest.ActualArguments;
-
-
-            var factoryRequest = new FactoryRequest
-            {
-                ServiceType = serviceType,
-                ServiceName = serviceName,
-                Arguments = actualArguments,
-                Container = this
-            };
-
-            // Generate the service instance
-            if (factory != null)
-                instance = factory.CreateInstance(factoryRequest);
-
-            IServiceRequestResult result = PostProcess(serviceName, serviceType, instance, actualArguments);
-
-            // Use the modified result, if possible; otherwise,
-            // use the original result.
-            instance = result.ActualResult ?? result.OriginalResult;
-
-            if (suppressErrors == false && instance == null && serviceName == null)
+            if (SuppressErrors == false && instance == null && serviceName == null)
                 throw new ServiceNotFoundException(serviceType);
 
-            if (suppressErrors == false && instance == null && serviceName != null)
+            if (SuppressErrors == false && instance == null && serviceName != null)
                 throw new NamedServiceNotFoundException(serviceName, serviceType);
 
             return instance;
@@ -166,90 +151,7 @@ namespace LinFu.IoC
         /// <returns>Returns <c>true</c> if the service exists; otherwise, it will return <c>false</c>.</returns>
         public virtual bool Contains(string serviceName, Type serviceType, IEnumerable<Type> additionalParameterTypes)
         {
-            // Use the default implementation for
-            // non-generic types
-            if (!serviceType.IsGenericType && !serviceType.IsGenericTypeDefinition)
-                return FactoryStorage.ContainsFactory(serviceName, serviceType, additionalParameterTypes);
-
-            // If the service type is a generic type, determine
-            // if the service type can be created by a 
-            // standard factory that can create an instance
-            // of that generic type (e.g., IFactory<IGeneric<T>>            
-            var result = FactoryStorage.ContainsFactory(serviceName, serviceType, additionalParameterTypes);
-
-            // Immediately return a positive match, if possible
-            if (result)
-                return true;
-
-            if (serviceType.IsGenericType && !serviceType.IsGenericTypeDefinition)
-            {
-                // Determine the base type definition
-                var baseDefinition = serviceType.GetGenericTypeDefinition();
-
-                // Check if there are any generic factories that can create
-                // the entire family of services whose type definitions
-                // match the base type
-                result = FactoryStorage.ContainsFactory(serviceName, baseDefinition, additionalParameterTypes);
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// A method that searches the container for <see cref="IPreProcessor"/> instances
-        /// and passes the service request to each one of those preprocessors.
-        /// </summary>
-        /// <param name="serviceName">The name of the service being requested. By default, this is usually blank.</param>
-        /// <param name="serviceType">The type of service being requested.</param>        
-        /// <param name="additionalArguments">The list of additional arguments that will be used for the service request.</param>
-        /// <param name="proposedFactory">The <see cref="IFactory"/> instance that will be used to create the service instance.</param>
-        /// <returns>A <see cref="IServiceRequest"/> object that describes which factory should be used to handle the service request.</returns>
-        private IServiceRequest Preprocess(string serviceName, Type serviceType, object[] additionalArguments, IFactory proposedFactory)
-        {
-            var serviceRequest = new ServiceRequest(serviceName, serviceType, additionalArguments, proposedFactory, this);
-            foreach (var preprocessor in PreProcessors)
-            {
-                preprocessor.Preprocess(serviceRequest);
-            }
-            return serviceRequest;
-        }
-
-        /// <summary>
-        /// A method that searches the current container for
-        /// postprocessors and passes every request result made
-        /// to the list of <see cref="IServiceContainer.PostProcessors"/>.
-        /// </summary>
-        /// <param name="serviceName">The name of the service being requested. By default, this is usually blank.</param>
-        /// <param name="serviceType">The type of service being requested.</param>
-        /// <param name="instance">The original instance returned by container's service instantiation attempt.</param>
-        /// <param name="additionalArguments">The list of additional arguments that were used during the service request.</param>
-        /// <returns>A <see cref="IServiceRequestResult"/> representing the results returned as a result of the postprocessors.</returns>
-        private IServiceRequestResult PostProcess(string serviceName, Type serviceType, object instance, object[] additionalArguments)
-        {
-            // Initialize the results
-            var result = new ServiceRequestResult
-            {
-                ServiceName = serviceName,
-                ActualResult = instance,
-                Container = this,
-                OriginalResult = instance,
-                ServiceType = serviceType,
-                AdditionalArguments = additionalArguments
-            };
-
-            // Let each postprocessor inspect 
-            // the results and/or modify the 
-            // returned object instance
-            var postprocessors = PostProcessors.ToArray();
-            foreach (IPostProcessor postProcessor in postprocessors)
-            {
-                if (postProcessor == null)
-                    continue;
-
-                postProcessor.PostProcess(result);
-            }
-
-            return result;
+            return FactoryStorage.ContainsFactory(serviceName, serviceType, additionalParameterTypes);
         }
 
         /// <summary>

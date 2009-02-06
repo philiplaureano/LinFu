@@ -67,7 +67,7 @@ namespace LinFu.IoC
         {
             return container.AutoCreate(concreteType, additionalArguments);
         }
-        
+
         /// <summary>
         /// Loads an existing <paramref name="assembly"/> into the container.
         /// </summary>
@@ -156,14 +156,62 @@ namespace LinFu.IoC
         /// Automatically instantiates a <paramref name="concreteType"/>
         /// with the constructor with the most resolvable parameters from
         /// the given <paramref name="container"/> instance.
-        /// </summary>
-        /// This method only performs constructor injection on the target type. If you need any other form of injection (such as property injection), you'll need to 
-        /// register your type and instantiate it with the <see cref="GetService{T}(IServiceContainer,object[])<>GetService{T}"/> method.
+        /// </summary>        
         /// <param name="container">The service container that contains the arguments that will automatically be injected into the constructor.</param>
         /// <param name="concreteType">The type to instantiate.</param>
         /// <param name="additionalArguments">The list of arguments to pass to the target type.</param>
         /// <returns>A valid, non-null object reference.</returns>
         public static object AutoCreate(this IServiceContainer container, Type concreteType, params object[] additionalArguments)
+        {
+            // Generate the target service
+            var instance = container.AutoCreateInternal(concreteType, additionalArguments);
+
+            if (instance == null)
+                return null;
+
+            return container.PostProcess(concreteType, instance); ;
+        }
+
+        /// <summary>
+        /// Postprocesses an object instance as if it were created from the target <paramref name="container"/>.
+        /// </summary>
+        /// <param name="container">The container that will postprocess the target <paramref name="instance"/>.</param>
+        /// <param name="concreteType">The type being processed.</param>
+        /// <param name="instance">The target instance to be processed.</param>
+        /// <param name="additionalArguments">The list of arguments to pass to the target type.</param>
+        /// <returns>A valid, non-null object reference.</returns>
+        internal static object PostProcess(this IServiceContainer container, Type concreteType, object instance, params object[] additionalArguments)
+        {
+            var composite = new CompositePostProcessor(container.PostProcessors);
+            var result = new ServiceRequestResult()
+                             {
+                                 OriginalResult = instance,
+                                 ActualResult = instance,
+                                 AdditionalArguments = additionalArguments,
+                                 Container = container,
+                                 ServiceName = string.Empty,
+                                 ServiceType = concreteType
+                             };
+
+            composite.PostProcess(result);
+
+            return result.ActualResult ?? result.OriginalResult;
+        }
+
+        /// <summary>
+        /// Automatically instantiates a <paramref name="concreteType"/>
+        /// with the constructor with the most resolvable parameters from
+        /// the given <paramref name="container"/> instance.
+        /// </summary>
+        /// <remarks>
+        /// This method only performs constructor injection on the target type. If you need any other form of injection (such as property injection), you'll need to 
+        /// register your type and instantiate it with the <see cref="GetService{T}(IServiceContainer,object[])<>GetService{T}"/> method.
+        /// </remarks>
+        /// <param name="container">The service container that contains the arguments that will automatically be injected into the constructor.</param>
+        /// <param name="concreteType">The type to instantiate.</param>
+        /// <param name="additionalArguments">The list of arguments to pass to the target type.</param>
+        /// <returns>A valid, non-null object reference.</returns>
+        internal static object AutoCreateInternal(this IServiceContainer container, Type concreteType, params object[] additionalArguments)
         {
             var currentContainer = container ?? new ServiceContainer();
 
@@ -255,7 +303,7 @@ namespace LinFu.IoC
             container.AddFactory(null, typeof(IScope), new FunctorFactory(f => new Scope()));
         }
 
-        
+
 
         /// <summary>
         /// Creates an instance of <typeparamref name="T"/>
