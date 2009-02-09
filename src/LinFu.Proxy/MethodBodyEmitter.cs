@@ -4,7 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using LinFu.AOP;
+using LinFu.AOP.Cecil;
+using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using LinFu.Proxy.Interfaces;
 using LinFu.IoC;
@@ -21,7 +22,7 @@ namespace LinFu.Proxy
     /// <see cref="IMethodBodyEmitter"/> interface.
     /// </summary>
     [Implements(typeof(IMethodBodyEmitter), LifecycleType.OncePerRequest)]
-    public class MethodBodyEmitter : IMethodBodyEmitter, IInitialize
+    internal class MethodBodyEmitter : IMethodBodyEmitter, IInitialize
     {
         /// <summary>
         /// Initializes the class with the default values.
@@ -44,6 +45,7 @@ namespace LinFu.Proxy
         public void Emit(MethodInfo originalMethod, MethodDefinition targetMethod)
         {
             var invocationInfo = targetMethod.AddLocal<IInvocationInfo>();
+            invocationInfo.Name = "___invocationInfo___";
 
             // Emit the code to generate the IInvocationInfo instance
             // and save it into the invocationInfo local variable

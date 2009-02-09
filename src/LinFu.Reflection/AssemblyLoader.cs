@@ -15,7 +15,7 @@ namespace LinFu.Reflection
         /// </summary>
         /// <param name="assemblyFile">The full path and filename of the assembly to load.</param>
         /// <returns>A loaded <see cref="Assembly"/> instance.</returns>
-        public Assembly Load(string assemblyFile)
+        public virtual Assembly Load(string assemblyFile)
         {
             return Assembly.LoadFrom(assemblyFile);
         }

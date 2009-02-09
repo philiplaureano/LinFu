@@ -18,7 +18,7 @@ namespace LinFu.Proxy
     /// single interceptor.
     /// </summary>
     [Implements(typeof(IProxyBuilder), LifecycleType.OncePerRequest)]
-    public class ProxyBuilder : IProxyBuilder, IInitialize
+    internal class ProxyBuilder : IProxyBuilder, IInitialize
     {
         /// <summary>
         /// Initializes the current class with the default values.

@@ -13,6 +13,7 @@ using LinFu.Reflection.Emit.Interfaces;
 using Mono.Cecil;
 using Moq;
 using NUnit.Framework;
+using SampleStronglyNamedLibrary;
 
 namespace LinFu.UnitTests.Reflection
 {
@@ -58,7 +59,7 @@ namespace LinFu.UnitTests.Reflection
         [Test]
         public void MethodInvokerShouldProperlyHandleReturnValues()
         {
-            var targetMethod = typeof (object).GetMethod("GetHashCode");
+            var targetMethod = typeof(object).GetMethod("GetHashCode");
             var instance = new object();
 
             var hash = instance.GetHashCode();
@@ -67,8 +68,74 @@ namespace LinFu.UnitTests.Reflection
             var invoker = container.GetService<IMethodInvoke<MethodInfo>>();
             Assert.IsNotNull(invoker);
 
-            var result = invoker.Invoke(instance, targetMethod, new object[]{});
+            var result = invoker.Invoke(instance, targetMethod, new object[] { });
             Assert.AreEqual(result, hash);
+        }
+
+        [Test]
+        public void CecilShouldExtractSampleClassFromSignedAssembly()
+        {
+            var location = typeof(SampleHelloClass).Assembly.Location;
+
+            var sourceAssembly = AssemblyFactory.GetAssembly(location);
+            Assert.IsNotNull(sourceAssembly);
+
+            var definition = AssemblyFactory.DefineAssembly("testAssembly", AssemblyKind.Dll);
+            var targetModule = definition.MainModule;
+            foreach (TypeDefinition typeDef in sourceAssembly.MainModule.Types)
+            {
+                // Copy the source type to the target assembly
+                targetModule.Inject(typeDef);
+            }
+
+            // Convert the new assemblyDef into an actual assembly
+            var assembly = definition.ToAssembly();
+            Assert.IsNotNull(assembly);
+
+            var types = assembly.GetTypes();
+            Assert.IsTrue(types.Length > 0);
+
+            // The imported type must match the original type
+            var firstType = types.FirstOrDefault();
+            Assert.IsNotNull(firstType);
+            Assert.AreEqual(firstType.Name, typeof(SampleHelloClass).Name);
+
+            var instance = Activator.CreateInstance(firstType);
+            Assert.IsNotNull(instance);
+
+            var speakMethod = firstType.GetMethod("Speak");
+            Assert.IsNotNull(speakMethod);
+
+            speakMethod.Invoke(instance, new object[] { });
+        }
+
+        [Test]
+        public void CecilShouldRemoveStrongNameFromAssembly()
+        {
+            var location = typeof(SampleHelloClass).Assembly.Location;
+
+            var sourceAssembly = AssemblyFactory.GetAssembly(location);
+
+
+            Assert.IsNotNull(sourceAssembly);
+            var nameDef = sourceAssembly.Name;
+
+            // Remove the strong name
+            nameDef.PublicKey = null;
+            nameDef.PublicKeyToken = null;
+            nameDef.HashAlgorithm = AssemblyHashAlgorithm.None;
+            nameDef.Flags = ~AssemblyFlags.PublicKey;
+            nameDef.HasPublicKey = false;
+
+            var assembly = sourceAssembly.ToAssembly();
+            Assert.IsNotNull(assembly);
+
+            var assemblyName = assembly.GetName();
+            
+            // The public key should be empty
+            var bytes = assemblyName.GetPublicKey();
+            Assert.IsTrue(bytes.Length == 0);
+            return;
         }
     }
 }

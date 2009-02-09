@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using LinFu.IoC;
+using LinFu.IoC.Configuration;
 using LinFu.IoC.Factories;
 using LinFu.IoC.Interfaces;
 using Moq;

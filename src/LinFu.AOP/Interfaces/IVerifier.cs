@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Mono.Cecil;
 
-namespace LinFu.AOP.Interfaces
+namespace LinFu.AOP.Cecil.Interfaces
 {
     /// <summary>
     /// A class that verifies a given <see cref="AssemblyDefinition"/> instance.

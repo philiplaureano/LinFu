@@ -11,7 +11,7 @@ namespace LinFu.Proxy
     /// Represents the default implementation of the <see cref="IProxyCache"/> interface.
     /// </summary>
     [Implements(typeof(IProxyCache), LifecycleType.OncePerRequest)]
-    public class ProxyCache : IProxyCache
+    internal class ProxyCache : IProxyCache
     {
         private static readonly Dictionary<ProxyCacheEntry, Type> _cache = new Dictionary<ProxyCacheEntry, Type>(new ProxyCacheEntry.EqualityComparer());
 

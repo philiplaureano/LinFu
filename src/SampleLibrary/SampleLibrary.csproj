@@ -65,6 +65,7 @@
     <Compile Include="IOC\SampleGenericClassWithOpenGenericImplementation.cs" />
     <Compile Include="IOC\SampleGenericClassWithSpecificGenericTypeImplementation.cs" />
     <Compile Include="IOC\SampleInterceptorClass.cs" />
+    <Compile Include="IOC\SampleInternalService.cs" />
     <Compile Include="IOC\SampleLazyService.cs" />
     <Compile Include="IOC\SamplePreprocessor.cs" />
     <Compile Include="IOC\SampleRecursiveTestComponent1.cs" />

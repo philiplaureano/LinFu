@@ -8,8 +8,8 @@
     <ProjectGuid>{613B6547-DCBB-4505-82B8-B4179BFC95CE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LinFu.AOP</RootNamespace>
-    <AssemblyName>LinFu.AOP</AssemblyName>
+    <RootNamespace>LinFu.AOP.Cecil</RootNamespace>
+    <AssemblyName>LinFu.AOP.Cecil</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\build\Debug\LinFu.AOP.XML</DocumentationFile>
+    <DocumentationFile>..\..\build\Debug\LinFu.AOP.Cecil.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,7 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\build\Release\LinFu.AOP.XML</DocumentationFile>
+    <DocumentationFile>..\..\build\Release\LinFu.AOP.Cecil.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Cecil, Version=0.6.8.8607, Culture=neutral, processorArchitecture=MSIL">
@@ -54,9 +54,25 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Weavers\AutoModuleWeaver.cs" />
+    <Compile Include="Weavers\AutoTypeWeaver.cs" />
+    <Compile Include="Factories\AddInvocationInfoActionFactory.cs" />
+    <Compile Include="Factories\AssemblyWeaverActionFactory.cs" />
+    <Compile Include="Factories\TypeWeaverActionFactory.cs" />
+    <Compile Include="Interfaces\IAroundMethodWeaver.cs" />
+    <Compile Include="Interfaces\IEmitInvocationInfo.cs" />
+    <Compile Include="Interfaces\IHostWeaver.cs" />
+    <Compile Include="Interfaces\IMethodWeaver.cs" />
+    <Compile Include="Interfaces\IModuleWeaver.cs" />
+    <Compile Include="Interfaces\ITypeWeaver.cs" />
+    <Compile Include="Interfaces\IWeaver.cs" />
     <Compile Include="InvocationInfo.cs" />
     <Compile Include="InvocationInfoEmitter.cs" />
     <Compile Include="InvocationInfoExtensions.cs" />
+    <Compile Include="Interfaces\IVerifier.cs" />
+    <Compile Include="Loaders\JITWeaver.cs" />
+    <Compile Include="ModuleDefinitionExtensions.cs" />
+    <Compile Include="TypeDefinitionExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LinFu.AOP.Interfaces\LinFu.AOP.Interfaces.csproj">

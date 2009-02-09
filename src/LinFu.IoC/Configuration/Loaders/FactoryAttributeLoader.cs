@@ -49,7 +49,7 @@ namespace LinFu.IoC.Configuration
             };
 
             #endregion
-            
+
             return GetResults(sourceType, attributeList, getFactoryInstance);
         }
 
@@ -61,7 +61,7 @@ namespace LinFu.IoC.Configuration
         /// <param name="attributeList">The list of <see cref="FactoryAttribute"/> instances currently declared on on the source type.</param>
         /// <param name="getFactoryInstance">The functor that will be responsible for generating the factory instance.</param>
         /// <returns>A list of actions that will add the factories to the target container.</returns>
-        private static IEnumerable<Action<IServiceContainer>> GetResults(Type sourceType, IEnumerable<FactoryAttribute> attributeList, 
+        private static IEnumerable<Action<IServiceContainer>> GetResults(Type sourceType, IEnumerable<FactoryAttribute> attributeList,
              Func<IFactoryRequest, object> getFactoryInstance)
         {
             var results = new List<Action<IServiceContainer>>();
@@ -86,7 +86,30 @@ namespace LinFu.IoC.Configuration
                     // the generic IFactory<T> instance
                     // and use that instance if possible
 
-                    Func<IFactoryRequest, IFactory> getStronglyTypedFactory = request => getFactory(request) as IFactory;
+                    Func<IFactoryRequest, IFactory> getStronglyTypedFactory =
+                        request =>
+                        {
+                            object result = getFactory(request);
+                            // If the object is IFactory then we can just return it.
+                            if (result is IFactory)                                
+                                return (IFactory)result;
+
+                            // Check to see if the object is IFactory<T>, if so we need to adapt it to 
+                            // IFactory.
+                            Type genericType = typeof(IFactory<>).MakeGenericType(currentServiceType);
+                            if (!genericType.IsInstanceOfType(result))
+                            {
+                                // It isn't an IFactory or IFactory<T>, who knows what it is, return null.
+                                return null;
+                            }
+
+                            // Adapt IFactory<T> to IFactory.
+                            var adapterType = typeof(FactoryAdapter<>).MakeGenericType(currentServiceType);
+                            var adapter = (IFactory)Activator.CreateInstance(adapterType, new[] { result });
+                            return adapter;
+
+                        };
+
                     return GetFactory(currentServiceType, getStronglyTypedFactory, implementedInterfaces);
                 };
 
@@ -134,7 +157,7 @@ namespace LinFu.IoC.Configuration
         /// <param name="getStronglyTypedFactory">The functor that will be responsible for creating the factory itself.</param>
         /// <param name="implementedInterfaces">The list of <see cref="IFactory{T}"/> interfaces that are implemented by the source type.</param>
         /// <returns>A valid factory instance.</returns>
-        private static IFactory GetFactory(Type currentServiceType, Func<IFactoryRequest, IFactory> getStronglyTypedFactory, 
+        private static IFactory GetFactory(Type currentServiceType, Func<IFactoryRequest, IFactory> getStronglyTypedFactory,
             ICollection<Type> implementedInterfaces)
         {
             Type genericType = typeof(IFactory<>).MakeGenericType(currentServiceType);

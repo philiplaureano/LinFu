@@ -30,15 +30,15 @@ namespace LinFu.Reflection
         /// The <see cref="IAssemblyLoader"/> instance that will load
         /// the target assemblies.
         /// </summary>
-        public IAssemblyLoader AssemblyLoader { get; set; }
+        public virtual IAssemblyLoader AssemblyLoader { get; set; }
 
 
         /// <summary>
         /// Gets or sets the value indicating the action loader 
-        /// responsible for reading an assembly and converting it to 
+        /// responsible for reading an assembly and converts it to 
         /// a list of actions to be performed against the target type.
         /// </summary>
-        public IActionLoader<IList<Action<TTarget>>, Assembly> AssemblyActionLoader
+        public virtual IActionLoader<IList<Action<TTarget>>, Assembly> AssemblyActionLoader
         {
             get;
             set;
@@ -48,7 +48,7 @@ namespace LinFu.Reflection
         /// The list of ActionLoaders that will be used to
         /// configure the target.
         /// </summary>
-        public IList<IActionLoader<TTarget, Type>> TypeLoaders
+        public virtual IList<IActionLoader<TTarget, Type>> TypeLoaders
         {
             get { return typeLoaders; }
         }
@@ -62,7 +62,7 @@ namespace LinFu.Reflection
         /// </remarks>
         /// <param name="filename">The filename and full path of the target file.</param>
         /// <returns>Returns <c>true</c> if the file can be loaded; otherwise, the result is <c>false</c>.</returns>
-        public bool CanLoad(string filename)
+        public virtual bool CanLoad(string filename)
         {
             return TypeLoaders.Count > 0 &&
                    Path.GetExtension(filename).ToLower() == ".dll" &&
@@ -77,7 +77,7 @@ namespace LinFu.Reflection
         /// <remarks>This class can only load valid .NET Assemblies.</remarks>
         /// <param name="filename">The target file to be loaded.</param>
         /// <returns>A set of <see cref="Action{IServiceContainer}"/> instances to apply to a target type.</returns>
-        public IEnumerable<Action<TTarget>> Load(string filename)
+        public virtual IEnumerable<Action<TTarget>> Load(string filename)
         {
             Assembly assembly = null;
 

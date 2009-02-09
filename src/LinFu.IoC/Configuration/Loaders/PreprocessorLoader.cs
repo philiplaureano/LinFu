@@ -12,7 +12,7 @@ namespace LinFu.IoC.Configuration.Loaders
     /// instances and configures a loader to inject those postprocessors
     /// into a container upon initialization.
     /// </summary>
-    internal class PreprocessorLoader : IActionLoader<IServiceContainer, Type>
+    internal class PreProcessorLoader : IActionLoader<IServiceContainer, Type>
     {
         /// <summary>
         /// Determines if the plugin loader can load the <paramref name="inputType"/>.

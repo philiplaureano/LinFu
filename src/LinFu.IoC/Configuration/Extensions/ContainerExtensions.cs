@@ -5,12 +5,14 @@ using System.Reflection;
 using LinFu.IoC.Configuration;
 using LinFu.IoC.Configuration.Injectors;
 using LinFu.IoC.Configuration.Interfaces;
+using LinFu.IoC.Configuration.Loaders;
 using LinFu.IoC.Configuration.Resolvers;
 using LinFu.IoC.Factories;
+using LinFu.IoC.Interceptors;
 using LinFu.IoC.Interfaces;
 using LinFu.Reflection;
 
-namespace LinFu.IoC
+namespace LinFu.IoC.Configuration
 {
     /// <summary>
     /// A class that adds generics support to existing 
@@ -21,6 +23,26 @@ namespace LinFu.IoC
     {
         private static readonly TypeCounter _counter = new TypeCounter();
         private static readonly Stack<Type> _requests = new Stack<Type>();
+
+        /// <summary>
+        /// Loads a set of <paramref name="searchPattern">files</paramref> from the <paramref name="directory">target directory</paramref>
+        /// using a custom <see cref="IAssemblyLoader"/> instance.
+        /// </summary>
+        /// <param name="container">The container to be loaded.</param>
+        /// <param name="assemblyLoader">The custom <see cref="IAssemblyLoader"/> that will be used to load the target assemblies from disk.</param>
+        /// <param name="directory">The target directory.</param>
+        /// <param name="searchPattern">The search pattern that describes the list of files to be loaded.</param>
+        public static void LoadFrom(this IServiceContainer container, IAssemblyLoader assemblyLoader, string directory,
+            string searchPattern)
+        {
+            var loader = new Loader() { AssemblyLoader = assemblyLoader };
+
+            // Load the target directory
+            loader.LoadDirectory(directory, searchPattern);
+
+            // Configure the container
+            loader.LoadInto(container);
+        }
 
         /// <summary>
         /// Loads a set of <paramref name="searchPattern">files</paramref> from the <paramref name="directory">target directory</paramref>.
@@ -77,21 +99,49 @@ namespace LinFu.IoC
         {
             // Use the AssemblyTargetLoader<> class to pull
             // the types out of an assembly
-            var assemblyTargetLoader = new AssemblyTargetLoader<IServiceContainer>();
+            var loader = new Loader<IServiceContainer>();
+            var assemblyTargetLoader = loader.CreateDefaultContainerLoader();
             assemblyTargetLoader.AssemblyActionLoader =
                 new AssemblyActionLoader<IServiceContainer>(() => assemblyTargetLoader.TypeLoaders);
 
             // HACK: Return an existing assembly instead of reading
             // the assembly from disk
-            assemblyTargetLoader.AssemblyLoader = new InMemoryAssemblyLoader(assembly);
+            assemblyTargetLoader.AssemblyLoader = new InMemoryAssemblyLoader(assembly);            
+            loader.FileLoaders.Add(assemblyTargetLoader);
 
-            // Convert the assembly into a set of configuration actions
-            var actions = assemblyTargetLoader.Load(string.Empty).ToList();
+            var actionList = new List<Action<IServiceContainer>>();
+            
+            // Manually load the assembly into memory
+            foreach(var fileLoader in loader.FileLoaders)
+            {
+                var actions = fileLoader.Load(string.Empty);
+                actionList.AddRange(actions);
+            }
 
-            // Apply the actions to the container
-            actions.ForEach(action => action(container));
+            foreach(var currentAction in actionList)
+            {
+                loader.QueuedActions.Add(currentAction);
+            }
+            
+            loader.LoadInto(container);
         }
 
+        /// <summary>
+        /// Generates the default <see cref="AssemblyContainerLoader"/> for a <see cref="Loader"/> class instance.
+        /// </summary>
+        /// <param name="loader">The loader that will load the target container.</param>
+        /// <returns>A valid <see cref="AssemblyContainerLoader"/> instance.</returns>
+        internal static AssemblyContainerLoader CreateDefaultContainerLoader(this ILoader<IServiceContainer> loader)
+        {
+            var containerLoader = new AssemblyContainerLoader();
+            containerLoader.TypeLoaders.Add(new FactoryAttributeLoader());
+            containerLoader.TypeLoaders.Add(new ImplementsAttributeLoader());
+            containerLoader.TypeLoaders.Add(new PreProcessorLoader());
+            containerLoader.TypeLoaders.Add(new PostProcessorLoader());
+            containerLoader.TypeLoaders.Add(new InterceptorAttributeLoader(loader));
+
+            return containerLoader;
+        }
         /// <summary>
         /// Sets the custom attribute type that will be used to mark properties
         /// for automatic injection.

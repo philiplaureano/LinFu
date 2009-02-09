@@ -73,6 +73,15 @@ namespace LinFu.IoC
         }
 
         /// <summary>
+        /// <summary>
+        /// Displays the name of the current service and the current service type.
+        /// </summary>
+        /// <returns>The name of the current service and the current service type.</returns>
+        public override string ToString()
+        {
+            return string.Format("Service Name: '{0}', Service Type = '{1}'", ServiceName,
+                                 ServiceType.AssemblyQualifiedName);
+        }
         /// Determines if the other object is equal to the current <see cref="IServiceInfo"/> instance.
         /// </summary>
         /// <param name="obj">The other object that will be used in the comparison.</param>

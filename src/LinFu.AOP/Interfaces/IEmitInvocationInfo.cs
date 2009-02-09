@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using LinFu.AOP.Interfaces;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-namespace LinFu.AOP.Interfaces
+namespace LinFu.AOP.Cecil.Interfaces
 {
     /// <summary>
     /// Represents a class that emits
@@ -23,7 +24,6 @@ namespace LinFu.AOP.Interfaces
         /// <param name="targetMethod">The target method currently being executed.</param>
         /// <param name="currentMethod">The method that will be passed to the <paramref name="invocationInfo"/> as the currently executing method.</param>
         /// <param name="invocationInfo">The local variable that will store the resulting <see cref="IInvocationInfo"/> instance.</param>
-        void Emit(MethodInfo currentMethod, MethodDefinition targetMethod, 
-            VariableDefinition invocationInfo);
+        void Emit(MethodDefinition targetMethod, MethodReference currentMethod, VariableDefinition invocationInfo);
     }
 }

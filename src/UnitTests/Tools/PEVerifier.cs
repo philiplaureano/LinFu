@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using LinFu.AOP.Interfaces;
+using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil;
 using NUnit.Framework;
 

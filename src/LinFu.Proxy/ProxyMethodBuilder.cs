@@ -18,7 +18,7 @@ namespace LinFu.Proxy
     /// <see cref="IMethodBuilder"/> interface.
     /// </summary>
     [Implements(typeof(IMethodBuilder), LifecycleType.OncePerRequest, ServiceName = "ProxyMethodBuilder")]
-    public class ProxyMethodBuilder : IMethodBuilder, IInitialize
+    internal class ProxyMethodBuilder : IMethodBuilder, IInitialize
     {
         /// <summary>
         /// Initializes the <see cref="ProxyMethodBuilder"/> class with the default property values.

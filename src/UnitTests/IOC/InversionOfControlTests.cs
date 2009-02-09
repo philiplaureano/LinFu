@@ -611,5 +611,15 @@ namespace LinFu.UnitTests.IOC
                 Assert.IsNotInstanceOfType(typeof(StackOverflowException), ex);
             }
         }
+
+        [Test]
+        public void ContainerMustLoadAssemblyFromMemory()
+        {
+            var container = new ServiceContainer();
+            container.LoadFrom(typeof (SampleClass).Assembly);
+            
+            // Verify that the container loaded the sample assembly into memory
+            Assert.IsTrue(container.Contains(typeof (ISampleService)));
+        }
     }
 }

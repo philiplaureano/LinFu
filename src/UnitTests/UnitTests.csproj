@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AOP\CecilTests.cs" />
     <Compile Include="AOP\ParameterDefinitionExtensionTests.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="BaseTestFixture.cs" />
@@ -100,9 +101,9 @@
       <Project>{0F8C48B0-4AE9-4429-AB90-C5141D710C2C}</Project>
       <Name>LinFu.AOP.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LinFu.AOP\LinFu.AOP.csproj">
+    <ProjectReference Include="..\LinFu.AOP\LinFu.AOP.Cecil.csproj">
       <Project>{613B6547-DCBB-4505-82B8-B4179BFC95CE}</Project>
-      <Name>LinFu.AOP</Name>
+      <Name>LinFu.AOP.Cecil</Name>
     </ProjectReference>
     <ProjectReference Include="..\LinFu.Proxy.Interfaces\LinFu.Proxy.Interfaces.csproj">
       <Project>{6C29A409-6148-49AC-A192-DC6F33F3304C}</Project>
@@ -131,6 +132,10 @@
     <ProjectReference Include="..\SampleLibrary\SampleLibrary.csproj">
       <Project>{DEFBEF97-B03C-448F-9518-394735439E2E}</Project>
       <Name>SampleLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SampleStronglyNamedLibrary\SampleStronglyNamedLibrary.csproj">
+      <Project>{9D2FF6CF-308E-4E31-A0D2-DE98355123CF}</Project>
+      <Name>SampleStronglyNamedLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

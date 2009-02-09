@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using LinFu.IoC;
+using LinFu.IoC.Configuration;
 using LinFu.IoC.Interfaces;
 using Moq;
 using NUnit.Framework;

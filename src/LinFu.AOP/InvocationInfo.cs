@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using LinFu.AOP.Interfaces;
 
-namespace LinFu.AOP
+namespace LinFu.AOP.Cecil
 {
     /// <summary>
     /// Represents the information associated with 
@@ -37,8 +37,8 @@ namespace LinFu.AOP
         /// <param name="returnType">The return type of the target method.</param>
         /// <param name="arguments">The arguments used in the method call.</param>
         public InvocationInfo(object target, MethodInfo targetMethod, 
-            StackTrace stackTrace, Type[] parameterTypes, 
-            Type[] typeArguments, Type returnType, object[] arguments)
+                              StackTrace stackTrace, Type[] parameterTypes, 
+                              Type[] typeArguments, Type returnType, object[] arguments)
         {
             _target = target;
             _targetMethod = targetMethod;

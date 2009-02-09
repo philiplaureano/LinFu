@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using LinFu.AOP.Interfaces;
+using LinFu.AOP.Cecil.Interfaces;
 using LinFu.Proxy.Interfaces;
 using LinFu.IoC;
 using LinFu.IoC.Configuration;

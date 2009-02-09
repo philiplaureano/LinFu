@@ -13,7 +13,7 @@ namespace LinFu.Proxy
     /// <see cref="IMethodPicker"/> interface.
     /// </summary>
     [Implements(typeof(IMethodPicker), LifecycleType.OncePerRequest)]
-    public class MethodPicker : IMethodPicker
+    internal class MethodPicker : IMethodPicker
     {
         /// <summary>
         /// Determines which methods can be proxied from 

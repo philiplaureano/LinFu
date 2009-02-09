@@ -69,9 +69,9 @@
       <Project>{0F8C48B0-4AE9-4429-AB90-C5141D710C2C}</Project>
       <Name>LinFu.AOP.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LinFu.AOP\LinFu.AOP.csproj">
+    <ProjectReference Include="..\LinFu.AOP\LinFu.AOP.Cecil.csproj">
       <Project>{613B6547-DCBB-4505-82B8-B4179BFC95CE}</Project>
-      <Name>LinFu.AOP</Name>
+      <Name>LinFu.AOP.Cecil</Name>
     </ProjectReference>
     <ProjectReference Include="..\LinFu.IoC\LinFu.IoC.csproj">
       <Project>{FA3D5517-EFF4-4363-AFF2-EF67B981334E}</Project>

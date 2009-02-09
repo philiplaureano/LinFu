@@ -112,7 +112,7 @@ namespace LinFu.Reflection
                     }
                 }
 
-                Load(currentFile);
+                LoadFile(currentFile);
                 _loadedFiles.Add(currentFile);
             }
         }
@@ -187,7 +187,7 @@ namespace LinFu.Reflection
         /// using the list of associated <see cref="FileLoaders"/>.
         /// </summary>
         /// <param name="currentFile">The full path and filename being loaded.</param>
-        private void Load(string currentFile)
+        public void LoadFile(string currentFile)
         {
             foreach (var loader in FileLoaders)
             {
