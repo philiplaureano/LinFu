@@ -64,8 +64,9 @@ namespace LinFu.Reflection
         /// <returns>Returns <c>true</c> if the file can be loaded; otherwise, the result is <c>false</c>.</returns>
         public virtual bool CanLoad(string filename)
         {
+            var extension = Path.GetExtension(filename).ToLower();
             return TypeLoaders.Count > 0 &&
-                   Path.GetExtension(filename).ToLower() == ".dll" &&
+                   (extension == ".dll" || extension == ".exe") &&
                    File.Exists(filename);
         }
 
