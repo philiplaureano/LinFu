@@ -29,7 +29,19 @@ namespace LinFu.IoC.Configuration
             var argumentList = new List<object>();
             foreach (var parameterType in parameterTypes)
             {
-                object currentArgument = null;
+                // Substitute the parameter if and only if 
+                // the container does not have service that
+                // that matches the parameter type
+                var parameterTypeExists = container.Contains(parameterType);
+
+                if (parameterTypeExists)
+                {
+                    // Instantiate the service type and build
+                    // the argument list
+                    object currentArgument = container.GetService(parameterType);
+                    argumentList.Add(currentArgument);
+                    continue;
+                }
 
                 // Determine if the parameter type is an IEnumerable<T> type
                 // and generate the list if necessary
@@ -40,19 +52,13 @@ namespace LinFu.IoC.Configuration
                     continue;
                 }
 
-                if (parameterType.IsArray)
-                {
-                    // Determine if the parameter type is an array
-                    // of existing services and inject the current
-                    // set of services as a parameter value
-                    AddArrayArgument(parameterType, container, argumentList);
+                if (!parameterType.IsArray)
                     continue;
-                }
 
-                // Instantiate the service type and build
-                // the argument list
-                currentArgument = container.GetService(parameterType);
-                argumentList.Add(currentArgument);
+                // Determine if the parameter type is an array
+                // of existing services and inject the current
+                // set of services as a parameter value
+                AddArrayArgument(parameterType, container, argumentList);
             }
 
             // Append the existing arguments
@@ -73,9 +79,9 @@ namespace LinFu.IoC.Configuration
                                              ICollection<object> argumentList)
         {
             var isArrayOfServices = parameterType.ExistsAsServiceArray();
-            if (!isArrayOfServices(container)) 
+            if (!isArrayOfServices(container))
                 return;
-            
+
             var elementType = parameterType.GetElementType();
 
             // Instantiate all services that match
