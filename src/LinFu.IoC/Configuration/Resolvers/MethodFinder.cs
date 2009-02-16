@@ -44,8 +44,18 @@ namespace LinFu.IoC.Configuration
 
             Rank(fuzzyList, finderContext);
 
-            var candidates = fuzzyList.Where(fuzzy => fuzzy.Confidence > 0);
+            // Match the generic parameter types
+            var genericParameterCount = finderContext.TypeArguments != null ? finderContext.TypeArguments.Count() : 0;
+            Func<T, bool> matchGenericArgumentCount = method =>
+            {
+                var genericArguments = method.IsGenericMethod ? method.GetGenericArguments() : new Type[0];
+                var currentParameterCount = genericArguments.Count();
 
+                return genericParameterCount == currentParameterCount;
+            };
+            fuzzyList.AddCriteria(matchGenericArgumentCount, CriteriaType.Critical);
+
+            var candidates = fuzzyList.Where(fuzzy => fuzzy.Confidence > 0);
             bestMatch = SelectBestMatch(candidates);
 
             // If all else fails, find the method

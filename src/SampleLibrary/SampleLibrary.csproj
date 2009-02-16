@@ -53,6 +53,7 @@
     <Compile Include="IOC\SampleAroundInvokeInterceptorClass.cs" />
     <Compile Include="IOC\SampleClassWithAdditionalArgument.cs" />
     <Compile Include="IOC\SampleClassWithArrayPropertyDependency.cs" />
+    <Compile Include="IOC\SampleClassWithGenericMethod.cs" />
     <Compile Include="IOC\SampleClassWithInjectionField.cs" />
     <Compile Include="IOC\SampleClassWithInjectionMethod.cs" />
     <Compile Include="IOC\SampleClassWithInjectionProperties.cs" />

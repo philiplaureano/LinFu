@@ -3,15 +3,10 @@
         <MainAssembly>$(MSBuildProjectDirectory)\..\build\LinFu.Core.dll</MainAssembly>
 	<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     </PropertyGroup>
-    <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
-        <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\Release\LinFu*.dll"/>
-        <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\Release\Mono.Cecil.dll"/>
-    </ItemGroup>
-    <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
-        <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\Debug\LinFu*.dll"/>
-        <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\Debug\Mono.Cecil.dll"/>
-    </ItemGroup>
-
+    <ItemGroup>
+        <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\$(Configuration)\LinFu*.dll"/>
+        <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\$(Configuration)\Mono.Cecil.dll"/>
+    </ItemGroup>   
     <Target Name="Merge">
 	<Message Text="-- Begin ILMerge --" />
 	<Exec Command="&quot;$(ProgramFiles)\Microsoft\Ilmerge\Ilmerge.exe&quot; /xmldocs /v2 /log /out:&quot;$(MainAssembly)&quot; @(ILMergeAssemblies->'&quot;%(FullPath)&quot;', ' ') /keyfile:&quot;$(MSBuildProjectDirectory)\..\LinFu.snk&quot;" />
