@@ -22,7 +22,7 @@ namespace LinFu.UnitTests.Finders
 
             var context = new MethodFinderContext(new Type[]{typeof(object)}, new object[0], typeof(void));
             var methods = typeof(SampleClassWithGenericMethod).GetMethods(BindingFlags.Public | BindingFlags.Instance);
-            var finder = container.GetService<IMethodFinderWithContainer<MethodInfo>>();
+            var finder = container.GetService<IMethodFinder<MethodInfo>>();
             var result = finder.GetBestMatch(methods, context);
 
             Assert.IsTrue(result.IsGenericMethod);

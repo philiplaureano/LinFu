@@ -328,14 +328,17 @@ namespace LinFu.IoC.Configuration
             container.AddService<IMethodInvoke<MethodInfo>>(new MethodInvoke());
             container.AddService<IMethodInvoke<ConstructorInfo>>(new ConstructorInvoke());
 
-            // Add the method finder services
+            // Add the method finder services            
             container.AddService<IMethodFinder<ConstructorInfo>>(new MethodFinderFromContainer<ConstructorInfo>());
             container.AddService<IMethodFinderWithContainer<ConstructorInfo>>(new MethodFinderFromContainer<ConstructorInfo>());
-            container.AddService<IMethodFinderWithContainer<MethodInfo>>(new MethodFinderFromContainer<MethodInfo>());
+
+            var methodInfoFinder = new MethodFinderFromContainer<MethodInfo>();
+            container.AddService<IMethodFinder<MethodInfo>>(methodInfoFinder);
+            container.AddService<IMethodFinderWithContainer<MethodInfo>>(methodInfoFinder);
 
             // Add the dynamic method builders
             container.AddService<IMethodBuilder<ConstructorInfo>>(new ConstructorMethodBuilder());
-            container.AddService<IMethodBuilder<MethodInfo>>(new MethodBuilder());
+            container.AddService<IMethodBuilder<MethodInfo>>(new ReflectionMethodBuilder<MethodInfo>());
 
             // Use attribute-based injection by default
             container.AddService<IMemberInjectionFilter<MethodInfo>>(new AttributedMethodInjectionFilter());

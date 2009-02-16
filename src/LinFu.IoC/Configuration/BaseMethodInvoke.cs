@@ -24,9 +24,9 @@ namespace LinFu.IoC.Configuration
         /// </summary>
         public BaseMethodInvoke()
         {
-            // HACK: Set the MethodBuilder as the default builder
+            // HACK: Set the ReflectionMethodBuilder as the default builder
             if (typeof(TMethod) == typeof(MethodInfo))
-                _builder = new MethodBuilder() as IMethodBuilder<TMethod>;
+                _builder = new ReflectionMethodBuilder<MethodInfo>() as IMethodBuilder<TMethod>;
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace LinFu.IoC.Configuration
         /// factory method and stores it in the method cache.
         /// </summary>
         /// <param name="targetMethod">The constructor that will be used to instantiate the target type.</param>
-        private void GenerateTargetMethod(TMethod targetMethod)
+        protected virtual void GenerateTargetMethod(TMethod targetMethod)
         {
             MethodBase result = null;
 

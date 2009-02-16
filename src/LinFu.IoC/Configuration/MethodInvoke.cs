@@ -32,14 +32,14 @@ namespace LinFu.IoC.Configuration
             var actualArguments = new List<object>();
 
             // Only instance methods need a target
-            if (!originalMethod.IsStatic)
-                actualArguments.Add(target);
+            //if (!originalMethod.IsStatic)
+            //    actualArguments.Add(target);
 
             actualArguments.AddRange(arguments);
             object result = null;
             try
             {
-                result = targetMethod.Invoke(null, actualArguments.ToArray());
+                result = targetMethod.Invoke(target, actualArguments.ToArray());
             }
             catch(TargetInvocationException ex)
             {

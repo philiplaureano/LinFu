@@ -167,6 +167,7 @@
     <Compile Include="Interfaces\IServiceInstance.cs" />
     <Compile Include="Interfaces\IServiceRequest.cs" />
     <Compile Include="Interfaces\IServiceRequestResult.cs" />
+    <Compile Include="Reflection\LateBoundExtensions.cs" />
     <Compile Include="Scope.cs" />
     <Compile Include="ServiceContainer.cs" />
     <Compile Include="NamedServiceNotFoundException.cs" />

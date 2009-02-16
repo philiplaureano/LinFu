@@ -48,6 +48,7 @@
     <Compile Include="AOP\SampleClassWithByRefMethod.cs" />
     <Compile Include="AOP\SampleClassWithMethodHavingOutParameters.cs" />
     <Compile Include="IOC\ISampleInterceptedInterface.cs" />
+    <Compile Include="IOC\ISampleServiceWithGenericMethods.cs" />
     <Compile Include="IOC\ISampleWrappedInterface.cs" />
     <Compile Include="IOC\ITargetHolder.cs" />
     <Compile Include="IOC\SampleAroundInvokeInterceptorClass.cs" />
