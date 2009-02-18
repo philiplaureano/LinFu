@@ -25,6 +25,7 @@ namespace LinFu.UnitTests.Reflection
 
             mock.VerifyAll();
         }
+
         [Test]
         public void ShouldCallLateBoundMethodWithGenericMethod()
         {

@@ -55,6 +55,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CallAdapter.cs" />
+    <Compile Include="FunctorAsInterceptor.cs" />
     <Compile Include="IExtractInterfaces.cs" />
     <Compile Include="IMethodBodyEmitter.cs" />
     <Compile Include="IMethodPicker.cs" />

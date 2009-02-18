@@ -25,7 +25,7 @@ namespace LinFu.Proxy.Interfaces
         /// <param name="wrapper">The <see cref="IInvokeWrapper"/> instance that will be used to intercept method calls made to the proxy.</param>
         /// <param name="baseInterfaces">The additional list of interfaces that the proxy will implement.</param>
         /// <returns>A valid proxy instance.</returns>
-        public static object CreateProxy(this IProxyFactory factory, Type instanceType, 
+        public static object CreateProxy(this IProxyFactory factory, Type instanceType,
             IInvokeWrapper wrapper, params Type[] baseInterfaces)
         {
             // Convert the wrapper to an IInterceptor instance.
@@ -45,7 +45,7 @@ namespace LinFu.Proxy.Interfaces
         /// <param name="interceptor">The <see cref="IInterceptor"/> instance that will be used to intercept method calls made to the proxy.</param>
         /// <param name="baseInterfaces">The additional list of interfaces that the proxy will implement.</param>
         /// <returns>A valid proxy instance.</returns>
-        public static object CreateProxy(this IProxyFactory factory, Type instanceType, 
+        public static object CreateProxy(this IProxyFactory factory, Type instanceType,
             IInterceptor interceptor, params Type[] baseInterfaces)
         {
             var proxyType = factory.CreateProxyType(instanceType, baseInterfaces);
@@ -68,10 +68,10 @@ namespace LinFu.Proxy.Interfaces
         /// <param name="wrapper">The <see cref="IInvokeWrapper"/> instance that will be used to intercept method calls made to the proxy.</param>
         /// <param name="baseInterfaces">The additional list of interfaces that the proxy will implement.</param>
         /// <returns>A valid proxy instance.</returns>
-        public static T CreateProxy<T>(this IProxyFactory factory, IInvokeWrapper wrapper, 
+        public static T CreateProxy<T>(this IProxyFactory factory, IInvokeWrapper wrapper,
             params Type[] baseInterfaces)
         {
-            return (T) factory.CreateProxy(typeof (T), wrapper, baseInterfaces);
+            return (T)factory.CreateProxy(typeof(T), wrapper, baseInterfaces);
         }
 
         /// <summary>
@@ -86,10 +86,64 @@ namespace LinFu.Proxy.Interfaces
         /// <param name="interceptor">The <see cref="IInterceptor"/> instance that will be used to intercept method calls made to the proxy.</param>
         /// <param name="baseInterfaces">The additional list of interfaces that the proxy will implement.</param>
         /// <returns>A valid proxy instance.</returns>
-        public static T CreateProxy<T>(this IProxyFactory factory, IInterceptor interceptor, 
+        public static T CreateProxy<T>(this IProxyFactory factory, IInterceptor interceptor,
             params Type[] baseInterfaces)
         {
-            return (T) factory.CreateProxy(typeof (T), interceptor, baseInterfaces);
+            return (T)factory.CreateProxy(typeof(T), interceptor, baseInterfaces);
+        }
+
+        /// <summary>
+        /// Uses the <paramref name="proxyFactory"/> to create a proxy instance
+        /// that directly derives from the <typeparamref name="T"/> type
+        /// and implements the given <paramref name="baseInterfaces"/>.
+        /// </summary>
+        /// <remarks>
+        /// The <paramref name="proxyImplementation"/> will be used to intercept method calls
+        /// performed against the target instance.
+        /// </remarks>
+        /// <typeparam name="T">The type that will be intercepted by the proxy.</typeparam>
+        /// <param name="proxyFactory">The IProxyFactory instance that will be used to generate the proxy type.</param>
+        /// <param name="proxyImplementation">The functor that will invoked every time a method is called on the proxy.</param>
+        /// <param name="baseInterfaces">The additional list of interfaces that the proxy will implement.</param>
+        /// <returns>A valid proxy instance.</returns>
+        public static T CreateProxy<T>(this IProxyFactory proxyFactory, 
+            Func<string, Type[], object[], object> proxyImplementation, params Type[] baseInterfaces)
+        {
+            var targetType = typeof(T);
+            object result = CreateProxy(proxyFactory, targetType, proxyImplementation, baseInterfaces);
+
+            return (T)result;
+        }
+
+        /// <summary>
+        /// Uses the <paramref name="proxyFactory"/> to create a proxy instance
+        /// that directly derives from the <typeparamref name="T"/> type
+        /// and implements the given <paramref name="baseInterfaces"/>.
+        /// </summary>
+        /// <remarks>
+        /// The <paramref name="proxyImplementation"/> will be used to intercept method calls
+        /// performed against the target instance.
+        /// </remarks>
+        /// <param name="targetType">The type that will be intercepted by the proxy.</param>
+        /// <param name="proxyFactory">The IProxyFactory instance that will be used to generate the proxy type.</param>
+        /// <param name="proxyImplementation">The functor that will invoked every time a method is called on the proxy.</param>
+        /// <param name="baseInterfaces">The additional list of interfaces that the proxy will implement.</param>
+        /// <returns>A valid proxy instance.</returns>
+        public static object CreateProxy(this IProxyFactory proxyFactory, Type targetType,
+            Func<string, Type[], object[], object> proxyImplementation, params Type[] baseInterfaces)
+        {
+            Func<IInvocationInfo, object> doIntercept = info =>
+            {
+                var targetMethod = info.TargetMethod;
+                var methodName = targetMethod.Name;
+                var arguments = info.Arguments;
+                Type[] typeArguments = info.TypeArguments;
+
+                return proxyImplementation(methodName, typeArguments, arguments);
+            };
+
+            var interceptor = new FunctorAsInterceptor(doIntercept);
+            return proxyFactory.CreateProxy(targetType, interceptor, baseInterfaces);
         }
     }
 }

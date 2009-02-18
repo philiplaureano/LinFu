@@ -93,6 +93,7 @@
     <Compile Include="IOC\FluentPropertyInjectionTests.cs" />
     <Compile Include="IOC\InversionOfControlTests.cs" />
     <Compile Include="Reflection\BasePEVerifyTestCase.cs" />
+    <Compile Include="Reflection\DuckTypingTests.cs" />
     <Compile Include="Reflection\LateBindingTests.cs" />
     <Compile Include="Reflection\ReflectionEmitTests.cs" />
     <Compile Include="Tools\ITest.cs" />

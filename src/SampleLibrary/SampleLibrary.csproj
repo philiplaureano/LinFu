@@ -62,6 +62,7 @@
     <Compile Include="IOC\SampleClassWithNonServiceArgument.cs" />
     <Compile Include="IOC\SampleClassWithServiceArrayAsConstructorArgument.cs" />
     <Compile Include="IOC\SampleClassWithUnmarkedInjectionProperties.cs" />
+    <Compile Include="IOC\SampleDuckTypeImplementation.cs" />
     <Compile Include="IOC\SampleEnum.cs" />
     <Compile Include="IOC\SampleFactoryWithConstructorArguments.cs" />
     <Compile Include="IOC\SampleGenericClassWithOpenGenericImplementation.cs" />
