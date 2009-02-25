@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using LinFu.AOP.Cecil;
 using LinFu.IoC;
 using LinFu.IoC.Configuration;
 using LinFu.IoC.Configuration.Interfaces;
@@ -118,14 +119,7 @@ namespace LinFu.UnitTests.Reflection
 
 
             Assert.IsNotNull(sourceAssembly);
-            var nameDef = sourceAssembly.Name;
-
-            // Remove the strong name
-            nameDef.PublicKey = null;
-            nameDef.PublicKeyToken = null;
-            nameDef.HashAlgorithm = AssemblyHashAlgorithm.None;
-            nameDef.Flags = ~AssemblyFlags.PublicKey;
-            nameDef.HasPublicKey = false;
+            sourceAssembly.RemoveStrongName();
 
             var assembly = sourceAssembly.ToAssembly();
             Assert.IsNotNull(assembly);

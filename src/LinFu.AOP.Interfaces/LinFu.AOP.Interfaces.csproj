@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{0F8C48B0-4AE9-4429-AB90-C5141D710C2C}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -50,8 +50,10 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="IAfterInvoke.cs" />
     <Compile Include="IAroundInvoke.cs" />
     <Compile Include="IAroundInvokeProvider.cs" />
+    <Compile Include="IBeforeInvoke.cs" />
     <Compile Include="IInterceptor.cs" />
     <Compile Include="IInterceptorProvider.cs" />
     <Compile Include="IInvocationInfo.cs" />
