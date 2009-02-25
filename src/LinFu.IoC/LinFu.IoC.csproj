@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{FA3D5517-EFF4-4363-AFF2-EF67B981334E}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -121,6 +121,7 @@
     <Compile Include="Factories\FunctorFactory.cs" />
     <Compile Include="Factories\InstanceFactory.cs" />
     <Compile Include="Factories\LazyFactory.cs" />
+    <Compile Include="Factories\LazyFactoryOfT.cs" />
     <Compile Include="Factories\OncePerRequestFactory.cs" />
     <Compile Include="Factories\OncePerThreadFactory.cs" />
     <Compile Include="Factories\SingletonFactory.cs" />

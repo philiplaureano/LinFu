@@ -163,5 +163,15 @@ namespace LinFu.UnitTests.IOC.Factories
             Assert.IsNotNull(result);
             Assert.IsNotEmpty(result);
         }
+
+        [Test]
+        public void ShouldLoadStronglyTypedFactoryFromLoadFromExtensionMethod()
+        {
+            var container = new ServiceContainer();
+            container.LoadFrom(typeof(SampleClass).Assembly);
+
+            var serviceInstance = container.GetService<ISampleService>("Test");
+            Assert.IsNotNull(serviceInstance);
+        }
     }
 }

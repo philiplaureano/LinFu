@@ -91,7 +91,7 @@ namespace LinFu.IoC.Configuration
                         {
                             object result = getFactory(request);
                             // If the object is IFactory then we can just return it.
-                            if (result is IFactory)                                
+                            if (result is IFactory)
                                 return (IFactory)result;
 
                             // Check to see if the object is IFactory<T>, if so we need to adapt it to 
@@ -163,15 +163,19 @@ namespace LinFu.IoC.Configuration
             Type genericType = typeof(IFactory<>).MakeGenericType(currentServiceType);
 
             // Lazy-instantiate the factories so that they can be injected by the container
-            var lazyFactory = new LazyFactory(getStronglyTypedFactory);
+            IFactory lazyFactory = new LazyFactory(getStronglyTypedFactory);
 
             IFactory result;
             if (implementedInterfaces.Contains(genericType))
             {
                 // Convert the IFactory<T> instance down to an IFactory
-                // instance so that it can be used by the target container                        
+                // instance so that it can be used by the target container 
+                Type lazyFactoryType = typeof(LazyFactory<>).MakeGenericType(currentServiceType);
                 Type adapterType = typeof(FactoryAdapter<>).MakeGenericType(currentServiceType);
+
+                lazyFactory = (IFactory)Activator.CreateInstance(lazyFactoryType, new[] { getStronglyTypedFactory });
                 result = (IFactory)Activator.CreateInstance(adapterType, new[] { lazyFactory });
+
                 return result;
             }
 
