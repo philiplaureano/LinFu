@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<project name="LinFu" default="test" xmlns="http://nant.sf.net/schemas/nant.xsd">
+<project name="LinFu" default="merge" xmlns="http://nant.sf.net/schemas/nant.xsd">
   <property name="build.dir" value="build" />
   <property name="nant.settings.currentframework" value="net-3.5" />
 
@@ -21,7 +21,7 @@
     </msbuild>
   </target>
   
-  <target name="merge" depends="compile, run-unit-tests">
+  <target name="merge" depends="clean, compile, run-unit-tests">
     <msbuild project="src\ILMerge.MSBuild"/>
   </target>
 
