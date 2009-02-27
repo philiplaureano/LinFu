@@ -54,9 +54,12 @@ namespace LinFu.UnitTests.Tools
 
             peVerifyLocation = GetPEVerifyLocation(pathKeys, peVerifyLocation);
 
+            // Use PEVerify.exe if it exists
             if (!File.Exists(peVerifyLocation))
-                throw new FileNotFoundException(
-                    "Please check the sdkDir configuration setting and set it to the location of peverify.exe");
+            {
+                Console.WriteLine("Warning: PEVerify.exe could not be found. Skipping test.");
+                return;
+            }
 
             process.StartInfo.FileName = peVerifyLocation;
             process.StartInfo.RedirectStandardOutput = true;
