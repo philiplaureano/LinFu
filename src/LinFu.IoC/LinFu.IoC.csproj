@@ -62,7 +62,7 @@
     <Compile Include="Configuration\BaseMethodBuilder.cs" />
     <Compile Include="Configuration\ConstructorInvoke.cs" />
     <Compile Include="Configuration\ConstructorMethodBuilder.cs" />
-    <Compile Include="Configuration\Extensions\ContainerExtensions.cs" />
+    <Compile Include="ContainerExtensions.cs" />
     <Compile Include="Configuration\Extensions\FluentExtensions.cs" />
     <Compile Include="Configuration\Extensions\ResolutionExtensions.cs" />
     <Compile Include="Configuration\FactoryBuilder.cs" />

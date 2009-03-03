@@ -5,6 +5,7 @@ using System.Text;
 using LinFu.AOP.Cecil.Interfaces;
 using LinFu.IoC.Configuration;
 using Mono.Cecil;
+using LinFu.IoC;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.AOP.Cecil.Factories

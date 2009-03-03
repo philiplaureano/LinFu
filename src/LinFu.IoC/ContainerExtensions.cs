@@ -13,7 +13,7 @@ using LinFu.IoC.Interceptors;
 using LinFu.IoC.Interfaces;
 using LinFu.Reflection;
 
-namespace LinFu.IoC.Configuration
+namespace LinFu.IoC
 {
     /// <summary>
     /// A class that adds generics support to existing 
