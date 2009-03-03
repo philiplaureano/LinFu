@@ -50,6 +50,10 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="ActivationContext.cs" />
+    <Compile Include="ActivatorExtensions.cs" />
+    <Compile Include="IActivationContext.cs" />
+    <Compile Include="IActivator.cs" />
     <Compile Include="IAfterInvoke.cs" />
     <Compile Include="IAroundInvoke.cs" />
     <Compile Include="IAroundInvokeProvider.cs" />

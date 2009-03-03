@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{FA3D5517-EFF4-4363-AFF2-EF67B981334E}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -52,6 +52,7 @@
     </Compile>
     <Compile Include="CompositePostProcessor.cs" />
     <Compile Include="CompositePreProcessor.cs" />
+    <Compile Include="Configuration\ContainerActivationContext.cs" />
     <Compile Include="Configuration\DefaultActivator.cs" />
     <Compile Include="Configuration\Attributes\FactoryAttribute.cs" />
     <Compile Include="Configuration\Attributes\ImplementsAttribute.cs" />
@@ -87,7 +88,7 @@
     <Compile Include="Configuration\Injectors\NullMemberInjectionFilter.cs" />
     <Compile Include="Configuration\Injectors\PropertyInjectionFilter.cs" />
     <Compile Include="Configuration\InMemoryAssemblyLoader.cs" />
-    <Compile Include="Configuration\Interfaces\IActivator.cs" />
+    <Compile Include="Configuration\Interfaces\IContainerActivationContext.cs" />
     <Compile Include="Configuration\Interfaces\IFactoryBuilder.cs" />
     <Compile Include="Configuration\Interfaces\IMethodFinderContext.cs" />
     <Compile Include="Configuration\Interfaces\IMethodFinderWithContainer.cs" />

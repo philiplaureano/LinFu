@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using LinFu.AOP.Interfaces;
 using LinFu.IoC.Configuration;
 using LinFu.IoC.Configuration.Injectors;
 using LinFu.IoC.Configuration.Interfaces;
@@ -79,7 +80,7 @@ namespace LinFu.IoC.Configuration
         /// </summary>
         /// <remarks>
         /// This method only performs constructor injection on the target type. If you need any other form of injection (such as property injection), you'll need to 
-        /// register your type and instantiate it with the <see cref="GetService{T}(IServiceContainer,object[])<>GetService{T}"/> method.
+        /// register your type and instantiate it with the <see cref="GetService{T}(IServiceContainer,object[])"/> method.
         /// </remarks>
         /// <param name="container">The service container that contains the arguments that will automatically be injected into the constructor.</param>
         /// <param name="concreteType">The type to instantiate.</param>
@@ -255,7 +256,7 @@ namespace LinFu.IoC.Configuration
         /// </summary>
         /// <remarks>
         /// This method only performs constructor injection on the target type. If you need any other form of injection (such as property injection), you'll need to 
-        /// register your type and instantiate it with the <see cref="GetService{T}(IServiceContainer,object[])<>GetService{T}"/> method.
+        /// register your type and instantiate it with the <see cref="GetService{T}(IServiceContainer,object[])"/> method.
         /// </remarks>
         /// <param name="container">The service container that contains the arguments that will automatically be injected into the constructor.</param>
         /// <param name="concreteType">The type to instantiate.</param>
@@ -294,8 +295,9 @@ namespace LinFu.IoC.Configuration
                 throw new RecursiveDependencyException(list);
             }
 
-            var activator = container.GetService<IActivator>();
-            object result = activator.CreateInstance(concreteType, currentContainer, additionalArguments);
+            var activator = container.GetService<IActivator<IContainerActivationContext>>();
+            var context = new ContainerActivationContext(concreteType, currentContainer, additionalArguments);
+            object result = activator.CreateInstance(context);
 
             lock (_requests)
             {
@@ -317,7 +319,7 @@ namespace LinFu.IoC.Configuration
             if (container.Contains(typeof(IFactoryBuilder)))
                 return;
 
-            container.AddService<IActivator>(new DefaultActivator());
+            container.AddService<IActivator<IContainerActivationContext>>(new DefaultActivator());
             container.AddService<IFactoryBuilder>(new FactoryBuilder());
 
             // Add the resolver services

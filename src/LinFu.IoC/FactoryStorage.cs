@@ -11,6 +11,12 @@ namespace LinFu.IoC
     /// </summary>
     public class FactoryStorage : BaseFactoryStorage
     {
+        /// <summary>
+        /// Determines whether or not an <see cref="IFactory"/> instance
+        /// can be used to create the given service described by the <paramref name="serviceInfo"/> object.
+        /// </summary>
+        /// <param name="serviceInfo">The <see cref="IServiceInfo"/> object that describes the service to be created.</param>
+        /// <returns><c>True</c> if the service can be created; otherwise, it will return <c>false</c>.</returns>
         public override bool ContainsFactory(IServiceInfo serviceInfo)
         {            
             var serviceType = serviceInfo.ServiceType;
@@ -46,6 +52,12 @@ namespace LinFu.IoC
             return result;
         }
 
+        /// <summary>
+        /// Obtains the <see cref="IFactory"/> instance that can instantiate the
+        /// service described by the <paramref name="serviceInfo"/> object instance.
+        /// </summary>
+        /// <param name="serviceInfo">The <see cref="IServiceInfo"/> object that describes the service to be created.</param>
+        /// <returns>A <see cref="IFactory"/> instance if the service can be instantiated; otherwise, it will return <c>false</c>.</returns>
         public override IFactory GetFactory(IServiceInfo serviceInfo)
         {
             // Attempt to create the service type using

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using LinFu.AOP.Interfaces;
 using LinFu.IoC.Configuration.Interfaces;
 using LinFu.IoC.Interfaces;
 
@@ -11,7 +12,7 @@ namespace LinFu.IoC.Configuration
     /// <summary>
     /// Represents a class that can instantiate object instances.
     /// </summary>
-    public class DefaultActivator : IActivator, IInitialize 
+    public class DefaultActivator : IActivator<IContainerActivationContext>, IInitialize 
     {
         private IArgumentResolver _argumentResolver;
         private IMemberResolver<ConstructorInfo> _resolver;
@@ -20,12 +21,13 @@ namespace LinFu.IoC.Configuration
         /// <summary>
         /// Creates an object instance.
         /// </summary>
-        /// <param name="concreteType">The <see cref="System.Type"/> to be instantiated.</param>
-        /// <param name="container">The <see cref="IServiceContainer"/> instance that will be used to instantiate the concrete type.</param>
-        /// <param name="additionalArguments">The additional arguments that will be passed to the target type.</param>
         /// <returns>A valid object instance.</returns>
-        public object CreateInstance(Type concreteType, IServiceContainer container, object[] additionalArguments)
+        public object CreateInstance(IContainerActivationContext context)
         {
+            var container = context.Container;
+            var additionalArguments = context.AdditionalArguments;
+            var concreteType = context.TargetType;
+
             // Add the required services if necessary
             container.AddDefaultServices();
 
@@ -42,7 +44,6 @@ namespace LinFu.IoC.Configuration
             // Generate the arguments for the target constructor
             var arguments = _argumentResolver.ResolveFrom(parameterTypes, container,
                                                          additionalArguments);
-
             // Instantiate the object
             var result = _constructorInvoke.Invoke(null, constructor, arguments);
 

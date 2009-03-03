@@ -49,7 +49,6 @@ namespace LinFu.Proxy
                 = (methodName, typeArguments, arguments) =>
                       target.Invoke(methodName, typeArguments, arguments);
 
-            { };
             var proxyFactory = _container.GetService<IProxyFactory>();
             return proxyFactory.CreateProxy(duckType, implementation, baseInterfaces);
         }
