@@ -39,6 +39,13 @@
   <!-- Internal targets -->
   <target name="run-unit-tests">
     <mkdir dir="${build.dir}\test-reports" />
+    <exec program="tools\nunit\nunit-console.exe"
+			workingdir="${build.dir}\Debug\UnitTests">      
+      <arg value="&quot;LinFu.UnitTests.dll&quot; &quot;/xml:..\..\test-reports\UnitTests.xml&quot; &quot;/nologo&quot;" />
+    </exec>
+  </target>
+  <target name="run-ncover">
+    <mkdir dir="${build.dir}\test-reports" />
     <exec program="regsvr32" workingdir="tools\NCover" commandline="/s CoverLib.dll" />
     <exec program="tools\ncover\NCover.Console.exe"
 			workingdir="${build.dir}\Debug\UnitTests">
