@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{613B6547-DCBB-4505-82B8-B4179BFC95CE}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -55,6 +55,7 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AssemblyDefinitionExtensions.cs" />
+    <Compile Include="BaseReflectionVisitor.cs" />
     <Compile Include="Weavers\AutoModuleWeaver.cs" />
     <Compile Include="Weavers\AutoTypeWeaver.cs" />
     <Compile Include="Factories\AddInvocationInfoActionFactory.cs" />
@@ -72,7 +73,6 @@
     <Compile Include="InvocationInfoExtensions.cs" />
     <Compile Include="Interfaces\IVerifier.cs" />
     <Compile Include="Loaders\JITWeaver.cs" />
-    <Compile Include="ModuleDefinitionExtensions.cs" />
     <Compile Include="TypeDefinitionExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
