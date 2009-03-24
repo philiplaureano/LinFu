@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{0F8C48B0-4AE9-4429-AB90-C5141D710C2C}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -64,7 +64,9 @@
     <Compile Include="IInvocationInfo.cs" />
     <Compile Include="IInvokeWrapper.cs" />
     <Compile Include="IMethodActivationContext.cs" />
+    <Compile Include="IMethodActivator.cs" />
     <Compile Include="IModifiableType.cs" />
+    <Compile Include="MethodActivationContext.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

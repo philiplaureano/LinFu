@@ -11,9 +11,9 @@ namespace LinFu.AOP.Interfaces
     public interface IActivatorHost
     {
         /// <summary>
-        /// Gets or sets the value indicating the <see cref="IActivator{IMethodActivationContext}"/> that
+        /// Gets or sets the value indicating the <see cref="IMethodActivator"/> that
         /// will be used to instantiate object types.
         /// </summary>
-        IActivator<IMethodActivationContext> Activator { get; set; }
+        IMethodActivator Activator { get; set; }
     }
 }

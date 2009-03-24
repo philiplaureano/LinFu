@@ -7,7 +7,7 @@ using Mono.Cecil;
 
 namespace LinFu.AOP.Cecil
 {
-    public abstract class BaseReflectionVisitor : IReflectionVisitor
+    public abstract class BaseReflectionVisitor : IReflectionVisitor, IReflectionStructureVisitor
     {
         public virtual void TerminateModuleDefinition(ModuleDefinition module)
         {
@@ -150,6 +150,54 @@ namespace LinFu.AOP.Cecil
         }
 
         public virtual void VisitTypeReferenceCollection(TypeReferenceCollection refs)
+        {
+        }
+
+        public virtual void TerminateAssemblyDefinition(AssemblyDefinition asm)
+        {
+        }
+
+        public virtual void VisitAssemblyDefinition(AssemblyDefinition asm)
+        {
+        }
+
+        public virtual void VisitAssemblyLinkedResource(AssemblyLinkedResource res)
+        {
+        }
+
+        public virtual void VisitAssemblyNameDefinition(AssemblyNameDefinition name)
+        {
+        }
+
+        public virtual void VisitAssemblyNameReference(AssemblyNameReference name)
+        {
+        }
+
+        public virtual void VisitAssemblyNameReferenceCollection(AssemblyNameReferenceCollection names)
+        {
+        }
+
+        public virtual void VisitEmbeddedResource(EmbeddedResource res)
+        {
+        }
+
+        public virtual void VisitLinkedResource(LinkedResource res)
+        {
+        }
+
+        public virtual void VisitModuleDefinitionCollection(ModuleDefinitionCollection modules)
+        {
+        }
+
+        public virtual void VisitModuleReference(ModuleReference module)
+        {
+        }
+
+        public virtual void VisitModuleReferenceCollection(ModuleReferenceCollection modules)
+        {
+        }
+
+        public virtual void VisitResourceCollection(ResourceCollection resources)
         {
         }
     }
