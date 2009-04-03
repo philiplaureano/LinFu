@@ -76,6 +76,13 @@ namespace LinFu.Reflection.Emit
             ModuleDefinition module = declaringType.Module;
 
             TypeReference actualReturnType;
+
+            if (returnType.IsGenericType && returnType.ContainsGenericParameters)
+            {
+                SetReturnTypeWithOpenGenericParameters(method, returnType, module);
+                return;
+            }
+
             if (returnType.IsGenericParameter)
             {
                 actualReturnType = method.AddGenericParameter(returnType);
@@ -87,6 +94,42 @@ namespace LinFu.Reflection.Emit
 
             method.ReturnType.ReturnType = actualReturnType;
         }
+
+        /// <summary>
+        /// Assigns a return type with an open generic parameter to a target method.
+        /// </summary>
+        /// <param name="method">The target method.</param>
+        /// <param name="returnType">The return type with the open generic parameters.</param>
+        /// <param name="module">The host module.</param>
+        private static void SetReturnTypeWithOpenGenericParameters(MethodDefinition method, Type returnType, ModuleDefinition module)
+        {
+            TypeReference actualReturnType = null;
+            var typeArgumentNames = from t in returnType.GetGenericArguments()
+                                    select t.Name;
+
+            // Add any missing type arguments in the host method
+            foreach(var name in typeArgumentNames)
+            {
+                bool found = false;
+                foreach(GenericParameter param in method.GenericParameters)
+                {
+                    if (param.Name != name)
+                        continue;
+
+                    found = true;
+                    break;
+                }
+
+                if (found)
+                    continue;
+
+                method.GenericParameters.Add(new GenericParameter(name, method));
+            }
+
+            actualReturnType = module.Import(returnType, method);
+            method.ReturnType.ReturnType = actualReturnType;
+        }
+
         /// <summary>
         /// Adds a generic parameter type to the <paramref name="method"/>.
         /// </summary>
