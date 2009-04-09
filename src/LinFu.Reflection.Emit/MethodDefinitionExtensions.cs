@@ -57,8 +57,22 @@ namespace LinFu.Reflection.Emit
             // Build the parameter list
             foreach (var type in parameterTypes)
             {
-                var parameterType = type.IsGenericParameter ? method.AddGenericParameter(type) :
+                TypeReference parameterType = null;
+
+                if (type.ContainsGenericParameters && type.IsGenericType)
+                {
+                    foreach(var genericParam in type.GetGenericArguments())
+                    {
+                        method.GenericParameters.Add(new GenericParameter(genericParam.Name, method));
+                    }
+
+                    parameterType = module.Import(type, method);
+                }
+                else
+                {
+                    parameterType = type.IsGenericParameter ? method.AddGenericParameter(type) :
                     module.Import(type);
+                }
 
                 var param = new ParameterDefinition(parameterType);
                 method.Parameters.Add(param);

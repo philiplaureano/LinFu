@@ -77,6 +77,7 @@
     <Compile Include="Proxy\ClassWithGenericMethod.cs" />
     <Compile Include="Proxy\ClassWithMethodReturnTypeFromGenericTypeArguments.cs" />
     <Compile Include="Proxy\ClassWithMethodReturnValueFromTypeArgument.cs" />
+    <Compile Include="Proxy\ClassWithOpenGenericParameters.cs" />
     <Compile Include="Proxy\ClassWithParametersFromGenericMethodTypeArguments.cs" />
     <Compile Include="Proxy\ClassWithParametersFromHostGenericTypeArguments.cs" />
     <Compile Include="Proxy\ClassWithVirtualMethodWithOutParameter.cs" />
