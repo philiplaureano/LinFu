@@ -33,7 +33,7 @@ namespace LinFu.UnitTests.Reflection
             // with all of the default LinFu plugins
             loader = new Loader();
             container = new ServiceContainer();
-            filename = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "output.dll");
+            filename = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, string.Format("{0}.dll", Guid.NewGuid().ToString()));
             AutoDelete(filename);
 
             loader.LoadDirectory(AppDomain.CurrentDomain.BaseDirectory, "LinFu*.dll");

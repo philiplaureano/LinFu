@@ -13,19 +13,28 @@ namespace LinFu.UnitTests.Tools
 {
     internal class PEVerifier : IVerifier
     {
-        private static readonly string filename = "output.dll";
+        private string _filename = string.Empty;
         private string location = string.Empty;
         private bool _failed;
-        internal PEVerifier()
+        internal PEVerifier(string filename)
         {
             var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
             location = Path.Combine(baseDirectory, filename);
+
+            _filename = filename;
         }
 
         ~PEVerifier()
         {
-            if (File.Exists(location) && !_failed)
-                File.Delete(location);
+            try
+            {
+                if (File.Exists(location) && !_failed)
+                    File.Delete(location);
+            }
+            catch
+            {
+                // Do nothing
+            }
         }
 
         #region IVerifier Members

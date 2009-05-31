@@ -8,10 +8,10 @@ namespace LinFu.AOP.Interfaces
 {
     /// <summary>
     /// Represents a special type of <see cref="IActivationContext"/> that can be used to instantiate a given type
-    /// and be used to describe the method that invoked the instantiation operation as well as specify the object
+    /// and can be used to describe the method that invoked the instantiation operation as well as specify the object
     /// instance that invoked the instantiation itself.
     /// </summary>
-    public interface IMethodActivationContext : IActivationContext
+    public interface ITypeActivationContext : IActivationContext
     {
         /// <summary>
         /// Gets the value indicating the object instance that initiated the object instantiation operation.

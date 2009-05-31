@@ -17,7 +17,6 @@ namespace LinFu.Proxy
     /// proxies that forward all virtual method calls to a 
     /// single interceptor.
     /// </summary>
-    [Implements(typeof(IProxyBuilder), LifecycleType.OncePerRequest)]
     public class ProxyBuilder : IProxyBuilder, IInitialize
     {
         /// <summary>
@@ -38,7 +37,7 @@ namespace LinFu.Proxy
         /// <param name="baseInterfaces">The list of interfaces that the new type must implement.</param>
         /// <param name="module">The module that will hold the brand new type.</param>
         /// <param name="targetType">The <see cref="TypeDefinition"/> that represents the type to be created.</param>
-        public void Construct(Type originalBaseType, IEnumerable<Type> baseInterfaces,
+        public virtual void Construct(Type originalBaseType, IEnumerable<Type> baseInterfaces,
                                           ModuleDefinition module, TypeDefinition targetType)
         {
             // Determine which interfaces need to be implemented

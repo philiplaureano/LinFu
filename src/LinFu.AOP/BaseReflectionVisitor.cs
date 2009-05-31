@@ -11,6 +11,7 @@ namespace LinFu.AOP.Cecil
     {
         public virtual void TerminateModuleDefinition(ModuleDefinition module)
         {
+            VisitTypeDefinitionCollection(module.Types);
         }
 
         public virtual void VisitConstructor(MethodDefinition ctor)
@@ -57,7 +58,6 @@ namespace LinFu.AOP.Cecil
             VisitModuleReferenceCollection(module.ModuleReferences);
             VisitMemberReferenceCollection(module.MemberReferences);
             VisitTypeReferenceCollection(module.TypeReferences);
-            VisitTypeDefinitionCollection(module.Types);
             VisitExternTypeCollection(module.ExternTypes);
             TerminateModuleDefinition(module);
         }

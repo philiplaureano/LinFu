@@ -36,6 +36,23 @@ namespace LinFu.Reflection.Emit
             stindMap["Float32&"] = OpCodes.Stind_R4;
             stindMap["Float64&"] = OpCodes.Stind_R8;
         }
+
+        /// <summary>
+        /// Emits a Console.WriteLine call using the current CilWorker.
+        /// </summary>
+        /// <param name="IL">The target CilWorker.</param>
+        /// <param name="text">The text that will be written to the console.</param>
+        public static void EmitWriteLine(this CilWorker IL, string text)
+        {
+            var body = IL.GetBody();
+            var method = body.Method;
+            var declaringType = method.DeclaringType;
+            var module = declaringType.Module;
+
+            var writeLineMethod = typeof(Console).GetMethod("WriteLine", BindingFlags.Public | BindingFlags.Static, null, new Type[] { typeof(string) }, null);
+            IL.Emit(OpCodes.Ldstr, text);
+            IL.Emit(OpCodes.Call, module.Import(writeLineMethod));
+        }
         /// <summary>
         /// Pushes the current <paramref name="method"/> onto the stack.
         /// </summary>
@@ -67,6 +84,53 @@ namespace LinFu.Reflection.Emit
             IL.Emit(OpCodes.Ldtoken, declaringType);
             IL.Emit(OpCodes.Call, getMethodFromHandle);
         }
+   
+        /// <summary>
+        /// Gets the declaring type for the target method.
+        /// </summary>
+        /// <param name="method">The target method.</param>
+        /// <returns>The declaring type.</returns>
+        public static TypeReference GetDeclaringType(this MethodReference method)
+        {
+            var declaringType = method.DeclaringType;
+            return GetDeclaringType(declaringType);
+        }
+
+        /// <summary>
+        /// Pushes a <paramref name="Type"/> instance onto the stack.
+        /// </summary>
+        /// <param name="IL">The <see cref="CilWorker"/> that will be used to create the instructions.</param>
+        /// <param name="type">The type that represents the <see cref="Type"/> that will be pushed onto the stack.</param>
+        /// <param name="module">The module that contains the host method.</param>
+        public static void PushType(this CilWorker IL, TypeReference type, ModuleDefinition module)
+        {
+            var getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle", typeof(RuntimeTypeHandle));
+
+            // Instantiate the generic type before pushing it onto the stack
+            var declaringType = GetDeclaringType(type);
+
+            IL.Emit(OpCodes.Ldtoken, declaringType);
+            IL.Emit(OpCodes.Call, getTypeFromHandle);
+        }        
+
+        /// <summary>
+        /// Pushes the current <paramref name="field"/> onto the stack.
+        /// </summary>
+        /// <param name="IL">The <see cref="CilWorker"/> that will be used to create the instructions.</param>
+        /// <param name="field">The field that represents the <see cref="FieldInfo"/> that will be pushed onto the stack.</param>
+        /// <param name="module">The module that contains the target field.</param>
+        public static void PushField(this CilWorker IL, FieldReference field, ModuleDefinition module)
+        {
+            var getFieldFromHandle = module.ImportMethod<FieldInfo>("GetFieldFromHandle",
+                typeof(RuntimeFieldHandle), typeof(RuntimeTypeHandle));
+
+            var declaringType = GetDeclaringType(field.DeclaringType);
+
+            IL.Emit(OpCodes.Ldtoken, field);
+            IL.Emit(OpCodes.Ldtoken, declaringType);
+            IL.Emit(OpCodes.Call, getFieldFromHandle);
+        }
+
         /// <summary>
         /// Pushes the arguments of a method onto the stack.
         /// </summary>
@@ -91,7 +155,7 @@ namespace LinFu.Reflection.Emit
                 IL.PushParameter(index++, arguments, param);
             }
         }
-        
+
 
         /// <summary>
         /// Pushes the stack trace of the currently executing method onto the stack.
@@ -145,7 +209,7 @@ namespace LinFu.Reflection.Emit
         /// <param name="method">The target method whose generic type arguments (if any) will be saved into the local variable .</param>
         /// <param name="module">The module that contains the host method.</param>
         /// <param name="parameterTypes">The local variable that will store the current method signature.</param>
-        public static void SaveParameterTypes(this CilWorker IL, MethodDefinition method, ModuleDefinition module,
+        public static void SaveParameterTypes(this CilWorker IL, MethodReference method, ModuleDefinition module,
              VariableDefinition parameterTypes)
         {
             var getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle", BindingFlags.Public | BindingFlags.Static);
@@ -205,7 +269,7 @@ namespace LinFu.Reflection.Emit
         /// <param name="index">The array index that indicates where the parameter value will be stored in the array of arguments.</param>
         /// <param name="param">The current argument value being stored.</param>
         private static void PushParameter(this CilWorker IL, int index, VariableDefinition arguments, ParameterDefinition param)
-        {            
+        {
             var parameterType = param.ParameterType;
             IL.Emit(OpCodes.Ldloc, arguments);
             IL.Emit(OpCodes.Ldc_I4, index);
@@ -224,6 +288,28 @@ namespace LinFu.Reflection.Emit
                 IL.Emit(OpCodes.Box, param.ParameterType);
 
             IL.Emit(OpCodes.Stelem_Ref);
+        }
+
+        /// <summary>
+        /// Obtains the declaring type for a given type reference.
+        /// </summary>
+        /// <param name="declaringType">The declaring ty pe.</param>
+        /// <returns>The actual declaring type.</returns>
+        private static TypeReference GetDeclaringType(TypeReference declaringType)
+        {
+            // Instantiate the generic type before determining
+            // the current method
+            if (declaringType.GenericParameters.Count > 0)
+            {
+                var genericType = new GenericInstanceType(declaringType);
+                foreach (GenericParameter parameter in declaringType.GenericParameters)
+                {
+                    genericType.GenericArguments.Add(parameter);
+                }
+
+                declaringType = genericType;
+            }
+            return declaringType;
         }
     }
 }

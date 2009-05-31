@@ -63,7 +63,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AOP\CecilTests.cs" />
+    <Compile Include="AOP\FieldInterceptionTests.cs" />
+    <Compile Include="AOP\NewOperatorInterceptionTests.cs" />
     <Compile Include="AOP\ParameterDefinitionExtensionTests.cs" />
+    <Compile Include="AOP\ThirdPartyMethodCallInterceptionTests.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="BaseTestFixture.cs" />
     <Compile Include="Finders\MethodFinderTests.cs" />
@@ -92,6 +95,7 @@
     <Compile Include="IOC\FluentExtensionTests.cs" />
     <Compile Include="IOC\FluentPropertyInjectionTests.cs" />
     <Compile Include="IOC\InversionOfControlTests.cs" />
+    <Compile Include="Proxy\ProxySerializationTests.cs" />
     <Compile Include="Reflection\BasePEVerifyTestCase.cs" />
     <Compile Include="Reflection\DuckTypingTests.cs" />
     <Compile Include="Reflection\LateBindingTests.cs" />

@@ -79,11 +79,12 @@ namespace LinFu.Reflection.Emit
         /// Adds a default constructor to the target type.
         /// </summary>
         /// <param name="targetType">The type that will contain the default constructor.</param>
-        public static void AddDefaultConstructor(this TypeDefinition targetType)
+        /// <returns>The default constructor.</returns>
+        public static MethodDefinition AddDefaultConstructor(this TypeDefinition targetType)
         {
             var parentType = typeof(object);
 
-            AddDefaultConstructor(targetType, parentType);
+            return AddDefaultConstructor(targetType, parentType);
         }
 
         /// <summary>
@@ -91,7 +92,8 @@ namespace LinFu.Reflection.Emit
         /// </summary>
         /// <param name="parentType">The base class that contains the default constructor that will be used for constructor chaining..</param>
         /// <param name="targetType">The type that will contain the default constructor.</param>
-        public static void AddDefaultConstructor(this TypeDefinition targetType, Type parentType)
+        /// <returns>The default constructor.</returns>
+        public static MethodDefinition AddDefaultConstructor(this TypeDefinition targetType, Type parentType)
         {
             var module = targetType.Module;
             var voidType = module.Import(typeof(void));
@@ -124,6 +126,8 @@ namespace LinFu.Reflection.Emit
             IL.Emit(OpCodes.Ret);
 
             targetType.Constructors.Add(ctor);
+
+            return ctor;
         }
 
         /// <summary>

@@ -24,7 +24,7 @@ namespace LinFu.Reflection.Emit
         {
             return method.Body.CilWorker;
         }
-        
+
         /// <summary>
         /// Adds a <see cref="VariableDefinition">local variable</see>
         /// instance to the target <paramref name="methodDef">method definition</paramref>.
@@ -45,6 +45,43 @@ namespace LinFu.Reflection.Emit
         }
 
         /// <summary>
+        /// Adds a named <see cref="VariableDefinition">local variable</see>
+        /// instance to the target <paramref name="method">method definition</paramref>.
+        /// </summary>
+        /// <param name="method">The <paramref name="method"/> instance which will contain the local variable.</param>
+        /// <param name="variableName">The name of the local variable.</param>
+        /// <param name="variableType">The object <see cref="System.Type">type</see> that describes the type of objects that will be stored by the local variable.</param>
+        /// <returns></returns>
+        public static VariableDefinition AddLocal(this MethodDefinition method, string variableName, Type variableType)
+        {
+            var module = method.DeclaringType.Module;
+            var localType = module.Import(variableType);
+
+            VariableDefinition newLocal = null;
+            foreach (VariableDefinition local in method.Body.Variables)
+            {
+                // Match the variable name and type
+                if (local.Name != variableName || local.VariableType != localType)
+                    continue;
+
+                newLocal = local;
+            }
+
+            // If necessary, create the local variable
+            if (newLocal == null)
+            {
+                var body = method.Body;
+                var index = body.Variables.Count;
+
+                newLocal = new VariableDefinition(variableName, index, method, localType);
+
+                body.Variables.Add(newLocal);
+            }
+
+            return newLocal;
+        }
+
+        /// <summary>
         /// Adds a set of parameter types to the target <paramref name="method"/>.
         /// </summary>
         /// <param name="method">The target method.</param>
@@ -57,27 +94,12 @@ namespace LinFu.Reflection.Emit
             // Build the parameter list
             foreach (var type in parameterTypes)
             {
-                TypeReference parameterType = null;
-
-                if (type.ContainsGenericParameters && type.IsGenericType)
-                {
-                    foreach(var genericParam in type.GetGenericArguments())
-                    {
-                        method.GenericParameters.Add(new GenericParameter(genericParam.Name, method));
-                    }
-
-                    parameterType = module.Import(type, method);
-                }
-                else
-                {
-                    parameterType = type.IsGenericParameter ? method.AddGenericParameter(type) :
-                    module.Import(type);
-                }
+                TypeReference parameterType = GetParameterType(method, module, type);
 
                 var param = new ParameterDefinition(parameterType);
                 method.Parameters.Add(param);
             }
-        }
+        }       
 
         /// <summary>
         /// Assigns the <paramref name="returnType"/> for the target method.
@@ -97,16 +119,34 @@ namespace LinFu.Reflection.Emit
                 return;
             }
 
-            if (returnType.IsGenericParameter)
+            actualReturnType = returnType.IsGenericParameter ? method.AddGenericParameter(returnType) : module.Import(returnType);
+            method.ReturnType.ReturnType = actualReturnType;
+        }
+
+        /// <summary>
+        /// Determines the actual parameter type of a given method.
+        /// </summary>
+        /// <param name="method">The target method.</param>
+        /// <param name="module">The module that contains the method's host type.</param>
+        /// <param name="type">The parameter type.</param>
+        /// <returns>A <see cref="TypeReference"/> that describes the actual parameter type.</returns>
+        private static TypeReference GetParameterType(MethodDefinition method, ModuleDefinition module, Type type)
+        {
+            TypeReference parameterType = null;
+
+            if (type.ContainsGenericParameters && type.IsGenericType)
             {
-                actualReturnType = method.AddGenericParameter(returnType);
-            }
-            else
-            {
-                actualReturnType = module.Import(returnType);
+                foreach (var genericParam in type.GetGenericArguments())
+                {
+                    method.GenericParameters.Add(new GenericParameter(genericParam.Name, method));
+                }
+
+                return module.Import(type, method);
             }
 
-            method.ReturnType.ReturnType = actualReturnType;
+            parameterType = type.IsGenericParameter ? method.AddGenericParameter(type) : module.Import(type);
+
+            return parameterType;
         }
 
         /// <summary>
@@ -125,15 +165,15 @@ namespace LinFu.Reflection.Emit
             foreach(var name in typeArgumentNames)
             {
                 bool found = false;
-                foreach(GenericParameter param in method.GenericParameters)
-                {
-                    if (param.Name != name)
-                        continue;
+                var parameterCount = method.GenericParameters.Count;
+                var parameters = method.GenericParameters.Cast<GenericParameter>();
 
-                    found = true;
-                    break;
-                }
+                var matches = (from p in parameters
+                              where p.Name == name
+                              select p).Count();
 
+                found = matches > 0;
+               
                 if (found)
                     continue;
 
@@ -142,7 +182,7 @@ namespace LinFu.Reflection.Emit
 
             actualReturnType = module.Import(returnType, method);
             method.ReturnType.ReturnType = actualReturnType;
-        }
+        }        
 
         /// <summary>
         /// Adds a generic parameter type to the <paramref name="method"/>.
@@ -155,8 +195,8 @@ namespace LinFu.Reflection.Emit
 
             // Check if the parameter type already exists
             var matches = (from GenericParameter p in method.GenericParameters
-                          where p.Name == parameterType.Name
-                          select p).ToList();
+                           where p.Name == parameterType.Name
+                           select p).ToList();
 
             // Reuse the existing parameter
             if (matches.Count > 0)
@@ -177,7 +217,20 @@ namespace LinFu.Reflection.Emit
         /// <returns>A <see cref="VariableDefinition"/> that represents the local variable itself.</returns>        
         public static VariableDefinition AddLocal<T>(this MethodDefinition methodDef)
         {
-            return methodDef.AddLocal(typeof (T));
+            return methodDef.AddLocal(typeof(T));
+        }
+
+        /// <summary>
+        /// Adds a named <see cref="VariableDefinition">local variable</see>
+        /// instance to the target <paramref name="methodDef">method definition</paramref>.
+        /// </summary>
+        /// <typeparam name="T">The object <see cref="System.Type">type</see> that describes the type of objects that will be stored by the local variable.</typeparam>
+        /// <param name="methodDef">The <paramref name="methodDef"/> instance which will contain the local variable.</param>
+        /// <param name="variableName">The name of the local variable.</param>
+        /// <returns>A <see cref="VariableDefinition"/> that represents the local variable itself.</returns>        
+        public static VariableDefinition AddLocal<T>(this MethodDefinition methodDef, string variableName)
+        {
+            return methodDef.AddLocal(variableName, typeof(T));
         }
     }
 }

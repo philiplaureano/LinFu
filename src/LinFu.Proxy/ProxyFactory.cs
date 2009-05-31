@@ -25,7 +25,7 @@ namespace LinFu.Proxy
         public ProxyFactory()
         {
             // Use the forwarding proxy type by default
-            ProxyBuilder = new ProxyBuilder();
+            ProxyBuilder = new SerializableProxyBuilder();
             InterfaceExtractor = new InterfaceExtractor();
             Cache = new ProxyCache();
         }
@@ -89,7 +89,7 @@ namespace LinFu.Proxy
 
             #region Generate the assembly
 
-            var assemblyName = Guid.NewGuid().ToString();
+            var assemblyName = "LinFu.Proxy";
             var assembly = AssemblyFactory.DefineAssembly(assemblyName, AssemblyKind.Dll);
             var mainModule = assembly.MainModule;
             var importedBaseType = mainModule.Import(actualBaseType);
@@ -105,7 +105,7 @@ namespace LinFu.Proxy
             var proxyType = mainModule.DefineClass(typeName, namespaceName,
                                                               attributes, importedBaseType);
 
-            proxyType.AddDefaultConstructor(actualBaseType);
+            proxyType.AddDefaultConstructor();
             #endregion
 
             if (ProxyBuilder == null)
@@ -131,7 +131,18 @@ namespace LinFu.Proxy
             #region Compile the results
             var compiledAssembly = assembly.ToAssembly();
 
-            var result = (from t in compiledAssembly.GetTypes()
+            IEnumerable<Type> types = null;
+
+            try
+            {
+                types = compiledAssembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                types = ex.Types;
+            }
+
+            var result = (from t in types
                           where t != null && t.IsClass
                           select t).FirstOrDefault();
             #endregion
@@ -183,8 +194,8 @@ namespace LinFu.Proxy
             if (source.Contains(typeof(IExtractInterfaces)))
                 InterfaceExtractor = source.GetService<IExtractInterfaces>();
 
-            if (source.Contains(typeof(IVerifier)))
-                Verifier = source.GetService<IVerifier>();
+            //if (source.Contains(typeof(IVerifier)))
+            //    Verifier = source.GetService<IVerifier>();
 
             if (source.Contains(typeof(IProxyCache)))
                 Cache = source.GetService<IProxyCache>();

@@ -31,11 +31,6 @@ namespace LinFu.AOP.Interfaces
         StackTrace StackTrace { get; }
 
         /// <summary>
-        /// This is the actual calling method that invoked the <see cref="TargetMethod"/>.
-        /// </summary>
-        MethodBase CallingMethod { get; }
-
-        /// <summary>
         /// The return type of the <see cref="TargetMethod"/>.
         /// </summary>
         Type ReturnType { get; }

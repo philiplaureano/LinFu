@@ -11,7 +11,7 @@ namespace LinFu.AOP.Interfaces
     /// and be used to describe the method that invoked the instantiation operation as well as specify the object
     /// instance that invoked the instantiation itself.
     /// </summary>
-    public class MethodActivationContext : ActivationContext, IMethodActivationContext
+    public class TypeActivationContext : ActivationContext, ITypeActivationContext
     {
         /// <summary>
         /// Initializes a new instance of the MethodActivationContext class.
@@ -20,7 +20,7 @@ namespace LinFu.AOP.Interfaces
         /// <param name="targetMethod">The method where the activation was invoked.</param>
         /// <param name="concreteType">The type to be constructed.</param>
         /// <param name="additionalArguments">The additional arguments that will be passed to the constructor.</param>
-        public MethodActivationContext(object target, MethodBase targetMethod,
+        public TypeActivationContext(object target, MethodBase targetMethod,
             Type concreteType, object[] additionalArguments)
             : base(concreteType, additionalArguments)
         {
