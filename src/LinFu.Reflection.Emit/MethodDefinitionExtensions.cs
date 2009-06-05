@@ -94,12 +94,18 @@ namespace LinFu.Reflection.Emit
             // Build the parameter list
             foreach (var type in parameterTypes)
             {
-                TypeReference parameterType = GetParameterType(method, module, type);
+                TypeReference parameterType;
+
+                if ((type.ContainsGenericParameters && type.IsGenericType) || type.IsGenericParameter)
+                    parameterType = module.Import(type, method);
+                else
+                    parameterType = module.Import(type);
 
                 var param = new ParameterDefinition(parameterType);
                 method.Parameters.Add(param);
             }
-        }       
+        }
+
 
         /// <summary>
         /// Assigns the <paramref name="returnType"/> for the target method.
@@ -113,76 +119,14 @@ namespace LinFu.Reflection.Emit
 
             TypeReference actualReturnType;
 
-            if (returnType.IsGenericType && returnType.ContainsGenericParameters)
-            {
-                SetReturnTypeWithOpenGenericParameters(method, returnType, module);
-                return;
-            }
+            if ((returnType.ContainsGenericParameters && returnType.IsGenericType) || returnType.IsGenericParameter)
+                actualReturnType = module.Import(returnType, method);
+            else
+                actualReturnType = module.Import(returnType);
 
-            actualReturnType = returnType.IsGenericParameter ? method.AddGenericParameter(returnType) : module.Import(returnType);
-            method.ReturnType.ReturnType = actualReturnType;
+            method.ReturnType.ReturnType = actualReturnType;            
         }
 
-        /// <summary>
-        /// Determines the actual parameter type of a given method.
-        /// </summary>
-        /// <param name="method">The target method.</param>
-        /// <param name="module">The module that contains the method's host type.</param>
-        /// <param name="type">The parameter type.</param>
-        /// <returns>A <see cref="TypeReference"/> that describes the actual parameter type.</returns>
-        private static TypeReference GetParameterType(MethodDefinition method, ModuleDefinition module, Type type)
-        {
-            TypeReference parameterType = null;
-
-            if (type.ContainsGenericParameters && type.IsGenericType)
-            {
-                foreach (var genericParam in type.GetGenericArguments())
-                {
-                    method.GenericParameters.Add(new GenericParameter(genericParam.Name, method));
-                }
-
-                return module.Import(type, method);
-            }
-
-            parameterType = type.IsGenericParameter ? method.AddGenericParameter(type) : module.Import(type);
-
-            return parameterType;
-        }
-
-        /// <summary>
-        /// Assigns a return type with an open generic parameter to a target method.
-        /// </summary>
-        /// <param name="method">The target method.</param>
-        /// <param name="returnType">The return type with the open generic parameters.</param>
-        /// <param name="module">The host module.</param>
-        private static void SetReturnTypeWithOpenGenericParameters(MethodDefinition method, Type returnType, ModuleDefinition module)
-        {
-            TypeReference actualReturnType = null;
-            var typeArgumentNames = from t in returnType.GetGenericArguments()
-                                    select t.Name;
-
-            // Add any missing type arguments in the host method
-            foreach(var name in typeArgumentNames)
-            {
-                bool found = false;
-                var parameterCount = method.GenericParameters.Count;
-                var parameters = method.GenericParameters.Cast<GenericParameter>();
-
-                var matches = (from p in parameters
-                              where p.Name == name
-                              select p).Count();
-
-                found = matches > 0;
-               
-                if (found)
-                    continue;
-
-                method.GenericParameters.Add(new GenericParameter(name, method));
-            }
-
-            actualReturnType = module.Import(returnType, method);
-            method.ReturnType.ReturnType = actualReturnType;
-        }        
 
         /// <summary>
         /// Adds a generic parameter type to the <paramref name="method"/>.

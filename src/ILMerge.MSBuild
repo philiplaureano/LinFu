@@ -6,6 +6,7 @@
     <ItemGroup>
         <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\$(Configuration)\LinFu*.dll"/>
         <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\$(Configuration)\Mono.Cecil.dll"/>
+	<ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\lib\Mono.Cecil.Pdb.dll"/>
     </ItemGroup>   
     <Target Name="Merge">
 	<Message Text="-- Begin ILMerge --" />

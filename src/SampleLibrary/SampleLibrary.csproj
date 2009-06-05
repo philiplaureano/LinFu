@@ -81,6 +81,7 @@
     <Compile Include="IOC\SampleRecursiveTestComponent1.cs" />
     <Compile Include="IOC\SampleRecursiveTestComponent2.cs" />
     <Compile Include="IOC\SampleStronglyTypedFactoryWithNamedService.cs" />
+    <Compile Include="Proxy\ClassWithNestedOpenGenericParameters.cs" />
     <Compile Include="Proxy\SampleClassWithPropertyInitializedInCtor.cs" />
     <Compile Include="Proxy\ClassWithGenericMethod.cs" />
     <Compile Include="Proxy\ClassWithMethodReturnTypeFromGenericTypeArguments.cs" />

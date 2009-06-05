@@ -402,6 +402,32 @@ namespace LinFu.UnitTests.Proxy
         }
 
         [Test]
+        public void ShouldSupportMethodCallWithNestedOpenGenericParameters()
+        {
+            var dummyList = new Dictionary<int,List<string>>();
+
+            // The dummy list will be altered if the method body is called
+            Func<IInvocationInfo, object> methodBody = info =>
+            {
+                var typeArguments = info.TypeArguments;
+
+                // Match the type arguments
+
+                //Assert.AreEqual(typeArguments[0], typeof(int));
+
+                dummyList.Add(1,new List<string>(){"SomeValue"});
+
+                return dummyList[1];
+
+            };
+
+            var proxy = CreateProxy<ClassWithNestedOpenGenericParameters>(methodBody);
+            proxy.DoSomething(dummyList);
+            Assert.IsTrue(dummyList.Count > 0);
+        }
+
+
+        [Test]
         public void ShouldSupportSerialization()
         {
 
