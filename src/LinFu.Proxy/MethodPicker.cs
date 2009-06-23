@@ -28,7 +28,7 @@ namespace LinFu.Proxy
             var results = new HashSet<MethodInfo>();
 
             var baseMethods = from method in baseType.GetMethods()
-                              where method.IsPublic && method.IsVirtual && !method.IsFinal
+                              where method.IsVirtual && !method.IsFinal && !method.IsPrivate 
                               select method;
 
             // Add the virtual methods defined
