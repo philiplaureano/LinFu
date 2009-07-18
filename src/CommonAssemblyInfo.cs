@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security;
 
 [assembly: AssemblyCopyright("Copyright  Philip Laureano 2008")]
 [assembly: AssemblyTrademark("")]
@@ -9,6 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyTitle("LinFu")]
 [assembly: AssemblyProduct("LinFu")]
+[assembly: AllowPartiallyTrustedCallers]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
