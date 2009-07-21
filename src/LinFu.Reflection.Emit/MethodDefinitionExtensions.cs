@@ -95,12 +95,12 @@ namespace LinFu.Reflection.Emit
             foreach (var type in parameterTypes)
             {
                 TypeReference parameterType;
+                var isGeneric = type.ContainsGenericParameters && type.IsGenericType;
+                var hasGenericParameter = type.HasElementType && type.GetElementType().IsGenericParameter;
+                var shouldImportMethodContext = isGeneric || type.IsGenericParameter || hasGenericParameter;
 
-                if ((type.ContainsGenericParameters && type.IsGenericType) || type.IsGenericParameter)
-                    parameterType = module.Import(type, method);
-                else
-                    parameterType = module.Import(type);
-
+                parameterType = shouldImportMethodContext ? module.Import(type, method) : module.Import(type);
+                
                 var param = new ParameterDefinition(parameterType);
                 method.Parameters.Add(param);
             }
@@ -124,7 +124,7 @@ namespace LinFu.Reflection.Emit
             else
                 actualReturnType = module.Import(returnType);
 
-            method.ReturnType.ReturnType = actualReturnType;            
+            method.ReturnType.ReturnType = actualReturnType;
         }
 
 
