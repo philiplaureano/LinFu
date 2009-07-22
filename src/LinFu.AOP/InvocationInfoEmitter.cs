@@ -104,7 +104,9 @@ namespace LinFu.AOP.Cecil
             }
 
             // Get the current stack trace
-            IL.PushStackTrace(module);            
+            // Note: This has been disabled for performance reasons
+            //IL.PushStackTrace(module);
+            IL.Emit(OpCodes.Ldnull);
 
             // Save the parameter types
             IL.Emit(OpCodes.Ldc_I4, targetMethod.Parameters.Count);

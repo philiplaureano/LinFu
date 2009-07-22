@@ -25,12 +25,6 @@ namespace LinFu.AOP.Interfaces
         MethodInfo TargetMethod { get; }
 
         /// <summary>
-        /// The <see cref="StackTrace"/> associated
-        /// with the method call when the call was made.
-        /// </summary>
-        StackTrace StackTrace { get; }
-
-        /// <summary>
         /// The return type of the <see cref="TargetMethod"/>.
         /// </summary>
         Type ReturnType { get; }

@@ -208,8 +208,9 @@ namespace LinFu.AOP.Cecil
             IL.PushMethod(targetMethod, module);
             IL.Emit(OpCodes.Castclass, module.Import(typeof(MethodInfo)));
 
-            // Push the stack trace
-            IL.PushStackTrace(module);
+            // Push the stack trace (Disabled for performance reasons)
+            //IL.PushStackTrace(module);
+            IL.Emit(OpCodes.Ldnull);
 
             var systemType = module.Import(typeof(Type));
 
