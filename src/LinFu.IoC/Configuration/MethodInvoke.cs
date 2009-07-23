@@ -16,7 +16,7 @@ namespace LinFu.IoC.Configuration
         /// </summary>
         public MethodInvoke()
         {
-            MethodBuilder = new ReflectionMethodBuilder<MethodInfo>();          
+            MethodBuilder = new MethodBuilder();
         }
 
         /// <summary>
@@ -32,16 +32,17 @@ namespace LinFu.IoC.Configuration
             var actualArguments = new List<object>();
 
             // Only instance methods need a target
-            //if (!originalMethod.IsStatic)
-            //    actualArguments.Add(target);
+            if (!originalMethod.IsStatic && targetMethod.IsStatic)
+                actualArguments.Add(target);
 
             actualArguments.AddRange(arguments);
             object result = null;
             try
             {
-                result = targetMethod.Invoke(target, actualArguments.ToArray());
+                result = targetMethod.Invoke(targetMethod.IsStatic ? null : target,
+                    actualArguments.ToArray());
             }
-            catch(TargetInvocationException ex)
+            catch (TargetInvocationException ex)
             {
                 throw ex.InnerException;
             }

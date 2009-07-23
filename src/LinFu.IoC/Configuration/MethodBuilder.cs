@@ -25,6 +25,20 @@ namespace LinFu.IoC.Configuration
             IL.Emit(OpCodes.Ldarg_0);
         }
 
+        protected override void PushMethodArguments(ILGenerator IL, MethodBase targetMethod)
+        {
+            var parameterTypes = (from p in targetMethod.GetParameters()
+                                  select p.ParameterType).ToArray();
+
+            int offset = targetMethod.IsStatic ? 0 : 1;
+            // Push the method arguments onto the stack
+            var parameterCount = parameterTypes.Length;
+            for (var index = 0; index < parameterCount; index++)
+            {
+                IL.Emit(OpCodes.Ldarg, index + offset);
+            }
+        }
+
         /// <summary>
         /// Determines the return type from the target <paramref name="method"/>.
         /// </summary>
