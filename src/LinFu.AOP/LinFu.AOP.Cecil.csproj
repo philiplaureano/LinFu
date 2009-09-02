@@ -97,9 +97,9 @@
       <Project>{0F8C48B0-4AE9-4429-AB90-C5141D710C2C}</Project>
       <Name>LinFu.AOP.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LinFu.IoC\LinFu.IoC.csproj">
-      <Project>{FA3D5517-EFF4-4363-AFF2-EF67B981334E}</Project>
-      <Name>LinFu.IoC</Name>
+    <ProjectReference Include="..\LinFu.IoC.Common\LinFu.IoC.Common.csproj">
+      <Project>{D027A765-4D2E-48AE-9D83-C5F5AFA7D8C1}</Project>
+      <Name>LinFu.IoC.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\LinFu.Reflection.Emit\LinFu.Reflection.Emit.csproj">
       <Project>{22B3D63C-29E9-49D3-86CB-28FF7D2C70E7}</Project>

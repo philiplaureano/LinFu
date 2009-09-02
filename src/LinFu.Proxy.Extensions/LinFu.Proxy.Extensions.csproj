@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{54DA7856-9026-439A-8FFE-88BBF99577B8}</ProjectGuid>
+    <ProjectGuid>{DC20B330-B410-481D-A192-D82A07D2C7EF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LinFu.Proxy</RootNamespace>
-    <AssemblyName>LinFu.Proxy</AssemblyName>
+    <RootNamespace>LinFu.Proxy.Extensions</RootNamespace>
+    <AssemblyName>LinFu.Proxy.Extensions</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,22 +21,17 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\build\Debug\LinFu.Proxy.xml</DocumentationFile>
+    <DocumentationFile>..\..\build\Debug\LinFu.Proxy.Extensions.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\build\Release\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\build\Release\LinFu.Proxy.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Mono.Cecil, Version=0.6.8.8607, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Mono.Cecil.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -51,20 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\CommonAssemblyInfo.cs">
-      <Link>Properties\CommonAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="MethodBodyEmitter.cs" />
-    <Compile Include="ProxyBuilder.cs" />
-    <Compile Include="InterfaceExtractor.cs" />
-    <Compile Include="MethodPicker.cs" />
-    <Compile Include="ProxyCache.cs" />
-    <Compile Include="ProxyCacheEntry.cs" />
-    <Compile Include="ProxyFactory.cs" />
-    <Compile Include="ProxyImplementor.cs" />
-    <Compile Include="ProxyMethodBuilder.cs" />
-    <Compile Include="ProxyObjectReference.cs" />
-    <Compile Include="SerializableProxyBuilder.cs" />
+    <Compile Include="ObjectExtensions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LinFu.AOP.Interfaces\LinFu.AOP.Interfaces.csproj">
@@ -79,17 +62,17 @@
       <Project>{D027A765-4D2E-48AE-9D83-C5F5AFA7D8C1}</Project>
       <Name>LinFu.IoC.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\LinFu.IoC\LinFu.IoC.csproj">
+      <Project>{FA3D5517-EFF4-4363-AFF2-EF67B981334E}</Project>
+      <Name>LinFu.IoC</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LinFu.Proxy.Interfaces\LinFu.Proxy.Interfaces.csproj">
       <Project>{6C29A409-6148-49AC-A192-DC6F33F3304C}</Project>
       <Name>LinFu.Proxy.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LinFu.Reflection.Emit\LinFu.Reflection.Emit.csproj">
-      <Project>{22B3D63C-29E9-49D3-86CB-28FF7D2C70E7}</Project>
-      <Name>LinFu.Reflection.Emit</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LinFu.Reflection\LinFu.Reflection.csproj">
-      <Project>{22EEB00F-F471-486C-A6AD-60F088821C78}</Project>
-      <Name>LinFu.Reflection</Name>
+    <ProjectReference Include="..\LinFu.Proxy\LinFu.Proxy.csproj">
+      <Project>{54DA7856-9026-439A-8FFE-88BBF99577B8}</Project>
+      <Name>LinFu.Proxy</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

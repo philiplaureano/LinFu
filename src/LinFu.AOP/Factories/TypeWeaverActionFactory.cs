@@ -31,10 +31,10 @@ namespace LinFu.AOP.Cecil.Factories
                 (weaverName, type) =>
                 {
                     // Get the method weaver instance that matches the weaverName
-                    var methodWeaver = container.GetService<IHostWeaver<TypeDefinition>>(weaverName);
+                    var methodWeaver = (IHostWeaver<TypeDefinition>)container.GetService(weaverName, typeof(IHostWeaver<TypeDefinition>));
 
                     // Wrap it in a type weaver
-                    var typeWeaver = container.GetService<ITypeWeaver>("AutoMethodWeaver", methodWeaver);
+                    var typeWeaver = (ITypeWeaver)container.GetService("AutoMethodWeaver", typeof(ITypeWeaver), methodWeaver);
 
                     var module = type.Module;
                     if (!typeWeaver.ShouldWeave(type))

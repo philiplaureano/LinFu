@@ -31,6 +31,12 @@
     </msbuild>
   </target>
 
+  <target name="aop" depends="compile-release, run-unit-tests">
+    <msbuild project="src\LinFu.AOP.ILMerge.MSBuild">
+      <property name="Configuration" value="Release" />
+    </msbuild>
+  </target>
+  
   <target name="test" depends="compile, run-unit-tests"
 		description="Compile and Run Tests" />
 

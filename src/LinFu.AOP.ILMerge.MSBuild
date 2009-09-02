@@ -1,0 +1,23 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MainAssembly>$(MSBuildProjectDirectory)\..\build\LinFu.AOP.dll</MainAssembly>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <TargetDirectory>$(MSBuildProjectDirectory)\..\build\$(Configuration)</TargetDirectory>
+  </PropertyGroup>
+  <ItemGroup>
+    <ILMergeAssemblies Include="$(TargetDirectory)\LinFu.AOP.Interfaces.dll"/>
+    <ILMergeAssemblies Include="$(TargetDirectory)\LinFu.AOP.Cecil.dll"/>
+    <ILMergeAssemblies Include="$(TargetDirectory)\LinFu.IoC.Common.dll"/>
+    <ILMergeAssemblies Include="$(TargetDirectory)\LinFu.Proxy.Interfaces.dll"/>
+    <ILMergeAssemblies Include="$(TargetDirectory)\LinFu.Proxy.dll"/>
+    <ILMergeAssemblies Include="$(TargetDirectory)\LinFu.Reflection.dll"/>
+    <ILMergeAssemblies Include="$(TargetDirectory)\LinFu.Reflection.Emit.dll"/>
+    <ILMergeAssemblies Include="$(TargetDirectory)\Mono.Cecil.dll"/>
+  </ItemGroup>
+
+  <Target Name="iocmerge">
+    <Message Text="-- Begin LinFu.Proxy ILMerge --" />
+    <Exec Command="&quot;$(ProgramFiles)\Microsoft\Ilmerge\Ilmerge.exe&quot; /xmldocs /v2 /log /out:&quot;$(MainAssembly)&quot; @(ILMergeAssemblies->'&quot;%(FullPath)&quot;', ' ')" />
+    <Message Text="-- End LinFu.Proxy ILMerge --" />
+  </Target>
+</Project>

@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\LinFu.IoC.XML</DocumentationFile>
+    <DocumentationFile>..\..\build\Debug\LinFu.IoC.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -54,8 +54,6 @@
     <Compile Include="CompositePreProcessor.cs" />
     <Compile Include="Configuration\ContainerActivationContext.cs" />
     <Compile Include="Configuration\DefaultActivator.cs" />
-    <Compile Include="Configuration\Attributes\FactoryAttribute.cs" />
-    <Compile Include="Configuration\Attributes\ImplementsAttribute.cs" />
     <Compile Include="Configuration\Attributes\InjectAttribute.cs" />
     <Compile Include="Configuration\Attributes\PostProcessorAttribute.cs" />
     <Compile Include="Configuration\Attributes\PreprocessorAttribute.cs" />
@@ -92,7 +90,6 @@
     <Compile Include="Configuration\Interfaces\IFactoryBuilder.cs" />
     <Compile Include="Configuration\Interfaces\IMethodFinderContext.cs" />
     <Compile Include="Configuration\Interfaces\IMethodFinderWithContainer.cs" />
-    <Compile Include="Configuration\LifecycleType.cs" />
     <Compile Include="Configuration\Loaders\AssemblyContainerLoader.cs" />
     <Compile Include="Configuration\Loaders\FactoryAttributeLoader.cs" />
     <Compile Include="Configuration\Loaders\ImplementsAttributeLoader.cs" />
@@ -145,7 +142,6 @@
     <Compile Include="Configuration\Interfaces\IContainerLoader.cs" />
     <Compile Include="Configuration\Interfaces\IContainerPlugin.cs" />
     <Compile Include="Configuration\Interfaces\IGenerateFactory.cs" />
-    <Compile Include="Configuration\Interfaces\IInitialize.cs" />
     <Compile Include="Configuration\Interfaces\IMemberResolver.cs" />
     <Compile Include="Configuration\Interfaces\IMethodBuilder.cs" />
     <Compile Include="Configuration\Interfaces\IMethodFinder.cs" />
@@ -156,19 +152,10 @@
     <Compile Include="Configuration\Interfaces\ITypeLoader.cs" />
     <Compile Include="Configuration\Interfaces\IUsingLambda.cs" />
     <Compile Include="Interceptors\Redirector.cs" />
-    <Compile Include="Interfaces\IContainer.cs" />
-    <Compile Include="Interfaces\IFactory.cs" />
     <Compile Include="Interfaces\IFactoryOfT.cs" />
-    <Compile Include="Interfaces\IFactoryRequest.cs" />
     <Compile Include="Interfaces\IGetService.cs" />
-    <Compile Include="Interfaces\IPostProcessor.cs" />
-    <Compile Include="Interfaces\IPreprocessor.cs" />
     <Compile Include="Interfaces\IScope.cs" />
-    <Compile Include="Interfaces\IServiceContainer.cs" />
-    <Compile Include="Interfaces\IServiceInfo.cs" />
     <Compile Include="Interfaces\IServiceInstance.cs" />
-    <Compile Include="Interfaces\IServiceRequest.cs" />
-    <Compile Include="Interfaces\IServiceRequestResult.cs" />
     <Compile Include="Reflection\LateBoundExtensions.cs" />
     <Compile Include="Scope.cs" />
     <Compile Include="ServiceContainer.cs" />
@@ -186,6 +173,10 @@
     <ProjectReference Include="..\LinFu.Finders\LinFu.Finders.csproj">
       <Project>{020A9D4F-3C8C-48B5-830F-2EDAB07E0D97}</Project>
       <Name>LinFu.Finders</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LinFu.IoC.Common\LinFu.IoC.Common.csproj">
+      <Project>{D027A765-4D2E-48AE-9D83-C5F5AFA7D8C1}</Project>
+      <Name>LinFu.IoC.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\LinFu.Proxy.Interfaces\LinFu.Proxy.Interfaces.csproj">
       <Project>{6C29A409-6148-49AC-A192-DC6F33F3304C}</Project>

@@ -193,7 +193,7 @@ namespace LinFu.Proxy
         /// <param name="source"></param>
         public void Initialize(IServiceContainer source)
         {
-            InvocationInfoEmitter = source.GetService<IEmitInvocationInfo>();
+            InvocationInfoEmitter = (IEmitInvocationInfo)source.GetService(typeof(IEmitInvocationInfo));
         }
     }
 }

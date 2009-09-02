@@ -5,13 +5,15 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{54DA7856-9026-439A-8FFE-88BBF99577B8}</ProjectGuid>
+    <ProjectGuid>{D027A765-4D2E-48AE-9D83-C5F5AFA7D8C1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LinFu.Proxy</RootNamespace>
-    <AssemblyName>LinFu.Proxy</AssemblyName>
+    <RootNamespace>LinFu.IoC.Common</RootNamespace>
+    <AssemblyName>LinFu.IoC.Common</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>LinFu.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,22 +23,17 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\build\Debug\LinFu.Proxy.xml</DocumentationFile>
+    <DocumentationFile>..\..\build\Debug\LinFu.IoC.Common.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\build\Release\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\build\Release\LinFu.Proxy.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Mono.Cecil, Version=0.6.8.8607, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Mono.Cecil.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -51,46 +48,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\CommonAssemblyInfo.cs">
-      <Link>Properties\CommonAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="MethodBodyEmitter.cs" />
-    <Compile Include="ProxyBuilder.cs" />
-    <Compile Include="InterfaceExtractor.cs" />
-    <Compile Include="MethodPicker.cs" />
-    <Compile Include="ProxyCache.cs" />
-    <Compile Include="ProxyCacheEntry.cs" />
-    <Compile Include="ProxyFactory.cs" />
-    <Compile Include="ProxyImplementor.cs" />
-    <Compile Include="ProxyMethodBuilder.cs" />
-    <Compile Include="ProxyObjectReference.cs" />
-    <Compile Include="SerializableProxyBuilder.cs" />
+    <Compile Include="FactoryAttribute.cs" />
+    <Compile Include="IContainer.cs" />
+    <Compile Include="IFactory.cs" />
+    <Compile Include="IFactoryRequest.cs" />
+    <Compile Include="IInitialize.cs" />
+    <Compile Include="ImplementsAttribute.cs" />
+    <Compile Include="IPostProcessor.cs" />
+    <Compile Include="IPreprocessor.cs" />
+    <Compile Include="IServiceContainer.cs" />
+    <Compile Include="IServiceInfo.cs" />
+    <Compile Include="IServiceRequest.cs" />
+    <Compile Include="IServiceRequestResult.cs" />
+    <Compile Include="LifecycleType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LinFu.AOP.Interfaces\LinFu.AOP.Interfaces.csproj">
-      <Project>{0F8C48B0-4AE9-4429-AB90-C5141D710C2C}</Project>
-      <Name>LinFu.AOP.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LinFu.AOP\LinFu.AOP.Cecil.csproj">
-      <Project>{613B6547-DCBB-4505-82B8-B4179BFC95CE}</Project>
-      <Name>LinFu.AOP.Cecil</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LinFu.IoC.Common\LinFu.IoC.Common.csproj">
-      <Project>{D027A765-4D2E-48AE-9D83-C5F5AFA7D8C1}</Project>
-      <Name>LinFu.IoC.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LinFu.Proxy.Interfaces\LinFu.Proxy.Interfaces.csproj">
-      <Project>{6C29A409-6148-49AC-A192-DC6F33F3304C}</Project>
-      <Name>LinFu.Proxy.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LinFu.Reflection.Emit\LinFu.Reflection.Emit.csproj">
-      <Project>{22B3D63C-29E9-49D3-86CB-28FF7D2C70E7}</Project>
-      <Name>LinFu.Reflection.Emit</Name>
-    </ProjectReference>
     <ProjectReference Include="..\LinFu.Reflection\LinFu.Reflection.csproj">
       <Project>{22EEB00F-F471-486C-A6AD-60F088821C78}</Project>
       <Name>LinFu.Reflection</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LinFu.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

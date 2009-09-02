@@ -117,9 +117,17 @@
       <Project>{0F8C48B0-4AE9-4429-AB90-C5141D710C2C}</Project>
       <Name>LinFu.AOP.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\LinFu.IoC.Common\LinFu.IoC.Common.csproj">
+      <Project>{D027A765-4D2E-48AE-9D83-C5F5AFA7D8C1}</Project>
+      <Name>LinFu.IoC.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LinFu.IoC\LinFu.IoC.csproj">
       <Project>{FA3D5517-EFF4-4363-AFF2-EF67B981334E}</Project>
       <Name>LinFu.IoC</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LinFu.Proxy.Extensions\LinFu.Proxy.Extensions.csproj">
+      <Project>{DC20B330-B410-481D-A192-D82A07D2C7EF}</Project>
+      <Name>LinFu.Proxy.Extensions</Name>
     </ProjectReference>
     <ProjectReference Include="..\LinFu.Reflection\LinFu.Reflection.csproj">
       <Project>{22EEB00F-F471-486C-A6AD-60F088821C78}</Project>

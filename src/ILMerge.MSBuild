@@ -10,7 +10,7 @@
     </ItemGroup>   
     <Target Name="Merge">
 	<Message Text="-- Begin ILMerge --" />
-	<Exec Command="&quot;$(ProgramFiles)\Microsoft\Ilmerge\Ilmerge.exe&quot; /xmldocs /v2 /log /out:&quot;$(MainAssembly)&quot; @(ILMergeAssemblies->'&quot;%(FullPath)&quot;', ' ') /keyfile:&quot;$(MSBuildProjectDirectory)\..\LinFu.snk&quot; >merge.cmd" />
+	<Exec Command="&quot;$(ProgramFiles)\Microsoft\Ilmerge\Ilmerge.exe&quot; /xmldocs /v2 /log /out:&quot;$(MainAssembly)&quot; @(ILMergeAssemblies->'&quot;%(FullPath)&quot;', ' ') /keyfile:&quot;$(MSBuildProjectDirectory)\..\LinFu.snk&quot;" />
 	<Message Text="-- End ILMerge   --" />
     </Target>
 </Project>

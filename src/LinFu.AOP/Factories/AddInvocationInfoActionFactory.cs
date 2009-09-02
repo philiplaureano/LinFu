@@ -45,7 +45,7 @@ namespace LinFu.AOP.Cecil.Factories
                     var variable = method.AddLocal<IInvocationInfo>();
                     variable.Name = "___invocationInfo___";
 
-                    var emitInfo = container.GetService<IEmitInvocationInfo>();
+                    var emitInfo = (IEmitInvocationInfo)container.GetService(typeof(IEmitInvocationInfo));
                     emitInfo.Emit(method, method, variable);
                 };
 

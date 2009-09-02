@@ -30,17 +30,17 @@ namespace LinFu.AOP.Cecil.Factories
             var container = request.Container;
             Action<string, AssemblyDefinition> result =
                 (weaverName, assembly) =>
-                    {
-                        // Create the lambda that can modify the target types
-                        var weaveWith = container.GetService<Action<string, TypeDefinition>>("TypeWeaver");
-                        var mainModule = assembly.MainModule;
+                {
+                    // Create the lambda that can modify the target types
+                    var weaveWith = (Action<string, TypeDefinition>)container.GetService("TypeWeaver", typeof(Action<string, TypeDefinition>));
+                    var mainModule = assembly.MainModule;
 
-                        foreach(TypeDefinition type in mainModule.Types)
-                        {
-                            // Use the method weaver on the target type
-                            weaveWith(weaverName, type);
-                        }
-                    };
+                    foreach (TypeDefinition type in mainModule.Types)
+                    {
+                        // Use the method weaver on the target type
+                        weaveWith(weaverName, type);
+                    }
+                };
 
             return result;
         }

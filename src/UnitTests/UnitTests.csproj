@@ -112,6 +112,14 @@
       <Project>{613B6547-DCBB-4505-82B8-B4179BFC95CE}</Project>
       <Name>LinFu.AOP.Cecil</Name>
     </ProjectReference>
+    <ProjectReference Include="..\LinFu.IoC.Common\LinFu.IoC.Common.csproj">
+      <Project>{D027A765-4D2E-48AE-9D83-C5F5AFA7D8C1}</Project>
+      <Name>LinFu.IoC.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LinFu.Proxy.Extensions\LinFu.Proxy.Extensions.csproj">
+      <Project>{DC20B330-B410-481D-A192-D82A07D2C7EF}</Project>
+      <Name>LinFu.Proxy.Extensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LinFu.Proxy.Interfaces\LinFu.Proxy.Interfaces.csproj">
       <Project>{6C29A409-6148-49AC-A192-DC6F33F3304C}</Project>
       <Name>LinFu.Proxy.Interfaces</Name>

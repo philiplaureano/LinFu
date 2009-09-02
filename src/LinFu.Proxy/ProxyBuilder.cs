@@ -94,9 +94,9 @@ namespace LinFu.Proxy
         /// <param name="source">The <see cref="IServiceContainer"/> instance that will hold the current instance.</param>
         public void Initialize(IServiceContainer source)
         {
-            ProxyImplementor = source.GetService<ITypeBuilder>("ProxyImplementor");
-            MethodPicker = source.GetService<IMethodPicker>();
-            ProxyMethodBuilder = source.GetService<IMethodBuilder>("ProxyMethodBuilder");
+            ProxyImplementor = (ITypeBuilder)source.GetService("ProxyImplementor", typeof(ITypeBuilder));
+            MethodPicker = (IMethodPicker)source.GetService(typeof(IMethodPicker));
+            ProxyMethodBuilder = (IMethodBuilder)source.GetService("ProxyMethodBuilder", typeof(IMethodBuilder));
         }
     }
 }

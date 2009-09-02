@@ -132,7 +132,7 @@ namespace LinFu.Proxy
         /// <param name="source">The <see cref="IServiceContainer"/> instance that will create the class instance.</param>
         public void Initialize(IServiceContainer source)
         {
-            Emitter = source.GetService<IMethodBodyEmitter>();
+            Emitter = (IMethodBodyEmitter)source.GetService(typeof (IMethodBodyEmitter));
         }
     }
 }
