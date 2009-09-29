@@ -143,7 +143,7 @@ namespace LinFu.Reflection
             // Signal the beginning of the load
             foreach (var plugin in Plugins)
             {
-                if (plugin == null || ShouldLoad(plugin))
+                if (plugin == null || !ShouldLoad(plugin))
                     continue;
 
                 plugin.BeginLoad(target);

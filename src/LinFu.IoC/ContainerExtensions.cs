@@ -33,16 +33,47 @@ namespace LinFu.IoC
         /// <param name="assemblyLoader">The custom <see cref="IAssemblyLoader"/> that will be used to load the target assemblies from disk.</param>
         /// <param name="directory">The target directory.</param>
         /// <param name="searchPattern">The search pattern that describes the list of files to be loaded.</param>
+        /// <param name="customLoader">The custom loader that will be used to load the container.</param>
+        public static void LoadFrom(this IServiceContainer container, IAssemblyLoader assemblyLoader, string directory,
+            string searchPattern, ILoader<IServiceContainer> customLoader)
+        {
+            // Load the target directory
+            customLoader.LoadDirectory(directory, searchPattern);
+
+            // Configure the container
+            customLoader.LoadInto(container);
+        }
+
+        /// <summary>
+        /// Loads a set of <paramref name="searchPattern">files</paramref> from the <paramref name="directory">target directory</paramref>
+        /// using a custom <see cref="IAssemblyLoader"/> instance.
+        /// </summary>
+        /// <param name="container">The container to be loaded.</param>
+        /// <param name="assemblyLoader">The custom <see cref="IAssemblyLoader"/> that will be used to load the target assemblies from disk.</param>
+        /// <param name="directory">The target directory.</param>
+        /// <param name="searchPattern">The search pattern that describes the list of files to be loaded.</param>
         public static void LoadFrom(this IServiceContainer container, IAssemblyLoader assemblyLoader, string directory,
             string searchPattern)
         {
             var loader = new Loader() { AssemblyLoader = assemblyLoader };
+            container.LoadFrom(assemblyLoader, directory, searchPattern, loader);            
+        }
 
+        /// <summary>
+        /// Loads a set of <paramref name="searchPattern">files</paramref> from the <paramref name="directory">target directory</paramref>.
+        /// </summary>
+        /// <param name="container">The container to be loaded.</param>
+        /// <param name="directory">The target directory.</param>
+        /// <param name="searchPattern">The search pattern that describes the list of files to be loaded.</param>
+        /// <param name="customLoader">The custom loader that will be used to load the container.</param>
+        public static void LoadFrom(this IServiceContainer container, string directory,
+            string searchPattern, ILoader<IServiceContainer> customLoader)
+        {
             // Load the target directory
-            loader.LoadDirectory(directory, searchPattern);
+            customLoader.LoadDirectory(directory, searchPattern);
 
             // Configure the container
-            loader.LoadInto(container);
+            customLoader.LoadInto(container);
         }
 
         /// <summary>
@@ -56,11 +87,7 @@ namespace LinFu.IoC
         {
             var loader = new Loader();
 
-            // Load the target directory
-            loader.LoadDirectory(directory, searchPattern);
-
-            // Configure the container
-            loader.LoadInto(container);
+            container.LoadFrom(directory, searchPattern, loader);
         }
 
         /// <summary>
