@@ -143,7 +143,7 @@ namespace LinFu.Reflection
             // Signal the beginning of the load
             foreach (var plugin in Plugins)
             {
-                if (plugin == null)
+                if (plugin == null || ShouldLoad(plugin))
                     continue;
 
                 plugin.BeginLoad(target);
@@ -161,11 +161,21 @@ namespace LinFu.Reflection
             // Signal the end of the load
             foreach (var plugin in Plugins)
             {
-                if (plugin == null)
+                if (plugin == null || !ShouldLoad(plugin))
                     continue;
-
+                
                 plugin.EndLoad(target);
             }
+        }
+
+        /// <summary>
+        /// Determines whether or not a specific plugin should be loaded.
+        /// </summary>
+        /// <param name="plugin">The target plugin to be loaded.</param>
+        /// <returns><c>true</c> if the plugin should be loaded; otherwise, it will return <c>false</c>.</returns>
+        protected virtual bool ShouldLoad(ILoaderPlugin<TTarget> plugin)
+        {
+            return true;
         }
 
         /// <summary>
