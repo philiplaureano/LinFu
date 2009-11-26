@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Runtime.Serialization;
 using LinFu.IoC.Interfaces;
 using LinFu.Reflection;
 
@@ -13,8 +13,9 @@ namespace LinFu.IoC.Configuration
     /// </summary>
     public class Initializer<T> : IPostProcessor
     {
-        private static readonly HashSet<IInitialize<T>> _instances = new HashSet<IInitialize<T>>();
+        private static readonly HashSet<HashableWeakReference> _instances = new HashSet<HashableWeakReference>(new HashableWeakReferenceComparer());
         private readonly Func<IServiceRequestResult, T> _getSource;
+        static private int _initializeCallCount;
         #region IPostProcessor Members
 
         /// <summary>
@@ -55,15 +56,51 @@ namespace LinFu.IoC.Configuration
             if (target == null)
                 return;
 
+            if ((_initializeCallCount = ++_initializeCallCount % 100) == 0)
+                _instances.RemoveWhere(w => !w.IsAlive);
+
             // Make sure that the target is initialized only once
-            if (_instances.Contains(target))
+            var weakReference = new HashableWeakReference(target);
+            if (_instances.Contains(weakReference))
                 return;
 
             // Initialize the target
             target.Initialize(source);
-            _instances.Add(target);
+            _instances.Add(weakReference);
         }
 
         #endregion
+
+        private class HashableWeakReferenceComparer : IEqualityComparer<HashableWeakReference>
+        {
+            public bool Equals(HashableWeakReference x, HashableWeakReference y)
+            {
+                return x.Target == y.Target;
+            }
+
+            int IEqualityComparer<HashableWeakReference>.GetHashCode(HashableWeakReference obj)
+            {
+                if (obj == null)
+                {
+                    throw new ArgumentNullException("obj");
+                }
+                return obj.GetHashCode();
+            }
+        }
+
+        private class HashableWeakReference : WeakReference
+        {
+            private readonly int _hashCode;
+
+            public HashableWeakReference(object target) : base(target, false)
+            {
+                _hashCode = target.GetHashCode();
+            }
+
+            public override int GetHashCode()
+            {
+                return _hashCode;
+            }
+        }
     }
 }

@@ -70,6 +70,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="BaseTestFixture.cs" />
     <Compile Include="Finders\MethodFinderTests.cs" />
+    <Compile Include="IOC\Configuration\InitializerTests.cs" />
     <Compile Include="IOC\FactoryStorageTests.cs" />
     <Compile Include="IOC\FieldInjectionTests.cs" />
     <Compile Include="IOC\MethodInjectionTests.cs" />
