@@ -9,7 +9,7 @@ namespace LinFu.AOP.Interfaces
     /// Represents a type that has been modified to support
     /// pervasive method interception.
     /// </summary>
-    public interface IModifiableType
+    public interface IModifiableType : IMethodReplacementHost
     {
         /// <summary>
         /// Gets or sets the value indicating whether or not 
@@ -23,11 +23,5 @@ namespace LinFu.AOP.Interfaces
         /// implementation.
         /// </summary>
         IAroundInvokeProvider AroundInvokeProvider { get; set; }
-
-        /// <summary>
-        /// Gets or sets the value indicating the <see cref="IInterceptorProvider"/>
-        /// that will be used to replace an existing method body implementation.
-        /// </summary>
-        IInterceptorProvider MethodReplacementProvider { get; set; }
     }
 }

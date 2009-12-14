@@ -11,7 +11,7 @@ using Mono.Cecil.Cil;
 
 namespace LinFu.AOP.Cecil
 {
-    internal class InterceptMethodCalls : MethodRewriter
+    internal class InterceptMethodCalls : InstructionSwapper
     {
         private readonly Func<MethodReference, bool> _hostMethodFilter;
         private readonly Func<MethodReference, bool> _methodCallFilter;

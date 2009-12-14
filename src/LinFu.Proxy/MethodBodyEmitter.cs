@@ -57,7 +57,7 @@ namespace LinFu.Proxy
             var proxyType = module.ImportType<IProxy>();
             var getInterceptorMethod = module.ImportMethod("get_Interceptor", typeof(IProxy));
             var interceptor = targetMethod.AddLocal<IInterceptor>();
-            var arguments = targetMethod.AddLocal(typeof(object[]));
+            var arguments = targetMethod.AddLocal<object[]>();
 
             // if (!(this is IProxy))
             var IL = targetMethod.GetILGenerator();

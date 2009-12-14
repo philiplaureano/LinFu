@@ -6,7 +6,7 @@ using System.Text;
 namespace LinFu.AOP.Interfaces
 {
     /// <summary>
-    /// Represents a type that can have its method implementations replaced at runtime.
+    /// Represents a type that can have its method body  implementations replaced at runtime.
     /// </summary>
     public interface IMethodReplacementHost
     {

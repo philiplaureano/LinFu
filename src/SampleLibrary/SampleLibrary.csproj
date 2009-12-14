@@ -45,14 +45,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AOP\SampleAroundInvoke.cs" />
+    <Compile Include="AOP\SampleAroundInvokeProvider.cs" />
     <Compile Include="AOP\SampleClassWithByRefMethod.cs" />
     <Compile Include="AOP\SampleClassWithMethodHavingOutParameters.cs" />
     <Compile Include="AOP\SampleClassWithNewInstanceCall.cs" />
+    <Compile Include="AOP\SampleClassWithNonVirtualMethod.cs" />
     <Compile Include="AOP\SampleClassWithReadOnlyField.cs" />
     <Compile Include="AOP\SampleClassWithThirdPartyMethodCall.cs" />
+    <Compile Include="AOP\SampleInterceptor.cs" />
     <Compile Include="AOP\SampleMethodReplacement.cs" />
     <Compile Include="AOP\SampleMethodReplacementProvider.cs" />
     <Compile Include="AOP\SampleServiceImplementation.cs" />
+    <Compile Include="AOP\SampleStaticClassWithStaticMethod.cs" />
     <Compile Include="AOP\SampleTypeActivator.cs" />
     <Compile Include="IOC\ISampleInterceptedInterface.cs" />
     <Compile Include="IOC\ISampleServiceWithGenericMethods.cs" />

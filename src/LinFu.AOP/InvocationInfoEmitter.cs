@@ -25,7 +25,7 @@ namespace LinFu.AOP.Cecil
         private static readonly MethodInfo _getTypeFromHandle;
         static InvocationInfoEmitter()
         {
-            var types = new [] { typeof(object), 
+            var types = new[] { typeof(object), 
                                  typeof(MethodInfo), 
                                  typeof(StackTrace), 
                                  typeof(Type[]), 
@@ -33,9 +33,9 @@ namespace LinFu.AOP.Cecil
                                  typeof(Type), 
                                  typeof(object[]) };
 
-            _invocationInfoConstructor = typeof (InvocationInfo).GetConstructor(types);
+            _invocationInfoConstructor = typeof(InvocationInfo).GetConstructor(types);
 
-            _getTypeFromHandle = typeof (Type).GetMethod("GetTypeFromHandle",
+            _getTypeFromHandle = typeof(Type).GetMethod("GetTypeFromHandle",
                                                          BindingFlags.Static | BindingFlags.Public);
         }
 
@@ -64,12 +64,16 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Ldc_I4, genericParameterCount);
             IL.Emit(OpCodes.Newarr, systemType);
             IL.Emit(OpCodes.Stloc, typeArguments);
-            
+
             // object[] arguments = new object[argumentCount];            
             IL.PushArguments(targetMethod, module, arguments);
 
             // object target = this;
-            IL.Emit(OpCodes.Ldarg_0);
+            if (targetMethod.HasThis)
+                IL.Emit(OpCodes.Ldarg_0);
+            else
+                IL.Emit(OpCodes.Ldnull);
+
             IL.PushMethod(interceptedMethod, module);
 
             IL.Emit(OpCodes.Stloc, currentMethod);
@@ -97,7 +101,7 @@ namespace LinFu.AOP.Cecil
                 IL.Emit(OpCodes.Brfalse, skipMakeGenericMethod);
 
                 // Instantiate the specific generic method instance
-                var makeGenericMethod = module.ImportMethod<MethodInfo>("MakeGenericMethod", typeof (Type[]));
+                var makeGenericMethod = module.ImportMethod<MethodInfo>("MakeGenericMethod", typeof(Type[]));
                 IL.Emit(OpCodes.Ldloc, typeArguments);
                 IL.Emit(OpCodes.Callvirt, makeGenericMethod);
                 IL.Append(skipMakeGenericMethod);
@@ -114,7 +118,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Stloc, parameterTypes);
 
             IL.SaveParameterTypes(targetMethod, module, parameterTypes);
-            IL.Emit(OpCodes.Ldloc, parameterTypes);            
+            IL.Emit(OpCodes.Ldloc, parameterTypes);
 
             // Push the type arguments back onto the stack
             IL.Emit(OpCodes.Ldloc, typeArguments);

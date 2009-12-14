@@ -52,6 +52,8 @@
     </Compile>
     <Compile Include="ActivationContext.cs" />
     <Compile Include="ActivatorExtensions.cs" />
+    <Compile Include="AroundInvokeRegistry.cs" />
+    <Compile Include="CompositeAroundInvoke.cs" />
     <Compile Include="FieldInterceptionContext.cs" />
     <Compile Include="FieldInterceptorRegistry.cs" />
     <Compile Include="IActivationContext.cs" />
@@ -65,7 +67,6 @@
     <Compile Include="IFieldInterceptionHost.cs" />
     <Compile Include="IFieldInterceptor.cs" />
     <Compile Include="IInterceptor.cs" />
-    <Compile Include="IInterceptorProvider.cs" />
     <Compile Include="IInvocationInfo.cs" />
     <Compile Include="IInvokeWrapper.cs" />
     <Compile Include="ITypeActivationContext.cs" />

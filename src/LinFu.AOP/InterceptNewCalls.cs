@@ -10,7 +10,7 @@ using System.Reflection;
 
 namespace LinFu.AOP.Cecil
 {
-    internal class InterceptNewCalls : MethodRewriter
+    internal class InterceptNewCalls : InstructionSwapper
     {
         #region Private Fields
         private MethodReference _getCurrentMethod;

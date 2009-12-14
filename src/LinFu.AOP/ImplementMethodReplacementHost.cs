@@ -19,7 +19,7 @@ namespace LinFu.AOP.Cecil
             _filter = filter;
         }
 
-        public bool ShouldWeave(TypeDefinition item)
+        public virtual bool ShouldWeave(TypeDefinition item)
         {
             if (item.Name == "<Module>")
                 return false;
@@ -37,17 +37,17 @@ namespace LinFu.AOP.Cecil
             return true;
         }
 
-        public void Weave(TypeDefinition item)
+        public virtual void Weave(TypeDefinition item)
         {
             item.Interfaces.Add(_hostType);
             item.AddProperty("MethodReplacementProvider", typeof(IMethodReplacementProvider));
         }
 
-        public void AddAdditionalMembers(ModuleDefinition host)
+        public virtual void AddAdditionalMembers(ModuleDefinition host)
         {
         }
 
-        public void ImportReferences(ModuleDefinition module)
+        public virtual void ImportReferences(ModuleDefinition module)
         {
             _hostType = module.Import(typeof(IMethodReplacementHost));
         }
