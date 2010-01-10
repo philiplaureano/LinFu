@@ -13,7 +13,7 @@ namespace LinFu.AOP.Cecil
     /// </summary>
     public class MethodWeaverVisitor : LinFu.AOP.Cecil.BaseReflectionVisitor
     {
-        private IMethodWeaver _methodWeaver;
+        private readonly IMethodWeaver _methodWeaver;
 
         /// <summary>
         /// Initializes a new instance of the MethodWeaverVisitor class.
@@ -22,6 +22,15 @@ namespace LinFu.AOP.Cecil
         public MethodWeaverVisitor(IMethodWeaver methodWeaver)
         {
             _methodWeaver = methodWeaver;
+        }
+
+        /// <summary>
+        /// Visits a <see cref="MethodDefinition"/> instance.
+        /// </summary>
+        /// <param name="ctor">The <see cref="MethodDefinition"/> instance that will be modified.</param>
+        public override void VisitConstructor(MethodDefinition ctor)
+        {
+            VisitMethodDefinition(ctor);
         }
 
         /// <summary>
