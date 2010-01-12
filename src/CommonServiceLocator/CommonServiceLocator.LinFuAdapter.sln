@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonServiceLocator.LinFuAdapter", "CommonServiceLocator.LinFuAdapter\CommonServiceLocator.LinFuAdapter.csproj", "{31102DCF-6495-42E1-8645-6D65935CB8DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonServiceLocator.LinFuAdapter.Tests", "CommonServiceLocator.LinFuAdapter.Tests\CommonServiceLocator.LinFuAdapter.Tests.csproj", "{D4F0B671-94B6-4AEC-9436-E1167B7CCAEE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{31102DCF-6495-42E1-8645-6D65935CB8DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31102DCF-6495-42E1-8645-6D65935CB8DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31102DCF-6495-42E1-8645-6D65935CB8DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31102DCF-6495-42E1-8645-6D65935CB8DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4F0B671-94B6-4AEC-9436-E1167B7CCAEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4F0B671-94B6-4AEC-9436-E1167B7CCAEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4F0B671-94B6-4AEC-9436-E1167B7CCAEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4F0B671-94B6-4AEC-9436-E1167B7CCAEE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
