@@ -19,7 +19,7 @@ namespace LinFu.UnitTests.AOP
         private class OtherSampleService : ISampleService
         {
             public void DoSomething()
-            {                
+            {
             }
         }
 
@@ -31,11 +31,11 @@ namespace LinFu.UnitTests.AOP
             var module = assembly.MainModule;
             var typeName = "SampleClassWithNewInstanceCall";
             var targetType = (from TypeDefinition t in module.Types
-                             where t.Name == typeName
-                             select t).First();
+                              where t.Name == typeName
+                              select t).First();
 
-            targetType.InterceptNewInstances((ctor, type, hostMethod) => ctor.DeclaringType.Name == "SampleServiceImplementation", m => true);
-            
+            targetType.InterceptNewInstances(declaringType => declaringType.Name == "SampleServiceImplementation");
+
             var modifiedAssembly = assembly.ToAssembly();
 
             var modifiedTargetType = modifiedAssembly.GetTypes().Where(t => t.Name == typeName).First();
