@@ -46,7 +46,9 @@ namespace LinFu.AOP.Cecil
                 return;
 
             type.AddProperty("Activator", _activatorPropertyType);
-            type.Interfaces.Add(_hostInterfaceType);
+
+            if (!type.Interfaces.Contains(_hostInterfaceType))
+                type.Interfaces.Add(_hostInterfaceType);
         }
 
         public void AddAdditionalMembers(ModuleDefinition module)

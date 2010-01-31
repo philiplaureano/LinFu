@@ -57,7 +57,9 @@ namespace LinFu.AOP.Cecil
                 return;
 
             type.AddProperty("FieldInterceptor", _interceptorPropertyType);
-            type.Interfaces.Add(_hostInterfaceType);
+
+            if (!type.Interfaces.Contains(_hostInterfaceType))
+                type.Interfaces.Add(_hostInterfaceType);
         }
 
         /// <summary>

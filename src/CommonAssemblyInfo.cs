@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security;
 
-[assembly: AssemblyCopyright("Copyright  Philip Laureano 2008")]
+[assembly: AssemblyCopyright("Copyright  Philip Laureano 2008-2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyDescription("")]

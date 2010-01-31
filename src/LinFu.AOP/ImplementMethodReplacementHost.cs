@@ -39,6 +39,9 @@ namespace LinFu.AOP.Cecil
 
         public virtual void Weave(TypeDefinition item)
         {
+            if (item.Interfaces.Contains(_hostType))
+                return;
+            
             item.Interfaces.Add(_hostType);
             item.AddProperty("MethodReplacementProvider", typeof(IMethodReplacementProvider));
         }

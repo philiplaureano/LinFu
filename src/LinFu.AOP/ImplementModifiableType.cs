@@ -43,6 +43,9 @@ namespace LinFu.AOP.Cecil
             base.Weave(item);
 
             // Implement IModifiableType
+            if (item.Interfaces.Contains(_modifiableInterfaceType))
+                return;
+
             item.Interfaces.Add(_modifiableInterfaceType);
             item.AddProperty("IsInterceptionDisabled", typeof(bool));
             item.AddProperty("AroundInvokeProvider", typeof(IAroundInvokeProvider));            
