@@ -34,5 +34,25 @@ namespace LinFu.Reflection.Emit
 
             return result;
         }
+
+        /// <summary>
+        /// Saves the assembly to disk.
+        /// </summary>
+        /// <param name="definition">The target assembly definition.</param>
+        /// <param name="filename">The output file name.</param>
+        public static void Save(this AssemblyDefinition definition, string filename)
+        {
+            AssemblyFactory.SaveAssembly(definition, filename);
+        }
+
+        /// <summary>
+        /// Saves the assembly to disk.
+        /// </summary>
+        /// <param name="definition">The target assembly definition.</param>
+        /// <param name="outputStream">The destination file stream.</param>
+        public static void Save(this AssemblyDefinition definition, Stream outputStream)
+        {
+            AssemblyFactory.SaveAssembly(definition, outputStream);
+        }
     }
 }
