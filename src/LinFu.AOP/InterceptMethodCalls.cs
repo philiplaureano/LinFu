@@ -182,7 +182,7 @@ namespace LinFu.AOP.Cecil
                 // Save the current argument
                 var parameterType = param.ParameterType;
                 if (parameterType.IsValueType || parameterType is GenericParameter)
-                    IL.Emit(OpCodes.Box);
+                    IL.Emit(OpCodes.Box, parameterType);
 
                 IL.Emit(OpCodes.Stloc, _currentArgument);
                 IL.Emit(OpCodes.Ldloc, _currentArguments);
