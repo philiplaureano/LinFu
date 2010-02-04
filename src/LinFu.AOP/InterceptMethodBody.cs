@@ -59,30 +59,40 @@ namespace LinFu.AOP.Cecil
             var declaringType = method.DeclaringType;
             var module = declaringType.Module;
 
-            var modifiableType = module.ImportType<IModifiableType>();
+
             _getInterceptionDisabled = module.ImportMethod<IModifiableType>("get_IsInterceptionDisabled");
 
+            _surroundingImplementation = method.AddLocal<IAroundInvoke>();
+            _surroundingClassImplementation = method.AddLocal<IAroundInvoke>();
+            _interceptionDisabled = method.AddLocal<bool>();
+            _invocationInfo = method.AddLocal<IInvocationInfo>();
+            _returnValue = method.AddLocal<object>();
+            _classMethodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
+            _aroundInvokeProvider = method.AddLocal<IAroundInvokeProvider>();
+            _methodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
 
             // Determine whether or not the method should be intercepted
+            var modifiableType = module.ImportType<IModifiableType>();
             GetInterceptionDisabled(method, IL, modifiableType);
 
             // Construct the InvocationInfo instance
             GetInvocationInfo(method, IL);
 
-            GetClassMethodReplacementProvider(IL, method, module);
-
-            _surroundingImplementation = method.AddLocal<IAroundInvoke>();
-            _surroundingClassImplementation = method.AddLocal<IAroundInvoke>();
+            GetClassMethodReplacementProvider(IL, method, module, _invocationInfo, _classMethodReplacementProvider);
 
             AddProlog(method, IL);
 
             var returnType = method.ReturnType.ReturnType;
-            AddMethodBodyImplementation(method, module, IL, oldInstructions);
+            AddImplementation(method, module, IL,
+                oldInstructions,
+                _methodReplacementProvider,
+                _classMethodReplacementProvider,
+                _interceptionDisabled, _invocationInfo);
 
             // Save the return value
             TypeReference voidType = module.Import(typeof(void));
 
-            AddEpilog(IL, module, returnType);
+            AddEpilog(IL, module, _interceptionDisabled, _surroundingImplementation, _surroundingClassImplementation, _invocationInfo, _returnValue);
 
             if (returnType != voidType)
                 IL.Emit(OpCodes.Ldloc, _returnValue);
@@ -90,11 +100,11 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Ret);
         }
 
-        private void GetInterceptionDisabled(MethodDefinition method, CilWorker IL, TypeReference modifiableType)
+        private void GetInterceptionDisabled(MethodDefinition hostMethod,
+            CilWorker IL,
+            TypeReference modifiableType)
         {
-            _interceptionDisabled = method.AddLocal<bool>();
-
-            if (!method.HasThis)
+            if (!hostMethod.HasThis)
             {
                 IL.Emit(OpCodes.Ldc_I4_0);
                 IL.Emit(OpCodes.Stloc, _interceptionDisabled);
@@ -110,7 +120,6 @@ namespace LinFu.AOP.Cecil
 
         private void GetInvocationInfo(MethodDefinition method, CilWorker IL)
         {
-            _invocationInfo = method.AddLocal<IInvocationInfo>();
             var skipInvocationInfo = IL.Create(OpCodes.Nop);
             IL.Emit(OpCodes.Ldloc, _interceptionDisabled);
             IL.Emit(OpCodes.Brtrue, skipInvocationInfo);
@@ -121,25 +130,31 @@ namespace LinFu.AOP.Cecil
             IL.Append(skipInvocationInfo);
         }
 
-        private void AddMethodBodyImplementation(MethodDefinition method, ModuleDefinition module, CilWorker IL, IEnumerable<Instruction> oldInstructions)
+        private void AddImplementation(MethodDefinition method,
+            ModuleDefinition module,
+            CilWorker IL,
+            IEnumerable<Instruction> oldInstructions,
+            VariableDefinition methodReplacementProvider,
+            VariableDefinition classMethodReplacementProvider,
+            VariableDefinition interceptionDisabled,
+            VariableDefinition invocationInfo)
         {
             var returnType = method.ReturnType.ReturnType;
-            _returnValue = method.AddLocal<object>();
 
             var endLabel = IL.Create(OpCodes.Nop);
             var executeOriginalInstructions = IL.Create(OpCodes.Nop);
 
             // Execute the method body replacement if and only if
             // interception is enabled
-            IL.Emit(OpCodes.Ldloc, _interceptionDisabled);
+            IL.Emit(OpCodes.Ldloc, interceptionDisabled);
             IL.Emit(OpCodes.Brtrue, executeOriginalInstructions);
 
-            var invokeReplacement = IL.Create(OpCodes.Nop);            
+            var invokeReplacement = IL.Create(OpCodes.Nop);
 
-            IL.Emit(OpCodes.Ldloc, _methodReplacementProvider);            
+            IL.Emit(OpCodes.Ldloc, methodReplacementProvider);
             IL.Emit(OpCodes.Brtrue, invokeReplacement);
 
-            IL.Emit(OpCodes.Ldloc, _classMethodReplacementProvider);
+            IL.Emit(OpCodes.Ldloc, classMethodReplacementProvider);
             IL.Emit(OpCodes.Brtrue, invokeReplacement);
 
             IL.Emit(OpCodes.Br, executeOriginalInstructions);
@@ -147,7 +162,10 @@ namespace LinFu.AOP.Cecil
 
             // This is equivalent to the following code:
             // var replacement = provider.GetMethodReplacement(info);
-            InvokeMethodReplacement(executeOriginalInstructions, IL, method, module);
+            InvokeMethodReplacement(executeOriginalInstructions,
+                IL, method, module, _methodReplacementProvider,
+                _classMethodReplacementProvider, invocationInfo);
+
             IL.Emit(OpCodes.Br, endLabel);
 
             #region The original instruction block
@@ -158,61 +176,75 @@ namespace LinFu.AOP.Cecil
 
             // Mark the end of the method body
             IL.Append(endLabel);
-            SaveReturnValue(module, IL, returnType);
-        }        
+            SaveReturnValue(module, IL, returnType, _returnValue);
+        }
 
-        private void InvokeMethodReplacement(Instruction executeOriginalInstructions, CilWorker IL, MethodDefinition method, ModuleDefinition module)
+        private void InvokeMethodReplacement(Instruction executeOriginalInstructions,
+            CilWorker IL,
+            MethodDefinition method,
+            ModuleDefinition module,
+            VariableDefinition methodReplacementProvider,
+            VariableDefinition classMethodReplacementProvider,
+            VariableDefinition invocationInfo)
         {
             var returnType = method.ReturnType.ReturnType;
             var methodReplacement = method.AddLocal(typeof(IInterceptor));
-            
-            GetMethodReplacementInstance(method, IL, methodReplacement, _methodReplacementProvider);            
+
+            GetMethodReplacementInstance(method, IL, methodReplacement, methodReplacementProvider, invocationInfo);
 
             var skipGetClassMethodReplacement = IL.Create(OpCodes.Nop);
             IL.Emit(OpCodes.Ldloc, methodReplacement);
             IL.Emit(OpCodes.Brtrue, skipGetClassMethodReplacement);
-           
-            GetMethodReplacementInstance(method, IL, methodReplacement, _classMethodReplacementProvider);
+
+            GetMethodReplacementInstance(method, IL, methodReplacement, classMethodReplacementProvider, invocationInfo);
 
             IL.Append(skipGetClassMethodReplacement);
             IL.Emit(OpCodes.Ldloc, methodReplacement);
             IL.Emit(OpCodes.Brfalse, executeOriginalInstructions);
 
             // var returnValue = replacement.Intercept(info);
-            InvokeInterceptor(module, IL, methodReplacement, returnType);
+            InvokeInterceptor(module, IL, methodReplacement, returnType, invocationInfo);
         }
 
-        private void InvokeInterceptor(ModuleDefinition module, CilWorker IL, VariableDefinition methodReplacement, TypeReference returnType)
+        private void InvokeInterceptor(ModuleDefinition module,
+            CilWorker IL,
+            VariableDefinition methodReplacement,
+            TypeReference returnType,
+            VariableDefinition invocationInfo)
         {
             var interceptMethod = module.ImportMethod<IInterceptor>("Intercept");
             IL.Emit(OpCodes.Ldloc, methodReplacement);
-            IL.Emit(OpCodes.Ldloc, _invocationInfo);
+            IL.Emit(OpCodes.Ldloc, invocationInfo);
             IL.Emit(OpCodes.Callvirt, interceptMethod);
             IL.PackageReturnValue(module, returnType);
         }
 
-        private void GetMethodReplacementInstance(MethodDefinition method, CilWorker IL,  VariableDefinition methodReplacement, VariableDefinition methodReplacementProvider)
+        private void GetMethodReplacementInstance(MethodDefinition method,
+            CilWorker IL,
+            VariableDefinition methodReplacement,
+            VariableDefinition methodReplacementProvider, VariableDefinition invocationInfo)
         {
             var declaringType = method.DeclaringType;
             var module = declaringType.Module;
             var pushInstance = method.HasThis ? IL.Create(OpCodes.Ldarg_0) : IL.Create(OpCodes.Ldnull);
-            
+
             var getReplacement = module.ImportMethod<IMethodReplacementProvider>("GetMethodReplacement");
             IL.Emit(OpCodes.Ldloc, methodReplacementProvider);
 
             var skipGetMethodReplacement = IL.Create(OpCodes.Nop);
             IL.Emit(OpCodes.Brfalse, skipGetMethodReplacement);
             IL.Emit(OpCodes.Ldloc, methodReplacementProvider);
-            
+
             IL.Append(pushInstance);
-            IL.Emit(OpCodes.Ldloc, _invocationInfo);
-            IL.Emit(OpCodes.Callvirt, getReplacement);            
+            IL.Emit(OpCodes.Ldloc, invocationInfo);
+            IL.Emit(OpCodes.Callvirt, getReplacement);
             IL.Emit(OpCodes.Stloc, methodReplacement);
 
             IL.Append(skipGetMethodReplacement);
         }
 
-        private void SaveReturnValue(ModuleDefinition module, CilWorker IL, TypeReference returnType)
+        private static void SaveReturnValue(ModuleDefinition module, CilWorker IL,
+            TypeReference returnType, VariableDefinition returnValue)
         {
             var voidType = module.ImportType(typeof(void));
             var returnTypeIsValueType = returnType != voidType && returnType.IsValueType;
@@ -221,19 +253,19 @@ namespace LinFu.AOP.Cecil
                 IL.Create(OpCodes.Box, returnType);
 
             if (returnType != voidType)
-                IL.Create(OpCodes.Stloc, _returnValue);
+                IL.Create(OpCodes.Stloc, returnValue);
         }
 
-        private void AddEpilog(CilWorker IL, ModuleDefinition module, TypeReference returnType)
+        private static void AddEpilog(CilWorker IL, ModuleDefinition module, VariableDefinition interceptionDisabled, VariableDefinition surroundingImplementation, VariableDefinition surroundingClassImplementation, VariableDefinition invocationInfo, VariableDefinition returnValue)
         {
             var skipEpilog = IL.Create(OpCodes.Nop);
 
             // if (!IsInterceptionDisabled && surroundingImplementation != null) {
-            IL.Emit(OpCodes.Ldloc, _interceptionDisabled);
+            IL.Emit(OpCodes.Ldloc, interceptionDisabled);
             IL.Emit(OpCodes.Brtrue, skipEpilog);
 
             // surroundingImplementation.AfterInvoke(invocationInfo, returnValue);
-            EmitAfterInvoke(IL, module, skipEpilog);
+            EmitAfterInvoke(IL, module, surroundingImplementation, surroundingClassImplementation, invocationInfo, returnValue);
 
             // }
             IL.Append(skipEpilog);
@@ -268,14 +300,15 @@ namespace LinFu.AOP.Cecil
 
             IL.Append(skipGetSurroundingImplementation);
 
-            EmitBeforeInvoke(module, IL);
+            EmitBeforeInvoke(module, IL, _surroundingClassImplementation, _surroundingImplementation, _invocationInfo);
 
             IL.Append(skipProlog);
         }
 
-        private void GetClassMethodReplacementProvider(CilWorker IL, MethodDefinition method, ModuleDefinition module)
+        private static void GetClassMethodReplacementProvider(CilWorker IL, MethodDefinition method,
+            ModuleDefinition module, VariableDefinition invocationInfo,
+            VariableDefinition classMethodReplacementProvider)
         {
-            _classMethodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
             var getProvider = module.Import(typeof(MethodReplacementProviderRegistry).GetMethod("GetProvider"));
 
             if (method.HasThis)
@@ -283,21 +316,28 @@ namespace LinFu.AOP.Cecil
             else
                 IL.Emit(OpCodes.Ldnull);
 
-            IL.Emit(OpCodes.Ldloc, _invocationInfo);
+            IL.Emit(OpCodes.Ldloc, invocationInfo);
             IL.Emit(OpCodes.Call, getProvider);
-            IL.Emit(OpCodes.Stloc, _classMethodReplacementProvider);
+            IL.Emit(OpCodes.Stloc, classMethodReplacementProvider);
         }
 
-        private void EmitAfterInvoke(CilWorker IL, ModuleDefinition module, Instruction skipEpilog)
+        private static void EmitAfterInvoke(CilWorker IL, ModuleDefinition module,
+            VariableDefinition surroundingImplementation,
+            VariableDefinition surroundingClassImplementation,
+            VariableDefinition invocationInfo,
+            VariableDefinition returnValue)
         {
             // instanceAroundInvoke.AfterInvoke(info, returnValue);
-            EmitAfterInvoke(IL, module, _surroundingImplementation);
+            EmitAfterInvoke(IL, module, surroundingImplementation, invocationInfo, returnValue);
 
             // classAroundInvoke.AfterInvoke(info, returnValue);
-            EmitAfterInvoke(IL, module, _surroundingClassImplementation);
+            EmitAfterInvoke(IL, module, surroundingClassImplementation, invocationInfo, returnValue);
         }
 
-        private void EmitAfterInvoke(CilWorker IL, ModuleDefinition module, VariableDefinition surroundingImplementation)
+        private static void EmitAfterInvoke(CilWorker IL, ModuleDefinition module,
+            VariableDefinition surroundingImplementation, 
+            VariableDefinition invocationInfo, 
+            VariableDefinition returnValue)
         {
             var skipInvoke = IL.Create(OpCodes.Nop);
 
@@ -306,41 +346,45 @@ namespace LinFu.AOP.Cecil
 
             var aroundInvoke = module.ImportMethod<IAfterInvoke>("AfterInvoke");
             IL.Emit(OpCodes.Ldloc, surroundingImplementation);
-            IL.Emit(OpCodes.Ldloc, _invocationInfo);
-            IL.Emit(OpCodes.Ldloc, _returnValue);
+            IL.Emit(OpCodes.Ldloc, invocationInfo);
+            IL.Emit(OpCodes.Ldloc, returnValue);
             IL.Emit(OpCodes.Callvirt, aroundInvoke);
 
             IL.Append(skipInvoke);
         }
 
-        private void EmitBeforeInvoke(ModuleDefinition module, CilWorker IL)
+        private static void EmitBeforeInvoke(ModuleDefinition module, CilWorker IL, 
+            VariableDefinition surroundingClassImplementation,
+            VariableDefinition surroundingImplementation, VariableDefinition invocationInfo)
         {
             var targetMethod = IL.GetMethod();
 
             // var classAroundInvoke = AroundInvokeRegistry.GetSurroundingImplementation(info);           
-            GetSurroundingClassImplementation(module, IL);
+            GetSurroundingClassImplementation(module, IL, invocationInfo, surroundingClassImplementation);
 
             // classAroundInvoke.BeforeInvoke(info);
-            EmitBeforeInvoke(IL, module, _surroundingClassImplementation);
+            EmitBeforeInvoke(IL, module, surroundingClassImplementation, invocationInfo);
 
             // if (surroundingImplementation != null) {
             if (targetMethod.HasThis)
-                EmitBeforeInvoke(IL, module, _surroundingImplementation);
+                EmitBeforeInvoke(IL, module, surroundingImplementation, invocationInfo);
             // }
         }
 
-        private void GetSurroundingClassImplementation(ModuleDefinition module, CilWorker IL)
+        private static void GetSurroundingClassImplementation(ModuleDefinition module, CilWorker IL,
+            VariableDefinition invocationInfo, VariableDefinition surroundingClassImplementation)
         {
             var getSurroundingImplementationMethod =
                 typeof(AroundInvokeRegistry).GetMethod("GetSurroundingImplementation");
 
             var getSurroundingImplementation = module.Import(getSurroundingImplementationMethod);
-            IL.Emit(OpCodes.Ldloc, _invocationInfo);
+            IL.Emit(OpCodes.Ldloc, invocationInfo);
             IL.Emit(OpCodes.Call, getSurroundingImplementation);
-            IL.Emit(OpCodes.Stloc, _surroundingClassImplementation);
+            IL.Emit(OpCodes.Stloc, surroundingClassImplementation);
         }
 
-        private void EmitBeforeInvoke(CilWorker IL, ModuleDefinition module, VariableDefinition surroundingImplementation)
+        private static void  EmitBeforeInvoke(CilWorker IL, ModuleDefinition module, 
+            VariableDefinition surroundingImplementation, VariableDefinition invocationInfo)
         {
             var skipInvoke = IL.Create(OpCodes.Nop);
             IL.Emit(OpCodes.Ldloc, surroundingImplementation);
@@ -350,7 +394,7 @@ namespace LinFu.AOP.Cecil
 
             // surroundingImplementation.BeforeInvoke(invocationInfo);
             IL.Emit(OpCodes.Ldloc, surroundingImplementation);
-            IL.Emit(OpCodes.Ldloc, _invocationInfo);
+            IL.Emit(OpCodes.Ldloc, invocationInfo);
             IL.Emit(OpCodes.Callvirt, beforeInvoke);
 
             IL.Append(skipInvoke);
@@ -372,7 +416,6 @@ namespace LinFu.AOP.Cecil
         private void GetAroundInvokeProvider(MethodDefinition method, ModuleDefinition module, CilWorker IL)
         {
             // var aroundInvokeProvider = this.AroundInvokeProvider;
-            _aroundInvokeProvider = method.AddLocal<IAroundInvokeProvider>();
             var getAroundInvokeProvider = module.ImportMethod<IModifiableType>("get_AroundInvokeProvider");
 
             if (!method.HasThis)
@@ -389,8 +432,6 @@ namespace LinFu.AOP.Cecil
 
         private void GetMethodReplacementProvider(MethodDefinition method, ModuleDefinition module, CilWorker IL)
         {
-            _methodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
-
             if (!method.HasThis)
             {
                 IL.Emit(OpCodes.Ldnull);
