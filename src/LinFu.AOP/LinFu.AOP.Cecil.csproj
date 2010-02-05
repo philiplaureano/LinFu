@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{613B6547-DCBB-4505-82B8-B4179BFC95CE}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -67,6 +67,7 @@
     <Compile Include="ImplementModifiableType.cs" />
     <Compile Include="InstructionProvider.cs" />
     <Compile Include="InstructionSwapper.cs" />
+    <Compile Include="InterceptAndSurroundMethodBody.cs" />
     <Compile Include="InterceptFieldAccess.cs" />
     <Compile Include="InterceptMethodBody.cs" />
     <Compile Include="InterceptMethodCalls.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="Interfaces\IEmitInvocationInfo.cs" />
     <Compile Include="Interfaces\IHostWeaver.cs" />
     <Compile Include="Interfaces\IInstructionProvider.cs" />
+    <Compile Include="Interfaces\IMethodBodyRewriter.cs" />
     <Compile Include="Interfaces\IMethodRewriter.cs" />
     <Compile Include="Interfaces\IMethodWeaver.cs" />
     <Compile Include="Interfaces\IModuleWeaver.cs" />
