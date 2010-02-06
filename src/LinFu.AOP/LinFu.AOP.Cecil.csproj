@@ -54,7 +54,7 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AddMethodReplacementImplementation.cs" />
+    <Compile Include="Emitters\AddMethodReplacementImplementation.cs" />
     <Compile Include="Emitters\AddOriginalInstructions.cs" />
     <Compile Include="AssemblyDefinitionExtensions.cs" />
     <Compile Include="BaseMethodRewriter.cs" />

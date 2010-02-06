@@ -12,11 +12,6 @@ namespace LinFu.AOP.Cecil
 {
     public class InterceptAndSurroundMethodBody : IMethodBodyRewriter
     {
-        private VariableDefinition _interceptionDisabled;
-
-        private VariableDefinition _invocationInfo;
-        private VariableDefinition _methodReplacementProvider;
-        private VariableDefinition _aroundInvokeProvider;
         private IEmitInvocationInfo _emitter;
         private ModuleDefinition _module;
 
@@ -34,44 +29,43 @@ namespace LinFu.AOP.Cecil
         public void Rewrite(MethodDefinition method, CilWorker IL,
             IEnumerable<Instruction> oldInstructions)
         {
-            _interceptionDisabled = method.AddLocal<bool>();
-            _invocationInfo = method.AddLocal<IInvocationInfo>();
-            _aroundInvokeProvider = method.AddLocal<IAroundInvokeProvider>();
-            _methodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
-
+            var interceptionDisabled = method.AddLocal<bool>();
+            var invocationInfo = method.AddLocal<IInvocationInfo>();
+            var aroundInvokeProvider = method.AddLocal<IAroundInvokeProvider>();
+            var methodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
 
             var returnValue = method.AddLocal<object>();
             var classMethodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
 
-            var getInterceptionDisabled = new GetInterceptionDisabled(method, _interceptionDisabled);
+            var getInterceptionDisabled = new GetInterceptionDisabled(method, interceptionDisabled);
             getInterceptionDisabled.Emit(IL);
 
             // Construct the InvocationInfo instance
             var skipInvocationInfo = IL.Create(OpCodes.Nop);
-            IL.Emit(OpCodes.Ldloc, _interceptionDisabled);
+            IL.Emit(OpCodes.Ldloc, interceptionDisabled);
             IL.Emit(OpCodes.Brtrue, skipInvocationInfo);
 
             var targetMethod = method;
             var interceptedMethod = method;
-            _emitter.Emit(targetMethod, interceptedMethod, _invocationInfo);
+            _emitter.Emit(targetMethod, interceptedMethod, invocationInfo);
 
 
-            var surroundMethodBody = new SurroundMethodBody(_methodReplacementProvider, _aroundInvokeProvider,
-                                                            _invocationInfo, _interceptionDisabled, returnValue);
+            var surroundMethodBody = new SurroundMethodBody(methodReplacementProvider, aroundInvokeProvider,
+                                                            invocationInfo, interceptionDisabled, returnValue);
             surroundMethodBody.AddProlog(method, IL);
 
             IL.Append(skipInvocationInfo);
 
 
-            var getClassMethodReplacementProvider = new GetClassMethodReplacementProvider(_invocationInfo, classMethodReplacementProvider);
+            var getClassMethodReplacementProvider = new GetClassMethodReplacementProvider(invocationInfo, classMethodReplacementProvider);
             getClassMethodReplacementProvider.Emit(IL);
 
             var returnType = method.ReturnType.ReturnType;
-            AddMethodReplacementImplementation(method, IL,
-                              oldInstructions,
-                              _methodReplacementProvider,
-                              classMethodReplacementProvider,
-                              _interceptionDisabled, _invocationInfo, returnValue);
+            var addMethodReplacement = new AddMethodReplacementImplementation(oldInstructions, interceptionDisabled,
+                                                                              methodReplacementProvider,
+                                                                              classMethodReplacementProvider,
+                                                                              invocationInfo, returnValue);
+            addMethodReplacement.Emit(IL);
 
             // Save the return value
             TypeReference voidType = _module.Import(typeof(void));
@@ -82,56 +76,5 @@ namespace LinFu.AOP.Cecil
 
             IL.Emit(OpCodes.Ret);
         }
-
-        private static void AddMethodReplacementImplementation(MethodDefinition method,
-            CilWorker IL,
-            IEnumerable<Instruction> oldInstructions,
-            VariableDefinition methodReplacementProvider,
-            VariableDefinition classMethodReplacementProvider,
-            VariableDefinition interceptionDisabled,
-            VariableDefinition invocationInfo, VariableDefinition returnValue)
-        {
-            var returnType = method.ReturnType.ReturnType;
-
-            var endLabel = IL.Create(OpCodes.Nop);
-            var executeOriginalInstructions = IL.Create(OpCodes.Nop);
-
-            // Execute the method body replacement if and only if
-            // interception is enabled
-            IL.Emit(OpCodes.Ldloc, interceptionDisabled);
-            IL.Emit(OpCodes.Brtrue, executeOriginalInstructions);
-
-            var invokeReplacement = IL.Create(OpCodes.Nop);
-
-            IL.Emit(OpCodes.Ldloc, methodReplacementProvider);
-            IL.Emit(OpCodes.Brtrue, invokeReplacement);
-
-            IL.Emit(OpCodes.Ldloc, classMethodReplacementProvider);
-            IL.Emit(OpCodes.Brtrue, invokeReplacement);
-
-            IL.Emit(OpCodes.Br, executeOriginalInstructions);
-            IL.Append(invokeReplacement);
-
-            // This is equivalent to the following code:
-            // var replacement = provider.GetMethodReplacement(info);
-            var invokeMethodReplacement = new InvokeMethodReplacement(executeOriginalInstructions, 
-                methodReplacementProvider, classMethodReplacementProvider, invocationInfo);
-            invokeMethodReplacement.Emit(IL);
-
-            IL.Emit(OpCodes.Br, endLabel);
-
-            #region The original instruction block
-            IL.Append(executeOriginalInstructions);
-            var addOriginalInstructions = new AddOriginalInstructions(oldInstructions, endLabel);
-            addOriginalInstructions.Emit(IL);
-
-            #endregion
-
-            // Mark the end of the method body
-            IL.Append(endLabel);
-
-            var saveReturnValue = new SaveReturnValue(returnType, returnValue);
-            saveReturnValue.Emit(IL);
-        }       
     }
 }
