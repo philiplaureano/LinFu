@@ -100,6 +100,7 @@
     <Compile Include="MethodWeaverVisitor.cs" />
     <Compile Include="NewOperatorInterceptionExtensions.cs" />
     <Compile Include="RedirectNewInstancesToActivator.cs" />
+    <Compile Include="SurroundMethodBody.cs" />
     <Compile Include="TypeDefinitionExtensions.cs" />
     <Compile Include="TypeWeaverVisitor.cs" />
   </ItemGroup>
