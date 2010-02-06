@@ -54,6 +54,8 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AddMethodReplacementImplementation.cs" />
+    <Compile Include="Emitters\AddOriginalInstructions.cs" />
     <Compile Include="AssemblyDefinitionExtensions.cs" />
     <Compile Include="BaseMethodRewriter.cs" />
     <Compile Include="BaseReflectionVisitor.cs" />
@@ -69,6 +71,8 @@
     <Compile Include="Emitters\GetSurroundingClassImplementation.cs" />
     <Compile Include="Emitters\GetSurroundingImplementationInstance.cs" />
     <Compile Include="Emitters\GetAroundInvokeProvider.cs" />
+    <Compile Include="Emitters\GetInterceptionDisabled.cs" />
+    <Compile Include="Emitters\GetClassMethodReplacementProvider.cs" />
     <Compile Include="ImplementActivatorHostWeaver.cs" />
     <Compile Include="ImplementFieldInterceptionHostWeaver.cs" />
     <Compile Include="ImplementMethodReplacementHost.cs" />
@@ -97,6 +101,7 @@
     <Compile Include="InvocationInfoEmitter.cs" />
     <Compile Include="InvocationInfoExtensions.cs" />
     <Compile Include="Interfaces\IVerifier.cs" />
+    <Compile Include="Emitters\InvokeMethodReplacement.cs" />
     <Compile Include="Loaders\AssemblyLoaderWithPdbSupport.cs" />
     <Compile Include="Loaders\JITWeaver.cs" />
     <Compile Include="Loaders\PdbLoader.cs" />
@@ -109,6 +114,7 @@
     <Compile Include="MethodWeaverVisitor.cs" />
     <Compile Include="NewOperatorInterceptionExtensions.cs" />
     <Compile Include="RedirectNewInstancesToActivator.cs" />
+    <Compile Include="Emitters\SaveReturnValue.cs" />
     <Compile Include="SurroundMethodBody.cs" />
     <Compile Include="TypeDefinitionExtensions.cs" />
     <Compile Include="TypeWeaverVisitor.cs" />
