@@ -38,6 +38,22 @@ namespace LinFu.Reflection.Emit
         }
 
         /// <summary>
+        /// Emits a Console.WriteLine call to using the current CilWorker that will only be called if the contents
+        /// of the target variable are null at runtime.
+        /// </summary>
+        /// <param name="IL">The target CilWorker.</param>
+        /// <param name="text">The text that will be written to the console.</param>
+        /// <param name="targetVariable">The target variable that will be checked for null at runtime.</param>
+        public static void EmitWriteLineIfNull(this CilWorker IL, string text, VariableDefinition targetVariable)
+        {
+            var skipWrite = IL.Create(OpCodes.Nop);
+            IL.Emit(OpCodes.Ldloc, targetVariable);
+            IL.Emit(OpCodes.Brtrue, skipWrite);
+            IL.EmitWriteLine(text);
+            IL.Append(skipWrite);
+        }
+
+        /// <summary>
         /// Emits a Console.WriteLine call using the current CilWorker.
         /// </summary>
         /// <param name="IL">The target CilWorker.</param>
@@ -303,6 +319,18 @@ namespace LinFu.Reflection.Emit
             var targetMethod = body.Method;
 
             return targetMethod;
+        }
+
+        /// <summary>
+        /// Obtains the module that contains the current <see cref="CilWorker"/>.
+        /// </summary>
+        /// <param name="IL">The <see cref="CilWorker"/> responsible for the method body.</param>
+        /// <returns>The host module.</returns>
+        public static ModuleDefinition GetModule(this CilWorker IL)
+        {
+            var method = IL.GetMethod();
+            var declaringType = method.DeclaringType;
+            return declaringType.Module;
         }
 
         /// <summary>

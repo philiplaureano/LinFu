@@ -58,9 +58,17 @@
     <Compile Include="BaseMethodRewriter.cs" />
     <Compile Include="BaseReflectionVisitor.cs" />
     <Compile Include="CecilVisitorExtensions.cs" />
+    <Compile Include="Emitters\AddAroundInvokeEpilog.cs" />
+    <Compile Include="Emitters\AddAroundInvokeProlog.cs" />
+    <Compile Include="Emitters\EmitAfterInvoke.cs" />
+    <Compile Include="Emitters\EmitBeforeInvoke.cs" />
     <Compile Include="Factories\AddInvocationInfoActionFactory.cs" />
     <Compile Include="Factories\AssemblyWeaverActionFactory.cs" />
     <Compile Include="Factories\TypeWeaverActionFactory.cs" />
+    <Compile Include="Emitters\GetMethodReplacementProvider.cs" />
+    <Compile Include="Emitters\GetSurroundingClassImplementation.cs" />
+    <Compile Include="Emitters\GetSurroundingImplementationInstance.cs" />
+    <Compile Include="Emitters\GetAroundInvokeProvider.cs" />
     <Compile Include="ImplementActivatorHostWeaver.cs" />
     <Compile Include="ImplementFieldInterceptionHostWeaver.cs" />
     <Compile Include="ImplementMethodReplacementHost.cs" />
@@ -74,6 +82,7 @@
     <Compile Include="InterceptNewCalls.cs" />
     <Compile Include="Interfaces\IAroundMethodWeaver.cs" />
     <Compile Include="Interfaces\IEmitInvocationInfo.cs" />
+    <Compile Include="Interfaces\IInstructionEmitter.cs" />
     <Compile Include="Interfaces\IHostWeaver.cs" />
     <Compile Include="Interfaces\IInstructionProvider.cs" />
     <Compile Include="Interfaces\IMethodBodyRewriter.cs" />

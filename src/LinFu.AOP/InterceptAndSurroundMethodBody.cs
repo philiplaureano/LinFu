@@ -53,15 +53,30 @@ namespace LinFu.AOP.Cecil
 
             var targetMethod = method;
             var interceptedMethod = method;
-            var surroundMethodBody = new SurroundMethodBody(_module, _methodReplacementProvider, _aroundInvokeProvider, _invocationInfo, _interceptionDisabled, returnValue);
+            //var surroundingImplementation = method.AddLocal<IAroundInvoke>();
+            //var surroundingClassImplementation = method.AddLocal<IAroundInvoke>();
 
+            
             _emitter.Emit(targetMethod, interceptedMethod, _invocationInfo);
+
+
+            var surroundMethodBody = new SurroundMethodBody(_module, _methodReplacementProvider, _aroundInvokeProvider,
+                                                            _invocationInfo, _interceptionDisabled, returnValue);
+
+    //        var emitProlog = new AddAroundInvokeProlog(_methodReplacementProvider,
+    //_aroundInvokeProvider, surroundingImplementation, surroundingClassImplementation, _invocationInfo, _interceptionDisabled);
+
+            //emitProlog.Emit(IL);
+
+            surroundMethodBody.AddProlog(method, IL);
 
             IL.Append(skipInvocationInfo);
 
+            
+
             GetClassMethodReplacementProvider(IL, method, _module, _invocationInfo, classMethodReplacementProvider);
 
-            surroundMethodBody.AddProlog(method, IL);
+            
 
             var returnType = method.ReturnType.ReturnType;
             AddImplementation(method, _module, IL,
@@ -72,6 +87,11 @@ namespace LinFu.AOP.Cecil
 
             // Save the return value
             TypeReference voidType = _module.Import(typeof(void));
+
+            //var emitEpilog = new AddAroundInvokeEpilog(_interceptionDisabled, surroundingImplementation, 
+            //    surroundingClassImplementation, _invocationInfo, returnValue);
+
+            //emitEpilog.Emit(IL);
 
             surroundMethodBody.AddEpilog(method, IL);
 
