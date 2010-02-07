@@ -9,7 +9,6 @@ using LinFu.Reflection.Emit;
 using LinFu.Proxy.Interfaces;
 using LinFu.IoC.Configuration;
 using Mono.Cecil;
-using GenericParameterAttributes=Mono.Cecil.GenericParameterAttributes;
 
 namespace LinFu.Proxy
 {
@@ -18,7 +17,7 @@ namespace LinFu.Proxy
     /// <see cref="IMethodBuilder"/> interface.
     /// </summary>
     [Implements(typeof(IMethodBuilder), LifecycleType.OncePerRequest, ServiceName = "ProxyMethodBuilder")]
-    internal class ProxyMethodBuilder : IMethodBuilder, IInitialize
+    public class ProxyMethodBuilder : IMethodBuilder, IInitialize
     {
         /// <summary>
         /// Initializes the <see cref="ProxyMethodBuilder"/> class with the default property values.
@@ -33,7 +32,7 @@ namespace LinFu.Proxy
         /// </summary>
         /// <param name="targetType">The type that will host the new method.</param>
         /// <param name="method">The method from which the signature will be derived.</param>
-        public MethodDefinition CreateMethod(TypeDefinition targetType, MethodInfo method)
+        public virtual MethodDefinition CreateMethod(TypeDefinition targetType, MethodInfo method)
         {
             #region Match the method signature
             var module = targetType.Module;            
@@ -108,7 +107,7 @@ namespace LinFu.Proxy
         /// The <see cref="IMethodBodyEmitter"/> instance that will be
         /// responsible for generating the method body.
         /// </summary>
-        public IMethodBodyEmitter Emitter
+        public virtual IMethodBodyEmitter Emitter
         {
             get; set;
         }
@@ -130,7 +129,7 @@ namespace LinFu.Proxy
         /// Initializes the class with the <paramref name="source"/> container.
         /// </summary>
         /// <param name="source">The <see cref="IServiceContainer"/> instance that will create the class instance.</param>
-        public void Initialize(IServiceContainer source)
+        public virtual void Initialize(IServiceContainer source)
         {
             Emitter = (IMethodBodyEmitter)source.GetService(typeof (IMethodBodyEmitter));
         }
