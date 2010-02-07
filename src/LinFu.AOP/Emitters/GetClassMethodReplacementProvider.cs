@@ -33,10 +33,8 @@ namespace LinFu.AOP.Cecil
 
             var getProvider = module.Import(typeof(MethodReplacementProviderRegistry).GetMethod("GetProvider"));
 
-            if (method.HasThis)
-                IL.Emit(OpCodes.Ldarg_0);
-            else
-                IL.Emit(OpCodes.Ldnull);
+            var pushThis = method.HasThis ? OpCodes.Ldarg_0 : OpCodes.Ldnull;
+            IL.Emit(pushThis);
 
             IL.Emit(OpCodes.Ldloc, _invocationInfo);
             IL.Emit(OpCodes.Call, getProvider);

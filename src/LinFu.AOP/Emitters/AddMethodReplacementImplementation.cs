@@ -26,22 +26,7 @@ namespace LinFu.AOP.Cecil
             _classMethodReplacementProvider = parameters.ClassMethodReplacementProvider;
             _invocationInfo = parameters.InvocationInfo;
             _returnValue = parameters.ReturnValue;
-        }
-
-        public AddMethodReplacementImplementation(IEnumerable<Instruction> oldInstructions, 
-            VariableDefinition interceptionDisabled, 
-            VariableDefinition methodReplacementProvider, 
-            VariableDefinition classMethodReplacementProvider, 
-            VariableDefinition invocationInfo, 
-            VariableDefinition returnValue)
-        {
-            _oldInstructions = oldInstructions;
-            _interceptionDisabled = interceptionDisabled;
-            _methodReplacementProvider = methodReplacementProvider;
-            _classMethodReplacementProvider = classMethodReplacementProvider;
-            _invocationInfo = invocationInfo;
-            _returnValue = returnValue;
-        }
+        }        
 
         public void Emit(CilWorker IL)
         {
