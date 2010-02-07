@@ -9,8 +9,8 @@ using Mono.Cecil.Cil;
 
 namespace LinFu.AOP.Cecil
 {
-    public class SurroundMethodBody
-    {       
+    public class SurroundMethodBody : ISurroundMethodBody
+    {
         private VariableDefinition _methodReplacementProvider;
         private VariableDefinition _aroundInvokeProvider;
         private VariableDefinition _invocationInfo;
@@ -18,6 +18,15 @@ namespace LinFu.AOP.Cecil
         private VariableDefinition _surroundingClassImplementation;
         private VariableDefinition _interceptionDisabled;
         private VariableDefinition _returnValue;
+
+        public SurroundMethodBody(IMethodBodyRewriterParameters parameters)
+        {
+            _methodReplacementProvider = parameters.MethodReplacementProvider;
+            _aroundInvokeProvider = parameters.AroundInvokeProvider;
+            _invocationInfo = parameters.InvocationInfo;
+            _returnValue = parameters.ReturnValue;
+            _interceptionDisabled = parameters.InterceptionDisabled;
+        }
 
         public SurroundMethodBody(VariableDefinition methodReplacementProvider,
             VariableDefinition aroundInvokeProvider,
@@ -32,8 +41,9 @@ namespace LinFu.AOP.Cecil
             _returnValue = returnValue;
         }
 
-        public void AddProlog(MethodDefinition method, CilWorker IL)
+        public void AddProlog(CilWorker IL)
         {
+            var method = IL.GetMethod();
             _surroundingImplementation = method.AddLocal<IAroundInvoke>();
             _surroundingClassImplementation = method.AddLocal<IAroundInvoke>();
 
@@ -61,7 +71,7 @@ namespace LinFu.AOP.Cecil
 
             // if (aroundInvokeProvider != null ) {
             var skipGetSurroundingImplementation = IL.Create(OpCodes.Nop);
-            var getSurroundingImplementationInstance = new GetSurroundingImplementationInstance(_aroundInvokeProvider, 
+            var getSurroundingImplementationInstance = new GetSurroundingImplementationInstance(_aroundInvokeProvider,
                 _invocationInfo, _surroundingImplementation, skipGetSurroundingImplementation);
 
             getSurroundingImplementationInstance.Emit(IL);
@@ -79,7 +89,7 @@ namespace LinFu.AOP.Cecil
             IL.Append(skipProlog);
         }
 
-        public void AddEpilog(MethodDefinition method, CilWorker IL)
+        public void AddEpilog(CilWorker IL)
         {
             var skipEpilog = IL.Create(OpCodes.Nop);
 
@@ -93,6 +103,6 @@ namespace LinFu.AOP.Cecil
 
             // }
             IL.Append(skipEpilog);
-        }        
+        }
     }
 }

@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using LinFu.AOP.Cecil.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 namespace LinFu.AOP.Cecil
 {
-    public class AddMethodReplacementImplementation
+    public class AddMethodReplacementImplementation : IInstructionEmitter
     {
         private readonly IEnumerable<Instruction> _oldInstructions;
         private readonly VariableDefinition _interceptionDisabled;
@@ -16,6 +17,16 @@ namespace LinFu.AOP.Cecil
         private readonly VariableDefinition _classMethodReplacementProvider;
         private readonly VariableDefinition _invocationInfo;
         private readonly VariableDefinition _returnValue;
+
+        public AddMethodReplacementImplementation(IMethodBodyRewriterParameters parameters)
+        {
+            _oldInstructions = parameters.OldInstructions;
+            _interceptionDisabled = parameters.InterceptionDisabled;
+            _methodReplacementProvider = parameters.MethodReplacementProvider;
+            _classMethodReplacementProvider = parameters.ClassMethodReplacementProvider;
+            _invocationInfo = parameters.InvocationInfo;
+            _returnValue = parameters.ReturnValue;
+        }
 
         public AddMethodReplacementImplementation(IEnumerable<Instruction> oldInstructions, 
             VariableDefinition interceptionDisabled, 

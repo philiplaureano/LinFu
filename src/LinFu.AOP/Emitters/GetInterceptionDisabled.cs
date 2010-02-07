@@ -15,6 +15,12 @@ namespace LinFu.AOP.Cecil
         private MethodReference _hostMethod;
         private VariableDefinition _interceptionDisabled;
 
+        public GetInterceptionDisabled(IMethodBodyRewriterParameters parameters)
+        {
+            _hostMethod = parameters.TargetMethod;
+            _interceptionDisabled = parameters.InterceptionDisabled;
+        }
+
         public GetInterceptionDisabled(MethodReference hostMethod, VariableDefinition interceptionDisabled)
         {
             _hostMethod = hostMethod;

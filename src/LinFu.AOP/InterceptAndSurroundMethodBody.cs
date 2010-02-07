@@ -9,72 +9,66 @@ using Mono.Cecil.Cil;
 using LinFu.Reflection.Emit;
 
 namespace LinFu.AOP.Cecil
-{
+{    
     public class InterceptAndSurroundMethodBody : IMethodBodyRewriter
     {
-        private IEmitInvocationInfo _emitter;
-        private ModuleDefinition _module;
+        private readonly IEmitInvocationInfo _emitter;
+        private readonly IInstructionEmitter _getInterceptionDisabled;
+        private readonly ISurroundMethodBody _surroundMethodBody;
+        private readonly IInstructionEmitter _getClassMethodReplacementProvider;
+        private readonly IInstructionEmitter _addMethodReplacement;
+        private readonly IMethodBodyRewriterParameters _parameters;
 
-        public InterceptAndSurroundMethodBody(ModuleDefinition module)
-            : this(module, new InvocationInfoEmitter())
+        public InterceptAndSurroundMethodBody(IEmitInvocationInfo emitter, 
+            IInstructionEmitter getInterceptionDisabled, 
+            ISurroundMethodBody surroundMethodBody, 
+            IInstructionEmitter getClassMethodReplacementProvider, 
+            IInstructionEmitter addMethodReplacement, 
+            IMethodBodyRewriterParameters parameters)
         {
-        }
-
-        public InterceptAndSurroundMethodBody(ModuleDefinition module, IEmitInvocationInfo emitter)
-        {
-            _module = module;
+            _getInterceptionDisabled = getInterceptionDisabled;
+            _surroundMethodBody = surroundMethodBody;
+            _getClassMethodReplacementProvider = getClassMethodReplacementProvider;
+            _addMethodReplacement = addMethodReplacement;
+            _parameters = parameters;
             _emitter = emitter;
         }
 
         public void Rewrite(MethodDefinition method, CilWorker IL,
             IEnumerable<Instruction> oldInstructions)
         {
-            var interceptionDisabled = method.AddLocal<bool>();
-            var invocationInfo = method.AddLocal<IInvocationInfo>();
-            var aroundInvokeProvider = method.AddLocal<IAroundInvokeProvider>();
-            var methodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
-
-            var returnValue = method.AddLocal<object>();
-            var classMethodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
-
-            var getInterceptionDisabled = new GetInterceptionDisabled(method, interceptionDisabled);
-            getInterceptionDisabled.Emit(IL);
+            var method1 = _parameters.TargetMethod;
+            var worker = method1.GetILGenerator();
+            var module = worker.GetModule();
+            _getInterceptionDisabled.Emit(worker);
 
             // Construct the InvocationInfo instance
-            var skipInvocationInfo = IL.Create(OpCodes.Nop);
-            IL.Emit(OpCodes.Ldloc, interceptionDisabled);
-            IL.Emit(OpCodes.Brtrue, skipInvocationInfo);
+            var skipInvocationInfo = worker.Create(OpCodes.Nop);
+            worker.Emit(OpCodes.Ldloc, _parameters.InterceptionDisabled);
+            worker.Emit(OpCodes.Brtrue, skipInvocationInfo);
 
-            var targetMethod = method;
-            var interceptedMethod = method;
-            _emitter.Emit(targetMethod, interceptedMethod, invocationInfo);
+            var targetMethod = method1;
+            var interceptedMethod = method1;
+            _emitter.Emit(targetMethod, interceptedMethod, _parameters.InvocationInfo);
 
+            
+            _surroundMethodBody.AddProlog(worker);
+            worker.Append(skipInvocationInfo);
+            
+            _getClassMethodReplacementProvider.Emit(worker);
 
-            var surroundMethodBody = new SurroundMethodBody(methodReplacementProvider, aroundInvokeProvider,
-                                                            invocationInfo, interceptionDisabled, returnValue);
-            surroundMethodBody.AddProlog(method, IL);
-
-            IL.Append(skipInvocationInfo);
-
-
-            var getClassMethodReplacementProvider = new GetClassMethodReplacementProvider(invocationInfo, classMethodReplacementProvider);
-            getClassMethodReplacementProvider.Emit(IL);
-
-            var returnType = method.ReturnType.ReturnType;
-            var addMethodReplacement = new AddMethodReplacementImplementation(oldInstructions, interceptionDisabled,
-                                                                              methodReplacementProvider,
-                                                                              classMethodReplacementProvider,
-                                                                              invocationInfo, returnValue);
-            addMethodReplacement.Emit(IL);
+            var returnType = method1.ReturnType.ReturnType;
+            
+            _addMethodReplacement.Emit(worker);
 
             // Save the return value
-            TypeReference voidType = _module.Import(typeof(void));
-            surroundMethodBody.AddEpilog(method, IL);
+            TypeReference voidType = module.Import(typeof(void));
+            _surroundMethodBody.AddEpilog(worker);
 
             if (returnType != voidType)
-                IL.Emit(OpCodes.Ldloc, returnValue);
+                worker.Emit(OpCodes.Ldloc, _parameters.ReturnValue);
 
-            IL.Emit(OpCodes.Ret);
+            worker.Emit(OpCodes.Ret);
         }
     }
 }

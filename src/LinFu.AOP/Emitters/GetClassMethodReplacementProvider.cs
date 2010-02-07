@@ -14,6 +14,12 @@ namespace LinFu.AOP.Cecil
         private readonly VariableDefinition _invocationInfo;
         private readonly VariableDefinition _classMethodReplacementProvider;
 
+        public GetClassMethodReplacementProvider(IMethodBodyRewriterParameters parameters)
+        {
+            _invocationInfo = parameters.InvocationInfo;
+            _classMethodReplacementProvider = parameters.ClassMethodReplacementProvider;
+        }
+
         public GetClassMethodReplacementProvider(VariableDefinition invocationInfo, VariableDefinition classMethodReplacementProvider)
         {
             _invocationInfo = invocationInfo;

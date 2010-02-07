@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
@@ -44,10 +45,24 @@ namespace LinFu.AOP.Cecil
         /// <param name="oldInstructions">The IL instructions of the original method body.</param>
         protected override void RewriteMethodBody(MethodDefinition method, CilWorker IL, IEnumerable<Instruction> oldInstructions)
         {
-            var declaringType = method.DeclaringType;
-            var module = declaringType.Module;
+            var interceptionDisabled = method.AddLocal<bool>();
+            var invocationInfo = method.AddLocal<IInvocationInfo>();
+            var aroundInvokeProvider = method.AddLocal<IAroundInvokeProvider>();
+            var methodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
 
-            var rewriter = new InterceptAndSurroundMethodBody(module);
+
+            var returnValue = method.AddLocal<object>();
+            var classMethodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
+
+            var parameters = new MethodBodyRewriterParameters(IL, oldInstructions, interceptionDisabled, invocationInfo, returnValue, aroundInvokeProvider, methodReplacementProvider, classMethodReplacementProvider);
+
+            var emitter = new InvocationInfoEmitter();
+            IInstructionEmitter getInterceptionDisabled = new GetInterceptionDisabled(parameters);
+            ISurroundMethodBody surroundMethodBody = new SurroundMethodBody(parameters);
+            IInstructionEmitter getClassMethodReplacementProvider = new GetClassMethodReplacementProvider(parameters);
+            IInstructionEmitter addMethodReplacement = new AddMethodReplacementImplementation(parameters);
+            
+            var rewriter = new InterceptAndSurroundMethodBody(emitter, getInterceptionDisabled, surroundMethodBody, getClassMethodReplacementProvider, addMethodReplacement, parameters);
 
             // Determine whether or not the method should be intercepted
             rewriter.Rewrite(method, IL, oldInstructions);
