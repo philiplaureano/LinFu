@@ -55,13 +55,14 @@ namespace LinFu.AOP.Cecil
             var classMethodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
 
             var parameters = new MethodBodyRewriterParameters(IL, oldInstructions, interceptionDisabled, invocationInfo, returnValue, aroundInvokeProvider, methodReplacementProvider, classMethodReplacementProvider);
-
             var emitter = new InvocationInfoEmitter();
-            IInstructionEmitter getInterceptionDisabled = new GetInterceptionDisabled(parameters);
+
+            IInstructionEmitter getMethodReplacementProvider = new GetMethodReplacementProvider(method, methodReplacementProvider);                       
+            IInstructionEmitter getInterceptionDisabled = new GetInterceptionDisabled(parameters);            
             ISurroundMethodBody surroundMethodBody = new SurroundMethodBody(parameters);
             IInstructionEmitter getClassMethodReplacementProvider = new GetClassMethodReplacementProvider(parameters);
             IInstructionEmitter addMethodReplacement = new AddMethodReplacementImplementation(parameters);
-            IInstructionEmitter getMethodReplacementProvider = new GetMethodReplacementProvider(method, methodReplacementProvider);
+            
             var rewriter = new InterceptAndSurroundMethodBody(emitter, getInterceptionDisabled, surroundMethodBody, getMethodReplacementProvider, getClassMethodReplacementProvider, addMethodReplacement, parameters);
 
             // Determine whether or not the method should be intercepted
