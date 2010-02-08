@@ -39,11 +39,19 @@ namespace LinFu.AOP.Cecil
                 return;
             }
 
+            var skipLabel = IL.Create(OpCodes.Nop);
+
             // var interceptionDisabled = this.IsInterceptionDisabled;
+            IL.Emit(OpCodes.Ldarg_0);
+            IL.Emit(OpCodes.Isinst, modifiableType);
+            IL.Emit(OpCodes.Brfalse, skipLabel);
+
             IL.Emit(OpCodes.Ldarg_0);
             IL.Emit(OpCodes.Isinst, modifiableType);
             IL.Emit(OpCodes.Callvirt, getInterceptionDisabledMethod);
             IL.Emit(OpCodes.Stloc, _interceptionDisabled);
+
+            IL.Append(skipLabel);
         }
     }
 }

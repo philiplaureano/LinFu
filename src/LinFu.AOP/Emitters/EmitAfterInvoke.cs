@@ -47,7 +47,6 @@ namespace LinFu.AOP.Cecil
             var skipPrint = IL.Create(OpCodes.Nop);
             IL.Emit(OpCodes.Ldloc, surroundingImplementation);
             IL.Emit(OpCodes.Brtrue, skipPrint);
-            IL.EmitWriteLine("The SurroundingImplementation instance is null");
 
             IL.Append(skipPrint);
             IL.Emit(OpCodes.Ldloc, surroundingImplementation);

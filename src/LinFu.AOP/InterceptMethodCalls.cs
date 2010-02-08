@@ -18,6 +18,7 @@ namespace LinFu.AOP.Cecil
 
         private MethodReference _stackCtor;
         private MethodReference _invocationInfoCtor;
+        private VariableDefinition _interceptionDisabled;
 
         #region Method References
         private MethodReference _popMethod;
@@ -50,16 +51,56 @@ namespace LinFu.AOP.Cecil
             _methodCallFilter = methodCallFilter;
         }
 
-        protected override void Replace(Instruction oldInstruction, MethodDefinition hostMethod,
-            CilWorker IL)
-        {            
-            var targetMethod = (MethodReference)oldInstruction.Operand;
+        public override void ImportReferences(ModuleDefinition module)
+        {
+            var types = new[] { typeof(object), 
+                                 typeof(MethodInfo), 
+                                 typeof(StackTrace), 
+                                 typeof(Type[]), 
+                                 typeof(Type[]), 
+                                 typeof(Type), 
+                                 typeof(object[]) };
 
-            Replace(oldInstruction, hostMethod, IL, targetMethod);
+            _invocationInfoCtor = module.ImportConstructor<InvocationInfo>(types);
+            _stackCtor = module.ImportConstructor<Stack<object>>(new Type[0]);
+
+            _pushMethod = module.ImportMethod<Stack<object>>("Push");
+            _popMethod = module.ImportMethod<Stack<object>>("Pop");
+            _toArray = module.ImportMethod<Stack<object>>("ToArray");
+            _getProvider = module.ImportMethod<IMethodReplacementHost>("get_MethodReplacementProvider");
+            _getStaticProvider = module.ImportMethod("GetProvider", typeof(MethodReplacementProviderRegistry));
+
+            _canReplace = module.ImportMethod<IMethodReplacementProvider>("CanReplace");
+            _getReplacement = module.ImportMethod<IMethodReplacementProvider>("GetMethodReplacement");
+            _hostInterfaceType = module.ImportType<IMethodReplacementHost>();
+            _intercept = module.ImportMethod<IInterceptor>("Intercept");
         }
 
-        private void Replace(Instruction oldInstruction, MethodDefinition hostMethod, CilWorker IL, MethodReference targetMethod)
+        public override void AddLocals(MethodDefinition hostMethod)
         {
+            var body = hostMethod.Body;
+            body.InitLocals = true;
+
+            _currentArguments = hostMethod.AddLocal<Stack<object>>("__arguments");
+            _currentArgument = hostMethod.AddLocal<object>("__currentArgument");
+            _parameterTypes = hostMethod.AddLocal<Type[]>("__parameterTypes");
+            _typeArguments = hostMethod.AddLocal<Type[]>("__typeArguments");
+            _invocationInfo = hostMethod.AddLocal<IInvocationInfo>("___invocationInfo");
+
+            _target = hostMethod.AddLocal<object>("__target");
+            _replacement = hostMethod.AddLocal<IInterceptor>("__interceptor");
+            _canReplaceFlag = hostMethod.AddLocal<bool>("__canReplace");
+
+            _staticProvider = hostMethod.AddLocal<IMethodReplacementProvider>("__staticProvider");
+            _instanceProvider = hostMethod.AddLocal<IMethodReplacementProvider>("__instanceProvider");
+            _interceptionDisabled = hostMethod.AddLocal<bool>();
+        }
+
+        protected override void Replace(Instruction oldInstruction, MethodDefinition hostMethod,
+            CilWorker IL)
+        {
+            var targetMethod = (MethodReference)oldInstruction.Operand;
+
             var callOriginalMethod = IL.Create(OpCodes.Nop);
             var returnType = targetMethod.ReturnType.ReturnType;
             var endLabel = IL.Create(OpCodes.Nop);
@@ -71,25 +112,21 @@ namespace LinFu.AOP.Cecil
 
             SaveInvocationInfo(IL, targetMethod, module, returnType);
 
+            var getInterceptionDisabled = new GetInterceptionDisabled(hostMethod, _interceptionDisabled);
+            getInterceptionDisabled.Emit(IL);
+
             // Use the MethodReplacementProvider attached to the
             // current host instance
+            Replace(IL, oldInstruction, targetMethod, hostMethod, endLabel, callOriginalMethod);
+            IL.Append(endLabel);
+        }
+
+        private void Replace(CilWorker IL, Instruction oldInstruction, MethodReference targetMethod, MethodDefinition hostMethod, Instruction endLabel, Instruction callOriginalMethod)
+        {
+            var returnType = targetMethod.ReturnType.ReturnType;
+            var module = hostMethod.DeclaringType.Module;
             if (!hostMethod.IsStatic)
-            {
-                var skipInstanceProvider = IL.Create(OpCodes.Nop);
-
-                IL.Emit(OpCodes.Ldarg_0);
-                IL.Emit(OpCodes.Isinst, _hostInterfaceType);
-                IL.Emit(OpCodes.Brfalse, skipInstanceProvider);
-                IL.Emit(OpCodes.Ldarg_0);
-                IL.Emit(OpCodes.Isinst, _hostInterfaceType);
-                IL.Emit(OpCodes.Callvirt, _getProvider);
-                IL.Emit(OpCodes.Stloc, _instanceProvider);
-
-                IL.Emit(OpCodes.Ldloc, _instanceProvider);
-                IL.Emit(OpCodes.Brtrue, skipInstanceProvider);
-
-                IL.Append(skipInstanceProvider);
-            }
+                GetInstanceProvider(IL);
 
             var pushInstance = hostMethod.HasThis ? IL.Create(OpCodes.Ldarg_0) : IL.Create(OpCodes.Ldnull);
 
@@ -151,6 +188,35 @@ namespace LinFu.AOP.Cecil
             // cannot be found
 
             // Push the target instance
+            ReconstructMethodArguments(IL, targetMethod);
+
+            // Mark the CallOriginalMethod instruction label
+            IL.Append(callOriginalMethod);
+
+            // Call the original method
+            IL.Append(oldInstruction);
+        }
+
+        private void GetInstanceProvider(CilWorker IL)
+        {
+            var skipInstanceProvider = IL.Create(OpCodes.Nop);
+
+            IL.Emit(OpCodes.Ldarg_0);
+            IL.Emit(OpCodes.Isinst, _hostInterfaceType);
+            IL.Emit(OpCodes.Brfalse, skipInstanceProvider);
+            IL.Emit(OpCodes.Ldarg_0);
+            IL.Emit(OpCodes.Isinst, _hostInterfaceType);
+            IL.Emit(OpCodes.Callvirt, _getProvider);
+            IL.Emit(OpCodes.Stloc, _instanceProvider);
+
+            IL.Emit(OpCodes.Ldloc, _instanceProvider);
+            IL.Emit(OpCodes.Brtrue, skipInstanceProvider);
+
+            IL.Append(skipInstanceProvider);
+        }
+
+        private void ReconstructMethodArguments(CilWorker IL, MethodReference targetMethod)
+        {
             if (targetMethod.HasThis)
                 IL.Emit(OpCodes.Ldloc, _target);
 
@@ -161,13 +227,6 @@ namespace LinFu.AOP.Cecil
                 IL.Emit(OpCodes.Callvirt, _popMethod);
                 IL.Emit(OpCodes.Unbox_Any, param.ParameterType);
             }
-
-            // Mark the CallOriginalMethod instruction label
-            IL.Append(callOriginalMethod);
-
-            // Call the original method
-            IL.Append(oldInstruction);
-            IL.Append(endLabel);
         }
 
         private void SaveInvocationInfo(CilWorker IL, MethodReference targetMethod, ModuleDefinition module, TypeReference returnType)
@@ -274,7 +333,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Ldloc, _invocationInfo);
             IL.Emit(OpCodes.Callvirt, _getReplacement);
             IL.Emit(OpCodes.Stloc, _replacement);
-        }       
+        }
 
         protected override bool ShouldReplace(Instruction oldInstruction, MethodDefinition hostMethod)
         {
@@ -285,50 +344,6 @@ namespace LinFu.AOP.Cecil
 
             var targetMethod = (MethodReference)oldInstruction.Operand;
             return _hostMethodFilter(hostMethod) && _methodCallFilter(targetMethod);
-        }
-
-        public override void ImportReferences(ModuleDefinition module)
-        {
-            var types = new[] { typeof(object), 
-                                 typeof(MethodInfo), 
-                                 typeof(StackTrace), 
-                                 typeof(Type[]), 
-                                 typeof(Type[]), 
-                                 typeof(Type), 
-                                 typeof(object[]) };
-
-            _invocationInfoCtor = module.ImportConstructor<InvocationInfo>(types);
-            _stackCtor = module.ImportConstructor<Stack<object>>(new Type[0]);
-
-            _pushMethod = module.ImportMethod<Stack<object>>("Push");
-            _popMethod = module.ImportMethod<Stack<object>>("Pop");
-            _toArray = module.ImportMethod<Stack<object>>("ToArray");
-            _getProvider = module.ImportMethod<IMethodReplacementHost>("get_MethodReplacementProvider");
-            _getStaticProvider = module.ImportMethod("GetProvider", typeof(MethodReplacementProviderRegistry));
-
-            _canReplace = module.ImportMethod<IMethodReplacementProvider>("CanReplace");
-            _getReplacement = module.ImportMethod<IMethodReplacementProvider>("GetMethodReplacement");
-            _hostInterfaceType = module.ImportType<IMethodReplacementHost>();
-            _intercept = module.ImportMethod<IInterceptor>("Intercept");
-        }
-
-        public override void AddLocals(MethodDefinition hostMethod)
-        {
-            var body = hostMethod.Body;
-            body.InitLocals = true;
-
-            _currentArguments = hostMethod.AddLocal<Stack<object>>("__arguments");
-            _currentArgument = hostMethod.AddLocal<object>("__currentArgument");
-            _parameterTypes = hostMethod.AddLocal<Type[]>("__parameterTypes");
-            _typeArguments = hostMethod.AddLocal<Type[]>("__typeArguments");
-            _invocationInfo = hostMethod.AddLocal<IInvocationInfo>("___invocationInfo");
-
-            _target = hostMethod.AddLocal<object>("__target");
-            _replacement = hostMethod.AddLocal<IInterceptor>("__interceptor");
-            _canReplaceFlag = hostMethod.AddLocal<bool>("__canReplace");
-
-            _staticProvider = hostMethod.AddLocal<IMethodReplacementProvider>("__staticProvider");
-            _instanceProvider = hostMethod.AddLocal<IMethodReplacementProvider>("__instanceProvider");
-        }
+        }        
     }
 }
