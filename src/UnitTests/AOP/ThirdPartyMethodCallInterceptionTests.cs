@@ -18,26 +18,30 @@ namespace LinFu.UnitTests.AOP
 {
     [TestFixture]
     public class ThirdPartyMethodCallInterceptionTests : BaseTestFixture
-    {
+    {       
+        [Test]
+        public void ShouldCallStaticAroundInvokeProvider()
+        {
+            Type modifiedTargetType = GetModifiedTargetType();
+            var instance = Activator.CreateInstance(modifiedTargetType);
+            
+
+            var aroundInvoke = new SampleAroundInvoke();
+            var provider = new SampleAroundInvokeProvider(aroundInvoke);
+            AroundInvokeRegistry.AddProvider(provider);
+
+            MethodInfo targetMethod = modifiedTargetType.GetMethod("DoSomething");
+
+            targetMethod.Invoke(instance, null);
+
+            Assert.IsTrue(aroundInvoke.BeforeInvokeWasCalled);
+            Assert.IsTrue(aroundInvoke.AfterInvokeWasCalled);
+        }
+
         [Test]
         public void ShouldImplementIMethodReplacementHostOnTargetType()
         {
-            var assembly = AssemblyFactory.GetAssembly("SampleLibrary.dll");
-            var module = assembly.MainModule;
-
-            var typeName = "SampleClassWithThirdPartyMethodCall";
-            var targetType = (from TypeDefinition t in module.Types
-                              where t.Name == typeName
-                              select t).First();
-
-            // Intercept all calls to the System.Console.WriteLine method from the DoSomething method
-            targetType.InterceptMethodCalls(t => t.Name.Contains(typeName), m => m.DeclaringType.Name.Contains(typeName) && m.Name == "DoSomething",
-                methodCall => methodCall.DeclaringType.Name == "Console" && methodCall.Name == "WriteLine");
-
-            var modifiedAssembly = assembly.ToAssembly();
-            var modifiedTargetType = (from t in modifiedAssembly.GetTypes()
-                                      where t.Name == typeName
-                                      select t).First();
+            Type modifiedTargetType = GetModifiedTargetType();
 
             var instance = Activator.CreateInstance(modifiedTargetType);
             Assert.IsNotNull(instance);
@@ -62,6 +66,26 @@ namespace LinFu.UnitTests.AOP
             }
 
             Assert.IsTrue(interceptor.HasBeenCalled);
+        }
+
+        private Type GetModifiedTargetType()
+        {
+            var assembly = AssemblyFactory.GetAssembly("SampleLibrary.dll");
+            var module = assembly.MainModule;
+
+            var typeName = "SampleClassWithThirdPartyMethodCall";
+            var targetType = (from TypeDefinition t in module.Types
+                              where t.Name == typeName
+                              select t).First();
+
+            // Intercept all calls to the System.Console.WriteLine method from the DoSomething method
+            targetType.InterceptMethodCalls(t => t.Name.Contains(typeName), m => m.DeclaringType.Name.Contains(typeName) && m.Name == "DoSomething",
+                                            methodCall => methodCall.DeclaringType.Name == "Console" && methodCall.Name == "WriteLine");
+
+            var modifiedAssembly = assembly.ToAssembly();
+            return (from t in modifiedAssembly.GetTypes()
+                    where t.Name == typeName
+                    select t).First();
         }
     }
 }

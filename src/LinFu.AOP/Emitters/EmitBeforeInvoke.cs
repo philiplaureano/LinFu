@@ -37,7 +37,6 @@ namespace LinFu.AOP.Cecil
             // classAroundInvoke.BeforeInvoke(info);
             var skipInvoke = IL.Create(OpCodes.Nop);
 
-            IL.EmitWriteLineIfNull("BeforeInvoke: SurroundingClassImplementation is null", _surroundingClassImplementation);
             IL.Emit(OpCodes.Ldloc, _surroundingClassImplementation);            
             IL.Emit(OpCodes.Brfalse, skipInvoke);
 

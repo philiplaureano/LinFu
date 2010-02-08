@@ -142,6 +142,7 @@ namespace LinFu.AOP.Cecil
             if (!hostMethod.IsStatic)
                 GetInstanceProvider(IL);
 
+            
             var pushInstance = hostMethod.HasThis ? IL.Create(OpCodes.Ldarg_0) : IL.Create(OpCodes.Ldnull);
 
             // If all else fails, use the static method replacement provider
@@ -155,6 +156,7 @@ namespace LinFu.AOP.Cecil
             var callReplacement = IL.Create(OpCodes.Nop);
             var useStaticProvider = IL.Create(OpCodes.Nop);
 
+            
             #region Use the instance method replacement provider
 
             IL.Emit(OpCodes.Ldloc, _instanceProvider);
@@ -167,17 +169,17 @@ namespace LinFu.AOP.Cecil
 
             EmitGetMethodReplacement(IL, hostMethod, _instanceProvider);
 
+            
             IL.Emit(OpCodes.Ldloc, _replacement);
             IL.Emit(OpCodes.Brtrue, callReplacement);
 
             #endregion
 
             IL.Append(useStaticProvider);
-
             // if (!MethodReplacementProvider.CanReplace(info))
             //      CallOriginalMethod();
             EmitCanReplace(IL, hostMethod, _staticProvider);
-
+            
             IL.Emit(OpCodes.Ldloc, _canReplaceFlag);
             IL.Emit(OpCodes.Brfalse, restoreArgumentStack);
 
@@ -197,7 +199,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Br, endLabel);
 
             IL.Append(restoreArgumentStack);
-
+            
             // Reconstruct the method arguments if the interceptor
             // cannot be found
 
@@ -209,6 +211,8 @@ namespace LinFu.AOP.Cecil
 
             // Call the original method
             IL.Append(oldInstruction);
+
+            
         }
 
         private void GetInstanceProvider(CilWorker IL)
@@ -325,8 +329,13 @@ namespace LinFu.AOP.Cecil
 
         private void EmitCanReplace(CilWorker IL, IMethodSignature hostMethod, VariableDefinition provider)
         {
-            IL.Emit(OpCodes.Ldloc, provider);
+            var skipGetProvider = IL.Create(OpCodes.Nop);
 
+            IL.Emit(OpCodes.Ldloc, provider);
+            IL.Emit(OpCodes.Brfalse, skipGetProvider);
+
+            IL.Emit(OpCodes.Ldloc, provider);
+            
             // Push the host instance
             var pushInstance = hostMethod.HasThis ? IL.Create(OpCodes.Ldarg_0) : IL.Create(OpCodes.Ldnull);
             IL.Append(pushInstance);
@@ -334,6 +343,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Callvirt, _canReplace);
 
             IL.Emit(OpCodes.Stloc, _canReplaceFlag);
+            IL.Append(skipGetProvider);
         }
 
         private void EmitGetMethodReplacement(CilWorker IL, IMethodSignature hostMethod, VariableDefinition provider)
