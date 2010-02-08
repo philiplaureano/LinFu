@@ -61,8 +61,8 @@ namespace LinFu.AOP.Cecil
             ISurroundMethodBody surroundMethodBody = new SurroundMethodBody(parameters);
             IInstructionEmitter getClassMethodReplacementProvider = new GetClassMethodReplacementProvider(parameters);
             IInstructionEmitter addMethodReplacement = new AddMethodReplacementImplementation(parameters);
-            
-            var rewriter = new InterceptAndSurroundMethodBody(emitter, getInterceptionDisabled, surroundMethodBody, getClassMethodReplacementProvider, addMethodReplacement, parameters);
+            IInstructionEmitter getMethodReplacementProvider = new GetMethodReplacementProvider(method, methodReplacementProvider);
+            var rewriter = new InterceptAndSurroundMethodBody(emitter, getInterceptionDisabled, surroundMethodBody, getMethodReplacementProvider, getClassMethodReplacementProvider, addMethodReplacement, parameters);
 
             // Determine whether or not the method should be intercepted
             rewriter.Rewrite(method, IL, oldInstructions);

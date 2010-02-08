@@ -13,15 +13,16 @@ namespace LinFu.AOP.Cecil
     public class GetMethodReplacementProvider : IInstructionEmitter
     {
         private readonly VariableDefinition _methodReplacementProvider;
-
-        public GetMethodReplacementProvider(VariableDefinition methodReplacementProvider)
+        private readonly MethodDefinition _hostMethod;
+        public GetMethodReplacementProvider(MethodDefinition hostMethod, VariableDefinition methodReplacementProvider)
         {
+            _hostMethod = hostMethod;
             _methodReplacementProvider = methodReplacementProvider;
         }
 
         public void Emit(CilWorker IL)
         {
-            var method = IL.GetMethod();
+            var method = _hostMethod;
             var declaringType = method.DeclaringType;
             var module = declaringType.Module;
 

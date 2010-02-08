@@ -44,6 +44,9 @@ namespace LinFu.AOP.Cecil
         #endregion
 
         private TypeReference _hostInterfaceType;
+        private VariableDefinition _methodReplacementProvider;
+        private VariableDefinition _aroundInvokeProvider;
+        private VariableDefinition _returnValue;
 
         public InterceptMethodCalls(Func<MethodReference, bool> hostMethodFilter, Func<MethodReference, bool> methodCallFilter)
         {
@@ -73,7 +76,7 @@ namespace LinFu.AOP.Cecil
             _canReplace = module.ImportMethod<IMethodReplacementProvider>("CanReplace");
             _getReplacement = module.ImportMethod<IMethodReplacementProvider>("GetMethodReplacement");
             _hostInterfaceType = module.ImportType<IMethodReplacementHost>();
-            _intercept = module.ImportMethod<IInterceptor>("Intercept");
+            _intercept = module.ImportMethod<IInterceptor>("Intercept");            
         }
 
         public override void AddLocals(MethodDefinition hostMethod)
@@ -94,6 +97,10 @@ namespace LinFu.AOP.Cecil
             _staticProvider = hostMethod.AddLocal<IMethodReplacementProvider>("__staticProvider");
             _instanceProvider = hostMethod.AddLocal<IMethodReplacementProvider>("__instanceProvider");
             _interceptionDisabled = hostMethod.AddLocal<bool>();
+
+            _methodReplacementProvider = hostMethod.AddLocal<IMethodReplacementProvider>();
+            _aroundInvokeProvider = hostMethod.AddLocal<IAroundInvokeProvider>();
+            _returnValue = hostMethod.AddLocal<object>();
         }
 
         protected override void Replace(Instruction oldInstruction, MethodDefinition hostMethod,
@@ -115,9 +122,16 @@ namespace LinFu.AOP.Cecil
             var getInterceptionDisabled = new GetInterceptionDisabled(hostMethod, _interceptionDisabled);
             getInterceptionDisabled.Emit(IL);
 
+            var surroundMethodBody = new SurroundMethodBody(_methodReplacementProvider, _aroundInvokeProvider,
+                                                            _invocationInfo, _interceptionDisabled, _returnValue);
+
+            surroundMethodBody.AddProlog(IL);
             // Use the MethodReplacementProvider attached to the
             // current host instance
             Replace(IL, oldInstruction, targetMethod, hostMethod, endLabel, callOriginalMethod);
+
+            surroundMethodBody.AddEpilog(IL);
+
             IL.Append(endLabel);
         }
 

@@ -16,29 +16,35 @@ namespace LinFu.AOP.Cecil
         private readonly IInstructionEmitter _getInterceptionDisabled;
         private readonly ISurroundMethodBody _surroundMethodBody;
         private readonly IInstructionEmitter _getClassMethodReplacementProvider;
+        private readonly IInstructionEmitter _getInstanceMethodReplacementProvider;
         private readonly IInstructionEmitter _addMethodReplacement;
         private readonly IMethodBodyRewriterParameters _parameters;
+        private readonly VariableDefinition _interceptionDisabled;
 
         public InterceptAndSurroundMethodBody(IEmitInvocationInfo emitter, 
             IInstructionEmitter getInterceptionDisabled, 
             ISurroundMethodBody surroundMethodBody, 
+            IInstructionEmitter getInstanceMethodReplacementProvider,
             IInstructionEmitter getClassMethodReplacementProvider, 
             IInstructionEmitter addMethodReplacement, 
             IMethodBodyRewriterParameters parameters)
         {
             _getInterceptionDisabled = getInterceptionDisabled;
             _surroundMethodBody = surroundMethodBody;
+            _getInstanceMethodReplacementProvider = getInstanceMethodReplacementProvider;
             _getClassMethodReplacementProvider = getClassMethodReplacementProvider;
             _addMethodReplacement = addMethodReplacement;
             _parameters = parameters;
             _emitter = emitter;
+
+            _interceptionDisabled = parameters.InterceptionDisabled;
         }
 
         public void Rewrite(MethodDefinition method, CilWorker IL,
             IEnumerable<Instruction> oldInstructions)
         {
-            var method1 = _parameters.TargetMethod;
-            var worker = method1.GetILGenerator();
+            var targetMethod = _parameters.TargetMethod;
+            var worker = targetMethod.GetILGenerator();
             var module = worker.GetModule();
             _getInterceptionDisabled.Emit(worker);
 
@@ -47,17 +53,26 @@ namespace LinFu.AOP.Cecil
             worker.Emit(OpCodes.Ldloc, _parameters.InterceptionDisabled);
             worker.Emit(OpCodes.Brtrue, skipInvocationInfo);
 
-            var targetMethod = method1;
-            var interceptedMethod = method1;
+
+            var interceptedMethod = targetMethod;
             _emitter.Emit(targetMethod, interceptedMethod, _parameters.InvocationInfo);
 
-            
+
+            var skipGetReplacementProvider = IL.Create(OpCodes.Nop);
+            // var provider = this.MethodReplacementProvider;
+            //IL.Emit(OpCodes.Ldloc, _interceptionDisabled);
+            //IL.Emit(OpCodes.Brtrue, skipGetReplacementProvider);
+            _getInstanceMethodReplacementProvider.Emit(IL);
             _surroundMethodBody.AddProlog(worker);
+            IL.Append(skipGetReplacementProvider);
+
             worker.Append(skipInvocationInfo);
             
             _getClassMethodReplacementProvider.Emit(worker);
 
-            var returnType = method1.ReturnType.ReturnType;
+            
+
+            var returnType = targetMethod.ReturnType.ReturnType;
             
             _addMethodReplacement.Emit(worker);
 
