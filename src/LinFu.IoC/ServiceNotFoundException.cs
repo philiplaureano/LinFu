@@ -7,6 +7,7 @@ namespace LinFu.IoC
     /// requested from a container and that named container
     /// is unable to find or create that particular service instance.
     /// </summary>
+    [Serializable]
     public class ServiceNotFoundException : Exception
     {
         private readonly Type _serviceType;

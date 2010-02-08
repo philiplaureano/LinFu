@@ -10,6 +10,7 @@ namespace LinFu.IoC.Configuration
     /// The exception thrown when a recursive dependency is detected
     /// inside a <see cref="IServiceContainer"/> instance.
     /// </summary>
+    [Serializable]
     public class RecursiveDependencyException : Exception
     {
         private LinkedList<Type> _typeChain;
