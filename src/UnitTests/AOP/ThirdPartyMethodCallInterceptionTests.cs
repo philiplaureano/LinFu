@@ -23,13 +23,30 @@ namespace LinFu.UnitTests.AOP
         public void ShouldCallStaticAroundInvokeProvider()
         {
             Type modifiedTargetType = GetModifiedTargetType();
-            var instance = Activator.CreateInstance(modifiedTargetType);
-            
-
+            var instance = Activator.CreateInstance(modifiedTargetType);            
             var aroundInvoke = new SampleAroundInvoke();
             var provider = new SampleAroundInvokeProvider(aroundInvoke);
+
             AroundInvokeRegistry.AddProvider(provider);
 
+            MethodInfo targetMethod = modifiedTargetType.GetMethod("DoSomething");
+
+            targetMethod.Invoke(instance, null);
+
+            Assert.IsTrue(aroundInvoke.BeforeInvokeWasCalled);
+            Assert.IsTrue(aroundInvoke.AfterInvokeWasCalled);
+        }
+
+        [Test]
+        public void ShouldCallInstanceAroundInvokeProvider()
+        {
+            Type modifiedTargetType = GetModifiedTargetType();
+            var instance = Activator.CreateInstance(modifiedTargetType);
+            var aroundInvoke = new SampleAroundInvoke();
+            var provider = new SampleAroundInvokeProvider(aroundInvoke);
+
+            IModifiableType modified = (IModifiableType) instance;
+            modified.AroundInvokeProvider = provider;
             MethodInfo targetMethod = modifiedTargetType.GetMethod("DoSomething");
 
             targetMethod.Invoke(instance, null);
