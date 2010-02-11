@@ -62,7 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AOP\CecilTests.cs" />
+    <Compile Include="AOP\BootStrappingTests.cs" />
     <Compile Include="AOP\FieldInterceptionTests.cs" />
     <Compile Include="AOP\MethodBodyInterceptionTests.cs" />
     <Compile Include="AOP\NewOperatorInterceptionTests.cs" />

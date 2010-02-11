@@ -13,6 +13,7 @@ namespace LinFu.AOP.Interfaces
     {
         private static readonly object _lock = new object();
         private static ITypeActivator _activator;
+        private static readonly BootStrapRegistry BootStrap = BootStrapRegistry.Instance;
 
         /// <summary>
         /// Obtains an activator for the given <paramref name="context"/>.

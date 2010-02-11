@@ -12,6 +12,7 @@ namespace LinFu.AOP.Interfaces
     {
         private static readonly object _lock = new object();
         private static IFieldInterceptor _interceptor;
+        private static readonly BootStrapRegistry BootStrap = BootStrapRegistry.Instance;
 
         /// <summary>
         /// Gets current the <see cref="IFieldInterceptionContext"/> associated with the <see cref="FieldInterceptorRegistry"/>.

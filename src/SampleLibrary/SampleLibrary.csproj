@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="AOP\SampleAroundInvoke.cs" />
     <Compile Include="AOP\SampleAroundInvokeProvider.cs" />
+    <Compile Include="AOP\SampleBootstrapComponent.cs" />
     <Compile Include="AOP\SampleClassWithByRefMethod.cs" />
     <Compile Include="AOP\SampleClassWithMethodHavingOutParameters.cs" />
     <Compile Include="AOP\SampleClassWithNewInstanceCall.cs" />

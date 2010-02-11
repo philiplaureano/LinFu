@@ -53,6 +53,8 @@
     <Compile Include="ActivationContext.cs" />
     <Compile Include="ActivatorExtensions.cs" />
     <Compile Include="AroundInvokeRegistry.cs" />
+    <Compile Include="BootstrapLoader.cs" />
+    <Compile Include="BootStrapRegistry.cs" />
     <Compile Include="CompositeAroundInvoke.cs" />
     <Compile Include="FieldInterceptionContext.cs" />
     <Compile Include="FieldInterceptorRegistry.cs" />
@@ -63,6 +65,7 @@
     <Compile Include="IAroundInvoke.cs" />
     <Compile Include="IAroundInvokeProvider.cs" />
     <Compile Include="IBeforeInvoke.cs" />
+    <Compile Include="IBootStrappedComponent.cs" />
     <Compile Include="IFieldInterceptionContext.cs" />
     <Compile Include="IFieldInterceptionHost.cs" />
     <Compile Include="IFieldInterceptor.cs" />
@@ -77,6 +80,12 @@
     <Compile Include="TypeActivationContext.cs" />
     <Compile Include="TypeActivatorRegistry.cs" />
     <Compile Include="MethodReplacementProviderRegistry.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LinFu.Reflection\LinFu.Reflection.csproj">
+      <Project>{22EEB00F-F471-486C-A6AD-60F088821C78}</Project>
+      <Name>LinFu.Reflection</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

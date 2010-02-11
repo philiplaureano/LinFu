@@ -9,6 +9,7 @@ namespace LinFu.AOP.Interfaces
     {
         private static readonly List<IAroundInvokeProvider> _providers = new List<IAroundInvokeProvider>();
         private static readonly object _lock = new object();
+        private static readonly BootStrapRegistry BootStrap = BootStrapRegistry.Instance;
 
         public static IAroundInvoke GetSurroundingImplementation(IInvocationInfo context)
         {

@@ -12,6 +12,7 @@ namespace LinFu.AOP.Interfaces
     {
         private static readonly object _lock = new object();
         private static IMethodReplacementProvider _provider;
+        private static readonly BootStrapRegistry BootStrap = BootStrapRegistry.Instance;
 
         /// <summary>
         /// Returns the provider that is currently attached to the registry.
