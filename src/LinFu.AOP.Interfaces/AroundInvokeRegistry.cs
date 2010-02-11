@@ -31,5 +31,13 @@ namespace LinFu.AOP.Interfaces
                 _providers.Add(provider);
             }
         }
+
+        public static void Clear()
+        {
+            lock(_lock)
+            {
+                _providers.Clear();
+            }
+        }
     }
 }

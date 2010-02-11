@@ -130,9 +130,9 @@ namespace LinFu.AOP.Cecil
             // current host instance
             Replace(IL, oldInstruction, targetMethod, hostMethod, endLabel, callOriginalMethod);
 
-            surroundMethodBody.AddEpilog(IL);
-
             IL.Append(endLabel);
+
+            surroundMethodBody.AddEpilog(IL);            
         }
 
         private void Replace(CilWorker IL, Instruction oldInstruction, MethodReference targetMethod, MethodDefinition hostMethod, Instruction endLabel, Instruction callOriginalMethod)
