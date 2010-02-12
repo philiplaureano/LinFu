@@ -67,7 +67,6 @@
     <Compile Include="Interfaces\ILoaderPlugin.cs" />
     <Compile Include="Interfaces\ITypeExtractor.cs" />
     <Compile Include="ListLoader.cs" />
-    <Compile Include="ListLoaderExtensions.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="LoaderPluginAttribute.cs" />
     <Compile Include="PluginLoader.cs" />

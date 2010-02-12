@@ -5,12 +5,12 @@ using System.Text;
 
 namespace LinFu.Reflection
 {
-    public class ListLoader<T> : IActionLoader<IList<T>, Type>
+    public class CollectionLoader<T> : IActionLoader<ICollection<T>, Type>
         where T : class
     {
-        public IEnumerable<Action<IList<T>>> Load(Type input)
+        public IEnumerable<Action<ICollection<T>>> Load(Type input)
         {
-            var actionList = new List<Action<IList<T>>>();
+            var actionList = new List<Action<ICollection<T>>>();
 
             var component = (T)Activator.CreateInstance(input);
             actionList.Add(items => items.Add(component));

@@ -36,7 +36,7 @@ namespace LinFu.AOP.Interfaces
         {
             lock (_components)
             {
-                _components.LoadFrom(AppDomain.CurrentDomain.BaseDirectory);
+                _components.LoadFrom(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
                 foreach(var component in _components)
                 {
                     component.Initialize();
