@@ -34,16 +34,9 @@ namespace LinFu.AOP.Interfaces
         /// </summary>
         private void Initialize()
         {
-            var loader = new Loader<IList<IBootStrappedComponent>>();
-            var targetLoader = new AssemblyTargetLoader<IList<IBootStrappedComponent>>();
-            targetLoader.TypeLoaders.Add(new BootstrapLoader());
-            loader.FileLoaders.Add(targetLoader);
-                        
-            loader.LoadDirectory(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
-
             lock (_components)
             {
-                loader.LoadInto(_components);
+                _components.LoadFrom(AppDomain.CurrentDomain.BaseDirectory);
                 foreach(var component in _components)
                 {
                     component.Initialize();
