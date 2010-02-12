@@ -11,6 +11,33 @@ namespace LinFu.AOP.Cecil
     /// </summary>
     public static class MethodBodyInterceptionExtensions
     {
+        public static void InterceptAllMethodBodies(this IReflectionStructureVisitable target)
+        {
+            target.InterceptMethodBody(m => true);
+        }
+
+        public static void InterceptAllMethodBodies(this IReflectionVisitable target)
+        {
+            target.InterceptMethodBody(m => true);
+        }
+
+        public static void InterceptMethodBody(this IReflectionStructureVisitable target, Func<MethodReference, bool> methodFilter)
+        {
+            Func<TypeReference, bool> typeFilter = type =>
+            {
+                var actualType = type.Resolve();
+                if (actualType.IsValueType || actualType.IsInterface)
+                    return false;
+
+                return actualType.IsClass;
+            };
+
+            target.Accept(new ImplementModifiableType(typeFilter));
+
+            var interceptMethodBody = new InterceptMethodBody(methodFilter);
+            target.WeaveWith(interceptMethodBody, methodFilter);
+        }
+
         public static void InterceptMethodBody(this IReflectionVisitable target, Func<MethodReference, bool> methodFilter)
         {
             Func<TypeReference, bool> typeFilter = type =>

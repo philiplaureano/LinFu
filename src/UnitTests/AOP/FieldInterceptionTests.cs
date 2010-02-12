@@ -48,7 +48,7 @@ namespace LinFu.UnitTests.AOP
                 if (!type.FullName.Contains("SampleClassWithReadOnlyField"))
                     continue;
 
-                type.InterceptFields(m => true);                
+                type.InterceptFields(m => true, f => true);                
             }
 
             var loadedAssembly = myLibrary.ToAssembly();

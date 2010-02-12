@@ -35,20 +35,6 @@ namespace LinFu.AOP.Cecil
             {
                 weaver.Weave(item);
             }
-        }
-
-        /// <summary>
-        /// Adds field interception support to the target type.
-        /// </summary>
-        /// <param name="targetType">The type that will be modified.</param>
-        /// <param name="methodFilter">The filter that determines which methods on the target type will be modified to support field interception.</param>
-        public static void InterceptFields(this TypeDefinition targetType, Func<MethodReference, bool> methodFilter)
-        {
-            var typeWeaver = new ImplementFieldInterceptionHostWeaver(t => true);
-            var fieldWeaver = new InterceptFieldAccess();
-
-            targetType.WeaveWith(fieldWeaver, methodFilter);
-            targetType.Accept(typeWeaver);
-        }
+        }        
     }
 }

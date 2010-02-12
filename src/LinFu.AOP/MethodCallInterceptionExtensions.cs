@@ -13,6 +13,54 @@ namespace LinFu.AOP.Cecil
     public static class MethodCallInterceptionExtensions
     {
         /// <summary>
+        /// Modifies the current <paramref name="target"/> to support third-party method call interception for all method calls made inside the target.
+        /// </summary>
+        /// <param name="target">The target object.</param>
+        public static void InterceptAllMethodCalls(this IReflectionStructureVisitable target)
+        {
+            Func<TypeReference, bool> typeFilter = type =>
+            {
+                var actualType = type.Resolve();
+                return !actualType.IsValueType && !actualType.IsInterface;
+            };
+            
+            Func<MethodReference, bool> hostMethodFilter = method =>
+                                                               {
+                                                                   var actualMethod = method.Resolve();
+                                                                   return actualMethod.HasBody;
+
+                                                               };
+
+            Func<MethodReference, bool> methodCallFilter = m => true;
+
+            InterceptMethodCalls(target, typeFilter, hostMethodFilter, methodCallFilter);
+        }
+
+        /// <summary>
+        /// Modifies the current <paramref name="target"/> to support third-party method call interception for all method calls made inside the target.
+        /// </summary>
+        /// <param name="target">The target object.</param>
+        public static void InterceptAllMethodCalls(this IReflectionVisitable target)
+        {
+            Func<TypeReference, bool> typeFilter = type =>
+            {
+                var actualType = type.Resolve();
+                return !actualType.IsValueType && !actualType.IsInterface;
+            };
+
+            Func<MethodReference, bool> hostMethodFilter = method =>
+            {
+                var actualMethod = method.Resolve();
+                return actualMethod.HasBody;
+
+            };
+
+            Func<MethodReference, bool> methodCallFilter = m => true;
+
+            InterceptMethodCalls(target, typeFilter, hostMethodFilter, methodCallFilter);
+        }
+
+        /// <summary>
         /// Modifies the current <paramref name="target"/> to support third-party method call interception.
         /// </summary>
         /// <param name="target">The target object.</param>

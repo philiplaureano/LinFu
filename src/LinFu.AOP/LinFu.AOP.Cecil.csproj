@@ -71,6 +71,7 @@
     <Compile Include="Emitters\GetAroundInvokeProvider.cs" />
     <Compile Include="Emitters\GetInterceptionDisabled.cs" />
     <Compile Include="Emitters\GetClassMethodReplacementProvider.cs" />
+    <Compile Include="FieldInterceptionExtensions.cs" />
     <Compile Include="Interfaces\IMethodBodyRewriterParameters.cs" />
     <Compile Include="ImplementActivatorHostWeaver.cs" />
     <Compile Include="ImplementFieldInterceptionHostWeaver.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="Interfaces\IModuleWeaver.cs" />
     <Compile Include="Interfaces\INewObjectWeaver.cs" />
     <Compile Include="Interfaces\IPdbLoader.cs" />
+    <Compile Include="Interfaces\ITypeFilter.cs" />
     <Compile Include="Interfaces\ITypeWeaver.cs" />
     <Compile Include="Interfaces\IWeaver.cs" />
     <Compile Include="InvocationInfo.cs" />
