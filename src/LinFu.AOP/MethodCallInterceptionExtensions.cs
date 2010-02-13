@@ -23,17 +23,21 @@ namespace LinFu.AOP.Cecil
                 var actualType = type.Resolve();
                 return !actualType.IsValueType && !actualType.IsInterface;
             };
-            
-            Func<MethodReference, bool> hostMethodFilter = method =>
-                                                               {
-                                                                   var actualMethod = method.Resolve();
-                                                                   return actualMethod.HasBody;
 
-                                                               };
-
+            var hostMethodFilter = GetHostMethodFilter();
             Func<MethodReference, bool> methodCallFilter = m => true;
 
             InterceptMethodCalls(target, typeFilter, hostMethodFilter, methodCallFilter);
+        }
+
+        private static Func<MethodReference, bool> GetHostMethodFilter()
+        {
+            return method =>
+                       {
+                           var actualMethod = method.Resolve();
+                           var methodName = actualMethod.Name;
+                           return actualMethod.HasBody && methodName != ".ctor" && methodName != ".cctor";
+                       };
         }
 
         /// <summary>
@@ -48,13 +52,7 @@ namespace LinFu.AOP.Cecil
                 return !actualType.IsValueType && !actualType.IsInterface;
             };
 
-            Func<MethodReference, bool> hostMethodFilter = method =>
-            {
-                var actualMethod = method.Resolve();
-                return actualMethod.HasBody;
-
-            };
-
+            var hostMethodFilter = GetHostMethodFilter();
             Func<MethodReference, bool> methodCallFilter = m => true;
 
             InterceptMethodCalls(target, typeFilter, hostMethodFilter, methodCallFilter);
@@ -71,7 +69,7 @@ namespace LinFu.AOP.Cecil
         {
             var rewriter = new InterceptMethodCalls(hostMethodFilter, methodCallFilter);
             target.Accept(new ImplementModifiableType(typeFilter));
-            target.WeaveWith(rewriter, hostMethodFilter);            
+            target.WeaveWith(rewriter, hostMethodFilter);
         }
 
         /// <summary>

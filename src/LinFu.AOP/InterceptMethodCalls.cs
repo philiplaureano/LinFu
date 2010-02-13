@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
@@ -48,6 +49,9 @@ namespace LinFu.AOP.Cecil
         private VariableDefinition _aroundInvokeProvider;
         private VariableDefinition _returnValue;
 
+        private ModuleDefinition _linfuAopModule;
+        private ModuleDefinition _linfuAopInterfaceModule;
+
         public InterceptMethodCalls(Func<MethodReference, bool> hostMethodFilter, Func<MethodReference, bool> methodCallFilter)
         {
             _hostMethodFilter = hostMethodFilter;
@@ -56,6 +60,15 @@ namespace LinFu.AOP.Cecil
 
         public override void ImportReferences(ModuleDefinition module)
         {
+            // Keep track of the module that contains the ITypeFilter type
+            // so that the InterceptMethodCalls class will skip
+            // trying to intercept types within the LinFu.Aop.Cecil assembly
+            var typeFilterType = module.ImportType<ITypeFilter>();
+            _linfuAopModule = typeFilterType.Module;
+
+            var activatorHostType = module.ImportType<IActivatorHost>();
+            _linfuAopInterfaceModule = activatorHostType.Module;
+
             var types = new[] { typeof(object), 
                                  typeof(MethodInfo), 
                                  typeof(StackTrace), 
@@ -285,10 +298,9 @@ namespace LinFu.AOP.Cecil
             IL.PushMethod(targetMethod, module);
             IL.Emit(OpCodes.Castclass, module.Import(typeof(MethodInfo)));
 
-            // Push the stack trace (Disabled for performance reasons)
-            //IL.PushStackTrace(module);
-            IL.Emit(OpCodes.Ldnull);
-
+            // Push the stack trace
+            PushStackTrace(IL, module);
+            
             var systemType = module.Import(typeof(Type));
 
             // Save the parameter types
@@ -317,6 +329,11 @@ namespace LinFu.AOP.Cecil
 
             IL.Emit(OpCodes.Newobj, _invocationInfoCtor);
             IL.Emit(OpCodes.Stloc, _invocationInfo);
+        }
+
+        private void PushStackTrace(CilWorker IL, ModuleDefinition module)
+        {
+            IL.PushStackTrace(module);
         }
 
         private void EmitInterceptorCall(CilWorker IL)
@@ -366,7 +383,14 @@ namespace LinFu.AOP.Cecil
             if (opCode != OpCodes.Callvirt && opCode != OpCodes.Call)
                 return false;
 
-            var targetMethod = (MethodReference)oldInstruction.Operand;
+            var targetMethod = (MethodReference)oldInstruction.Operand;            
+            var declaringType = targetMethod.DeclaringType;
+            var module = declaringType.Module;
+
+            //// Skip interception for types within the LinFu.AOP.Cecil assembly
+            //if (module == _linfuAopModule || module == _linfuAopInterfaceModule)
+            //    return false;
+            
             return _hostMethodFilter(hostMethod) && _methodCallFilter(targetMethod);
         }        
     }
