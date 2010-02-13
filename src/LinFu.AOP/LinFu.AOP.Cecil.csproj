@@ -95,7 +95,6 @@
     <Compile Include="Interfaces\IModuleWeaver.cs" />
     <Compile Include="Interfaces\INewObjectWeaver.cs" />
     <Compile Include="Interfaces\IPdbLoader.cs" />
-    <Compile Include="Interfaces\ITypeFilter.cs" />
     <Compile Include="Interfaces\ITypeWeaver.cs" />
     <Compile Include="Interfaces\IWeaver.cs" />
     <Compile Include="InvocationInfo.cs" />
@@ -104,6 +103,7 @@
     <Compile Include="Interfaces\IVerifier.cs" />
     <Compile Include="Emitters\InvokeMethodReplacement.cs" />
     <Compile Include="Interfaces\ISurroundMethodBody.cs" />
+    <Compile Include="Interfaces\ITypeFilter.cs" />
     <Compile Include="Loaders\AssemblyLoaderWithPdbSupport.cs" />
     <Compile Include="Loaders\JITWeaver.cs" />
     <Compile Include="Loaders\PdbLoader.cs" />
