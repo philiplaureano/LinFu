@@ -55,7 +55,7 @@ namespace LinFu.AOP.Cecil
             var classMethodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
 
             var parameters = new MethodBodyRewriterParameters(IL, oldInstructions, interceptionDisabled, invocationInfo, returnValue, aroundInvokeProvider, methodReplacementProvider, classMethodReplacementProvider);
-            var emitter = new InvocationInfoEmitter();
+            var emitter = new InvocationInfoEmitter(true);
 
             IInstructionEmitter getMethodReplacementProvider = new GetMethodReplacementProvider(method, methodReplacementProvider);                       
             IInstructionEmitter getInterceptionDisabled = new GetInterceptionDisabled(parameters);            

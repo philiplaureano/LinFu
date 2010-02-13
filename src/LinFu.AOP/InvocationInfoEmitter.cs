@@ -23,6 +23,7 @@ namespace LinFu.AOP.Cecil
     {
         private static readonly ConstructorInfo _invocationInfoConstructor;
         private static readonly MethodInfo _getTypeFromHandle;
+        private readonly bool _pushStackTrace;
         static InvocationInfoEmitter()
         {
             var types = new[] { typeof(object), 
@@ -37,6 +38,23 @@ namespace LinFu.AOP.Cecil
 
             _getTypeFromHandle = typeof(Type).GetMethod("GetTypeFromHandle",
                                                          BindingFlags.Static | BindingFlags.Public);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the InvocationInfoEmitter class.
+        /// </summary>
+        public InvocationInfoEmitter()
+            : this(false)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the InvocationInfoEmitter class.
+        /// </summary>
+        /// <param name="pushStackTrace">Determines whether or not stack trace information will be available at runtime.</param>
+        public InvocationInfoEmitter(bool pushStackTrace)
+        {
+            _pushStackTrace = pushStackTrace;
         }
 
         /// <summary>
@@ -107,10 +125,10 @@ namespace LinFu.AOP.Cecil
                 IL.Append(skipMakeGenericMethod);
             }
 
-            // Get the current stack trace
-            // Note: This has been disabled for performance reasons
-            //IL.PushStackTrace(module);
-            IL.Emit(OpCodes.Ldnull);
+            if (_pushStackTrace)
+                IL.PushStackTrace(module);
+            else
+                IL.Emit(OpCodes.Ldnull);
 
             // Save the parameter types
             IL.Emit(OpCodes.Ldc_I4, targetMethod.Parameters.Count);
