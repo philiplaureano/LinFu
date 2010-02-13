@@ -7,6 +7,7 @@
   <ItemGroup>
     <ILMergeAssemblies Include="$(TargetDirectory)\LinFu.AOP.Interfaces.dll"/>
     <ILMergeAssemblies Include="$(TargetDirectory)\LinFu.AOP.Cecil.dll"/>
+    <ILMergeAssemblies Include="$(TargetDirectory)\LinFu.AOP.Tasks.dll"/>
     <ILMergeAssemblies Include="$(TargetDirectory)\LinFu.IoC.Common.dll"/>
     <ILMergeAssemblies Include="$(TargetDirectory)\LinFu.Proxy.Interfaces.dll"/>
     <ILMergeAssemblies Include="$(TargetDirectory)\LinFu.Proxy.dll"/>
