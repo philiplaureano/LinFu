@@ -19,12 +19,7 @@ namespace LinFu.AOP.Cecil
         /// <param name="target">The assembly to be modified.</param>
         public static void InterceptAllNewInstances(this IReflectionStructureVisitable target)
         {
-            Func<TypeReference, bool> typeFilter = type =>
-            {
-                var actualType = type.Resolve();
-                return actualType.IsClass && !actualType.IsInterface;
-            };
-
+            var typeFilter = GetTypeFilter();
             target.InterceptNewInstances(typeFilter);
         }
 
@@ -34,15 +29,10 @@ namespace LinFu.AOP.Cecil
         /// <param name="target">The assembly to be modified.</param>
         public static void InterceptAllNewInstances(this IReflectionVisitable target)
         {
-            Func<TypeReference, bool> typeFilter = type =>
-                                                       {
-                                                           var actualType = type.Resolve();
-                                                           return actualType.IsClass && !actualType.IsInterface;
-                                                       };
-
+            var typeFilter = GetTypeFilter();
             target.InterceptNewInstances(typeFilter);
         }
-        
+
 
         /// <summary>
         /// Modifies a <paramref name="target"/> to support intercepting calls to the 'new' operator.
@@ -205,6 +195,22 @@ namespace LinFu.AOP.Cecil
         {
             var interceptNewCalls = new InterceptNewCalls(weaver);
             target.WeaveWith(interceptNewCalls, filter);
+        }
+
+        private static Func<TypeReference, bool> GetTypeFilter()
+        {
+            return type =>
+                       {
+                           var result = !type.IsValueType;
+
+                           var module = type.Module;
+                           var moduleName = module.Name;
+
+                           if (moduleName.StartsWith("LinFu.AOP"))
+                               return false;
+
+                           return result;
+                       };
         }
     }
 }

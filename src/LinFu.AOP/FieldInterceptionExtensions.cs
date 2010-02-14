@@ -28,11 +28,7 @@ namespace LinFu.AOP.Cecil
         public static void InterceptAllInstanceFields(this IReflectionStructureVisitable targetType)
         {
             var methodFilter = GetMethodFilter();
-            Func<FieldReference, bool> fieldFilter = field =>
-            {
-                var actualField = field.Resolve();
-                return !actualField.IsStatic;
-            };
+            var fieldFilter = GetFieldFilter();
 
             targetType.InterceptFields(methodFilter, fieldFilter);
         }
@@ -44,11 +40,7 @@ namespace LinFu.AOP.Cecil
         public static void InterceptAllStaticFields(this IReflectionStructureVisitable targetType)
         {
             var methodFilter = GetMethodFilter();
-            Func<FieldReference, bool> fieldFilter = field =>
-            {
-                var actualField = field.Resolve();
-                return !actualField.IsStatic;
-            };
+            var fieldFilter = GetFieldFilter();
 
             targetType.InterceptFields(methodFilter, fieldFilter);
         }
@@ -70,14 +62,10 @@ namespace LinFu.AOP.Cecil
         public static void InterceptAllInstanceFields(this IReflectionVisitable targetType)
         {
             var methodFilter = GetMethodFilter();
-            Func<FieldReference, bool> fieldFilter = field =>
-                                                         {
-                                                             var actualField = field.Resolve();
-                                                             return !actualField.IsStatic;
-                                                         };
+            var fieldFilter = GetFieldFilter();
 
             targetType.InterceptFields(methodFilter, fieldFilter);
-        }
+        }        
 
         /// <summary>
         /// Adds field interception support intercepting all static fields on the target type.
@@ -86,11 +74,7 @@ namespace LinFu.AOP.Cecil
         public static void InterceptAllStaticFields(this IReflectionVisitable targetType)
         {
             var methodFilter = GetMethodFilter();
-            Func<FieldReference, bool> fieldFilter = field =>
-            {
-                var actualField = field.Resolve();
-                return !actualField.IsStatic;
-            };
+            var fieldFilter = GetFieldFilter();
 
             targetType.InterceptFields(methodFilter, fieldFilter);
         }
@@ -140,6 +124,22 @@ namespace LinFu.AOP.Cecil
         private static Func<MethodReference, bool> GetMethodFilter()
         {
             return m => m.Name != ".cctor" && m.Name != ".ctor";
+        }
+
+        private static Func<FieldReference, bool> GetFieldFilter()
+        {
+            return field =>
+            {
+                var actualField = field.Resolve();
+                var fieldType = actualField.FieldType;
+                var module = fieldType.Module;
+
+                var moduleName = module != null ? module.Name : string.Empty;
+                if (moduleName.StartsWith("LinFu.AOP"))
+                    return false;
+
+                return !actualField.IsStatic;
+            };
         }
     }
 }

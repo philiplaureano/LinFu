@@ -23,7 +23,25 @@ namespace LinFu.AOP.Cecil
 
         public static void InterceptMethodBody(this IReflectionStructureVisitable target, Func<MethodReference, bool> methodFilter)
         {
-            Func<TypeReference, bool> typeFilter = type =>
+            var typeFilter = GetTypeFilter();
+            target.Accept(new ImplementModifiableType(typeFilter));
+
+            var interceptMethodBody = new InterceptMethodBody(methodFilter);
+            target.WeaveWith(interceptMethodBody, methodFilter);
+        }        
+
+        public static void InterceptMethodBody(this IReflectionVisitable target, Func<MethodReference, bool> methodFilter)
+        {
+            var typeFilter = GetTypeFilter();
+            target.Accept(new ImplementModifiableType(typeFilter));
+            
+            var interceptMethodBody = new InterceptMethodBody(methodFilter);
+            target.WeaveWith(interceptMethodBody, methodFilter);
+        }
+
+        private static Func<TypeReference, bool> GetTypeFilter()
+        {
+            return type =>
             {
                 var actualType = type.Resolve();
                 if (actualType.IsValueType || actualType.IsInterface)
@@ -31,28 +49,6 @@ namespace LinFu.AOP.Cecil
 
                 return actualType.IsClass;
             };
-
-            target.Accept(new ImplementModifiableType(typeFilter));
-
-            var interceptMethodBody = new InterceptMethodBody(methodFilter);
-            target.WeaveWith(interceptMethodBody, methodFilter);
-        }
-
-        public static void InterceptMethodBody(this IReflectionVisitable target, Func<MethodReference, bool> methodFilter)
-        {
-            Func<TypeReference, bool> typeFilter = type =>
-                                                       {
-                                                           var actualType = type.Resolve();
-                                                           if (actualType.IsValueType || actualType.IsInterface)
-                                                               return false;
-
-                                                           return actualType.IsClass;                                                           
-                                                       };
-
-            target.Accept(new ImplementModifiableType(typeFilter));
-            
-            var interceptMethodBody = new InterceptMethodBody(methodFilter);
-            target.WeaveWith(interceptMethodBody, methodFilter);
         }
     }
 }
