@@ -8,7 +8,7 @@ using LinFu.AOP.Interfaces;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-namespace LinFu.AOP.Cecil
+namespace LinFu.AOP.Cecil.Extensions
 {
     /// <summary>
     /// Adds helper methods classes that implement the <see cref="IInvocationInfo"/> 

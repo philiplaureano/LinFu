@@ -5,7 +5,7 @@ using System.Text;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-namespace LinFu.AOP.Cecil
+namespace LinFu.AOP.Cecil.Extensions
 {
     public static class MethodDefinitionExtensions
     {

@@ -7,6 +7,7 @@ using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using MethodDefinitionExtensions=LinFu.AOP.Cecil.Extensions.MethodDefinitionExtensions;
 
 namespace LinFu.AOP.Cecil
 {
@@ -30,7 +31,7 @@ namespace LinFu.AOP.Cecil
             var module = IL.GetModule();
             var method = IL.GetMethod();
             var returnType = method.ReturnType.ReturnType;
-            var methodReplacement = method.AddLocal(typeof(IInterceptor));
+            var methodReplacement = MethodDefinitionExtensions.AddLocal(method, typeof(IInterceptor));
 
             GetMethodReplacementInstance(method, IL, methodReplacement, _methodReplacementProvider, _invocationInfo);
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Mono.Cecil;
 
-namespace LinFu.AOP.Cecil
+namespace LinFu.AOP.Cecil.Extensions
 {
     /// <summary>
     /// Represents an extension class that adds method body interception support to the Mono.Cecil object model.
@@ -42,13 +42,13 @@ namespace LinFu.AOP.Cecil
         private static Func<TypeReference, bool> GetTypeFilter()
         {
             return type =>
-            {
-                var actualType = type.Resolve();
-                if (actualType.IsValueType || actualType.IsInterface)
-                    return false;
+                       {
+                           var actualType = type.Resolve();
+                           if (actualType.IsValueType || actualType.IsInterface)
+                               return false;
 
-                return actualType.IsClass;
-            };
+                           return actualType.IsClass;
+                       };
         }
     }
 }

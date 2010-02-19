@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using LinFu.AOP.Cecil;
+using LinFu.AOP.Cecil.Extensions;
 using LinFu.AOP.Interfaces;
 using LinFu.IoC.Reflection;
 using LinFu.Reflection.Emit;

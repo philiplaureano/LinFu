@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using LinFu.AOP.Cecil;
+using LinFu.AOP.Cecil.Extensions;
 using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using LinFu.Proxy.Interfaces;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using LinFu.AOP.Cecil;
+using LinFu.AOP.Cecil.Extensions;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;

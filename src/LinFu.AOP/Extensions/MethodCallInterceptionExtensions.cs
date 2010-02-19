@@ -5,7 +5,7 @@ using System.Text;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
 
-namespace LinFu.AOP.Cecil
+namespace LinFu.AOP.Cecil.Extensions
 {
     /// <summary>
     /// Represents an extension class that adds method call interception support to the Mono.Cecil object model.
@@ -19,10 +19,10 @@ namespace LinFu.AOP.Cecil
         public static void InterceptAllMethodCalls(this IReflectionStructureVisitable target)
         {
             Func<TypeReference, bool> typeFilter = type =>
-            {
-                var actualType = type.Resolve();
-                return !actualType.IsValueType && !actualType.IsInterface;
-            };
+                                                       {
+                                                           var actualType = type.Resolve();
+                                                           return !actualType.IsValueType && !actualType.IsInterface;
+                                                       };
 
             var hostMethodFilter = GetHostMethodFilter();
             Func<MethodReference, bool> methodCallFilter = m => true;
@@ -47,10 +47,10 @@ namespace LinFu.AOP.Cecil
         public static void InterceptAllMethodCalls(this IReflectionVisitable target)
         {
             Func<TypeReference, bool> typeFilter = type =>
-            {
-                var actualType = type.Resolve();
-                return !actualType.IsValueType && !actualType.IsInterface;
-            };
+                                                       {
+                                                           var actualType = type.Resolve();
+                                                           return !actualType.IsValueType && !actualType.IsInterface;
+                                                       };
 
             var hostMethodFilter = GetHostMethodFilter();
             Func<MethodReference, bool> methodCallFilter = m => true;

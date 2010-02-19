@@ -5,7 +5,7 @@ using System.Text;
 using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil;
 
-namespace LinFu.AOP.Cecil
+namespace LinFu.AOP.Cecil.Extensions
 {
     /// <summary>
     /// Adds helper methods to the <see cref="TypeDefinition"/> class.
@@ -22,8 +22,8 @@ namespace LinFu.AOP.Cecil
         {
             var module = targetType.Module;
             var targetMethods = from MethodDefinition method in targetType.Methods
-                              where weaver.ShouldWeave(method)
-                              select method;
+                                where weaver.ShouldWeave(method)
+                                select method;
 
             // Modify the host module
             weaver.ImportReferences(module);

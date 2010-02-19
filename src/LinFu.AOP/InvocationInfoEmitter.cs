@@ -11,6 +11,7 @@ using LinFu.IoC.Configuration;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using MethodDefinitionExtensions=LinFu.AOP.Cecil.Extensions.MethodDefinitionExtensions;
 
 namespace LinFu.AOP.Cecil
 {
@@ -68,10 +69,10 @@ namespace LinFu.AOP.Cecil
         public void Emit(MethodDefinition targetMethod, MethodReference interceptedMethod, VariableDefinition invocationInfo)
         {
             var module = targetMethod.DeclaringType.Module;
-            var currentMethod = targetMethod.AddLocal(typeof(MethodBase));
-            var parameterTypes = targetMethod.AddLocal(typeof(Type[]));
-            var arguments = targetMethod.AddLocal(typeof(object[]));
-            var typeArguments = targetMethod.AddLocal(typeof(Type[]));
+            var currentMethod = MethodDefinitionExtensions.AddLocal(targetMethod, typeof(MethodBase));
+            var parameterTypes = MethodDefinitionExtensions.AddLocal(targetMethod, typeof(Type[]));
+            var arguments = MethodDefinitionExtensions.AddLocal(targetMethod, typeof(object[]));
+            var typeArguments = MethodDefinitionExtensions.AddLocal(targetMethod, typeof(Type[]));
             var systemType = module.ImportType(typeof(Type));
 
             var IL = targetMethod.GetILGenerator();

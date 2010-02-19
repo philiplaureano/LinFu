@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Mono.Cecil;
 
-namespace LinFu.AOP.Cecil
+namespace LinFu.AOP.Cecil.Extensions
 {
     /// <summary>
     /// Represents an extension class that adds field interception support to a given type.
@@ -112,13 +112,13 @@ namespace LinFu.AOP.Cecil
         private static Func<TypeReference, bool> GetTypeFilter()
         {
             return type =>
-            {
-                var actualType = type.Resolve();
-                if (actualType.IsValueType || actualType.IsInterface || actualType.Name == "<Module>")
-                    return false;
+                       {
+                           var actualType = type.Resolve();
+                           if (actualType.IsValueType || actualType.IsInterface || actualType.Name == "<Module>")
+                               return false;
 
-                return actualType.IsClass;
-            };
+                           return actualType.IsClass;
+                       };
         }
 
         private static Func<MethodReference, bool> GetMethodFilter()
@@ -129,17 +129,17 @@ namespace LinFu.AOP.Cecil
         private static Func<FieldReference, bool> GetFieldFilter()
         {
             return field =>
-            {
-                var actualField = field.Resolve();
-                var fieldType = actualField.FieldType;
-                var module = fieldType.Module;
+                       {
+                           var actualField = field.Resolve();
+                           var fieldType = actualField.FieldType;
+                           var module = fieldType.Module;
 
-                var moduleName = module != null ? module.Name : string.Empty;
-                if (moduleName.StartsWith("LinFu.AOP"))
-                    return false;
+                           var moduleName = module != null ? module.Name : string.Empty;
+                           if (moduleName.StartsWith("LinFu.AOP"))
+                               return false;
 
-                return !actualField.IsStatic;
-            };
+                           return !actualField.IsStatic;
+                       };
         }
     }
 }

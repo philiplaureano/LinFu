@@ -5,7 +5,7 @@ using System.Text;
 using Mono.Cecil;
 using LinFu.AOP.Cecil.Interfaces;
 
-namespace LinFu.AOP.Cecil
+namespace LinFu.AOP.Cecil.Extensions
 {
     /// <summary>
     /// An extension class that adds support for intercepting the 'new' operator with LinFu.AOP.

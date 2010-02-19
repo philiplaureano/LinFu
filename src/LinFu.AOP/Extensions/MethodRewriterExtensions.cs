@@ -5,7 +5,7 @@ using System.Text;
 using Mono.Cecil;
 using LinFu.AOP.Cecil.Interfaces;
 
-namespace LinFu.AOP.Cecil
+namespace LinFu.AOP.Cecil.Extensions
 {
     /// <summary>
     /// A helper class that extends Cecil to support the <see cref="IMethodRewriter"/> interface.
