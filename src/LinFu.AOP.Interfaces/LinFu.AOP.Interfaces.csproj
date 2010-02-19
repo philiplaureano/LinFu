@@ -55,6 +55,7 @@
     <Compile Include="AroundInvokeRegistry.cs" />
     <Compile Include="BootStrapRegistry.cs" />
     <Compile Include="CompositeAroundInvoke.cs" />
+    <Compile Include="ExceptionHandlerRegistry.cs" />
     <Compile Include="FieldInterceptionContext.cs" />
     <Compile Include="FieldInterceptorRegistry.cs" />
     <Compile Include="IActivationContext.cs" />
@@ -65,6 +66,8 @@
     <Compile Include="IAroundInvokeProvider.cs" />
     <Compile Include="IBeforeInvoke.cs" />
     <Compile Include="IBootStrappedComponent.cs" />
+    <Compile Include="IExceptionHandler.cs" />
+    <Compile Include="IExceptionHandlerInfo.cs" />
     <Compile Include="IFieldInterceptionContext.cs" />
     <Compile Include="IFieldInterceptionHost.cs" />
     <Compile Include="IFieldInterceptor.cs" />

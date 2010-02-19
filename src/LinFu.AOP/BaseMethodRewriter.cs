@@ -31,10 +31,11 @@ namespace LinFu.AOP.Cecil
             if (!ShouldRewrite(method))
                 return;
 
+            var declaringType = method.DeclaringType;
+
             var body = IL.GetBody();
             body.InitLocals = true;
 
-            var declaringType = method.DeclaringType;
             var module = declaringType.Module;
 
             // Interfaces and Enums cannot be modified
@@ -71,7 +72,7 @@ namespace LinFu.AOP.Cecil
         /// <param name="IL">The <see cref="CilWorker"/> instance that represents the method body.</param>
         /// <param name="oldInstructions">The IL instructions of the original method body.</param>
         protected abstract void RewriteMethodBody(MethodDefinition method, CilWorker IL, IEnumerable<Instruction> oldInstructions);
-        
+
 
         /// <summary>
         /// Adds additional members to the host type.
@@ -95,6 +96,6 @@ namespace LinFu.AOP.Cecil
         /// <param name="hostMethod">The target method.</param>
         public virtual void AddLocals(MethodDefinition hostMethod)
         {
-        }       
+        }
     }
 }
