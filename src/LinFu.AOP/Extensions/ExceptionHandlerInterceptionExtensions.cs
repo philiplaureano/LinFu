@@ -8,18 +8,17 @@ namespace LinFu.AOP.Cecil.Extensions
 {
     public static class ExceptionHandlerInterceptionExtensions
     {
-        public static void InterceptAllExceptions(IReflectionVisitable visitable)
+        public static void InterceptAllExceptions(this IReflectionVisitable visitable)
         {
-            Func<MethodReference, bool> filter = method =>
-                                                     {
-                                                         var actualMethod = method.Resolve();
-                                                         return actualMethod.HasBody;
-                                                     };
+            var filter = GetMethodFilter();
+            InterceptExceptions(visitable, filter);
         }
+       
 
-        public static void InterceptAllExceptions(IReflectionStructureVisitable visitable)
-        {            
-
+        public static void InterceptAllExceptions(this IReflectionStructureVisitable visitable)
+        {
+            var filter = GetMethodFilter();
+            InterceptExceptions(visitable, filter);
         }
 
         public static void InterceptExceptions(this IReflectionStructureVisitable visitable, Func<MethodReference, bool> methodFilter)
@@ -38,6 +37,15 @@ namespace LinFu.AOP.Cecil.Extensions
 
             var catchAllThrownExceptions = new CatchAllThrownExceptions();
             visitable.WeaveWith(catchAllThrownExceptions, methodFilter);
+        }
+
+        private static Func<MethodReference, bool> GetMethodFilter()
+        {
+            return method =>
+            {
+                var actualMethod = method.Resolve();
+                return actualMethod.HasBody;
+            };
         }
     }
 }
