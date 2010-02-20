@@ -30,6 +30,15 @@ namespace LinFu.AOP.Interfaces
         Type ReturnType { get; }
 
         /// <summary>
+        /// The <see cref="StackTrace"/> associated
+        /// with the method call when the call was made.
+        /// </summary>
+        StackTrace StackTrace
+        {
+            get;
+        }
+
+        /// <summary>
         /// The parameter types for the current target method.
         /// </summary>
         /// <remarks>
@@ -55,6 +64,6 @@ namespace LinFu.AOP.Interfaces
         /// <summary>
         /// The arguments used in the method call.
         /// </summary>
-        object[] Arguments { get; }        
+        object[] Arguments { get; }
     }
 }
