@@ -123,7 +123,7 @@ namespace LinFu.AOP.Cecil.Extensions
 
         private static Func<MethodReference, bool> GetMethodFilter()
         {
-            return m => m.Name != ".cctor" && m.Name != ".ctor";
+            return m => true;
         }
 
         private static Func<FieldReference, bool> GetFieldFilter()
