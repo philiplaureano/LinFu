@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
@@ -69,35 +70,25 @@ namespace LinFu.AOP.Cecil
             IL.Append(tryStart);
             addOriginalInstructions.Emit(IL);
 
+            
             if (returnType != _voidType && _returnValue != null)
             {
-                // exceptionInfo.ReturnValue = returnValue;
-                var setReturnValue = module.ImportMethod<IExceptionHandlerInfo>("set_ReturnValue");
-                IL.Emit(OpCodes.Ldloc, _exceptionInfo);
-                IL.Emit(OpCodes.Ldloc, _returnValue);
-                IL.Emit(OpCodes.Callvirt, setReturnValue);
+                IL.Emit(OpCodes.Stloc, _returnValue);
             }
 
             IL.Append(endOfOriginalInstructionBlock);
 
             IL.Emit(OpCodes.Leave, endLabel);
-            // }
+
+            // }            
             IL.Append(tryEnd);
             // catch (Exception ex) {
             IL.Append(catchStart);
             IL.Emit(OpCodes.Stloc, _exception);
 
-            emitter.Emit(targetMethod, targetMethod, _invocationInfo);
-            IL.Emit(OpCodes.Ldloc, _exception);
-            IL.Emit(OpCodes.Ldloc, _invocationInfo);
-
-            var exceptionInfoConstructor = module.ImportConstructor<ExceptionHandlerInfo>(typeof(Exception),
-                                                                                          typeof(IInvocationInfo));
-
-            IL.Emit(OpCodes.Newobj, exceptionInfoConstructor);
-            IL.Emit(OpCodes.Stloc, _exceptionInfo);
+            SaveExceptionInfo(targetMethod, emitter);            
             IL.Emit(OpCodes.Ldloc, _exceptionInfo);
-
+            
             var getHandlerMethodInfo = typeof(ExceptionHandlerRegistry).GetMethod("GetHandler");
             var getHandlerMethod = module.Import(getHandlerMethodInfo);
             IL.Emit(OpCodes.Call, getHandlerMethod);
@@ -109,6 +100,8 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Ldloc, _exceptionHandler);
             IL.Emit(OpCodes.Brfalse, doRethrow);
 
+            
+            
             // if (handler.CanCatch(exceptionInfo)) {
             var leaveBlock = IL.Create(OpCodes.Nop);
             var canCatch = module.ImportMethod<IExceptionHandler>("CanCatch");
@@ -122,7 +115,8 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Ldloc, _exceptionInfo);
             IL.Emit(OpCodes.Callvirt, catchMethod);
             // }
-
+            
+            
             var getShouldSkipRethrow = module.ImportMethod<IExceptionHandlerInfo>("get_ShouldSkipRethrow");
             IL.Emit(OpCodes.Ldloc, _exceptionInfo);
             IL.Emit(OpCodes.Callvirt, getShouldSkipRethrow);
@@ -134,6 +128,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Rethrow);
 
             IL.Append(leaveBlock);
+
             IL.Emit(OpCodes.Leave, endLabel);
             IL.Append(catchEnd);
             // }
@@ -141,13 +136,46 @@ namespace LinFu.AOP.Cecil
 
             if (returnType != _voidType && _returnValue != null)
             {
+                var returnOriginalValue = IL.Create(OpCodes.Nop);
                 var getReturnValue = module.ImportMethod<IExceptionHandlerInfo>("get_ReturnValue");
 
                 IL.Emit(OpCodes.Ldloc, _exceptionInfo);
+                IL.Emit(OpCodes.Brfalse, returnOriginalValue);
+
+                IL.Emit(OpCodes.Ldloc, _exceptionInfo);
                 IL.Emit(OpCodes.Callvirt, getReturnValue);
+                IL.Emit(OpCodes.Stloc, _returnValue);
+                IL.Append(returnOriginalValue);
+
+                IL.Emit(OpCodes.Ldloc, _returnValue);
             }
 
             IL.Emit(OpCodes.Ret);
+        }
+
+        private void SaveExceptionInfo(MethodDefinition targetMethod, IEmitInvocationInfo emitter)
+        {
+            var IL = targetMethod.GetILGenerator();
+            var module = IL.GetModule();
+            
+            emitter.Emit(targetMethod, targetMethod, _invocationInfo);
+            IL.Emit(OpCodes.Ldloc, _exception);
+            IL.Emit(OpCodes.Ldloc, _invocationInfo);
+
+            var exceptionInfoConstructor = module.ImportConstructor<ExceptionHandlerInfo>(typeof(Exception),
+                                                                                          typeof(IInvocationInfo));
+            IL.Emit(OpCodes.Newobj, exceptionInfoConstructor);
+            IL.Emit(OpCodes.Stloc, _exceptionInfo);
+
+            var returnType = targetMethod.ReturnType.ReturnType;
+            if (returnType == _voidType || _returnValue == null)
+                return;
+
+            // exceptionInfo.ReturnValue = returnValue;
+            var setReturnValue = module.ImportMethod<IExceptionHandlerInfo>("set_ReturnValue");
+            IL.Emit(OpCodes.Ldloc, _exceptionInfo);
+            IL.Emit(OpCodes.Ldloc, _returnValue);
+            IL.Emit(OpCodes.Callvirt, setReturnValue);
         }
     }
 }

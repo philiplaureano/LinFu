@@ -44,6 +44,11 @@ namespace LinFu.AOP.Cecil.Extensions
             return method =>
             {
                 var actualMethod = method.Resolve();
+                var methodName = method.Name;
+
+                if (methodName == ".ctor" || methodName == ".cctor")
+                    return false;
+
                 return actualMethod.HasBody;
             };
         }

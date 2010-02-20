@@ -39,7 +39,8 @@ namespace PostWeaver
             assembly.InterceptAllMethodBodies();
             assembly.InterceptAllNewInstances();
             assembly.InterceptAllFields();
-            
+            assembly.InterceptAllExceptions();
+
             // Update the PDB info if it exists
             if (pdbExists)
                 module.SaveSymbols();

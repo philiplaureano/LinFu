@@ -24,6 +24,7 @@ namespace LinFu.AOP.Tasks
         public bool InterceptAllMethodBodies { get; set; }
         public bool InterceptAllNewInstances { get; set; }
         public bool InterceptAllFields { get; set; }
+        public bool InterceptAllExceptions { get; set; }
 
         public override bool Execute()
         {
@@ -60,6 +61,9 @@ namespace LinFu.AOP.Tasks
 
                 if (InterceptAllFields)
                     assembly.InterceptAllFields();
+
+                if (InterceptAllExceptions)
+                    assembly.InterceptAllExceptions();
 
                 // Update the PDB info if it exists
                 if (pdbExists)
