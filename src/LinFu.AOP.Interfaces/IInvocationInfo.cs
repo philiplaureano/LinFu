@@ -22,7 +22,7 @@ namespace LinFu.AOP.Interfaces
         /// <summary>
         /// The method currently being called.
         /// </summary>
-        MethodInfo TargetMethod { get; }
+        MethodBase TargetMethod { get; }
 
         /// <summary>
         /// The return type of the <see cref="TargetMethod"/>.

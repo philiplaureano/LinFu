@@ -28,7 +28,7 @@ namespace LinFu.AOP.Cecil
         static InvocationInfoEmitter()
         {
             var types = new[] { typeof(object), 
-                                 typeof(MethodInfo), 
+                                 typeof(MethodBase), 
                                  typeof(StackTrace), 
                                  typeof(Type[]), 
                                  typeof(Type[]), 
@@ -97,11 +97,9 @@ namespace LinFu.AOP.Cecil
 
             IL.Emit(OpCodes.Stloc, currentMethod);
 
-            // MethodInfo targetMethod = currentMethod as MethodInfo;
-            var methodInfoType = module.Import(typeof(MethodInfo));
+            // MethodBase targetMethod = currentMethod as MethodBase;            
             IL.Emit(OpCodes.Ldloc, currentMethod);
-            IL.Emit(OpCodes.Isinst, methodInfoType);
-
+            
             // Push the generic type arguments onto the stack
             if (genericParameterCount > 0)
                 IL.PushGenericArguments(targetMethod, module, typeArguments);
@@ -110,6 +108,9 @@ namespace LinFu.AOP.Cecil
             // proper type arguments
             if (targetMethod.GenericParameters.Count > 0)
             {
+                var methodInfoType = module.Import(typeof(MethodInfo));
+                IL.Emit(OpCodes.Isinst, methodInfoType);
+
                 var getIsGenericMethodDef = module.ImportMethod<MethodInfo>("get_IsGenericMethodDefinition");
                 IL.Emit(OpCodes.Dup);
                 IL.Emit(OpCodes.Callvirt, getIsGenericMethodDef);

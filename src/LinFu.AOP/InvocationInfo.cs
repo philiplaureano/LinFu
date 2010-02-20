@@ -15,7 +15,7 @@ namespace LinFu.AOP.Cecil
     public class InvocationInfo : IInvocationInfo
     {
         private readonly object _target;
-        private readonly MethodInfo _targetMethod;
+        private readonly MethodBase _targetMethod;
         private readonly StackTrace _stackTrace;
         private readonly Type[] _parameterTypes;
         private readonly Type[] _typeArguments;
@@ -36,7 +36,7 @@ namespace LinFu.AOP.Cecil
         /// </param>
         /// <param name="returnType">The return type of the target method.</param>
         /// <param name="arguments">The arguments used in the method call.</param>
-        public InvocationInfo(object target, MethodInfo targetMethod, 
+        public InvocationInfo(object target, MethodBase targetMethod, 
                               StackTrace stackTrace, Type[] parameterTypes, 
                               Type[] typeArguments, Type returnType, object[] arguments)
         {
@@ -64,7 +64,7 @@ namespace LinFu.AOP.Cecil
         /// <summary>
         /// The method currently being called.
         /// </summary>
-        public MethodInfo TargetMethod
+        public MethodBase TargetMethod
         {
             get
             {

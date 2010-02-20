@@ -70,7 +70,7 @@ namespace LinFu.AOP.Cecil
             _linfuAopInterfaceModule = activatorHostType.Module;
 
             var types = new[] { typeof(object), 
-                                 typeof(MethodInfo), 
+                                 typeof(MethodBase), 
                                  typeof(StackTrace), 
                                  typeof(Type[]), 
                                  typeof(Type[]), 
@@ -296,7 +296,6 @@ namespace LinFu.AOP.Cecil
 
             // Push the current method
             IL.PushMethod(targetMethod, module);
-            IL.Emit(OpCodes.Castclass, module.Import(typeof(MethodInfo)));
 
             // Push the stack trace
             PushStackTrace(IL, module);

@@ -64,7 +64,7 @@ namespace LinFu.IoC.Interceptors
             var method = info.TargetMethod;
             var arguments = info.Arguments;
 
-            return _methodInvoke.Invoke(target, method, arguments);
+            return _methodInvoke.Invoke(target, (MethodInfo)method, arguments);
         }
     }
 }
