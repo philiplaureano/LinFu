@@ -118,13 +118,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Brfalse, skipInterception);
 
             // Use the activator to create the object instance
-            EmitCreateInstance(IL);
-
-            var skipWriteLine = IL.Create(OpCodes.Nop);
-            IL.Emit(OpCodes.Dup);
-            IL.Emit(OpCodes.Brtrue, skipWriteLine);
-            IL.EmitWriteLine("DEBUG: The instance is null");
-            IL.Append(skipWriteLine);
+            EmitCreateInstance(IL);            
 
             // }
             Instruction endCreate = IL.Create(OpCodes.Nop);
