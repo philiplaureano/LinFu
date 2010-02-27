@@ -15,12 +15,14 @@ namespace LinFu.AOP.Cecil
         private readonly VariableDefinition _invocationInfo;
         private readonly VariableDefinition _surroundingClassImplementation;
         private readonly VariableDefinition _surroundingImplementation;
+        private readonly Type _registryType;
 
-        public EmitBeforeInvoke(VariableDefinition invocationInfo, VariableDefinition surroundingClassImplementation, VariableDefinition surroundingImplementation)
+        public EmitBeforeInvoke(VariableDefinition invocationInfo, VariableDefinition surroundingClassImplementation, VariableDefinition surroundingImplementation, Type registryType)
         {
             _invocationInfo = invocationInfo;
             _surroundingClassImplementation = surroundingClassImplementation;
             _surroundingImplementation = surroundingImplementation;
+            _registryType = registryType;
         }
 
         public void Emit(CilWorker IL)
@@ -30,7 +32,8 @@ namespace LinFu.AOP.Cecil
             var module = declaringType.Module;
 
             var getSurroundingClassImplementation = new GetSurroundingClassImplementation(_invocationInfo,
-                                                                                          _surroundingClassImplementation);
+                                                                                          _surroundingClassImplementation, _registryType.GetMethod("GetSurroundingImplementation"));
+
             // var classAroundInvoke = AroundInvokeRegistry.GetSurroundingImplementation(info);           
             getSurroundingClassImplementation.Emit(IL);
 

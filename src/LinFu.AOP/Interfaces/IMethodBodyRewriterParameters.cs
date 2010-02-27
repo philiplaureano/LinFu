@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -13,6 +14,9 @@ namespace LinFu.AOP.Cecil
         VariableDefinition InterceptionDisabled { get; }
         VariableDefinition InvocationInfo { get; }
         VariableDefinition ReturnValue { get; }
+
+        Type RegistryType { get; }
+        Func<ModuleDefinition, MethodReference> GetMethodReplacementProviderMethod { get; }
         IEnumerable<Instruction> OldInstructions { get; }
     }
 }

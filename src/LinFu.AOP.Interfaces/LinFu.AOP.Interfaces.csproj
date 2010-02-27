@@ -52,7 +52,9 @@
     </Compile>
     <Compile Include="ActivationContext.cs" />
     <Compile Include="ActivatorExtensions.cs" />
-    <Compile Include="AroundInvokeRegistry.cs" />
+    <Compile Include="AroundInvokeMethodCallRegistry.cs" />
+    <Compile Include="AroundMethodBodyRegistry.cs" />
+    <Compile Include="BootstrapException.cs" />
     <Compile Include="BootStrapRegistry.cs" />
     <Compile Include="CompositeAroundInvoke.cs" />
     <Compile Include="ExceptionHandlerRegistry.cs" />
@@ -79,9 +81,10 @@
     <Compile Include="IMethodReplacementHost.cs" />
     <Compile Include="IMethodReplacementProvider.cs" />
     <Compile Include="IModifiableType.cs" />
+    <Compile Include="MethodBodyReplacementProviderRegistry.cs" />
+    <Compile Include="MethodCallReplacementProviderRegistry.cs" />
     <Compile Include="TypeActivationContext.cs" />
     <Compile Include="TypeActivatorRegistry.cs" />
-    <Compile Include="MethodReplacementProviderRegistry.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LinFu.Reflection\LinFu.Reflection.csproj">

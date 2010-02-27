@@ -83,8 +83,8 @@ namespace LinFu.AOP.Cecil
             _pushMethod = module.ImportMethod<Stack<object>>("Push");
             _popMethod = module.ImportMethod<Stack<object>>("Pop");
             _toArray = module.ImportMethod<Stack<object>>("ToArray");
-            _getProvider = module.ImportMethod<IMethodReplacementHost>("get_MethodReplacementProvider");
-            _getStaticProvider = module.ImportMethod("GetProvider", typeof(MethodReplacementProviderRegistry));
+            _getProvider = module.ImportMethod<IMethodReplacementHost>("get_MethodCallReplacementProvider");
+            _getStaticProvider = module.ImportMethod("GetProvider", typeof(MethodCallReplacementProviderRegistry));
 
             _canReplace = module.ImportMethod<IMethodReplacementProvider>("CanReplace");
             _getReplacement = module.ImportMethod<IMethodReplacementProvider>("GetMethodReplacement");
@@ -136,7 +136,7 @@ namespace LinFu.AOP.Cecil
             getInterceptionDisabled.Emit(IL);
 
             var surroundMethodBody = new SurroundMethodBody(_methodReplacementProvider, _aroundInvokeProvider,
-                                                            _invocationInfo, _interceptionDisabled, _returnValue);
+                                                            _invocationInfo, _interceptionDisabled, _returnValue, typeof(AroundInvokeMethodCallRegistry));
 
             surroundMethodBody.AddProlog(IL);
             // Use the MethodReplacementProvider attached to the

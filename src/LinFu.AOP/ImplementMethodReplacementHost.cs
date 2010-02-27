@@ -43,7 +43,8 @@ namespace LinFu.AOP.Cecil
                 return;
             
             item.Interfaces.Add(_hostType);
-            item.AddProperty("MethodReplacementProvider", typeof(IMethodReplacementProvider));
+            item.AddProperty("MethodBodyReplacementProvider", typeof(IMethodReplacementProvider));
+            item.AddProperty("MethodCallReplacementProvider", typeof(IMethodReplacementProvider));
         }
 
         public virtual void AddAdditionalMembers(ModuleDefinition host)

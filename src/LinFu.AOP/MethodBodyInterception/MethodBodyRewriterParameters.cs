@@ -18,9 +18,17 @@ namespace LinFu.AOP.Cecil
         private readonly VariableDefinition _methodReplacementProvider;
         private readonly VariableDefinition _classMethodReplacementProvider;
         private readonly IEnumerable<Instruction> _oldInstructions;
+        private readonly Func<ModuleDefinition, MethodReference> _getMethodReplacementProviderMethod;
+        private readonly Type _registryType;
 
-        public MethodBodyRewriterParameters(CilWorker IL, IEnumerable<Instruction> oldInstructions, VariableDefinition interceptionDisabled, VariableDefinition invocationInfo, VariableDefinition returnValue,
-            VariableDefinition methodReplacementProvider, VariableDefinition aroundInvokeProvider, VariableDefinition classMethodReplacementProvider)
+        public MethodBodyRewriterParameters(CilWorker IL, IEnumerable<Instruction> oldInstructions, 
+            VariableDefinition interceptionDisabled, 
+            VariableDefinition invocationInfo, 
+            VariableDefinition returnValue,
+            VariableDefinition methodReplacementProvider, 
+            VariableDefinition aroundInvokeProvider, 
+            VariableDefinition classMethodReplacementProvider, 
+            Func<ModuleDefinition, MethodReference> getMethodReplacementProviderMethod, Type registryType)
         {
             _cilWorker = IL;
             _oldInstructions = oldInstructions;
@@ -30,6 +38,8 @@ namespace LinFu.AOP.Cecil
             _methodReplacementProvider = methodReplacementProvider;
             _aroundInvokeProvider = aroundInvokeProvider;
             _classMethodReplacementProvider = classMethodReplacementProvider;
+            _getMethodReplacementProviderMethod = getMethodReplacementProviderMethod;
+            _registryType = registryType;
         }
 
         public IEnumerable<Instruction> OldInstructions
@@ -70,6 +80,16 @@ namespace LinFu.AOP.Cecil
         public VariableDefinition ReturnValue
         {
             get { return _returnValue; }
+        }
+
+        public Type RegistryType
+        {
+            get { return _registryType; }
+        }
+
+        public Func<ModuleDefinition, MethodReference> GetMethodReplacementProviderMethod
+        {
+            get { return _getMethodReplacementProviderMethod; }
         }
     }
 }

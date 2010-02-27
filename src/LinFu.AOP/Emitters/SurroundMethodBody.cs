@@ -20,6 +20,7 @@ namespace LinFu.AOP.Cecil
         private VariableDefinition _interceptionDisabled;
         private VariableDefinition _returnValue;
         private IInstructionEmitter _getMethodReplacementProvider;
+        private readonly Type _registryType;
 
         public SurroundMethodBody(IMethodBodyRewriterParameters parameters)
         {
@@ -29,22 +30,24 @@ namespace LinFu.AOP.Cecil
             _returnValue = parameters.ReturnValue;
             _interceptionDisabled = parameters.InterceptionDisabled;
 
-            var getMethodReplacementProvider = new GetMethodReplacementProvider(parameters.TargetMethod, _methodReplacementProvider);
+            var getMethodReplacementProvider = new GetMethodReplacementProvider(_methodReplacementProvider, parameters.TargetMethod, parameters.GetMethodReplacementProviderMethod);
 
             _getMethodReplacementProvider = getMethodReplacementProvider;
+            _registryType = parameters.RegistryType;
         }
 
         public SurroundMethodBody(VariableDefinition methodReplacementProvider,
             VariableDefinition aroundInvokeProvider,
             VariableDefinition invocationInfo,
             VariableDefinition interceptionDisabled,
-            VariableDefinition returnValue)
+            VariableDefinition returnValue, Type registryType)
         {
             _methodReplacementProvider = methodReplacementProvider;
             _aroundInvokeProvider = aroundInvokeProvider;
             _invocationInfo = invocationInfo;
             _interceptionDisabled = interceptionDisabled;
             _returnValue = returnValue;
+            _registryType = registryType;
         }
 
         public void AddProlog(CilWorker IL)
@@ -87,7 +90,7 @@ namespace LinFu.AOP.Cecil
 
             IL.Append(skipGetSurroundingImplementation);
             var emitBeforeInvoke = new EmitBeforeInvoke(_invocationInfo, _surroundingClassImplementation,
-                                                        _surroundingImplementation);
+                                                        _surroundingImplementation, _registryType);
             emitBeforeInvoke.Emit(IL);
 
             IL.Append(skipProlog);

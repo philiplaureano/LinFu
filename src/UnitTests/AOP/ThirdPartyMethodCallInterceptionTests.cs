@@ -26,7 +26,7 @@ namespace LinFu.UnitTests.AOP
         [TearDown]
         public void Term()
         {
-            AroundInvokeRegistry.Clear();
+            AroundInvokeMethodCallRegistry.Clear();
         }
 
         [Test]
@@ -37,7 +37,7 @@ namespace LinFu.UnitTests.AOP
             var aroundInvoke = new SampleAroundInvoke();
             var provider = new SampleAroundInvokeProvider(aroundInvoke);
             
-            AroundInvokeRegistry.AddProvider(provider);
+            AroundInvokeMethodCallRegistry.AddProvider(provider);
             MethodInfo targetMethod = modifiedTargetType.GetMethod("DoSomething");
             targetMethod.Invoke(instance, null);
 
@@ -53,7 +53,7 @@ namespace LinFu.UnitTests.AOP
             var aroundInvoke = new SampleAroundInvoke();
             var provider = new SampleAroundInvokeProvider(aroundInvoke);
 
-            AroundInvokeRegistry.AddProvider(provider);
+            AroundInvokeMethodCallRegistry.AddProvider(provider);
 
             MethodInfo targetMethod = modifiedTargetType.GetMethod("DoSomething");
 
@@ -94,7 +94,7 @@ namespace LinFu.UnitTests.AOP
 
             var interceptor = new SampleMethodReplacement();
 
-            host.MethodReplacementProvider = new SampleMethodReplacementProvider(interceptor);
+            host.MethodCallReplacementProvider = new SampleMethodReplacementProvider(interceptor);
 
             MethodInfo targetMethod = modifiedTargetType.GetMethod("DoSomething");
             try

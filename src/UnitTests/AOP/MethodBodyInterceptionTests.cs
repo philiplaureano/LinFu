@@ -26,7 +26,7 @@ namespace LinFu.UnitTests.AOP
             {
                 Assert.IsNotNull(instance);
 
-                AroundInvokeRegistry.AddProvider(provider);
+                AroundMethodBodyRegistry.AddProvider(provider);
                 instance.Invoke("DoSomething");
 
                 Assert.IsTrue(aroundInvoke.BeforeInvokeWasCalled);
@@ -43,7 +43,7 @@ namespace LinFu.UnitTests.AOP
             var replacement = new SampleMethodReplacement();
             var provider = new SampleMethodReplacementProvider(replacement);
 
-            MethodReplacementProviderRegistry.SetProvider(provider);
+            MethodBodyReplacementProviderRegistry.SetProvider(provider);
             Action<Type> doTest = type =>
             {
                 var doSomethingMethod = type.GetMethod("DoSomething");
@@ -61,7 +61,7 @@ namespace LinFu.UnitTests.AOP
         {
             var sampleInterceptor = new SampleInterceptor();
             var sampleProvider = new SampleMethodReplacementProvider(sampleInterceptor);
-            MethodReplacementProviderRegistry.SetProvider(sampleProvider);
+            MethodBodyReplacementProviderRegistry.SetProvider(sampleProvider);
 
             Action<object> condition = (instance) =>
             {
@@ -90,7 +90,7 @@ namespace LinFu.UnitTests.AOP
                 var modified = (IModifiableType)instance;
                 modified.IsInterceptionDisabled = true;
 
-                AroundInvokeRegistry.AddProvider(provider);
+                AroundMethodBodyRegistry.AddProvider(provider);
                 instance.Invoke("DoSomething");
 
                 Assert.IsFalse(aroundInvoke.BeforeInvokeWasCalled);
@@ -166,7 +166,7 @@ namespace LinFu.UnitTests.AOP
                                                Assert.IsTrue(instance is IModifiableType);
 
                                                var modifiableType = (IModifiableType)instance;
-                                               modifiableType.MethodReplacementProvider = sampleProvider;
+                                               modifiableType.MethodBodyReplacementProvider = sampleProvider;
                                                modifiableType.IsInterceptionDisabled = false;
 
                                                instance.Invoke("DoSomething");
@@ -188,7 +188,7 @@ namespace LinFu.UnitTests.AOP
                 Assert.IsTrue(instance is IModifiableType);
 
                 var modifiableType = (IModifiableType)instance;
-                modifiableType.MethodReplacementProvider = sampleProvider;
+                modifiableType.MethodBodyReplacementProvider = sampleProvider;
                 modifiableType.IsInterceptionDisabled = true;
 
                 instance.Invoke("DoSomething");
@@ -206,7 +206,7 @@ namespace LinFu.UnitTests.AOP
             var aroundInvoke = new SampleAroundInvoke();
             var provider = new SampleAroundInvokeProvider(aroundInvoke);
 
-            AroundInvokeRegistry.AddProvider(provider);
+            AroundMethodBodyRegistry.AddProvider(provider);
             Action<Type> doTest = type =>
                                       {
                                           var doSomethingMethod = type.GetMethod("DoSomething");
@@ -228,7 +228,7 @@ namespace LinFu.UnitTests.AOP
             var aroundInvoke = new SampleAroundInvoke();
             var provider = new SampleAroundInvokeProvider(aroundInvoke);
 
-            AroundInvokeRegistry.AddProvider(provider);
+            AroundMethodBodyRegistry.AddProvider(provider);
             Action<Type> doTest = type =>
             {
                 var doSomethingMethod = type.GetMethod("DoSomething");

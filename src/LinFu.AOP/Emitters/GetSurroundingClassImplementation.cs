@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
@@ -14,12 +15,14 @@ namespace LinFu.AOP.Cecil
     {
         private readonly VariableDefinition _invocationInfo;
         private readonly VariableDefinition _surroundingClassImplementation;
+        private readonly MethodInfo _getSurroundingImplementationMethod;
 
         public GetSurroundingClassImplementation(VariableDefinition invocationInfo, 
-            VariableDefinition surroundingClassImplementation)
+            VariableDefinition surroundingClassImplementation, MethodInfo getSurroundingImplementationMethod)
         {
             _invocationInfo = invocationInfo;
             _surroundingClassImplementation = surroundingClassImplementation;
+            _getSurroundingImplementationMethod = getSurroundingImplementationMethod;
         }
 
         public void Emit(CilWorker IL)
@@ -28,10 +31,7 @@ namespace LinFu.AOP.Cecil
             var declaringType = method.DeclaringType;
             var module = declaringType.Module;
 
-            var getSurroundingImplementationMethod =
-                typeof(AroundInvokeRegistry).GetMethod("GetSurroundingImplementation");
-
-            var getSurroundingImplementation = module.Import(getSurroundingImplementationMethod);
+            var getSurroundingImplementation = module.Import(_getSurroundingImplementationMethod);
             IL.Emit(OpCodes.Ldloc, _invocationInfo);
             IL.Emit(OpCodes.Call, getSurroundingImplementation);
             IL.Emit(OpCodes.Stloc, _surroundingClassImplementation);

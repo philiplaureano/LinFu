@@ -13,6 +13,11 @@ namespace LinFu.AOP.Interfaces
         /// <summary>
         /// Gets or sets a value indicating the <see cref="IMethodReplacementProvider"/> that will be used to swap method body implementations at runtime.
         /// </summary>
-        IMethodReplacementProvider MethodReplacementProvider { get; set; }
+        IMethodReplacementProvider MethodBodyReplacementProvider { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating the <see cref="IMethodReplacementProvider"/> that will be used to swap method body implementations at runtime.
+        /// </summary>
+        IMethodReplacementProvider MethodCallReplacementProvider { get; set; }
     }
 }

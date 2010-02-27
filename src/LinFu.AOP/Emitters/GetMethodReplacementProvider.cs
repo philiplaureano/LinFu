@@ -14,10 +14,13 @@ namespace LinFu.AOP.Cecil
     {
         private readonly VariableDefinition _methodReplacementProvider;
         private readonly MethodDefinition _hostMethod;
-        public GetMethodReplacementProvider(MethodDefinition hostMethod, VariableDefinition methodReplacementProvider)
+        private readonly Func<ModuleDefinition, MethodReference> _resolveGetProviderMethod;        
+
+        public GetMethodReplacementProvider(VariableDefinition methodReplacementProvider, MethodDefinition hostMethod, Func<ModuleDefinition, MethodReference> resolveGetProviderMethod)
         {
-            _hostMethod = hostMethod;
             _methodReplacementProvider = methodReplacementProvider;
+            _hostMethod = hostMethod;
+            _resolveGetProviderMethod = resolveGetProviderMethod;
         }
 
         public void Emit(CilWorker IL)
@@ -33,7 +36,7 @@ namespace LinFu.AOP.Cecil
                 return;
             }
 
-            var getProvider = module.ImportMethod<IMethodReplacementHost>("get_MethodReplacementProvider");
+            var getProvider = _resolveGetProviderMethod(module);
             IL.Emit(OpCodes.Ldarg_0);
             IL.Emit(OpCodes.Callvirt, getProvider);
             IL.Emit(OpCodes.Stloc, _methodReplacementProvider);

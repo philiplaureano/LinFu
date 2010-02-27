@@ -37,9 +37,21 @@ namespace LinFu.AOP.Interfaces
             lock (_components)
             {
                 _components.LoadFrom(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
-                foreach(var component in _components)
+                foreach (var component in _components)
                 {
-                    component.Initialize();
+                    try
+                    {
+                        component.Initialize();
+                    }
+                    catch (Exception ex)
+                    {
+
+                        var componentName = component != null ? component.GetType().Name : "(unknown)";
+                        var message = string.Format("{0} Error: Unable to load component '{1}' - {2}", GetType().FullName,
+                                                    componentName, ex.ToString());
+
+                        throw new BootstrapException(message, ex);
+                    }
                 }
             }
         }
@@ -55,12 +67,13 @@ namespace LinFu.AOP.Interfaces
 
         private class NestedLoader
         {
-            internal static readonly BootStrapRegistry Instance = new BootStrapRegistry();
+            internal static readonly BootStrapRegistry Instance;
 
             // Explicit static constructor to tell C# compiler
             // not to mark type as beforefieldinit
             static NestedLoader()
             {
+                Instance = new BootStrapRegistry();
             }
         }
 

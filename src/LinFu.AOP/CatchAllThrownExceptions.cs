@@ -70,13 +70,11 @@ namespace LinFu.AOP.Cecil
             IL.Append(tryStart);
             addOriginalInstructions.Emit(IL);
 
-            
+            IL.Append(endOfOriginalInstructionBlock);
             if (returnType != _voidType && _returnValue != null)
             {
                 IL.Emit(OpCodes.Stloc, _returnValue);
-            }
-
-            IL.Append(endOfOriginalInstructionBlock);
+            }            
 
             IL.Emit(OpCodes.Leave, endLabel);
 

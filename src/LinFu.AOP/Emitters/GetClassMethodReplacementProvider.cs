@@ -5,6 +5,7 @@ using System.Text;
 using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
+using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 namespace LinFu.AOP.Cecil
@@ -13,17 +14,22 @@ namespace LinFu.AOP.Cecil
     {
         private readonly VariableDefinition _invocationInfo;
         private readonly VariableDefinition _classMethodReplacementProvider;
+        private readonly Func<ModuleDefinition, MethodReference> _resolveGetProviderMethod;
 
-        public GetClassMethodReplacementProvider(IMethodBodyRewriterParameters parameters)
+        public GetClassMethodReplacementProvider(IMethodBodyRewriterParameters parameters, 
+            Func<ModuleDefinition, MethodReference> resolveGetProviderMethod)
         {
             _invocationInfo = parameters.InvocationInfo;
             _classMethodReplacementProvider = parameters.ClassMethodReplacementProvider;
+            _resolveGetProviderMethod = resolveGetProviderMethod;
         }
-
-        public GetClassMethodReplacementProvider(VariableDefinition invocationInfo, VariableDefinition classMethodReplacementProvider)
+       
+        public GetClassMethodReplacementProvider(VariableDefinition invocationInfo, VariableDefinition classMethodReplacementProvider, 
+            Func<ModuleDefinition, MethodReference> resolveGetProviderMethod)
         {
             _invocationInfo = invocationInfo;
             _classMethodReplacementProvider = classMethodReplacementProvider;
+            _resolveGetProviderMethod = resolveGetProviderMethod;
         }
 
         public void Emit(CilWorker IL)
@@ -31,7 +37,7 @@ namespace LinFu.AOP.Cecil
             var module = IL.GetModule();
             var method = IL.GetMethod();
 
-            var getProvider = module.Import(typeof(MethodReplacementProviderRegistry).GetMethod("GetProvider"));
+            var getProvider = _resolveGetProviderMethod(module);
 
             var pushThis = method.HasThis ? OpCodes.Ldarg_0 : OpCodes.Ldnull;
             IL.Emit(pushThis);
@@ -39,6 +45,6 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Ldloc, _invocationInfo);
             IL.Emit(OpCodes.Call, getProvider);
             IL.Emit(OpCodes.Stloc, _classMethodReplacementProvider);
-        }
+        }        
     }
 }
