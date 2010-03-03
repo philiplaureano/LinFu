@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security;
 
-[assembly: AssemblyCopyright("Copyright  Philip Laureano 2008-2010")]
+[assembly: AssemblyCopyright("Copyright Philip Laureano 2008-2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyDescription("")]
@@ -17,5 +17,5 @@ using System.Security;
 // COM, set the ComVisible attribute to true on that type.
 
 [assembly: ComVisible(false)]
-[assembly: AssemblyVersion("2.2.0.*")]
-[assembly: AssemblyFileVersion("2.2.0.0")]
+[assembly: AssemblyVersion("2.3.0.*")]
+[assembly: AssemblyFileVersion("2.3.0.0")]

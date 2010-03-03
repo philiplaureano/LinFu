@@ -50,20 +50,20 @@ namespace LinFu.AOP.Tasks
                 if (pdbExists)
                     module.LoadSymbols();
 
-                if (InterceptAllMethodCalls)
-                    assembly.InterceptAllMethodCalls();
-
-                if (InterceptAllMethodBodies)
-                    assembly.InterceptAllMethodBodies();
-
                 if (InterceptAllNewInstances)
                     assembly.InterceptAllNewInstances();
 
                 if (InterceptAllFields)
                     assembly.InterceptAllFields();
 
+                if (InterceptAllMethodCalls)
+                    assembly.InterceptAllMethodCalls();
+
+                if (InterceptAllMethodBodies)
+                    assembly.InterceptAllMethodBodies();
+
                 if (InterceptAllExceptions)
-                    assembly.InterceptAllExceptions();
+                    assembly.InterceptAllExceptions();                
 
                 // Update the PDB info if it exists
                 if (pdbExists)
