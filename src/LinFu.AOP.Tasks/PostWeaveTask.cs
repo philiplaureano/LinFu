@@ -53,17 +53,17 @@ namespace LinFu.AOP.Tasks
                 if (InterceptAllNewInstances)
                     assembly.InterceptAllNewInstances();
 
-                if (InterceptAllFields)
-                    assembly.InterceptAllFields();
-
                 if (InterceptAllMethodCalls)
                     assembly.InterceptAllMethodCalls();
 
                 if (InterceptAllMethodBodies)
-                    assembly.InterceptAllMethodBodies();
+                    assembly.InterceptAllMethodBodies();                
+
+                if (InterceptAllFields)
+                    assembly.InterceptAllFields();
 
                 if (InterceptAllExceptions)
-                    assembly.InterceptAllExceptions();                
+                    assembly.InterceptAllExceptions();
 
                 // Update the PDB info if it exists
                 if (pdbExists)
