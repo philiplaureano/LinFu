@@ -158,6 +158,11 @@ namespace LinFu.AOP.Cecil
             var infoConstructor = module.Import(_invocationInfoConstructor);
             IL.Emit(OpCodes.Newobj, infoConstructor);
             IL.Emit(OpCodes.Stloc, invocationInfo);
+
+            IL.Emit(OpCodes.Ldloc, invocationInfo);
+
+            var addInstance = module.Import(typeof(IgnoredInstancesRegistry).GetMethod("AddInstance"));
+            IL.Emit(OpCodes.Call, addInstance);
         }
     }
 }

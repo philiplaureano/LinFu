@@ -130,6 +130,11 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Newobj, _stackCtor);
             IL.Emit(OpCodes.Stloc, _currentArguments);
 
+
+            // Make sure that the argument stack doesn't show up in
+            // any of the other interception routines
+            IgnoreLocal(IL, _currentArguments, module);
+
             SaveInvocationInfo(IL, targetMethod, module, returnType);
 
             var getInterceptionDisabled = new GetInterceptionDisabled(hostMethod, _interceptionDisabled);
@@ -146,6 +151,14 @@ namespace LinFu.AOP.Cecil
             IL.Append(endLabel);
 
             surroundMethodBody.AddEpilog(IL);            
+        }
+
+        private void IgnoreLocal(CilWorker IL, VariableDefinition targetVariable, ModuleDefinition module)
+        {
+            IL.Emit(OpCodes.Ldloc, targetVariable);
+            
+            var addInstance = module.Import(typeof(IgnoredInstancesRegistry).GetMethod("AddInstance"));
+            IL.Emit(OpCodes.Call, addInstance);
         }
 
         private void Replace(CilWorker IL, Instruction oldInstruction, MethodReference targetMethod, MethodDefinition hostMethod, Instruction endLabel, Instruction callOriginalMethod)
@@ -223,9 +236,7 @@ namespace LinFu.AOP.Cecil
             IL.Append(callOriginalMethod);
 
             // Call the original method
-            IL.Append(oldInstruction);
-
-            
+            IL.Append(oldInstruction);            
         }
 
         private void GetInstanceProvider(CilWorker IL)
@@ -328,6 +339,8 @@ namespace LinFu.AOP.Cecil
 
             IL.Emit(OpCodes.Newobj, _invocationInfoCtor);
             IL.Emit(OpCodes.Stloc, _invocationInfo);
+
+            IgnoreLocal(IL, _invocationInfo, module);
         }
 
         private void PushStackTrace(CilWorker IL, ModuleDefinition module)

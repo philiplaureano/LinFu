@@ -75,6 +75,7 @@
     <Compile Include="Emitters\GetInterceptionDisabled.cs" />
     <Compile Include="Emitters\GetClassMethodReplacementProvider.cs" />
     <Compile Include="Extensions\FieldInterceptionExtensions.cs" />
+    <Compile Include="IgnoredInstancesRegistry.cs" />
     <Compile Include="Interfaces\IMethodBodyRewriterParameters.cs" />
     <Compile Include="NewOperatorInterception\ImplementActivatorHostWeaver.cs" />
     <Compile Include="FieldInterception\ImplementFieldInterceptionHostWeaver.cs" />
