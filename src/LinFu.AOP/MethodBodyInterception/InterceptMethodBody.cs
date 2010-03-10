@@ -45,6 +45,9 @@ namespace LinFu.AOP.Cecil
         /// <param name="oldInstructions">The IL instructions of the original method body.</param>
         protected override void RewriteMethodBody(MethodDefinition method, CilWorker IL, IEnumerable<Instruction> oldInstructions)
         {
+            if (IsExcluded(IL, method))
+                return;
+
             var interceptionDisabled = method.AddLocal<bool>();
             var invocationInfo = method.AddLocal<IInvocationInfo>();
             var aroundInvokeProvider = method.AddLocal<IAroundInvokeProvider>();
@@ -57,19 +60,19 @@ namespace LinFu.AOP.Cecil
             Func<ModuleDefinition, MethodReference> getInstanceMethodReplacementProviderMethod =
                 module => module.Import(typeof(IMethodReplacementHost).GetMethod("get_MethodBodyReplacementProvider"));
 
-            var parameters = new MethodBodyRewriterParameters(IL, 
-                oldInstructions, 
-                interceptionDisabled, 
-                invocationInfo, returnValue, 
-                aroundInvokeProvider, 
-                methodReplacementProvider, 
-                classMethodReplacementProvider, 
-                getInstanceMethodReplacementProviderMethod, 
+            var parameters = new MethodBodyRewriterParameters(IL,
+                oldInstructions,
+                interceptionDisabled,
+                invocationInfo, returnValue,
+                aroundInvokeProvider,
+                methodReplacementProvider,
+                classMethodReplacementProvider,
+                getInstanceMethodReplacementProviderMethod,
                 typeof(AroundMethodBodyRegistry));
 
             var emitter = new InvocationInfoEmitter(true);
 
-            IInstructionEmitter getMethodReplacementProvider = new GetMethodReplacementProvider(methodReplacementProvider, method, 
+            IInstructionEmitter getMethodReplacementProvider = new GetMethodReplacementProvider(methodReplacementProvider, method,
                 getInstanceMethodReplacementProviderMethod);
 
             IInstructionEmitter getInterceptionDisabled = new GetInterceptionDisabled(parameters);
@@ -82,6 +85,17 @@ namespace LinFu.AOP.Cecil
 
             // Determine whether or not the method should be intercepted
             rewriter.Rewrite(method, IL, oldInstructions);
+        }
+
+        private bool IsExcluded(CilWorker IL, MethodDefinition method)
+        {
+            var excludedTypes = new [] { typeof(IMethodReplacementHost), typeof(IModifiableType) };
+            var excludedMethods = (from type in excludedTypes
+                                   from currentMethod in type.GetMethods()
+                                   select currentMethod.Name).ToList();
+
+            var methodName = method.Name;
+            return excludedMethods.Contains(methodName);
         }
     }
 }

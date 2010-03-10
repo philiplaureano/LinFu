@@ -42,10 +42,13 @@ namespace LinFu.AOP.Cecil
 
         public void Rewrite(MethodDefinition method, CilWorker IL,
             IEnumerable<Instruction> oldInstructions)
-        {
+        {            
             var targetMethod = _parameters.TargetMethod;
             var worker = targetMethod.GetILGenerator();
             var module = worker.GetModule();
+
+            var methodName = targetMethod.Name;
+            IL.EmitWriteLine(string.Format("{0}: GetInterceptionDisabled", methodName));
             _getInterceptionDisabled.Emit(worker);
 
             // Construct the InvocationInfo instance
@@ -53,27 +56,24 @@ namespace LinFu.AOP.Cecil
             worker.Emit(OpCodes.Ldloc, _parameters.InterceptionDisabled);
             worker.Emit(OpCodes.Brtrue, skipInvocationInfo);
 
-
             var interceptedMethod = targetMethod;
             _emitter.Emit(targetMethod, interceptedMethod, _parameters.InvocationInfo);
 
-
             var skipGetReplacementProvider = IL.Create(OpCodes.Nop);
             // var provider = this.MethodReplacementProvider;
-            //IL.Emit(OpCodes.Ldloc, _interceptionDisabled);
-            //IL.Emit(OpCodes.Brtrue, skipGetReplacementProvider);
+            IL.Emit(OpCodes.Ldloc, _interceptionDisabled);
+            IL.Emit(OpCodes.Brtrue, skipGetReplacementProvider);
+
             _getInstanceMethodReplacementProvider.Emit(IL);
             _surroundMethodBody.AddProlog(worker);
+
             IL.Append(skipGetReplacementProvider);
 
-            worker.Append(skipInvocationInfo);
-            
+            worker.Append(skipInvocationInfo);            
             _getClassMethodReplacementProvider.Emit(worker);
 
-            
 
-            var returnType = targetMethod.ReturnType.ReturnType;
-            
+            var returnType = targetMethod.ReturnType.ReturnType;            
             _addMethodReplacement.Emit(worker);
 
             // Save the return value
