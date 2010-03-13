@@ -45,8 +45,11 @@ namespace LinFu.AOP.Cecil
         /// <param name="oldInstructions">The IL instructions of the original method body.</param>
         protected override void RewriteMethodBody(MethodDefinition method, CilWorker IL, IEnumerable<Instruction> oldInstructions)
         {
-            if (IsExcluded(IL, method))
+            if (IsExcluded(method))
+            {
+                AddOriginalInstructions(IL, oldInstructions);
                 return;
+            }
 
             var interceptionDisabled = method.AddLocal<bool>();
             var invocationInfo = method.AddLocal<IInvocationInfo>();
@@ -87,9 +90,17 @@ namespace LinFu.AOP.Cecil
             rewriter.Rewrite(method, IL, oldInstructions);
         }
 
-        private bool IsExcluded(CilWorker IL, MethodDefinition method)
+        private void AddOriginalInstructions(CilWorker IL, IEnumerable<Instruction> oldInstructions)
         {
-            var excludedTypes = new [] { typeof(IMethodReplacementHost), typeof(IModifiableType) };
+            foreach (var instruction in oldInstructions)
+            {
+                IL.Append(instruction);
+            }
+        }
+
+        private bool IsExcluded(MethodDefinition method)
+        {
+            var excludedTypes = new[] { typeof(IMethodReplacementHost), typeof(IModifiableType) };
             var excludedMethods = (from type in excludedTypes
                                    from currentMethod in type.GetMethods()
                                    select currentMethod.Name).ToList();
