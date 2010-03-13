@@ -33,7 +33,6 @@ namespace LinFu.AOP.Cecil.Extensions
             target.InterceptNewInstances(typeFilter);
         }
 
-
         /// <summary>
         /// Modifies a <paramref name="target"/> to support intercepting calls to the 'new' operator.
         /// </summary>
@@ -171,6 +170,18 @@ namespace LinFu.AOP.Cecil.Extensions
 
             var redirector = new RedirectNewInstancesToActivator(filter);
             target.InterceptNewInstancesWith(redirector, methodFilter);
+        }
+
+        /// <summary>
+        /// Modifies the <paramref name="target"/> to support intercepting calls to the 'new' operator.
+        /// </summary>
+        /// <param name="target">The item to be modified.</param>
+        /// <param name="newInstanceFilter">The filter that will determine which constructor calls should be intercepted.</param>
+        /// <param name="methodFilter">The filter that will determine which host methods should be modified to support new instance interception.</param>
+        public static void InterceptNewInstances(this IReflectionVisitable target, INewInstanceFilter newInstanceFilter, IMethodFilter methodFilter)
+        {
+            var redirector = new RedirectNewInstancesToActivator(newInstanceFilter);
+            target.InterceptNewInstancesWith(redirector, methodFilter.ShouldWeave);
         }
 
         /// <summary>

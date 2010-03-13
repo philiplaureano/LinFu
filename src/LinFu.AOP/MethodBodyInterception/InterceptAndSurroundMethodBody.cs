@@ -47,15 +47,14 @@ namespace LinFu.AOP.Cecil
             var worker = targetMethod.GetILGenerator();
             var module = worker.GetModule();
 
-            var methodName = targetMethod.Name;
-            IL.EmitWriteLine(string.Format("{0}: GetInterceptionDisabled", methodName));
+
             _getInterceptionDisabled.Emit(worker);
 
             // Construct the InvocationInfo instance
             var skipInvocationInfo = worker.Create(OpCodes.Nop);
             worker.Emit(OpCodes.Ldloc, _parameters.InterceptionDisabled);
             worker.Emit(OpCodes.Brtrue, skipInvocationInfo);
-
+            
             var interceptedMethod = targetMethod;
             _emitter.Emit(targetMethod, interceptedMethod, _parameters.InvocationInfo);
 

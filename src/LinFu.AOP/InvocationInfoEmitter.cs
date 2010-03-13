@@ -76,6 +76,8 @@ namespace LinFu.AOP.Cecil
             var systemType = module.ImportType(typeof(Type));
 
             var IL = targetMethod.GetILGenerator();
+            
+            
             #region Initialize the InvocationInfo constructor arguments
 
             // Type[] typeArguments = new Type[genericTypeCount];
@@ -158,7 +160,6 @@ namespace LinFu.AOP.Cecil
             var infoConstructor = module.Import(_invocationInfoConstructor);
             IL.Emit(OpCodes.Newobj, infoConstructor);
             IL.Emit(OpCodes.Stloc, invocationInfo);
-
             IL.Emit(OpCodes.Ldloc, invocationInfo);
 
             var addInstance = module.Import(typeof(IgnoredInstancesRegistry).GetMethod("AddInstance"));

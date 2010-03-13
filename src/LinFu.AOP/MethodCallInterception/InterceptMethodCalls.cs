@@ -14,9 +14,6 @@ namespace LinFu.AOP.Cecil
 {
     internal class InterceptMethodCalls : InstructionSwapper
     {
-        private readonly Func<MethodReference, bool> _hostMethodFilter;
-        private readonly Func<MethodReference, bool> _methodCallFilter;
-
         private MethodReference _stackCtor;
         private MethodReference _invocationInfoCtor;
         private VariableDefinition _interceptionDisabled;
@@ -49,26 +46,20 @@ namespace LinFu.AOP.Cecil
         private VariableDefinition _aroundInvokeProvider;
         private VariableDefinition _returnValue;
 
-        private ModuleDefinition _linfuAopModule;
-        private ModuleDefinition _linfuAopInterfaceModule;
+        private IMethodCallFilter _callFilter;
 
         public InterceptMethodCalls(Func<MethodReference, bool> hostMethodFilter, Func<MethodReference, bool> methodCallFilter)
         {
-            _hostMethodFilter = hostMethodFilter;
-            _methodCallFilter = methodCallFilter;
+            _callFilter = new MethodCallFilterAdapter(hostMethodFilter, methodCallFilter);
+        }
+
+        public InterceptMethodCalls(IMethodCallFilter callFilter)
+        {
+            _callFilter = callFilter;
         }
 
         public override void ImportReferences(ModuleDefinition module)
         {
-            // Keep track of the module that contains the ITypeFilter type
-            // so that the InterceptMethodCalls class will skip
-            // trying to intercept types within the LinFu.Aop.Cecil assembly
-            var typeFilterType = module.ImportType<ITypeFilter>();
-            _linfuAopModule = typeFilterType.Module;
-
-            var activatorHostType = module.ImportType<IActivatorHost>();
-            _linfuAopInterfaceModule = activatorHostType.Module;
-
             var types = new[] { typeof(object), 
                                  typeof(MethodBase), 
                                  typeof(StackTrace), 
@@ -89,7 +80,7 @@ namespace LinFu.AOP.Cecil
             _canReplace = module.ImportMethod<IMethodReplacementProvider>("CanReplace");
             _getReplacement = module.ImportMethod<IMethodReplacementProvider>("GetMethodReplacement");
             _hostInterfaceType = module.ImportType<IMethodReplacementHost>();
-            _intercept = module.ImportMethod<IInterceptor>("Intercept");            
+            _intercept = module.ImportMethod<IInterceptor>("Intercept");
         }
 
         public override void AddLocals(MethodDefinition hostMethod)
@@ -150,13 +141,13 @@ namespace LinFu.AOP.Cecil
 
             IL.Append(endLabel);
 
-            surroundMethodBody.AddEpilog(IL);            
+            surroundMethodBody.AddEpilog(IL);
         }
 
         private void IgnoreLocal(CilWorker IL, VariableDefinition targetVariable, ModuleDefinition module)
         {
             IL.Emit(OpCodes.Ldloc, targetVariable);
-            
+
             var addInstance = module.Import(typeof(IgnoredInstancesRegistry).GetMethod("AddInstance"));
             IL.Emit(OpCodes.Call, addInstance);
         }
@@ -168,7 +159,7 @@ namespace LinFu.AOP.Cecil
             if (!hostMethod.IsStatic)
                 GetInstanceProvider(IL);
 
-            
+
             var pushInstance = hostMethod.HasThis ? IL.Create(OpCodes.Ldarg_0) : IL.Create(OpCodes.Ldnull);
 
             // If all else fails, use the static method replacement provider
@@ -182,7 +173,7 @@ namespace LinFu.AOP.Cecil
             var callReplacement = IL.Create(OpCodes.Nop);
             var useStaticProvider = IL.Create(OpCodes.Nop);
 
-            
+
             #region Use the instance method replacement provider
 
             IL.Emit(OpCodes.Ldloc, _instanceProvider);
@@ -195,7 +186,7 @@ namespace LinFu.AOP.Cecil
 
             EmitGetMethodReplacement(IL, hostMethod, _instanceProvider);
 
-            
+
             IL.Emit(OpCodes.Ldloc, _replacement);
             IL.Emit(OpCodes.Brtrue, callReplacement);
 
@@ -205,7 +196,7 @@ namespace LinFu.AOP.Cecil
             // if (!MethodReplacementProvider.CanReplace(info))
             //      CallOriginalMethod();
             EmitCanReplace(IL, hostMethod, _staticProvider);
-            
+
             IL.Emit(OpCodes.Ldloc, _canReplaceFlag);
             IL.Emit(OpCodes.Brfalse, restoreArgumentStack);
 
@@ -225,7 +216,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Br, endLabel);
 
             IL.Append(restoreArgumentStack);
-            
+
             // Reconstruct the method arguments if the interceptor
             // cannot be found
 
@@ -236,7 +227,7 @@ namespace LinFu.AOP.Cecil
             IL.Append(callOriginalMethod);
 
             // Call the original method
-            IL.Append(oldInstruction);            
+            IL.Append(oldInstruction);
         }
 
         private void GetInstanceProvider(CilWorker IL)
@@ -310,7 +301,7 @@ namespace LinFu.AOP.Cecil
 
             // Push the stack trace
             PushStackTrace(IL, module);
-            
+
             var systemType = module.Import(typeof(Type));
 
             // Save the parameter types
@@ -364,7 +355,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Brfalse, skipGetProvider);
 
             IL.Emit(OpCodes.Ldloc, provider);
-            
+
             // Push the host instance
             var pushInstance = hostMethod.HasThis ? IL.Create(OpCodes.Ldarg_0) : IL.Create(OpCodes.Ldnull);
             IL.Append(pushInstance);
@@ -395,15 +386,12 @@ namespace LinFu.AOP.Cecil
             if (opCode != OpCodes.Callvirt && opCode != OpCodes.Call)
                 return false;
 
-            var targetMethod = (MethodReference)oldInstruction.Operand;            
+            var targetMethod = (MethodReference)oldInstruction.Operand;
             var declaringType = targetMethod.DeclaringType;
-            var module = declaringType.Module;
 
-            //// Skip interception for types within the LinFu.AOP.Cecil assembly
-            //if (module == _linfuAopModule || module == _linfuAopInterfaceModule)
-            //    return false;
-            
-            return _hostMethodFilter(hostMethod) && _methodCallFilter(targetMethod);
-        }        
+
+            //return _hostMethodFilter(hostMethod) && _methodCallFilter(targetMethod);
+            return _callFilter.ShouldWeave(hostMethod.DeclaringType, hostMethod, targetMethod);
+        }
     }
 }

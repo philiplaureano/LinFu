@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil;
 
 namespace LinFu.AOP.Cecil.Extensions
@@ -12,13 +13,22 @@ namespace LinFu.AOP.Cecil.Extensions
         {
             var filter = GetMethodFilter();
             InterceptExceptions(visitable, filter);
-        }
-       
+        }       
 
         public static void InterceptAllExceptions(this IReflectionStructureVisitable visitable)
         {
             var filter = GetMethodFilter();
             InterceptExceptions(visitable, filter);
+        }
+
+        public static void InterceptExceptions(this IReflectionVisitable visitable, IMethodFilter methodFilter)
+        {
+            visitable.InterceptExceptions(methodFilter.ShouldWeave);
+        }
+
+        public static void InterceptExceptions(this IReflectionStructureVisitable visitable, IMethodFilter methodFilter)
+        {
+            visitable.InterceptExceptions(methodFilter.ShouldWeave);
         }
 
         public static void InterceptExceptions(this IReflectionStructureVisitable visitable, Func<MethodReference, bool> methodFilter)

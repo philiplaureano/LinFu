@@ -16,6 +16,6 @@ namespace LinFu.AOP.Cecil
         /// </summary>
         /// <param name="type">The target type.</param>
         /// <returns>Returns <c>true</c> if the type should be modified.</returns>
-        bool ShouldWeave(TypeDefinition type);
+        bool ShouldWeave(TypeReference type);
     }
 }

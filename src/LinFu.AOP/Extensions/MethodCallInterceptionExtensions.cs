@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using LinFu.AOP.Cecil.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
 
@@ -18,25 +19,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="target">The target object.</param>
         public static void InterceptAllMethodCalls(this IReflectionStructureVisitable target)
         {
-            Func<TypeReference, bool> typeFilter = type =>
-                                                       {
-                                                           var actualType = type.Resolve();
-                                                           return !actualType.IsValueType && !actualType.IsInterface;
-                                                       };
-
-            var hostMethodFilter = GetHostMethodFilter();
-            Func<MethodReference, bool> methodCallFilter = m => true;
-
-            InterceptMethodCalls(target, typeFilter, hostMethodFilter, methodCallFilter);
-        }
-
-        private static Func<MethodReference, bool> GetHostMethodFilter()
-        {
-            return method =>
-                       {
-                           var actualMethod = method.Resolve();
-                           return actualMethod.HasBody;
-                       };
+            target.InterceptMethodCalls(GetDefaultTypeFilter());
         }
 
         /// <summary>
@@ -45,16 +28,49 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="target">The target object.</param>
         public static void InterceptAllMethodCalls(this IReflectionVisitable target)
         {
-            Func<TypeReference, bool> typeFilter = type =>
-                                                       {
-                                                           var actualType = type.Resolve();
-                                                           return !actualType.IsValueType && !actualType.IsInterface;
-                                                       };
+            var hostMethodFilter = GetHostMethodFilter();
+            Func<MethodReference, bool> methodCallFilter = m => true;
 
+            InterceptMethodCalls(target, GetDefaultTypeFilter(), hostMethodFilter, methodCallFilter);
+        }
+
+        /// <summary>
+        /// Modifies the current <paramref name="target"/> to support third-party method call interception for all method calls made inside the target.
+        /// </summary>
+        /// <param name="target">The target object.</param>
+        /// <param name="typeFilter">The type filter that determines which types will be modified for interception.</param>
+        public static void InterceptMethodCalls(this IReflectionStructureVisitable target, Func<TypeReference, bool> typeFilter)
+        {
             var hostMethodFilter = GetHostMethodFilter();
             Func<MethodReference, bool> methodCallFilter = m => true;
 
             InterceptMethodCalls(target, typeFilter, hostMethodFilter, methodCallFilter);
+        }
+
+        /// <summary>
+        /// Modifies the current <paramref name="target"/> to support third-party method call interception for all method calls made inside the target.
+        /// </summary>
+        /// <param name="target">The target object.</param>
+        public static void InterceptMethodCalls(this IReflectionVisitable target, Func<TypeReference, bool> typeFilter)
+        {
+            var hostMethodFilter = GetHostMethodFilter();
+            Func<MethodReference, bool> methodCallFilter = m => true;
+
+            InterceptMethodCalls(target, typeFilter, hostMethodFilter, methodCallFilter);
+        }
+
+        /// <summary>
+        /// Modifies the current <paramref name="target"/> to support third-party method call interception for all method calls made inside the target.
+        /// </summary>
+        /// <param name="target">The target object.</param>
+        /// <param name="methodCallFilter">The <see cref="IMethodCallFilter"/> instance that determines the method calls that will be intercepted.</param>
+        /// <param name="hostMethodFilter">The <see cref="IMethodFilter"/> instance that determines the host method calls that will be modified</param>
+        public static void InterceptMethodCalls(this IReflectionVisitable target, IMethodCallFilter methodCallFilter,
+            IMethodFilter hostMethodFilter)
+        {
+            var rewriter = new InterceptMethodCalls(methodCallFilter);
+            target.Accept(new ImplementModifiableType(GetDefaultTypeFilter()));
+            target.WeaveWith(rewriter, hostMethodFilter.ShouldWeave);
         }
 
         /// <summary>
@@ -83,6 +99,24 @@ namespace LinFu.AOP.Cecil.Extensions
             var rewriter = new InterceptMethodCalls(hostMethodFilter, methodCallFilter);
             target.Accept(new ImplementModifiableType(typeFilter));
             target.WeaveWith(rewriter, hostMethodFilter);
+        }
+
+        private static Func<TypeReference, bool> GetDefaultTypeFilter()
+        {
+            return type =>
+            {
+                var actualType1 = type.Resolve();
+                return !actualType1.IsValueType && !actualType1.IsInterface;
+            };
+        }
+
+        private static Func<MethodReference, bool> GetHostMethodFilter()
+        {
+            return method =>
+            {
+                var actualMethod = method.Resolve();
+                return actualMethod.HasBody;
+            };
         }
     }
 }

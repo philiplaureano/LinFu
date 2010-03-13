@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil.Cil;
 using Mono.Cecil;
 using LinFu.AOP.Interfaces;
@@ -17,7 +18,6 @@ namespace LinFu.AOP.Cecil
     internal class InterceptFieldAccess : InstructionSwapper
     {
         private static readonly HashSet<OpCode> _fieldInstructions = new HashSet<OpCode>();
-        private TypeReference _fieldContextType;
         private TypeReference _fieldInterceptionHostType;
 
         private MethodReference _fieldContextCtor;
@@ -31,8 +31,7 @@ namespace LinFu.AOP.Cecil
         private VariableDefinition _fieldInterceptor;
         private VariableDefinition _currentArgument;
 
-        private Func<FieldReference, bool> _filter;
-
+        private readonly IFieldFilter _filter;
 
         static InterceptFieldAccess()
         {
@@ -45,17 +44,17 @@ namespace LinFu.AOP.Cecil
         /// <summary>
         /// Initializes a new instance of the InterceptFieldAccess class.
         /// </summary>
-        public InterceptFieldAccess()
+        /// <param name="filter">The filter that determines which fields should be intercepted.</param>
+        public InterceptFieldAccess(Func<FieldReference, bool> filter)
         {
-            // Weave all fields by default
-            _filter = field => true;
+            _filter = new FieldFilterAdapter(filter);
         }
 
         /// <summary>
         /// Initializes a new instance of the InterceptFieldAccess class.
         /// </summary>
         /// <param name="filter">The filter that determines which fields should be intercepted.</param>
-        public InterceptFieldAccess(Func<FieldReference, bool> filter)
+        public InterceptFieldAccess(IFieldFilter filter)
         {
             _filter = filter;
         }
@@ -78,7 +77,7 @@ namespace LinFu.AOP.Cecil
         public override void ImportReferences(ModuleDefinition module)
         {
             var parameterTypes = new Type[] { typeof(object), typeof(MethodBase), typeof(FieldInfo), typeof(Type) };
-            _fieldContextType = module.ImportType<IFieldInterceptionContext>();
+            
             _fieldInterceptionHostType = module.ImportType<IFieldInterceptionHost>();
 
             _fieldContextCtor = module.ImportConstructor<FieldInterceptionContext>(parameterTypes);
@@ -106,11 +105,12 @@ namespace LinFu.AOP.Cecil
 
             // Match the field filter
             var targetField = (FieldReference)oldInstruction.Operand;
-            return _filter(targetField);
+
+            return _filter.ShouldWeave(hostMethod, targetField);
         }
 
         /// <summary>
-        /// Replaces the <paramref name="oldInstruction"/> with a set of <paramref name="newInstructions"/>.
+        /// Replaces the <paramref name="oldInstruction"/> with a set of new instructions.
         /// </summary>
         /// <param name="oldInstruction">The instruction currently being evaluated.</param>
         /// <param name="hostMethod">The method that contains the target instruction.</param>

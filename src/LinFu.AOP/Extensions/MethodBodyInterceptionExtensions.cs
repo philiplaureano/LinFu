@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil;
 
 namespace LinFu.AOP.Cecil.Extensions
@@ -19,6 +20,16 @@ namespace LinFu.AOP.Cecil.Extensions
         public static void InterceptAllMethodBodies(this IReflectionVisitable target)
         {
             target.InterceptMethodBody(m => true);
+        }
+
+        public static void InterceptMethodBody(this IReflectionVisitable target, IMethodFilter methodFilter)
+        {
+            target.InterceptMethodBody(methodFilter.ShouldWeave);
+        }
+
+        public static void InterceptMethodBody(this IReflectionStructureVisitable target, IMethodFilter methodFilter)
+        {
+            target.InterceptMethodBody(methodFilter.ShouldWeave);
         }
 
         public static void InterceptMethodBody(this IReflectionStructureVisitable target, Func<MethodReference, bool> methodFilter)

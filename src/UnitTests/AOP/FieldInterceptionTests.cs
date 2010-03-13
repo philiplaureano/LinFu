@@ -15,7 +15,7 @@ namespace LinFu.UnitTests.AOP
     {
         public class FieldInterceptorImpl : IFieldInterceptor
         {
-            
+
             #region IFieldInterceptor Members
 
             public bool CanIntercept(IFieldInterceptionContext context)
@@ -48,7 +48,7 @@ namespace LinFu.UnitTests.AOP
                 if (!type.FullName.Contains("SampleClassWithReadOnlyField"))
                     continue;
 
-                type.InterceptFields(m => true, f => true);                
+                type.InterceptAllFields();
             }
 
             var loadedAssembly = myLibrary.ToAssembly();
@@ -58,8 +58,6 @@ namespace LinFu.UnitTests.AOP
 
             object instance = Activator.CreateInstance(targetType);
             Assert.IsNotNull(instance);
-
-            var interfaces = targetType.GetInterfaces();
 
             var host = (IFieldInterceptionHost)instance;
             Assert.IsNotNull(host);

@@ -32,11 +32,11 @@ namespace LinFu.UnitTests.AOP
         [Test]
         public void ShouldNotInterceptConstructorsWhenIntereptingAllMethodCalls()
         {
-            var modifiedTargetType = GetModifiedTargetType((name,type)=>type.InterceptAllMethodCalls());
+            var modifiedTargetType = GetModifiedTargetType((name, type) => type.InterceptAllMethodCalls());
             var instance = Activator.CreateInstance(modifiedTargetType);
             var aroundInvoke = new SampleAroundInvoke();
             var provider = new SampleAroundInvokeProvider(aroundInvoke);
-            
+
             AroundInvokeMethodCallRegistry.AddProvider(provider);
             MethodInfo targetMethod = modifiedTargetType.GetMethod("DoSomething");
             targetMethod.Invoke(instance, null);

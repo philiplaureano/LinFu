@@ -14,16 +14,8 @@ namespace LinFu.AOP.Cecil
 {
     internal class RedirectNewInstancesToActivator : INewObjectWeaver
     {
-        #region Private Fields
-        private TypeReference _hostInterfaceType;
-        private TypeReference _methodActivatorType;
-        private TypeReference _objectType;
-        private TypeReference _voidType;
-        private TypeReference _objectListType;
-
         private MethodReference _getTypeFromHandle;
         private MethodReference _methodActivationContextCtor;
-        private MethodReference _getActivator;
         private MethodReference _createInstance;
         private MethodReference _objectListCtor;
         private MethodReference _addMethod;
@@ -38,15 +30,17 @@ namespace LinFu.AOP.Cecil
         private VariableDefinition _methodContext;
         private VariableDefinition _currentActivator;
 
-        private Func<MethodReference, TypeReference, MethodReference, bool> _filter;
+        private INewInstanceFilter _filter;
 
-        #endregion
-
-
-        public RedirectNewInstancesToActivator(Func<MethodReference, TypeReference, MethodReference, bool> filter)
+        public RedirectNewInstancesToActivator(INewInstanceFilter filter)
         {
             _filter = filter;
         }
+
+        public RedirectNewInstancesToActivator(Func<MethodReference, TypeReference, MethodReference, bool> filter)
+        {
+            _filter = new NewInstanceInterceptionAdapter(filter);
+        }        
 
         public bool ShouldIntercept(MethodReference constructor, TypeReference concreteType, MethodReference hostMethod)
         {
@@ -54,7 +48,7 @@ namespace LinFu.AOP.Cecil
             if (_filter == null)
                 return true;
 
-            return _filter(constructor, concreteType, hostMethod);
+            return _filter.ShouldWeave(constructor, concreteType, hostMethod);
         }
 
         public void AddAdditionalMembers(TypeDefinition host)
@@ -65,13 +59,7 @@ namespace LinFu.AOP.Cecil
         }
 
         public void ImportReferences(ModuleDefinition module)
-        {
-            // Type imports
-            _hostInterfaceType = module.ImportType<IActivatorHost>();
-            _methodActivatorType = module.ImportType<ITypeActivator>();
-            _objectType = module.ImportType<object>();
-            _voidType = module.Import(typeof(void));
-            _objectListType = module.ImportType<List<object>>();
+        {            
 
             // Static method imports
             _getStaticActivator = module.ImportMethod("GetActivator", typeof(TypeActivatorRegistry), BindingFlags.Public | BindingFlags.Static);
@@ -81,7 +69,6 @@ namespace LinFu.AOP.Cecil
             _methodActivationContextCtor = module.ImportConstructor<TypeActivationContext>(typeof(object), typeof(MethodBase), typeof(Type), typeof(object[]));
 
             // Instance method imports
-            _getActivator = module.ImportMethod<IActivatorHost>("get_Activator");
             _objectListCtor = module.ImportConstructor<List<object>>(new Type[0]);
             _toArrayMethod = module.ImportMethod<List<object>>("ToArray", new Type[0]);
             _addMethod = module.ImportMethod<List<object>>("Add", new Type[] { typeof(object) });
