@@ -70,6 +70,7 @@
     <Compile Include="AOP\ThirdPartyMethodCallInterceptionTests.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="BaseTestFixture.cs" />
+    <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="Finders\MethodFinderTests.cs" />
     <Compile Include="IOC\Configuration\InitializerTests.cs" />
     <Compile Include="IOC\FactoryStorageTests.cs" />

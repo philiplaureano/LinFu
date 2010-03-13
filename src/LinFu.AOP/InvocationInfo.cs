@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -12,6 +13,7 @@ namespace LinFu.AOP.Cecil
     /// Represents the information associated with 
     /// a single method call.
     /// </summary>
+    [Serializable]
     public class InvocationInfo : IInvocationInfo
     {
         private readonly object _target;
@@ -149,6 +151,36 @@ namespace LinFu.AOP.Cecil
             {
                 return _arguments;
             }
+        }
+
+        /// <summary>
+        /// Returns a string that represents the current object.
+        /// </summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override string ToString()
+        {
+            var writer = new StringWriter();
+            var targetMethod = TargetMethod;
+
+            writer.Write("{0}.{1}(", targetMethod.DeclaringType, targetMethod.Name);
+
+            var arguments = new Queue<object>(Arguments);
+            while (arguments.Count > 0)
+            {
+                var argument = arguments.Dequeue();
+
+                if (argument is string)
+                    argument = string.Format("\"{0}\"", argument);
+
+                writer.Write(argument);
+
+                if (arguments.Count > 0)
+                    writer.Write(", ");
+            }
+
+            writer.WriteLine(")");
+
+            return writer.ToString();
         }
     }
 }

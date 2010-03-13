@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -20,6 +21,36 @@ namespace LinFu.UnitTests.Proxy
     [TestFixture]
     public class ProxySerializationTests : BaseTestFixture 
     {
+        [Test]
+        public void ShouldBeAbleToSerializeInvocationInfo()
+        {
+            var target = 42;
+            var targetMethod = typeof (object).GetMethod("ToString");            
+            var stackTrace = new StackTrace();
+            var parameterTypes = new Type[] {typeof (int)};
+            var typeArguments = new Type[] {typeof (string)};
+            var arguments = new object[] {1, 2, 3};
+            var info = new InvocationInfo(target, targetMethod, stackTrace, parameterTypes, typeArguments,
+                                          typeof (string), arguments);
+
+            var memoryStream = new MemoryStream();
+            var formatter = new BinaryFormatter();
+            formatter.Serialize(memoryStream, info);
+
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            var otherInfo = formatter.Deserialize(memoryStream) as InvocationInfo;
+            Assert.IsNotNull(otherInfo);
+
+            Assert.AreEqual(target, otherInfo.Target);
+            Assert.AreEqual(targetMethod, otherInfo.TargetMethod);            
+
+            Assert.IsTrue(parameterTypes.AreEqualTo(otherInfo.ParameterTypes));
+            Assert.IsTrue(typeArguments.AreEqualTo(otherInfo.TypeArguments));
+            Assert.IsTrue(arguments.AreEqualTo(otherInfo.Arguments));
+        }
+
+        
+
         [Test]
         public void ShouldSupportSerialization()
         {
