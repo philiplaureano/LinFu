@@ -74,6 +74,20 @@ namespace LinFu.AOP.Cecil.Extensions
         }
 
         /// <summary>
+        /// Modifies the current <paramref name="target"/> to support third-party method call interception for all method calls made inside the target.
+        /// </summary>
+        /// <param name="target">The target object.</param>
+        /// <param name="methodCallFilter">The <see cref="IMethodCallFilter"/> instance that determines the method calls that will be intercepted.</param>
+        /// <param name="hostMethodFilter">The <see cref="IMethodFilter"/> instance that determines the host method calls that will be modified</param>
+        public static void InterceptMethodCalls(this IReflectionStructureVisitable target, IMethodCallFilter methodCallFilter,
+            IMethodFilter hostMethodFilter)
+        {
+            var rewriter = new InterceptMethodCalls(methodCallFilter);
+            target.Accept(new ImplementModifiableType(GetDefaultTypeFilter()));
+            target.WeaveWith(rewriter, hostMethodFilter.ShouldWeave);
+        }
+
+        /// <summary>
         /// Modifies the current <paramref name="target"/> to support third-party method call interception.
         /// </summary>
         /// <param name="target">The target object.</param>
