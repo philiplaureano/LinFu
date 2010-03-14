@@ -100,7 +100,8 @@ namespace LinFu.AOP.Cecil
 
         private bool IsExcluded(MethodDefinition method)
         {
-            var excludedTypes = new[] { typeof(IMethodReplacementHost), typeof(IModifiableType) };
+            var excludedTypes = new[] { typeof(IMethodReplacementHost), 
+                typeof(IModifiableType), typeof(IActivatorHost), typeof(IFieldInterceptionHost) };
             var excludedMethods = (from type in excludedTypes
                                    from currentMethod in type.GetMethods()
                                    select currentMethod.Name).ToList();
