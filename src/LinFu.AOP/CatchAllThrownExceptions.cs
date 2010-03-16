@@ -10,6 +10,9 @@ using Mono.Cecil.Cil;
 
 namespace LinFu.AOP.Cecil
 {
+    /// <summary>
+    /// Represents a method rewriter that modifies a method body to support dynamic exception handling.
+    /// </summary>
     public class CatchAllThrownExceptions : BaseMethodRewriter
     {
         private VariableDefinition _exception;
@@ -19,11 +22,19 @@ namespace LinFu.AOP.Cecil
         private VariableDefinition _returnValue;
         private TypeReference _voidType;
 
+        /// <summary>
+        /// Adds additional references to the target module.
+        /// </summary>
+        /// <param name="module">The host module.</param>
         public override void ImportReferences(ModuleDefinition module)
         {
             _voidType = module.Import(typeof(void));
         }
 
+        /// <summary>
+        /// Adds local variables to the <paramref name="hostMethod"/>.
+        /// </summary>
+        /// <param name="hostMethod">The target method.</param>
         public override void AddLocals(MethodDefinition hostMethod)
         {
             _exception = hostMethod.AddLocal<Exception>();
@@ -37,6 +48,12 @@ namespace LinFu.AOP.Cecil
 
         }
 
+        /// <summary>
+        /// Rewrites the instructions in the target method body to support dynamic exception handling.
+        /// </summary>
+        /// <param name="targetMethod">The target method.</param>
+        /// <param name="IL">The <see cref="CilWorker"/> instance that represents the method body.</param>
+        /// <param name="oldInstructions">The IL instructions of the original method body.</param>
         protected override void RewriteMethodBody(MethodDefinition targetMethod, CilWorker IL, IEnumerable<Instruction> oldInstructions)
         {
             var endOfOriginalInstructionBlock = IL.Create(OpCodes.Nop);
@@ -151,6 +168,11 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Ret);
         }
 
+        /// <summary>
+        /// Saves the current <see cref="IExceptionHandlerInfo"/> instance.
+        /// </summary>
+        /// <param name="targetMethod">The target method.</param>
+        /// <param name="emitter">The <see cref="IEmitInvocationInfo"/> instance that will emit the current method context.</param>
         private void SaveExceptionInfo(MethodDefinition targetMethod, IEmitInvocationInfo emitter)
         {
             var IL = targetMethod.GetILGenerator();

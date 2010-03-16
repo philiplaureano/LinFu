@@ -10,6 +10,9 @@ using Mono.Cecil.Cil;
 
 namespace LinFu.AOP.Cecil
 {
+    /// <summary>
+    /// Represents a type that emits the call to the <see cref="IBeforeInvoke"/> instance.
+    /// </summary>
     public class EmitBeforeInvoke : IInstructionEmitter
     {
         private readonly VariableDefinition _invocationInfo;
@@ -17,7 +20,17 @@ namespace LinFu.AOP.Cecil
         private readonly VariableDefinition _surroundingImplementation;
         private readonly Type _registryType;
 
-        public EmitBeforeInvoke(VariableDefinition invocationInfo, VariableDefinition surroundingClassImplementation, VariableDefinition surroundingImplementation, Type registryType)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EmitBeforeInvoke"/> class.
+        /// </summary>
+        /// <param name="invocationInfo">The variable that contains the <see cref="IInvocationInfo"/> instance.</param>
+        /// <param name="surroundingClassImplementation">The variable that contains the class-level <see cref="IAroundInvoke"/> instance.</param>
+        /// <param name="surroundingImplementation">The variable that contains the instance-level <see cref="IAroundInvoke"/> instance.</param>
+        /// <param name="registryType">The interception registry type that will be responsible for handling class-level interception events.</param>
+        public EmitBeforeInvoke(VariableDefinition invocationInfo, 
+            VariableDefinition surroundingClassImplementation, 
+            VariableDefinition surroundingImplementation, 
+            Type registryType)
         {
             _invocationInfo = invocationInfo;
             _surroundingClassImplementation = surroundingClassImplementation;
@@ -25,6 +38,10 @@ namespace LinFu.AOP.Cecil
             _registryType = registryType;
         }
 
+        /// <summary>
+        /// Emits the call to the <see cref="IAfterInvoke"/> instance.
+        /// </summary>
+        /// <param name="IL">The <see cref="CilWorker"/> that points to the current method body.</param>
         public void Emit(CilWorker IL)
         {
             var targetMethod = IL.GetMethod();

@@ -9,6 +9,9 @@ using Mono.Cecil.Cil;
 
 namespace LinFu.AOP.Cecil
 {
+    /// <summary>
+    /// Represents an instruction emitter that adds method body replacement support to a given method body.
+    /// </summary>
     public class AddMethodReplacementImplementation : IInstructionEmitter
     {
         private readonly IEnumerable<Instruction> _oldInstructions;
@@ -18,6 +21,10 @@ namespace LinFu.AOP.Cecil
         private readonly VariableDefinition _invocationInfo;
         private readonly VariableDefinition _returnValue;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AddMethodReplacementImplementation"/> class.
+        /// </summary>
+        /// <param name="parameters">The set of parameters that describe the target method body.</param>
         public AddMethodReplacementImplementation(IMethodBodyRewriterParameters parameters)
         {
             _oldInstructions = parameters.OldInstructions;
@@ -28,6 +35,10 @@ namespace LinFu.AOP.Cecil
             _returnValue = parameters.ReturnValue;
         }        
 
+        /// <summary>
+        /// Adds method body interception to the target method.
+        /// </summary>
+        /// <param name="IL">The <see cref="CilWorker"/> pointing to the target method body.</param>
         public void Emit(CilWorker IL)
         {
             var method = IL.GetMethod();

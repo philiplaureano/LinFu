@@ -10,6 +10,9 @@ using Mono.Cecil.Cil;
 
 namespace LinFu.AOP.Cecil
 {
+    /// <summary>
+    /// Represents a type that emits the call to the <see cref="IAfterInvoke"/> instance.
+    /// </summary>
     public class EmitAfterInvoke : IInstructionEmitter
     {
         private readonly VariableDefinition _surroundingImplementation;
@@ -17,6 +20,13 @@ namespace LinFu.AOP.Cecil
         private readonly VariableDefinition _invocationInfo;
         private readonly VariableDefinition _returnValue;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EmitAfterInvoke"/> class.
+        /// </summary>
+        /// <param name="surroundingImplementation">The variable that contains the <see cref="IAroundInvoke"/> instance.</param>
+        /// <param name="surroundingClassImplementation">The variable that contains the class-level <see cref="IAroundInvoke"/> instance.</param>
+        /// <param name="invocationInfo">The variable that contains the <see cref="IInvocationInfo"/> instance.</param>
+        /// <param name="returnValue">The local vaiable that contains the return value of the target method.</param>
         public EmitAfterInvoke(VariableDefinition surroundingImplementation, VariableDefinition surroundingClassImplementation,
             VariableDefinition invocationInfo, VariableDefinition returnValue)
         {
@@ -26,6 +36,10 @@ namespace LinFu.AOP.Cecil
             _returnValue = returnValue;
         }
 
+        /// <summary>
+        /// Emits the call to the <see cref="IAfterInvoke"/> instance.
+        /// </summary>
+        /// <param name="IL">The <see cref="CilWorker"/> that points to the current method body.</param>
         public void Emit(CilWorker IL)
         {
             var module = IL.GetModule();

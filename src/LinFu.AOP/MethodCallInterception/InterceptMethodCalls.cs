@@ -121,7 +121,6 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Newobj, _stackCtor);
             IL.Emit(OpCodes.Stloc, _currentArguments);
 
-
             // Make sure that the argument stack doesn't show up in
             // any of the other interception routines
             IgnoreLocal(IL, _currentArguments, module);

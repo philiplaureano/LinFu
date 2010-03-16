@@ -10,23 +10,39 @@ using Mono.Cecil.Cil;
 
 namespace LinFu.AOP.Cecil
 {
+    /// <summary>
+    /// Represents a class that emits the instructions that determine whether or not method interception is disabled.
+    /// </summary>
     public class GetInterceptionDisabled : IInstructionEmitter
     {
         private MethodReference _hostMethod;
         private VariableDefinition _interceptionDisabled;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GetInterceptionDisabled"/> class.
+        /// </summary>
+        /// <param name="parameters">The <see cref="IMethodBodyRewriterParameters"/> instance.</param>
         public GetInterceptionDisabled(IMethodBodyRewriterParameters parameters)
         {
             _hostMethod = parameters.TargetMethod;
             _interceptionDisabled = parameters.InterceptionDisabled;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GetInterceptionDisabled"/> class.
+        /// </summary>
+        /// <param name="hostMethod">The target method.</param>
+        /// <param name="interceptionDisabled">The local variable that determines whether or not method interception is disabled.</param>
         public GetInterceptionDisabled(MethodReference hostMethod, VariableDefinition interceptionDisabled)
         {
             _hostMethod = hostMethod;
             _interceptionDisabled = interceptionDisabled;
         }
 
+        /// <summary>
+        /// Emits the instructions that determine whether or not method interception is disabled.
+        /// </summary>
+        /// <param name="IL">The <see cref="CilWorker"/> instance responsible for adding or removing instructions to the method body.</param>
         public void Emit(CilWorker IL)
         {
             var module = IL.GetModule();

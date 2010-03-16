@@ -27,7 +27,7 @@ namespace LinFu.AOP.Cecil.Loaders
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BaseJITWeaver"/> class.
+        /// Initializes a new instance of the <see cref="JITWeaver"/> class.
         /// </summary>
         /// <param name="pdbLoader">The loader that will be responsible for loading the program debugging information into memory.</param>
         public JITWeaver(IPdbLoader pdbLoader)

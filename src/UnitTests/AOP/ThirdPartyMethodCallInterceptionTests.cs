@@ -19,12 +19,12 @@ namespace LinFu.UnitTests.AOP
     public class ThirdPartyMethodCallInterceptionTests : BaseTestFixture
     {
         [SetUp]
-        public void Init()
+        public override void Init()
         {
         }
 
         [TearDown]
-        public void Term()
+        public override void Term()
         {
             AroundInvokeMethodCallRegistry.Clear();
         }

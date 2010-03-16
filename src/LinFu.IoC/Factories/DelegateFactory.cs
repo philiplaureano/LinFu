@@ -42,9 +42,9 @@ namespace LinFu.IoC.Factories
                 var methodArgCount = method.GetParameters().Count();
 
                 if (argCount != methodArgCount)
-                    Console.WriteLine("Parameter Count Mismatch");
-                result = _targetDelegate.DynamicInvoke(request.Arguments);
-                //result = method.Invoke(target, request.Arguments);
+                    throw new ArgumentException("Parameter Count Mismatch");
+
+                result = _targetDelegate.DynamicInvoke(request.Arguments);                
             }
             catch (TargetInvocationException ex)
             {

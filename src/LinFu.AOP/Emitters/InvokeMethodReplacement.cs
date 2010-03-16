@@ -11,6 +11,9 @@ using MethodDefinitionExtensions=LinFu.AOP.Cecil.Extensions.MethodDefinitionExte
 
 namespace LinFu.AOP.Cecil
 {
+    /// <summary>
+    /// Represents a class that emits the instructions that call the method replacement instead of the original method body.
+    /// </summary>
     public class InvokeMethodReplacement : IInstructionEmitter
     {
         private readonly Instruction _executeOriginalInstructions;
@@ -18,6 +21,13 @@ namespace LinFu.AOP.Cecil
         private readonly VariableDefinition _classMethodReplacementProvider;
         private readonly VariableDefinition _invocationInfo;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InvokeMethodReplacement"/> class.
+        /// </summary>
+        /// <param name="executeOriginalInstructions">The instruction label that will be used if the original instructions should be executed.</param>
+        /// <param name="methodReplacementProvider">The variable that contains the <see cref="IMethodReplacementProvider"/> instance.</param>
+        /// <param name="classMethodReplacementProvider">The variable that contains the class-level <see cref="IMethodReplacementProvider"/> instance.</param>
+        /// <param name="invocationInfo">The variable that contains the <see cref="IInvocationInfo"/> instance.</param>
         public InvokeMethodReplacement(Instruction executeOriginalInstructions, VariableDefinition methodReplacementProvider, VariableDefinition classMethodReplacementProvider, VariableDefinition invocationInfo)
         {
             _executeOriginalInstructions = executeOriginalInstructions;
@@ -26,6 +36,10 @@ namespace LinFu.AOP.Cecil
             _invocationInfo = invocationInfo;
         }
 
+        /// <summary>
+        /// Emits the instructions that call the method replacement instead of the original method body.
+        /// </summary>
+        /// <param name="IL">The <see cref="CilWorker"/> that points to the current method body.</param>
         public void Emit(CilWorker IL)
         {
             var module = IL.GetModule();

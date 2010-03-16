@@ -9,15 +9,26 @@ using Mono.Cecil.Cil;
 
 namespace LinFu.AOP.Cecil
 {
+    /// <summary>
+    /// Represents a class that emits the call to obtain the <see cref="IAroundInvokeProvider"/> instance.
+    /// </summary>
     public class GetAroundInvokeProvider : IInstructionEmitter
     {
         private readonly VariableDefinition _aroundInvokeProvider;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GetAroundInvokeProvider"/> class.
+        /// </summary>
+        /// <param name="aroundInvokeProvider">The local variable that holds the <see cref="IAroundInvokeProvider"/> instance.</param>
         public GetAroundInvokeProvider(VariableDefinition aroundInvokeProvider)
         {
             _aroundInvokeProvider = aroundInvokeProvider;
         }
 
+        /// <summary>
+        /// Emits the call to obtain the <see cref="IAroundInvokeProvider"/> instance.
+        /// </summary>
+        /// <param name="IL">The <see cref="CilWorker"/> pointing to the target method body.</param>
         public void Emit(CilWorker IL)
         {
             var method = IL.GetMethod();

@@ -5,9 +5,18 @@ using System.Text;
 
 namespace LinFu.Reflection
 {
+    /// <summary>
+    /// Represents an action loader that can load collections from types embedded within a given assembly.
+    /// </summary>
+    /// <typeparam name="T">The collection item type.</typeparam>
     public class CollectionLoader<T> : IActionLoader<ICollection<T>, Type>
         where T : class
     {
+        /// <summary>
+        /// Creates the list of actions that load the target collection into memory.
+        /// </summary>
+        /// <param name="input">The source type.</param>
+        /// <returns>A list of actions that load the target collection into memory.</returns>
         public IEnumerable<Action<ICollection<T>>> Load(Type input)
         {
             var actionList = new List<Action<ICollection<T>>>();
@@ -18,6 +27,11 @@ namespace LinFu.Reflection
             return actionList;
         }
 
+        /// <summary>
+        /// Determines whether or not the given type can be loaded into memory.
+        /// </summary>
+        /// <param name="inputType">The source type.</param>
+        /// <returns>Returns <c>true</c> if the type can be loaded into memory; otherwise, it will return <c>false</c>.</returns>
         public bool CanLoad(Type inputType)
         {
             if (!typeof(T).IsAssignableFrom(inputType))

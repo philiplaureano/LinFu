@@ -51,6 +51,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// Modifies the current <paramref name="target"/> to support third-party method call interception for all method calls made inside the target.
         /// </summary>
         /// <param name="target">The target object.</param>
+        /// <param name="typeFilter">The type filter that determines the types that will be modified.</param>
         public static void InterceptMethodCalls(this IReflectionVisitable target, Func<TypeReference, bool> typeFilter)
         {
             var hostMethodFilter = GetHostMethodFilter();

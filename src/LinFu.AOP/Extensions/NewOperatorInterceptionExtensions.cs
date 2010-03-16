@@ -126,6 +126,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// </summary>
         /// <param name="target">The item to be modified.</param>
         /// <param name="methodFilter">The filter that determines which host methods will be modified</param>
+        /// <param name="typeFilter">The filter that determines which types will be modified.</param>
         /// <remarks>
         /// The type filter determines which concrete types and constructors should be intercepted at runtime.
         /// For example, the following functor code intercepts types named "Foo":
