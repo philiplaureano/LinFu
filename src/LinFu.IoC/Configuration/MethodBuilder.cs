@@ -25,6 +25,11 @@ namespace LinFu.IoC.Configuration
             IL.Emit(OpCodes.Ldarg_0);
         }
 
+        /// <summary>
+        /// Pushes the method arguments onto the stack.
+        /// </summary>
+        /// <param name="IL">The <see cref="ILGenerator"/> of the target method body.</param>
+        /// <param name="targetMethod">The target method that will be invoked.</param>
         protected override void PushMethodArguments(ILGenerator IL, MethodBase targetMethod)
         {
             var parameterTypes = (from p in targetMethod.GetParameters()
