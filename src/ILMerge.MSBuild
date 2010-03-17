@@ -1,11 +1,11 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <MainAssembly>$(MSBuildProjectDirectory)\..\build\LinFu.Core.dll</MainAssembly>
-	<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	<Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     </PropertyGroup>
     <ItemGroup>
         <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\$(Configuration)\LinFu*.dll"/>
-        <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\$(Configuration)\Mono.Cecil.dll"/>
+        <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\lib\Mono.Cecil.dll"/>
 	<ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\lib\Mono.Cecil.Pdb.dll"/>
     </ItemGroup>   
     <Target Name="Merge">
