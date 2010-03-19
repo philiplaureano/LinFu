@@ -1,0 +1,15 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MainAssembly>$(MSBuildProjectDirectory)\..\build\PostWeaver.exe</MainAssembly>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+  </PropertyGroup>
+  <ItemGroup>
+    <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\src\PostWeaver\bin\$(Configuration)\PostWeaver.exe"/>
+    <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\LinFu.Core.dll"/>
+  </ItemGroup>
+  <Target Name="Merge">
+    <Message Text="-- Begin PostWeaver ILMerge --" />
+    <Exec Command="&quot;$(ProgramFiles)\Microsoft\Ilmerge\Ilmerge.exe&quot; /xmldocs /v2 /log /out:&quot;$(MainAssembly)&quot; @(ILMergeAssemblies->'&quot;%(FullPath)&quot;', ' ') /keyfile:&quot;$(MSBuildProjectDirectory)\..\LinFu.snk&quot; /t:exe" />
+    <Message Text="-- End PostWeaver ILMerge   --" />
+  </Target>
+</Project>

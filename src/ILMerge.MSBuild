@@ -1,16 +1,16 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <PropertyGroup>
-        <MainAssembly>$(MSBuildProjectDirectory)\..\build\LinFu.Core.dll</MainAssembly>
-	<Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
-    </PropertyGroup>
-    <ItemGroup>
-        <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\$(Configuration)\LinFu*.dll"/>
-        <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\lib\Mono.Cecil.dll"/>
-	<ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\lib\Mono.Cecil.Pdb.dll"/>
-    </ItemGroup>   
-    <Target Name="Merge">
-	<Message Text="-- Begin ILMerge --" />
-	<Exec Command="&quot;$(ProgramFiles)\Microsoft\Ilmerge\Ilmerge.exe&quot; /xmldocs /v2 /log /out:&quot;$(MainAssembly)&quot; @(ILMergeAssemblies->'&quot;%(FullPath)&quot;', ' ') /keyfile:&quot;$(MSBuildProjectDirectory)\..\LinFu.snk&quot;" />
-	<Message Text="-- End ILMerge   --" />
-    </Target>
+  <PropertyGroup>
+    <MainAssembly>$(MSBuildProjectDirectory)\..\build\LinFu.Core.dll</MainAssembly>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+  </PropertyGroup>
+  <ItemGroup>
+    <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\$(Configuration)\LinFu*.dll"/>
+    <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\lib\Mono.Cecil.dll"/>
+    <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\lib\Mono.Cecil.Pdb.dll"/>
+  </ItemGroup>
+  <Target Name="Merge">
+    <Message Text="-- Begin ILMerge --" />
+    <Exec Command="&quot;$(ProgramFiles)\Microsoft\Ilmerge\Ilmerge.exe&quot; /xmldocs /v2 /log /out:&quot;$(MainAssembly)&quot; @(ILMergeAssemblies->'&quot;%(FullPath)&quot;', ' ') /keyfile:&quot;$(MSBuildProjectDirectory)\..\LinFu.snk&quot;" />
+    <Message Text="-- End ILMerge   --" />
+  </Target>
 </Project>
