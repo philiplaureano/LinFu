@@ -110,7 +110,7 @@ namespace LinFu.UnitTests.AOP
                 Assert.IsNotNull(instance);
 
                 var modifiedInstance = (IModifiableType)instance;
-                modifiedInstance.AroundInvokeProvider = provider;
+                modifiedInstance.AroundMethodBodyProvider = provider;
 
                 instance.Invoke("DoSomething");
 
@@ -130,7 +130,7 @@ namespace LinFu.UnitTests.AOP
                 Assert.IsNotNull(instance);
 
                 var modifiedInstance = (IModifiableType)instance;
-                modifiedInstance.AroundInvokeProvider = provider;
+                modifiedInstance.AroundMethodBodyProvider = provider;
                 modifiedInstance.IsInterceptionDisabled = true;
 
                 instance.Invoke("DoSomething");

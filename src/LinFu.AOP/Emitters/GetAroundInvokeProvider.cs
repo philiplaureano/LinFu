@@ -15,14 +15,17 @@ namespace LinFu.AOP.Cecil
     public class GetAroundInvokeProvider : IInstructionEmitter
     {
         private readonly VariableDefinition _aroundInvokeProvider;
+        private string _providerName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAroundInvokeProvider"/> class.
         /// </summary>
         /// <param name="aroundInvokeProvider">The local variable that holds the <see cref="IAroundInvokeProvider"/> instance.</param>
-        public GetAroundInvokeProvider(VariableDefinition aroundInvokeProvider)
+        /// <param name="providerName">The name of the <see cref="IAroundInvokeProvider"/> property.</param>
+        public GetAroundInvokeProvider(VariableDefinition aroundInvokeProvider, string providerName)
         {
             _aroundInvokeProvider = aroundInvokeProvider;
+            _providerName = providerName;
         }
 
         /// <summary>
@@ -35,7 +38,8 @@ namespace LinFu.AOP.Cecil
             var module = IL.GetModule();
 
             // var aroundInvokeProvider = this.AroundInvokeProvider;
-            var getAroundInvokeProvider = module.ImportMethod<IModifiableType>("get_AroundInvokeProvider");
+            string propertyName = string.Format("get_{0}", _providerName);
+            var getAroundInvokeProvider = module.ImportMethod<IAroundInvokeHost>(propertyName);
 
             if (!method.HasThis)
             {

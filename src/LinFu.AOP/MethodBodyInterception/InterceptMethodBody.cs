@@ -79,7 +79,7 @@ namespace LinFu.AOP.Cecil
                 getInstanceMethodReplacementProviderMethod);
 
             IInstructionEmitter getInterceptionDisabled = new GetInterceptionDisabled(parameters);
-            ISurroundMethodBody surroundMethodBody = new SurroundMethodBody(parameters);
+            ISurroundMethodBody surroundMethodBody = new SurroundMethodBody(parameters, "AroundMethodBodyProvider");
             IInstructionEmitter getClassMethodReplacementProvider = new GetClassMethodReplacementProvider(parameters, module =>
                 module.Import(typeof(MethodBodyReplacementProviderRegistry).GetMethod("GetProvider")));
             IInstructionEmitter addMethodReplacement = new AddMethodReplacementImplementation(parameters);
@@ -101,7 +101,7 @@ namespace LinFu.AOP.Cecil
         private bool IsExcluded(MethodDefinition method)
         {
             var excludedTypes = new[] { typeof(IMethodReplacementHost), 
-                typeof(IModifiableType), typeof(IActivatorHost), typeof(IFieldInterceptionHost) };
+                typeof(IModifiableType), typeof(IActivatorHost), typeof(IFieldInterceptionHost), typeof(IAroundInvokeHost) };
             var excludedMethods = (from type in excludedTypes
                                    from currentMethod in type.GetMethods()
                                    select currentMethod.Name).ToList();

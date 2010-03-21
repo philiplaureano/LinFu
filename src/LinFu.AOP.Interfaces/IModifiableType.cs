@@ -9,19 +9,12 @@ namespace LinFu.AOP.Interfaces
     /// Represents a type that has been modified to support
     /// pervasive method interception.
     /// </summary>
-    public interface IModifiableType : IMethodReplacementHost
+    public interface IModifiableType : IMethodReplacementHost, IAroundInvokeHost
     {
         /// <summary>
         /// Gets or sets the value indicating whether or not 
         /// method interception should be disabled.
         /// </summary>
-        bool IsInterceptionDisabled { get; set; }
-
-        /// <summary>
-        /// Gets or sets the value indicating the <see cref="IAroundInvokeProvider"/>
-        /// that will be used to inject code "around" a particular method body
-        /// implementation.
-        /// </summary>
-        IAroundInvokeProvider AroundInvokeProvider { get; set; }
+        bool IsInterceptionDisabled { get; set; }       
     }
 }

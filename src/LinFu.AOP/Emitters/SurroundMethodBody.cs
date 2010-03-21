@@ -15,28 +15,32 @@ namespace LinFu.AOP.Cecil
     /// </summary>
     public class SurroundMethodBody : ISurroundMethodBody
     {
-        private VariableDefinition _methodReplacementProvider;
-        private VariableDefinition _aroundInvokeProvider;
-        private VariableDefinition _invocationInfo;
+        private readonly VariableDefinition _methodReplacementProvider;
+        private readonly VariableDefinition _aroundInvokeProvider;
+        private readonly VariableDefinition _invocationInfo;
+        private readonly VariableDefinition _interceptionDisabled;
+        private readonly VariableDefinition _returnValue;
+        private readonly IInstructionEmitter _getMethodReplacementProvider;
+        private readonly Type _registryType;
+        private readonly string _providerName;
+
         private VariableDefinition _surroundingImplementation;
         private VariableDefinition _surroundingClassImplementation;
-        private VariableDefinition _interceptionDisabled;
-        private VariableDefinition _returnValue;
-        private IInstructionEmitter _getMethodReplacementProvider;
-        private readonly Type _registryType;
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="IMethodBodyRewriterParameters"/> class.
         /// </summary>
         /// <param name="parameters">The parameters that describe the context of the emitter call.</param>
-        public SurroundMethodBody(IMethodBodyRewriterParameters parameters)
+        /// <param name="providerName">The name of the <see cref="IAroundInvokeProvider"/> property.</param>
+        public SurroundMethodBody(IMethodBodyRewriterParameters parameters, string providerName)
         {
             _methodReplacementProvider = parameters.MethodReplacementProvider;
             _aroundInvokeProvider = parameters.AroundInvokeProvider;
             _invocationInfo = parameters.InvocationInfo;
             _returnValue = parameters.ReturnValue;
             _interceptionDisabled = parameters.InterceptionDisabled;
-
+            _providerName = providerName;
+    
             var getMethodReplacementProvider = new GetMethodReplacementProvider(_methodReplacementProvider, parameters.TargetMethod, parameters.GetMethodReplacementProviderMethod);
 
             _getMethodReplacementProvider = getMethodReplacementProvider;
@@ -52,11 +56,14 @@ namespace LinFu.AOP.Cecil
         /// <param name="interceptionDisabled">The variable that determines whether or not interception is disabled</param>
         /// <param name="returnValue">The variable that contains the method return value.</param>
         /// <param name="registryType">The interception registry type that will be responsible for handling class-level interception events.</param>
+        /// <param name="providerName">The name of the <see cref="IAroundInvokeProvider"/> property.</param>
         public SurroundMethodBody(VariableDefinition methodReplacementProvider,
             VariableDefinition aroundInvokeProvider,
             VariableDefinition invocationInfo,
             VariableDefinition interceptionDisabled,
-            VariableDefinition returnValue, Type registryType)
+            VariableDefinition returnValue, 
+            Type registryType,
+            string providerName)
         {
             _methodReplacementProvider = methodReplacementProvider;
             _aroundInvokeProvider = aroundInvokeProvider;
@@ -64,6 +71,7 @@ namespace LinFu.AOP.Cecil
             _interceptionDisabled = interceptionDisabled;
             _returnValue = returnValue;
             _registryType = registryType;
+            _providerName = providerName;
         }
 
         /// <summary>
@@ -96,7 +104,7 @@ namespace LinFu.AOP.Cecil
             if (_getMethodReplacementProvider != null)
                 _getMethodReplacementProvider.Emit(IL);
 
-            var getAroundInvokeProvider = new GetAroundInvokeProvider(_aroundInvokeProvider);
+            var getAroundInvokeProvider = new GetAroundInvokeProvider(_aroundInvokeProvider, _providerName);
             getAroundInvokeProvider.Emit(IL);
 
             // if (aroundInvokeProvider != null ) {

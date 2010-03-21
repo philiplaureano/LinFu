@@ -65,6 +65,7 @@
     <Compile Include="IActivatorHost.cs" />
     <Compile Include="IAfterInvoke.cs" />
     <Compile Include="IAroundInvoke.cs" />
+    <Compile Include="IAroundInvokeHost.cs" />
     <Compile Include="IAroundInvokeProvider.cs" />
     <Compile Include="IBeforeInvoke.cs" />
     <Compile Include="IBootStrappedComponent.cs" />

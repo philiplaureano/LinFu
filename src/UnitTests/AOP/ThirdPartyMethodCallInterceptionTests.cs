@@ -72,7 +72,7 @@ namespace LinFu.UnitTests.AOP
             var provider = new SampleAroundInvokeProvider(aroundInvoke);
 
             IModifiableType modified = (IModifiableType)instance;
-            modified.AroundInvokeProvider = provider;
+            modified.AroundMethodCallProvider = provider;
             MethodInfo targetMethod = modifiedTargetType.GetMethod("DoSomething");
 
             targetMethod.Invoke(instance, null);

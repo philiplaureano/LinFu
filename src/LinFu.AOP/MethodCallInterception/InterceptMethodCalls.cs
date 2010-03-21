@@ -131,7 +131,7 @@ namespace LinFu.AOP.Cecil
             getInterceptionDisabled.Emit(IL);
 
             var surroundMethodBody = new SurroundMethodBody(_methodReplacementProvider, _aroundInvokeProvider,
-                                                            _invocationInfo, _interceptionDisabled, _returnValue, typeof(AroundInvokeMethodCallRegistry));
+                                                            _invocationInfo, _interceptionDisabled, _returnValue, typeof(AroundInvokeMethodCallRegistry), "AroundMethodCallProvider");
 
             surroundMethodBody.AddProlog(IL);
             // Use the MethodReplacementProvider attached to the
