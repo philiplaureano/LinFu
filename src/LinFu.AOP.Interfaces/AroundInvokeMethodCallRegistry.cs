@@ -12,6 +12,7 @@ namespace LinFu.AOP.Interfaces
     {
         private static readonly List<IAroundInvokeProvider> _providers = new List<IAroundInvokeProvider>();
         private static readonly object _lock = new object();
+        private static readonly BootStrapRegistry _registry = BootStrapRegistry.Instance;
 
         /// <summary>
         /// Obtains the <see cref="IAroundInvoke"/> instance for the given <paramref name="context"/>.
