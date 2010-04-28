@@ -28,6 +28,16 @@ namespace LinFu.UnitTests.IOC
         }
 
         [Test]
+        public void ContainerShouldBeAbleToRegisterGenericTypeAndResolveConcreteServiceTypeUsingTheNonGenericGetServiceMethod() 
+        {
+            var container = new ServiceContainer();
+            container.AddService(typeof(ISampleGenericService<>), typeof(SampleGenericClassWithOpenGenericImplementation<>));
+
+            var instance = container.GetService(typeof(ISampleGenericService<int>));
+            Assert.IsNotNull(instance);
+        }
+
+        [Test]
         public void ContainerShouldCallPreProcessor()
         {
             var mockPreprocessor = new Mock<IPreProcessor>();
