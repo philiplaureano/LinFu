@@ -18,6 +18,16 @@ namespace LinFu.UnitTests.IOC
     public class InversionOfControlTests
     {
         [Test]
+        public void ContainerShouldBeAbleToRegisterGenericTypeAndResolveConcreteServiceType()
+        {
+            var container = new ServiceContainer();
+            container.AddService(typeof(ISampleGenericService<>), typeof(SampleGenericClassWithOpenGenericImplementation<>));
+
+            var instance = container.GetService<ISampleGenericService<int>>();
+            Assert.IsNotNull(instance);
+        }
+
+        [Test]
         public void ContainerShouldCallPreProcessor()
         {
             var mockPreprocessor = new Mock<IPreProcessor>();
