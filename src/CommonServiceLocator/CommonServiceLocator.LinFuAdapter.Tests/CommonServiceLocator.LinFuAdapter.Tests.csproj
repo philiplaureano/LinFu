@@ -31,7 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LinFu.Core, Version=2.0.3.13285, Culture=neutral, PublicKeyToken=a4c63a184389506f, processorArchitecture=MSIL">
+    <Reference Include="LinFu.Core, Version=2.2.0.19938, Culture=neutral, PublicKeyToken=a4c63a184389506f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\LinFu.Core.dll</HintPath>
     </Reference>

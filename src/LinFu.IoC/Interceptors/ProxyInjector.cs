@@ -49,7 +49,8 @@ namespace LinFu.IoC.Interceptors
                 return;
 
             // Sealed types cannot be intercepted
-            if (result.ActualResult != null && result.ActualResult.GetType().IsSealed)
+            var serviceType = result.ServiceType;
+            if (result.ActualResult != null && serviceType.IsSealed)
                 return;
 
             // Replace the actual result with the proxy itself
