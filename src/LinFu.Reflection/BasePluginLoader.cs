@@ -21,17 +21,25 @@ namespace LinFu.Reflection
         /// <returns><c>true</c> if the type can be loaded; otherwise, it returns <c>false</c>.</returns>
         public virtual bool CanLoad(Type inputType)
         {
-            IEnumerable<TAttribute> attributes = inputType.GetCustomAttributes(typeof(TAttribute), true)
+            try
+            {
+                IEnumerable<TAttribute> attributes = inputType.GetCustomAttributes(typeof(TAttribute), true)
                 .Cast<TAttribute>();
 
-            // The type must have a default constructor
-            ConstructorInfo defaultConstructor = inputType.GetConstructor(new Type[0]);
-            if (defaultConstructor == null)
-                return false;
+                // The type must have a default constructor
+                ConstructorInfo defaultConstructor = inputType.GetConstructor(new Type[0]);
+                if (defaultConstructor == null)
+                    return false;
 
-            // The target must implement the ILoaderPlugin<TTarget> interface
-            // and be marked with the custom attribute
-            return attributes.Count() > 0;
+                // The target must implement the ILoaderPlugin<TTarget> interface
+                // and be marked with the custom attribute
+                return attributes.Count() > 0;
+            }
+            catch (TypeInitializationException)
+            {
+                // Ignore the error
+                return false;   
+            }            
         }
 
         /// <summary>
