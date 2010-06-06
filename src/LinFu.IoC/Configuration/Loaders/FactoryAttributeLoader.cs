@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using LinFu.IoC.Configuration.Injectors;
@@ -14,8 +15,6 @@ namespace LinFu.IoC.Configuration
     /// </summary>
     public class FactoryAttributeLoader : ITypeLoader
     {
-        #region ITypeLoader Members
-
         /// <summary>
         /// Loads an <see cref="IFactory"/> and <see cref="IFactory{T}"/> instance
         /// into a <see cref="IServiceContainer"/> instance using the given
@@ -192,9 +191,20 @@ namespace LinFu.IoC.Configuration
         /// <returns>Returns <c>true</c> if the type is a class type; otherwise, it returns <c>false</c>.</returns>
         public bool CanLoad(Type sourceType)
         {
-            return sourceType.IsClass;
+            try
+            {
+                return sourceType.IsClass;
+            }
+            catch (TypeInitializationException)
+            {
+                // Ignore the error
+                return false;
+            }
+            catch (FileNotFoundException)
+            {
+                // Ignore the error
+                return false;
+            }
         }
-
-        #endregion
     }
 }

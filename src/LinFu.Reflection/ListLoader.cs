@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -34,15 +35,28 @@ namespace LinFu.Reflection
         /// <returns>Returns <c>true</c> if the type can be loaded into memory; otherwise, it will return <c>false</c>.</returns>
         public bool CanLoad(Type inputType)
         {
-            if (!typeof(T).IsAssignableFrom(inputType))
-                return false;
+            try
+            {
+                if (!typeof(T).IsAssignableFrom(inputType))
+                    return false;
 
-            if (!inputType.IsClass)
-                return false;
+                if (!inputType.IsClass)
+                    return false;
 
-            if (inputType.IsAbstract)
+                if (inputType.IsAbstract)
+                    return false;
+            }
+            catch (TypeInitializationException)
+            {
+                // Ignore the error
                 return false;
-
+            }
+            catch(FileNotFoundException)
+            {
+                // Ignore the error
+                return false;
+            }
+           
             return true;
         }
     }

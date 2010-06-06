@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using LinFu.IoC.Configuration.Interfaces;
@@ -127,7 +128,20 @@ namespace LinFu.IoC.Configuration.Loaders
         /// <returns>Returns <c>true</c> if the type is a class type; otherwise, it returns <c>false</c>.</returns>
         public bool CanLoad(Type sourceType)
         {
-            return sourceType.IsClass;
+            try
+            {
+                return sourceType.IsClass;
+            }           
+            catch (TypeInitializationException)
+            {
+                // Ignore the error
+                return false;
+            }
+            catch (FileNotFoundException)
+            {
+                // Ignore the error
+                return false;
+            }               
         }        
     }
 }

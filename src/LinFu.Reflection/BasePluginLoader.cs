@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -38,8 +39,13 @@ namespace LinFu.Reflection
             catch (TypeInitializationException)
             {
                 // Ignore the error
-                return false;   
-            }            
+                return false;
+            }
+            catch (FileNotFoundException)
+            {
+                // Ignore the error
+                return false;
+            }          
         }
 
         /// <summary>

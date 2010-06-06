@@ -346,6 +346,7 @@ namespace LinFu.IoC
             if (container.Contains(typeof(IFactoryBuilder)))
                 return;
 
+            container.AddService<IConstructorArgumentResolver>(new ConstructorArgumentResolver());
             container.AddService<IActivator<IContainerActivationContext>>(new DefaultActivator());
             container.AddService<IFactoryBuilder>(new FactoryBuilder());
 

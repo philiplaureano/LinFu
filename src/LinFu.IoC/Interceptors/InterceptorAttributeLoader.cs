@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -218,18 +219,31 @@ namespace LinFu.IoC.Interceptors
         /// <returns>Returns <c>true</c> if the <paramref name="inputType"/> is an interceptor; otherwise, it will return <c>false</c>.</returns>
         public bool CanLoad(Type inputType)
         {
-            var attributes = inputType.GetCustomAttributes(typeof(InterceptsAttribute), false);
+            try
+            {
+                var attributes = inputType.GetCustomAttributes(typeof(InterceptsAttribute), false);
 
-            if (attributes == null)
-                attributes = new object[0];
+                if (attributes == null)
+                    attributes = new object[0];
 
-            // The target type must have at least one InterceptsAttribute defined
-            var matches = from attribute in attributes
-                          let currentAttribute = attribute as InterceptsAttribute
-                          where currentAttribute != null
-                          select currentAttribute;
+                // The target type must have at least one InterceptsAttribute defined
+                var matches = from attribute in attributes
+                              let currentAttribute = attribute as InterceptsAttribute
+                              where currentAttribute != null
+                              select currentAttribute;
 
-            return matches.Count() > 0;
+                return matches.Count() > 0;
+            }
+            catch (TypeInitializationException)
+            {
+                // Ignore the error
+                return false;
+            }
+            catch (FileNotFoundException)
+            {
+                // Ignore the error
+                return false;
+            }           
         }
     }
 }
