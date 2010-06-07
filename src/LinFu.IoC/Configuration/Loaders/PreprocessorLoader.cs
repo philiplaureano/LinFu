@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using LinFu.IoC.Interfaces;
@@ -22,19 +23,32 @@ namespace LinFu.IoC.Configuration.Loaders
         /// <returns><c>true</c> if the type can be loaded; otherwise, it returns <c>false</c>.</returns>
         public bool CanLoad(Type inputType)
         {
-            // The type must have a default constructor
-            var defaultConstructor = inputType.GetConstructor(new Type[0]);
-            if (defaultConstructor == null)
+            try
+            {
+                // The type must have a default constructor
+                var defaultConstructor = inputType.GetConstructor(new Type[0]);
+                if (defaultConstructor == null)
+                    return false;
+
+                // It must have the PreprocessorAttribute defined
+                var attributes = inputType.GetCustomAttributes(typeof(PreprocessorAttribute), true);
+                var attributeList = attributes.Cast<PreprocessorAttribute>();
+
+                if (attributeList.Count() == 0)
+                    return false;
+
+                return typeof(IPreProcessor).IsAssignableFrom(inputType);
+            }
+            catch (TypeInitializationException)
+            {
+                // Ignore the error
                 return false;
-
-            // It must have the PreprocessorAttribute defined
-            object[] attributes = inputType.GetCustomAttributes(typeof(PreprocessorAttribute), true);
-            IEnumerable<PreprocessorAttribute> attributeList = attributes.Cast<PreprocessorAttribute>();
-
-            if (attributeList.Count() == 0)
+            }
+            catch (FileNotFoundException)
+            {
+                // Ignore the error
                 return false;
-
-            return typeof(IPreProcessor).IsAssignableFrom(inputType);
+            }           
         }
 
         /// <summary>
