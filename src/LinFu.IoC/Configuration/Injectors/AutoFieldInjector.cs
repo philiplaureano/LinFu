@@ -26,8 +26,8 @@ namespace LinFu.IoC.Configuration
             IServiceContainer container, object[] additionalArguments)
         {
             // Get the field value from the container
-            var fieldType = member.FieldType;
-            var fieldValues = argumentResolver.ResolveFrom(new Type[] { fieldType }, container);
+            var fieldType = new NamedType(member.FieldType);
+            var fieldValues = argumentResolver.ResolveFrom(new NamedType[] { fieldType }, container);
 
             if (fieldValues == null || fieldValues.Length == 0)
                 return;

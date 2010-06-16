@@ -38,15 +38,15 @@ namespace LinFu.IoC.Configuration.Resolvers
         /// <param name="constructor">The target constructor.</param>
         /// <param name="additionalArguments">The additional arguments that will be used to invoke the constructor.</param>
         /// <returns>The list of parameter types that are still missing parameter values.</returns>
-        private static List<Type> GetMissingParameterTypes(ConstructorInfo constructor,
+        private static IEnumerable<INamedType> GetMissingParameterTypes(ConstructorInfo constructor,
             IEnumerable<object> additionalArguments)
         {
             var parameters = from p in constructor.GetParameters()
-                             select new { p.Position, Type = p.ParameterType };
+                             select p;
 
             // Determine which parameters need to 
             // be supplied by the container
-            var parameterTypes = new List<Type>();
+            var parameterTypes = new List<INamedType>();
             var argumentCount = additionalArguments.Count();
             if (additionalArguments != null && argumentCount > 0)
             {
@@ -56,14 +56,14 @@ namespace LinFu.IoC.Configuration.Resolvers
                 var parameterCount = parameters.Count();
                 var maxIndex = parameterCount - argumentCount;
                 var targetParameters = from param in parameters.Where(p => p.Position < maxIndex)
-                                       select param.Type;
+                                       select new NamedType(param) as INamedType;
 
                 parameterTypes.AddRange(targetParameters);
                 return parameterTypes;
             }
 
             var results = from param in parameters
-                          select param.Type;
+                          select new NamedType(param) as INamedType;
 
             parameterTypes.AddRange(results);
 

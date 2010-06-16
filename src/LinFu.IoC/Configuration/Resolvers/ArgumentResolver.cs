@@ -22,13 +22,14 @@ namespace LinFu.IoC.Configuration
         /// <param name="container">The container that will provide the method arguments.</param>
         /// <param name="additionalArguments">The additional arguments that will be passed to the target method.</param>
         /// <returns>An array of objects that represent the arguments to be passed to the target method.</returns>
-        public object[] ResolveFrom(IEnumerable<Type> parameterTypes, IServiceContainer container, params object[] additionalArguments)
+        public object[] ResolveFrom(IEnumerable<INamedType> parameterTypes, IServiceContainer container, params object[] additionalArguments)
         {
             var enumerableDefinition = typeof(IEnumerable<>);
 
             var argumentList = new List<object>();
-            foreach (var parameterType in parameterTypes)
+            foreach (var namedType in parameterTypes)
             {
+                var parameterType = namedType.Type;
                 // Substitute the parameter if and only if 
                 // the container does not have service that
                 // that matches the parameter type

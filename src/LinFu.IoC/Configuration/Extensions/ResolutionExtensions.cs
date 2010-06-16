@@ -129,7 +129,7 @@ namespace LinFu.IoC.Configuration
             IServiceContainer container, params object[] additionalArguments)
         {
             var parameterTypes = from p in method.GetParameters()
-                                 select p.ParameterType;
+                                 select new NamedType(p) as INamedType;
 
             return resolver.ResolveFrom(parameterTypes, container, additionalArguments);
         }

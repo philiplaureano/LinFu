@@ -27,7 +27,7 @@ namespace LinFu.IoC.Configuration
             IArgumentResolver resolver, IServiceContainer container, object[] additionalArguments)
         {
             var parameterTypes = from p in method.GetParameters()
-                                 select p.ParameterType;
+                                 select new NamedType(p) as INamedType;
 
             var arguments = resolver.ResolveFrom(parameterTypes, container, additionalArguments);
 

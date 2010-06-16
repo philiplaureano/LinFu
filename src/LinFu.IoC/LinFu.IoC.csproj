@@ -61,6 +61,8 @@
     <Compile Include="Configuration\ConstructorInvoke.cs" />
     <Compile Include="Configuration\ConstructorMethodBuilder.cs" />
     <Compile Include="Configuration\Interfaces\IConstructorArgumentResolver.cs" />
+    <Compile Include="Configuration\Interfaces\INamedType.cs" />
+    <Compile Include="Configuration\NamedType.cs" />
     <Compile Include="Configuration\Resolvers\ConstructorArgumentResolver.cs" />
     <Compile Include="ContainerExtensions.cs" />
     <Compile Include="Configuration\Extensions\FluentExtensions.cs" />
