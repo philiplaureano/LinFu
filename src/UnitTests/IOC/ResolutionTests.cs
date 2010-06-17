@@ -168,12 +168,12 @@ namespace LinFu.UnitTests.IOC
             IServiceContainer container = new ServiceContainer();
             container.AddDefaultServices();
             container.AddService("ClassWithMultipleNonServiceArgumentConstructors",
-                                 typeof(ISampleService), typeof (SampleClassWithMultipleNonServiceArgumentConstructors),
+                                 typeof(ISampleService), typeof(SampleClassWithMultipleNonServiceArgumentConstructors),
                                  LifecycleType.OncePerRequest);
 
             // Match the correct constructor
             var sampleService = container.GetService<ISampleService>("ClassWithMultipleNonServiceArgumentConstructors", "test", 42, SampleEnum.One, (decimal)3.14, 42);
-            Assert.IsNotNull(sampleService);         
+            Assert.IsNotNull(sampleService);
         }
 
         [Test]
@@ -278,6 +278,24 @@ namespace LinFu.UnitTests.IOC
             Assert.IsTrue(container.Contains("Add", typeof(int), 1, 1));
         }
 
+        [Test]
+        public void ShouldInjectConstructorWithNamedParameterTypes()
+        {
+            var mockDefaultSampleService = new Mock<ISampleService>();
+            var mockOtherSampleService = new Mock<ISampleService>();
+            var container = new ServiceContainer();
+
+            // Add the default service
+            container.AddService(mockDefaultSampleService.Object);
+
+            // Add the expected service instance
+            container.AddService("OtherService", mockOtherSampleService.Object);
+
+            var serviceInstance =
+                (SampleClassWithNamedParameters)container.AutoCreate(typeof(SampleClassWithNamedParameters));
+
+            Assert.AreEqual(mockOtherSampleService.Object, serviceInstance.ServiceInstance);
+        }
 
         private static ServiceContainer GetContainerWithMockSampleServices()
         {

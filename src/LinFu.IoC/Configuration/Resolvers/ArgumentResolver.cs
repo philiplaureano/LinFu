@@ -30,16 +30,36 @@ namespace LinFu.IoC.Configuration
             foreach (var namedType in parameterTypes)
             {
                 var parameterType = namedType.Type;
+
+                // Use the named service instance if possible
+                var parameterName = namedType.Name;
+                string serviceName = null;
+
+                if (!string.IsNullOrEmpty(parameterName) && parameterName.Length > 1)
+                {
+                    var firstChar = parameterName.First().ToString();
+                    var remainingText = parameterName.Substring(1);
+                    serviceName = string.Format("{0}{1}", firstChar.ToUpper(), remainingText);
+                }
+
+                if (serviceName != null && container.Contains(serviceName, parameterType))
+                {
+                    // Instantiate the service type and build
+                    // the argument list
+                    var currentArgument = container.GetService(serviceName, parameterType);
+                    argumentList.Add(currentArgument);
+                    continue;
+                }
+
                 // Substitute the parameter if and only if 
                 // the container does not have service that
                 // that matches the parameter type
-                var parameterTypeExists = container.Contains(parameterType);
-
+                var parameterTypeExists = container.Contains(parameterType);                               
                 if (parameterTypeExists)
                 {
                     // Instantiate the service type and build
                     // the argument list
-                    object currentArgument = container.GetService(parameterType);
+                    var currentArgument = container.GetService(parameterType);
                     argumentList.Add(currentArgument);
                     continue;
                 }
