@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace LinFu.Reflection
 {
@@ -10,25 +11,54 @@ namespace LinFu.Reflection
     /// apply them to a particular <typeparamref name="TTarget"/> instance.
     /// </summary>
     /// <typeparam name="TTarget"></typeparam>
-    public class Loader<TTarget> : ILoader<TTarget>
+    public class Loader<TTarget> : Loader<TTarget, Assembly, Type>
+    {
+        /// <summary>
+        /// Initializes the target with the default settings.
+        /// </summary>
+        public Loader()
+            : base(new TypeExtractor(), new AssemblyLoader(), new PluginLoader<TTarget, LoaderPluginAttribute>())
+        {
+            DirectoryLister = new DefaultDirectoryLister();
+        }
+    }
+
+    /// <summary>
+    /// Represents a generic loader class that can
+    /// load multiple <see cref="Action{T}"/> delegates from multiple files and
+    /// apply them to a particular <typeparamref name="TTarget"/> instance.
+    /// </summary>
+    /// <typeparam name="TTarget">The target type to configure.</typeparam>
+    /// <typeparam name="TAssembly">The assembly type.</typeparam>
+    /// <typeparam name="TType">The target type.</typeparam>
+    public class Loader<TTarget, TAssembly, TType> : ILoader<TTarget>
     {
         private readonly List<Action<TTarget>> _actions = new List<Action<TTarget>>();
         private readonly List<Action<ILoader<TTarget>>> _loaderActions = new List<Action<ILoader<TTarget>>>();
         private readonly List<IActionLoader<TTarget, string>> _loaders = new List<IActionLoader<TTarget, string>>();
 
-        private readonly AssemblyTargetLoader<ILoader<TTarget>> _pluginLoader = new AssemblyTargetLoader<ILoader<TTarget>>();
+        private readonly AssemblyTargetLoader<ILoader<TTarget>, TAssembly, TType> _pluginLoader;
         private readonly List<ILoaderPlugin<TTarget>> _plugins = new List<ILoaderPlugin<TTarget>>();
         private readonly HashSet<string> _loadedFiles = new HashSet<string>();
+
         /// <summary>
         /// Initializes the target with the default settings.
         /// </summary>
-        public Loader()
+        public Loader(ITypeExtractor<TAssembly, TType> typeExtractor, IAssemblyLoader<TAssembly> assemblyLoader)
+            : this(typeExtractor, assemblyLoader, null)
         {
+        }
+
+        /// <summary>
+        /// Initializes the target with the default settings.
+        /// </summary>
+        public Loader(ITypeExtractor<TAssembly, TType> typeExtractor, IAssemblyLoader<TAssembly> assemblyLoader, IActionLoader<ILoader<TTarget>, TType> pluginTypeLoader)
+        {
+            _pluginLoader = new AssemblyTargetLoader<ILoader<TTarget>, TAssembly, TType>(typeExtractor, assemblyLoader);
             DirectoryLister = new DefaultDirectoryLister();
 
             // Make sure that loader plugins are loaded
             // on every LoadDirectory() call
-            var pluginTypeLoader = new PluginLoader<TTarget, LoaderPluginAttribute>();
             _pluginLoader.TypeLoaders.Add(pluginTypeLoader);
         }
 
@@ -90,10 +120,10 @@ namespace LinFu.Reflection
         /// <param name="filespec">The wildcard file pattern string to use when specifying the target files.</param>
         public void LoadDirectory(string directory, string filespec)
         {
-            // Determine which files exist
-            IEnumerable<string> files = DirectoryLister.GetFiles(directory, filespec);
+            // Determine which files currently exist
+            var files = DirectoryLister.GetFiles(directory, filespec);
 
-            foreach (string currentFile in files)
+            foreach (var currentFile in files)
             {
                 // Make sure the file is loaded only once
                 if (_loadedFiles.Contains(currentFile))
@@ -101,11 +131,11 @@ namespace LinFu.Reflection
 
                 // HACK: Manually load any loader plugins
                 // into the loader
-                if (_pluginLoader.CanLoad(currentFile))
+                if (_pluginLoader != null && _pluginLoader.CanLoad(currentFile))
                 {
                     // Immediately execute any custom loader actions
                     // embedded in the file itself
-                    IEnumerable<Action<ILoader<TTarget>>> customActions = _pluginLoader.Load(currentFile);
+                    var customActions = _pluginLoader.Load(currentFile);
                     foreach (var customAction in customActions)
                     {
                         customAction(this);
@@ -163,7 +193,7 @@ namespace LinFu.Reflection
             {
                 if (plugin == null || !ShouldLoad(plugin))
                     continue;
-                
+
                 plugin.EndLoad(target);
             }
         }
@@ -190,7 +220,7 @@ namespace LinFu.Reflection
             _loaderActions.Clear();
             _loadedFiles.Clear();
         }
-        
+
 
         /// <summary>
         /// Loads the <paramref name="currentFile">current file</paramref>
@@ -204,7 +234,7 @@ namespace LinFu.Reflection
                 if (loader == null || !loader.CanLoad(currentFile))
                     continue;
 
-                IEnumerable<Action<TTarget>> actions = loader.Load(currentFile);
+                var actions = loader.Load(currentFile);
                 if (actions.Count() == 0)
                     continue;
 

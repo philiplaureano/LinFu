@@ -11,7 +11,7 @@ namespace LinFu.Reflection
     /// <typeparam name="TTarget">The target type to configure.</typeparam>
     /// <typeparam name="TAssembly">The assembly type.</typeparam>
     /// <typeparam name="TType">The input type.</typeparam>
-    public interface IAssemblyTargetLoader<TTarget, TAssembly, TType>
+    public interface IAssemblyTargetLoader<TTarget, TAssembly, TType> : IActionLoader<TTarget, string>
     {
         /// <summary>
         /// The <see cref="IAssemblyLoader"/> instance that will load
@@ -32,7 +32,7 @@ namespace LinFu.Reflection
     /// and apply it to a <typeparamref name="TTarget"/> instance.
     /// </summary>
     /// <typeparam name="TTarget">The target type to configure.</typeparam>
-    public interface IAssemblyTargetLoader<TTarget> : IActionLoader<TTarget, string>
+    public interface IAssemblyTargetLoader<TTarget> 
     {
         /// <summary>
         /// The <see cref="IAssemblyLoader"/> instance that will load

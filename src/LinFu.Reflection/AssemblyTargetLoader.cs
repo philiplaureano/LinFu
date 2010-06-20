@@ -20,20 +20,26 @@ namespace LinFu.Reflection
     {
         private readonly IList<IActionLoader<TTarget, TType>> _typeLoaders = new List<IActionLoader<TTarget, TType>>();
         private IActionLoader<IList<Action<TTarget>>, TAssembly> _assemblyActionLoader;
+        private IAssemblyLoader<TAssembly> _assemblyLoader;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AssemblyTargetLoader{TTarget,TAssembly,TType}"/> class.
         /// </summary>
-        public AssemblyTargetLoader(ITypeExtractor<TAssembly, TType> typeExtractor)
+        public AssemblyTargetLoader(ITypeExtractor<TAssembly, TType> typeExtractor, IAssemblyLoader<TAssembly> assemblyLoader)
         {
             _assemblyActionLoader = new AssemblyActionLoader<TTarget, TAssembly, TType>(() => TypeLoaders, typeExtractor);
+            _assemblyLoader = assemblyLoader;
         }
 
         /// <summary>
         /// The <see cref="IAssemblyLoader"/> instance that will load
         /// the target assemblies.
         /// </summary>
-        public virtual IAssemblyLoader<TAssembly> AssemblyLoader { get; set; }        
+        public virtual IAssemblyLoader<TAssembly> AssemblyLoader
+        {
+            get { return _assemblyLoader; }
+            set { _assemblyLoader = value; }
+        }
 
         /// <summary>
         /// Gets or sets the value indicating the action loader 
@@ -113,9 +119,9 @@ namespace LinFu.Reflection
         /// <summary>
         /// Initializes the class with the default property values.
         /// </summary>
-        public AssemblyTargetLoader() : base(new TypeExtractor())
+        public AssemblyTargetLoader()
+            : base(new TypeExtractor(), new AssemblyLoader())
         {
-            AssemblyLoader = new AssemblyLoader();
         }
     }
 }
