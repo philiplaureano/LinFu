@@ -13,44 +13,46 @@ namespace LinFu.Reflection
     /// instance.
     /// </summary>
     /// <typeparam name="TTarget">The target type to configure.</typeparam>
-    public class AssemblyTargetLoader<TTarget> : IAssemblyTargetLoader<TTarget>
+    /// <typeparam name="TAssembly">The assembly type.</typeparam>
+    /// <typeparam name="TType">The target type.</typeparam>
+    public class AssemblyTargetLoader<TTarget, TAssembly, TType> : IAssemblyTargetLoader<TTarget, TAssembly, TType>,
+        IActionLoader<TTarget, string>
     {
-        private readonly IList<IActionLoader<TTarget, Type>> typeLoaders = new List<IActionLoader<TTarget, Type>>();
+        private readonly IList<IActionLoader<TTarget, TType>> _typeLoaders = new List<IActionLoader<TTarget, TType>>();
+        private IActionLoader<IList<Action<TTarget>>, TAssembly> _assemblyActionLoader;
 
         /// <summary>
-        /// Initializes the class with the default property values.
+        /// Initializes a new instance of the <see cref="AssemblyTargetLoader{TTarget,TAssembly,TType}"/> class.
         /// </summary>
         public AssemblyTargetLoader()
         {
-            AssemblyLoader = new AssemblyLoader();
-            AssemblyActionLoader = new AssemblyActionLoader<TTarget>(() => TypeLoaders);
+            _assemblyActionLoader = new AssemblyActionLoader<TTarget, TAssembly, TType>(() => TypeLoaders);
         }
 
         /// <summary>
         /// The <see cref="IAssemblyLoader"/> instance that will load
         /// the target assemblies.
         /// </summary>
-        public virtual IAssemblyLoader AssemblyLoader { get; set; }
-
+        public virtual IAssemblyLoader<TAssembly> AssemblyLoader { get; set; }        
 
         /// <summary>
         /// Gets or sets the value indicating the action loader 
         /// responsible for reading an assembly and converts it to 
         /// a list of actions to be performed against the target type.
         /// </summary>
-        public virtual IActionLoader<IList<Action<TTarget>>, Assembly> AssemblyActionLoader
+        public virtual IActionLoader<IList<Action<TTarget>>, TAssembly> AssemblyActionLoader
         {
-            get;
-            set;
+            get { return _assemblyActionLoader; }
+            set { _assemblyActionLoader = value; }
         }
 
         /// <summary>
         /// The list of ActionLoaders that will be used to
         /// configure the target.
         /// </summary>
-        public virtual IList<IActionLoader<TTarget, Type>> TypeLoaders
+        public virtual IList<IActionLoader<TTarget, TType>> TypeLoaders
         {
-            get { return typeLoaders; }
+            get { return _typeLoaders; }
         }
 
         /// <summary>
@@ -80,7 +82,7 @@ namespace LinFu.Reflection
         /// <returns>A set of <see cref="Action{IServiceContainer}"/> instances to apply to a target type.</returns>
         public virtual IEnumerable<Action<TTarget>> Load(string filename)
         {
-            Assembly assembly = null;
+            var assembly = default(TAssembly);
 
             if (AssemblyLoader == null)
                 throw new ArgumentException("The assembly loader cannot be null");
@@ -96,6 +98,24 @@ namespace LinFu.Reflection
             }
 
             return results;
+        }
+    }
+
+    /// <summary>
+    /// Represents a loader class that takes <see cref="System.Type"/>
+    /// instances as input and generates <see cref="Action{T}"/>
+    /// instances that can be used to configure a <typeparamref name="TTarget"/>
+    /// instance.
+    /// </summary>
+    /// <typeparam name="TTarget">The target type to configure.</typeparam>
+    public class AssemblyTargetLoader<TTarget> : AssemblyTargetLoader<TTarget, Assembly, Type>
+    {
+        /// <summary>
+        /// Initializes the class with the default property values.
+        /// </summary>
+        public AssemblyTargetLoader()
+        {
+            AssemblyLoader = new AssemblyLoader();
         }
     }
 }

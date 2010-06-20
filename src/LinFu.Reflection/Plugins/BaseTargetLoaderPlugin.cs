@@ -8,7 +8,9 @@ namespace LinFu.Reflection.Plugins
     /// for plugins that work with <see cref="IAssemblyTargetLoader{TTarget}"/> instances.
     /// </summary>
     /// <typeparam name="TTarget">The target type being configured.</typeparam>
-    public abstract class BaseTargetLoaderPlugin<TTarget> : BaseLoaderPlugin<TTarget>,
+    /// <typeparam name="TAssembly">The assembly type.</typeparam>
+    /// <typeparam name="TType">The input type.</typeparam>
+    public abstract class BaseTargetLoaderPlugin<TTarget, TAssembly, TType> : BaseLoaderPlugin<TTarget>,
                                                             IInitialize<ILoader<TTarget>>
     {
         #region IInitialize<ILoader<TTarget>> Members
@@ -23,12 +25,12 @@ namespace LinFu.Reflection.Plugins
         {
             // Use an existing AssemblyContainerLoader
             // instance, if possible
-            IAssemblyTargetLoader<TTarget> assemblyLoader = null;
+            IAssemblyTargetLoader<TTarget, TAssembly, TType> assemblyLoader = null;
 
-            List<IAssemblyTargetLoader<TTarget>> matches = (from currentInstance in source.FileLoaders
+            List<IAssemblyTargetLoader<TTarget, TAssembly, TType>> matches = (from currentInstance in source.FileLoaders
                                                             where currentInstance != null &&
-                                                                  currentInstance is IAssemblyTargetLoader<TTarget>
-                                                            select (IAssemblyTargetLoader<TTarget>) currentInstance).ToList();
+                                                                  currentInstance is IAssemblyTargetLoader<TTarget, TAssembly, TType>
+                                                            select (IAssemblyTargetLoader<TTarget, TAssembly, TType>) currentInstance).ToList();
 
             if (matches.Count > 0)
                 assemblyLoader = matches[0];
@@ -37,7 +39,7 @@ namespace LinFu.Reflection.Plugins
             // create the assembly target loader
             if (matches.Count == 0)
             {
-                var loader = new AssemblyTargetLoader<TTarget>();
+                var loader = new AssemblyTargetLoader<TTarget, TAssembly, TType>();
                 source.FileLoaders.Add(loader);
                 assemblyLoader = loader;
             }
@@ -57,6 +59,6 @@ namespace LinFu.Reflection.Plugins
         /// <param name="loader">The loader being configured.</param>
         /// <param name="assemblyLoader">The assembly loader that will load the types into the loader itself.</param>
         protected abstract void Initialize(ILoader<TTarget> loader,
-                                           IAssemblyTargetLoader<TTarget> assemblyLoader);
+                                           IAssemblyTargetLoader<TTarget, TAssembly, TType> assemblyLoader);
     }
 }

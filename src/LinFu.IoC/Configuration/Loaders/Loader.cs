@@ -51,7 +51,7 @@ namespace LinFu.IoC.Configuration
         /// Gets or sets the value indicating the <see cref="IAssemblyLoader"/> instance
         /// that will be used to load assemblies into memory.
         /// </summary>
-        public IAssemblyLoader AssemblyLoader
+        public IAssemblyLoader<Assembly> AssemblyLoader
         {
             get
             {

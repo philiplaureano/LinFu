@@ -12,19 +12,20 @@ namespace LinFu.Reflection
     /// type.
     /// </summary>
     /// <typeparam name="TTarget">The target type.</typeparam>
-    public class AssemblyActionLoader<TTarget> : IActionLoader<IList<Action<TTarget>>, Assembly>
+    /// <typeparam name="TAssembly">The assembly type.</typeparam>
+    /// <typeparam name="TType">The target input type.</typeparam>
+    public class AssemblyActionLoader<TTarget, TAssembly, TType> : IActionLoader<IList<Action<TTarget>>, TAssembly>
     {
-        private readonly Func<IList<IActionLoader<TTarget, Type>>> _getTypeLoaders;
+        private readonly Func<IList<IActionLoader<TTarget, TType>>> _getTypeLoaders;
 
         /// <summary>
         /// Initializes the class with a set of <see cref="IActionLoader{TTarget,Type}"/>
         /// instances that will be used to load the target assembly.
         /// </summary>
         /// <param name="getTypeLoaders">The delegate that will return the actual list of typeloaders.</param>
-        public AssemblyActionLoader(Func<IList<IActionLoader<TTarget, Type>>> getTypeLoaders)
+        public AssemblyActionLoader(Func<IList<IActionLoader<TTarget, TType>>> getTypeLoaders)
         {
             _getTypeLoaders = getTypeLoaders;
-            TypeExtractor = new TypeExtractor();
         }
 
         /// <summary>
@@ -33,17 +34,17 @@ namespace LinFu.Reflection
         /// </summary>
         /// <param name="input">The target assembly.</param>
         /// <returns>The list of actions which will modify the list of actions that will be executed against the <typeparamref name="TTarget"/> instance.</returns>
-        public IEnumerable<Action<IList<Action<TTarget>>>> Load(Assembly input)
+        public IEnumerable<Action<IList<Action<TTarget>>>> Load(TAssembly input)
         {
             yield return list => CreateActionsFrom(input, list);
         }
 
         /// <summary>
-        /// Determines if an <see cref="Assembly"/> instance can be loaded.
+        /// Determines if an <see cref="TAssembly"/> instance can be loaded.
         /// </summary>
         /// <param name="assembly">The target assembly.</param>
         /// <returns>Returns <c>true</c> if the assembly is not <c>null</c>.</returns>
-        public virtual bool CanLoad(Assembly assembly)
+        public virtual bool CanLoad(TAssembly assembly)
         {
             return assembly != null;
         }
@@ -52,17 +53,17 @@ namespace LinFu.Reflection
         /// The <see cref="ITypeExtractor"/> instance that will
         /// determine which types will be extracted from an assembly.
         /// </summary>
-        public ITypeExtractor TypeExtractor { get; set; }
+        public ITypeExtractor<TAssembly, TType> TypeExtractor { get; set; }
 
         /// <summary>
         /// Generates a list of actions from a target assemby.
         /// </summary>
         /// <param name="assembly">The target assembly.</param>
         /// <param name="resultList">The list that will store the resulting actions.</param>
-        private void CreateActionsFrom(Assembly assembly, IList<Action<TTarget>> resultList)
+        private void CreateActionsFrom(TAssembly assembly, ICollection<Action<TTarget>> resultList)
         {
             // Grab the types embedded in the assembly
-            IEnumerable<Type> types = new Type[0];
+            IEnumerable<TType> types = new TType[0];
             if (assembly != null && TypeExtractor != null)
                 types = TypeExtractor.GetTypes(assembly);
 
@@ -84,7 +85,7 @@ namespace LinFu.Reflection
         /// </summary>
         /// <param name="type">The <see cref="Type"/> instance that holds the configuration information.</param>
         /// <param name="results">The list that will hold the actions which will configure the container.</param>
-        private void LoadResultsFromType(Type type, ICollection<Action<TTarget>> results)
+        private void LoadResultsFromType(TType type, ICollection<Action<TTarget>> results)
         {
             var typeLoaders = _getTypeLoaders();
             foreach (var typeLoader in typeLoaders)
@@ -102,5 +103,24 @@ namespace LinFu.Reflection
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// A class that reads an assembly and converts it into a set of actions
+    /// that can be used to build the list of actions against the <typeparamref name="TTarget"/>
+    /// type.
+    /// </summary>
+    /// <typeparam name="TTarget">The target type.</typeparam>
+    public class AssemblyActionLoader<TTarget> : AssemblyActionLoader<TTarget, Assembly, Type> 
+    {
+        /// <summary>
+        /// Initializes the class with a set of <see cref="IActionLoader{TTarget,Type}"/>
+        /// instances that will be used to load the target assembly.
+        /// </summary>
+        /// <param name="getTypeLoaders">The delegate that will return the actual list of typeloaders.</param>
+        public AssemblyActionLoader(Func<IList<IActionLoader<TTarget, Type>>> getTypeLoaders) : base(getTypeLoaders)
+        {
+            TypeExtractor = new TypeExtractor();
+        }        
     }
 }
