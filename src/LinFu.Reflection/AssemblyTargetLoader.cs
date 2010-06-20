@@ -24,9 +24,9 @@ namespace LinFu.Reflection
         /// <summary>
         /// Initializes a new instance of the <see cref="AssemblyTargetLoader{TTarget,TAssembly,TType}"/> class.
         /// </summary>
-        public AssemblyTargetLoader()
+        public AssemblyTargetLoader(ITypeExtractor<TAssembly, TType> typeExtractor)
         {
-            _assemblyActionLoader = new AssemblyActionLoader<TTarget, TAssembly, TType>(() => TypeLoaders);
+            _assemblyActionLoader = new AssemblyActionLoader<TTarget, TAssembly, TType>(() => TypeLoaders, typeExtractor);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace LinFu.Reflection
         /// <summary>
         /// Initializes the class with the default property values.
         /// </summary>
-        public AssemblyTargetLoader()
+        public AssemblyTargetLoader() : base(new TypeExtractor())
         {
             AssemblyLoader = new AssemblyLoader();
         }

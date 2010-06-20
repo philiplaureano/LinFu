@@ -13,7 +13,16 @@ namespace LinFu.Reflection.Plugins
     public abstract class BaseTargetLoaderPlugin<TTarget, TAssembly, TType> : BaseLoaderPlugin<TTarget>,
                                                             IInitialize<ILoader<TTarget>>
     {
-        #region IInitialize<ILoader<TTarget>> Members
+        private readonly ITypeExtractor<TAssembly, TType> _typeExtractor;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseTargetLoaderPlugin{TTarget,TAssembly,TType}"/> class.
+        /// </summary>
+        /// <param name="typeExtractor">The type extractor that will pull the types out of the current assembly.</param>
+        protected BaseTargetLoaderPlugin(ITypeExtractor<TAssembly, TType> typeExtractor)
+        {
+            _typeExtractor = typeExtractor;
+        }
 
         /// <summary>
         /// Searches the loader for an <see cref="IAssemblyTargetLoader{T}"/>
@@ -27,7 +36,7 @@ namespace LinFu.Reflection.Plugins
             // instance, if possible
             IAssemblyTargetLoader<TTarget, TAssembly, TType> assemblyLoader = null;
 
-            List<IAssemblyTargetLoader<TTarget, TAssembly, TType>> matches = (from currentInstance in source.FileLoaders
+            var matches = (from currentInstance in source.FileLoaders
                                                             where currentInstance != null &&
                                                                   currentInstance is IAssemblyTargetLoader<TTarget, TAssembly, TType>
                                                             select (IAssemblyTargetLoader<TTarget, TAssembly, TType>) currentInstance).ToList();
@@ -39,7 +48,7 @@ namespace LinFu.Reflection.Plugins
             // create the assembly target loader
             if (matches.Count == 0)
             {
-                var loader = new AssemblyTargetLoader<TTarget, TAssembly, TType>();
+                var loader = new AssemblyTargetLoader<TTarget, TAssembly, TType>(_typeExtractor);
                 source.FileLoaders.Add(loader);
                 assemblyLoader = loader;
             }
@@ -49,8 +58,6 @@ namespace LinFu.Reflection.Plugins
 
             Initialize(source, assemblyLoader);
         }
-
-        #endregion
 
         /// <summary>
         /// Initializes the <paramref name="loader"/> instance
