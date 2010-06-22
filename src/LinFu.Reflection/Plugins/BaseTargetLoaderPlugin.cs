@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace LinFu.Reflection.Plugins
 {
@@ -14,14 +16,17 @@ namespace LinFu.Reflection.Plugins
                                                             IInitialize<ILoader<TTarget>>
     {
         private readonly ITypeExtractor<TAssembly, TType> _typeExtractor;
+        private readonly IAssemblyTargetLoader<TTarget, TAssembly, TType> _assemblyLoader;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseTargetLoaderPlugin{TTarget,TAssembly,TType}"/> class.
         /// </summary>
         /// <param name="typeExtractor">The type extractor that will pull the types out of the current assembly.</param>
-        protected BaseTargetLoaderPlugin(ITypeExtractor<TAssembly, TType> typeExtractor)
+        /// <param name="assemblyLoader">The assembly loader that will load the current assembly into memory.</param>
+        protected BaseTargetLoaderPlugin(ITypeExtractor<TAssembly, TType> typeExtractor, IAssemblyTargetLoader<TTarget, TAssembly, TType> assemblyLoader)
         {
             _typeExtractor = typeExtractor;
+            _assemblyLoader = assemblyLoader;
         }
 
         /// <summary>
@@ -32,31 +37,7 @@ namespace LinFu.Reflection.Plugins
         /// <param name="source">The <see cref="ILoader{TTarget}"/> instance that will hold the plugin.</param>
         public void Initialize(ILoader<TTarget> source)
         {
-            // Use an existing AssemblyContainerLoader
-            // instance, if possible
-            IAssemblyTargetLoader<TTarget, TAssembly, TType> assemblyLoader = null;
-
-            var matches = (from currentInstance in source.FileLoaders
-                                                            where currentInstance != null &&
-                                                                  currentInstance is IAssemblyTargetLoader<TTarget, TAssembly, TType>
-                                                            select (IAssemblyTargetLoader<TTarget, TAssembly, TType>) currentInstance).ToList();
-
-            if (matches.Count > 0)
-                assemblyLoader = matches[0];
-
-            // If no matches were found,
-            // create the assembly target loader
-            if (matches.Count == 0)
-            {
-                var loader = new AssemblyTargetLoader<TTarget, TAssembly, TType>(_typeExtractor);
-                source.FileLoaders.Add(loader);
-                assemblyLoader = loader;
-            }
-
-            if (assemblyLoader == null)
-                return;
-
-            Initialize(source, assemblyLoader);
+            Initialize(source, _assemblyLoader);
         }
 
         /// <summary>
@@ -67,5 +48,28 @@ namespace LinFu.Reflection.Plugins
         /// <param name="assemblyLoader">The assembly loader that will load the types into the loader itself.</param>
         protected abstract void Initialize(ILoader<TTarget> loader,
                                            IAssemblyTargetLoader<TTarget, TAssembly, TType> assemblyLoader);
+    }
+
+    /// <summary>
+    /// A plugin class that provides the basic implementation
+    /// for plugins that work with <see cref="IAssemblyTargetLoader{TTarget}"/> instances.
+    /// </summary>
+    public abstract class BaseTargetLoaderPlugin<TTarget> : BaseTargetLoaderPlugin<TTarget, Assembly, Type> 
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseTargetLoaderPlugin{TTarget,TAssembly,TType}"/> class.
+        /// </summary>
+        protected BaseTargetLoaderPlugin() : this(new TypeExtractor())
+        {            
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseTargetLoaderPlugin{TTarget,TAssembly,TType}"/> class.
+        /// </summary>
+        /// <param name="typeExtractor">The type extractor that will pull the types out of the current assembly.</param>
+        protected BaseTargetLoaderPlugin(ITypeExtractor<Assembly, Type> typeExtractor) : 
+            base(typeExtractor, new AssemblyTargetLoader<TTarget, Assembly, Type>(typeExtractor, new AssemblyLoader()))
+        {            
+        }
     }
 }
