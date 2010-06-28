@@ -7,9 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		CommonAssemblyInfo.cs = CommonAssemblyInfo.cs
 		..\go.bat = ..\go.bat
 		ILMerge.MSBuild = ILMerge.MSBuild
+		LinFu.AOP.ILMerge.MSBuild = LinFu.AOP.ILMerge.MSBuild
 		..\LinFu.build = ..\LinFu.build
 		..\LinFu.License.txt = ..\LinFu.License.txt
-		LinFu.Proxy.ILMerge.MSBuild = LinFu.Proxy.ILMerge.MSBuild
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.IoC", "LinFu.IoC\LinFu.IoC.csproj", "{FA3D5517-EFF4-4363-AFF2-EF67B981334E}"

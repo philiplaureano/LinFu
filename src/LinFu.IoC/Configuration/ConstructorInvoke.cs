@@ -3,20 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using LinFu.IoC.Configuration.Interfaces;
 
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
     /// A class that invokes constructor instances.
     /// </summary>
-    public class ConstructorInvoke : BaseMethodInvoke<ConstructorInfo>
+    public class ConstructorInvoke : IMethodInvoke<ConstructorInfo>
     {
         /// <summary>
-        /// Initializes the class with the default values.
+        /// Invokes the <paramref name="targetMethod"/> constructor
+        /// using the given <paramref name="arguments"/>.
         /// </summary>
-        public ConstructorInvoke()
+        /// <param name="target">The target object instance.</param>
+        /// <param name="targetMethod">The target method to invoke.</param>
+        /// <param name="arguments">The arguments to be used with the method.</param>
+        /// <returns>The method return value.</returns>
+        public object Invoke(object target, ConstructorInfo targetMethod, params object[] arguments)
         {
-            MethodBuilder = new ReflectionMethodBuilder<ConstructorInfo>();
+            var declaringType = targetMethod.DeclaringType;
+            return Activator.CreateInstance(declaringType, arguments);
         }
     }
 }
