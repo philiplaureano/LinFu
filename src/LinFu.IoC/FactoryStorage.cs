@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using LinFu.IoC.Factories;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC
@@ -18,7 +19,7 @@ namespace LinFu.IoC
         /// <param name="serviceInfo">The <see cref="IServiceInfo"/> object that describes the service to be created.</param>
         /// <returns><c>True</c> if the service can be created; otherwise, it will return <c>false</c>.</returns>
         public override bool ContainsFactory(IServiceInfo serviceInfo)
-        {            
+        {
             var serviceType = serviceInfo.ServiceType;
             var serviceName = serviceInfo.ServiceName;
 
@@ -37,16 +38,28 @@ namespace LinFu.IoC
             if (result)
                 return true;
 
-            if (serviceType.IsGenericType && !serviceType.IsGenericTypeDefinition)
-            {
-                // Determine the base type definition
-                var baseDefinition = serviceType.GetGenericTypeDefinition();
+            if (!serviceType.IsGenericType || serviceType.IsGenericTypeDefinition)
+                return false;
 
-                // Check if there are any generic factories that can create
-                // the entire family of services whose type definitions
-                // match the base type
-                var genericServiceInfo = new ServiceInfo(serviceName, baseDefinition, serviceInfo.ArgumentTypes);
-                result = base.ContainsFactory(genericServiceInfo);
+            // Determine the base type definition
+            var baseDefinition = serviceType.GetGenericTypeDefinition();
+
+            // Check if there are any generic factories that can create
+            // the entire family of services whose type definitions
+            // match the base type
+            var genericServiceInfo = new ServiceInfo(serviceName, baseDefinition, serviceInfo.ArgumentTypes);
+            result = base.ContainsFactory(genericServiceInfo);
+
+            if (result)
+                return true;
+
+            if (baseDefinition == typeof(IFactory<>))
+            {
+                var typeArguments = serviceType.GetGenericArguments();
+                var actualServiceType = typeArguments[0];
+
+                var actualServiceInfo = new ServiceInfo(serviceName, actualServiceType, serviceInfo.ArgumentTypes);
+                return base.ContainsFactory(actualServiceInfo);
             }
 
             return result;
@@ -73,11 +86,28 @@ namespace LinFu.IoC
 
             // Attempt to create the service type using
             // the generic factories, if possible
-            if (factory == null && serviceType.IsGenericType)
-            {                
-                var definitionType = serviceType.GetGenericTypeDefinition();
-                var genericServiceInfo = new ServiceInfo(serviceName, definitionType, serviceInfo.ArgumentTypes);
-                factory = base.GetFactory(genericServiceInfo);
+            if (factory != null || !serviceType.IsGenericType)
+                return factory;
+
+            var definitionType = serviceType.GetGenericTypeDefinition();
+            var genericServiceInfo = new ServiceInfo(serviceName, definitionType, serviceInfo.ArgumentTypes);
+
+            if (base.ContainsFactory(genericServiceInfo))
+                return base.GetFactory(genericServiceInfo);
+
+            if (definitionType != typeof(IFactory<>))
+                return factory;
+
+            var typeArguments = serviceType.GetGenericArguments();
+            var actualServiceType = typeArguments[0];
+            var info = new ServiceInfo(serviceName, actualServiceType, serviceInfo.ArgumentTypes);
+
+            if (base.ContainsFactory(info))
+            {
+                var actualFactory = base.GetFactory(info);
+                Func<IFactoryRequest, object> factoryMethod = request => actualFactory;
+
+                factory = new FunctorFactory<IFactory>(factoryMethod);
             }
 
             return factory;

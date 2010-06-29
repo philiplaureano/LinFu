@@ -25,7 +25,7 @@ namespace LinFu.IoC.Configuration
         public object[] ResolveFrom(IEnumerable<INamedType> parameterTypes, IServiceContainer container, params object[] additionalArguments)
         {
             var enumerableDefinition = typeof(IEnumerable<>);
-
+            var factoryDefinition = typeof (IFactory<>);
             var argumentList = new List<object>();
             foreach (var namedType in parameterTypes)
             {
@@ -73,13 +73,14 @@ namespace LinFu.IoC.Configuration
                     continue;
                 }
 
-                if (!parameterType.IsArray)
+                if (parameterType.IsArray)
+                {
+                    // Determine if the parameter type is an array
+                    // of existing services and inject the current
+                    // set of services as a parameter value
+                    AddArrayArgument(parameterType, container, argumentList);
                     continue;
-
-                // Determine if the parameter type is an array
-                // of existing services and inject the current
-                // set of services as a parameter value
-                AddArrayArgument(parameterType, container, argumentList);
+                }                               
             }
 
             // Append the existing arguments

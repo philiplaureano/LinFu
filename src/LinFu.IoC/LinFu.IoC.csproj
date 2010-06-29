@@ -121,6 +121,7 @@
     <Compile Include="Factories\DelegateFactory.cs" />
     <Compile Include="Factories\FactoryAdapter.cs" />
     <Compile Include="Factories\FunctorFactory.cs" />
+    <Compile Include="Factories\FunctorFactoryOfT.cs" />
     <Compile Include="Factories\InstanceFactory.cs" />
     <Compile Include="Factories\LazyFactory.cs" />
     <Compile Include="Factories\LazyFactoryOfT.cs" />

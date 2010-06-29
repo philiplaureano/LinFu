@@ -28,7 +28,7 @@ namespace LinFu.UnitTests.IOC
         }
 
         [Test]
-        public void ContainerShouldBeAbleToRegisterGenericTypeAndResolveConcreteServiceTypeUsingTheNonGenericGetServiceMethod() 
+        public void ContainerShouldBeAbleToRegisterGenericTypeAndResolveConcreteServiceTypeUsingTheNonGenericGetServiceMethod()
         {
             var container = new ServiceContainer();
             container.AddService(typeof(ISampleGenericService<>), typeof(SampleGenericClassWithOpenGenericImplementation<>));
@@ -371,7 +371,7 @@ namespace LinFu.UnitTests.IOC
             Assert.IsTrue(container.Contains(typeof(IProxyFactory)));
 
             // The instance should never be created
-            container.AddService(typeof (ISampleService), typeof (SampleLazyService));
+            container.AddService(typeof(ISampleService), typeof(SampleLazyService));
 
             var result = container.GetService<ISampleService>();
             Assert.IsFalse(SampleLazyService.IsInitialized);
@@ -636,10 +636,30 @@ namespace LinFu.UnitTests.IOC
         public void ContainerMustLoadAssemblyFromMemory()
         {
             var container = new ServiceContainer();
-            container.LoadFrom(typeof (SampleClass).Assembly);
-            
+            container.LoadFrom(typeof(SampleClass).Assembly);
+
             // Verify that the container loaded the sample assembly into memory
-            Assert.IsTrue(container.Contains(typeof (ISampleService)));
+            Assert.IsTrue(container.Contains(typeof(ISampleService)));
+        }
+
+        [Test]
+        public void ContainerMustInjectFactoryInstances()
+        {
+            var mockFactory = new Mock<IFactory<ISampleService>>();
+            mockFactory.Expect(f => f.CreateInstance(It.IsAny<IFactoryRequest>())).Returns(new SampleClass());
+
+            var container = new ServiceContainer();
+            container.AddFactory(mockFactory.Object);
+
+            var instance =
+                (SampleClassWithFactoryDependency) container.AutoCreate(typeof (SampleClassWithFactoryDependency));
+
+            Assert.IsNotNull(instance);
+
+            var factory = instance.Factory;
+            factory.CreateInstance(null);
+
+            mockFactory.VerifyAll();
         }
     }
 }
