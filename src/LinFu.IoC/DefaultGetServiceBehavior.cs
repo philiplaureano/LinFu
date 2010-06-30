@@ -9,7 +9,8 @@ namespace LinFu.IoC
     /// <summary>
     /// Represents the default implementation for the <see cref="IGetService"/> interface.
     /// </summary>
-    public class DefaultGetServiceBehavior : IGetService
+    public class DefaultGetServiceBehavior : 
+        IGetService
     {
         private readonly IServiceContainer _container;
         private readonly ICreateInstance _creator;

@@ -119,6 +119,19 @@ namespace LinFu.IoC
         }
 
         /// <summary>
+        /// Automatically loads assemblies from the given <paramref name="directory"/> whenever an assembly
+        /// matching the given <paramref name="fileSpec"/> is dropped into the given directory.
+        /// </summary>
+        /// <param name="container">The service container that will automatically be configured whenever a file change is detected.</param>
+        /// <param name="directory">The target directory.</param>
+        /// <param name="fileSpec">The assembly file pattern.</param>
+        public static void AutoLoadFrom(this IServiceContainer container, string directory, string fileSpec)
+        {
+            var loader = new Loader();
+            loader.AutoLoadFrom(directory, fileSpec, container);
+        }
+
+        /// <summary>
         /// Loads an existing <paramref name="assembly"/> into the container.
         /// </summary>
         /// <param name="container">The target container to be configured.</param>

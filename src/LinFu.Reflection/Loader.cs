@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -110,7 +111,6 @@ namespace LinFu.Reflection
         /// </summary>
         public IDirectoryListing DirectoryLister { get; set; }
 
-
         /// <summary>
         /// Loads the container with the files listed in 
         /// the target <paramref name="directory"/> that match 
@@ -196,6 +196,35 @@ namespace LinFu.Reflection
 
                 plugin.EndLoad(target);
             }
+        }
+
+        /// <summary>
+        /// Monitors the given <paramref name="directory"/> for any file changes and
+        /// updates the current loader whenever the files that match the given <paramref name="fileSpec"/>
+        /// are loaded into memory
+        /// </summary>
+        /// <param name="directory">The full path of the location to scan.</param>
+        /// <param name="fileSpec">The wildcard file pattern string to use when specifying the target files.</param>
+        /// <param name="target">The target that will be loaded using the current loader.</param>
+        public void AutoLoadFrom(string directory, string fileSpec, TTarget target)
+        {
+            if (!Directory.Exists(directory))
+                throw new DirectoryNotFoundException(directory);
+
+            FileSystemEventHandler handler = (source, e) => 
+                {
+                    LoadDirectory(directory, fileSpec);
+                    LoadInto(target);
+                };
+
+            var fullPath = Path.GetFullPath(directory);
+            var watcher = new FileSystemWatcher(fullPath, fileSpec);
+            watcher.Created += handler;
+            watcher.Changed += handler;
+            watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
+           | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+
+            watcher.EnableRaisingEvents = true;
         }
 
         /// <summary>

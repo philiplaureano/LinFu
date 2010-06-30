@@ -75,6 +75,7 @@
     <Compile Include="IOC\Configuration\InitializerTests.cs" />
     <Compile Include="IOC\FactoryStorageTests.cs" />
     <Compile Include="IOC\FieldInjectionTests.cs" />
+    <Compile Include="IOC\FileWatcherTests.cs" />
     <Compile Include="IOC\MethodInjectionTests.cs" />
     <Compile Include="IOC\PropertyInjectionTests.cs" />
     <Compile Include="IOC\ResolutionTests.cs" />
