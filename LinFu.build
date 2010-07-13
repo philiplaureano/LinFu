@@ -9,7 +9,11 @@
     <delete dir="${build.dir}\" if="${directory::exists(build.dir)}"/>
   </target>
 
-  <target name="compile" description="Compiles using the AutomatedDebug Configuration">
+  <target name="compile" description="Compiles using the AutomatedDebug Configuration">    
+    <msbuild project="src\SampleFileWatcherLibrary\SampleFileWatcherLibrary.csproj">
+      <property name="Configuration" value="AutomatedDebug" />
+      <property name="OutputPath" value="build\Debug\UnitTests"/>      
+    </msbuild>
     <msbuild project="src\LinFu.sln">
       <property name="Configuration" value="AutomatedDebug" />
     </msbuild>
