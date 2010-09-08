@@ -264,6 +264,20 @@ namespace LinFu.IoC
         }
 
         /// <summary>
+        /// Automatically instantiates a <typeparamref name="T"/> type
+        /// with the constructor with the most resolvable parameters from
+        /// the given <paramref name="container"/> instance.
+        /// </summary>        
+        /// <typeparam name="T">The type to instantiate.</typeparam>
+        /// <param name="container">The service container that contains the arguments that will automatically be injected into the constructor.</param>
+        /// <param name="additionalArguments">The list of arguments to pass to the target type's constructors.</param>
+        /// <returns>A valid, non-null object reference.</returns>
+        public static T AutoCreate<T>(this IServiceContainer container, params object[] additionalArguments)
+        {
+            return (T)container.AutoCreate(typeof (T), additionalArguments);
+        }
+
+        /// <summary>
         /// Postprocesses an object instance as if it were created from the target <paramref name="container"/>.
         /// </summary>
         /// <param name="container">The container that will postprocess the target <paramref name="instance"/>.</param>

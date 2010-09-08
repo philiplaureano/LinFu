@@ -51,6 +51,15 @@ namespace LinFu.UnitTests.IOC
         }
 
         [Test]
+        public void ShouldBeAbleToAutoCreateClassUsingGenericAutoCreateCall()
+        {
+            var container = GetContainerWithMockSampleServices();
+            var result = container.AutoCreate<SampleClassWithServiceArrayAsConstructorArgument>();
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Services.Length > 0);
+        }
+        [Test]
         public void ShouldAutoCreateClassWithServiceArrayAsConstructorArgument()
         {
             var container = GetContainerWithMockSampleServices();
