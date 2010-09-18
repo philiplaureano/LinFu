@@ -18,6 +18,26 @@ namespace LinFu.UnitTests.IOC
     public class InversionOfControlTests
     {
         [Test]
+        public void ContainerShouldBeAbleToCreateAGenericServiceImplementationThatHasAConstructorWithPrimitiveArguments()
+        {
+            var container = new ServiceContainer();
+            container.LoadFrom(typeof(SampleService<>).Assembly);
+
+            ISampleService<int> s = null;
+            // All fail with ServiceNotFoundException.
+            s = container.GetService<ISampleService<int>>(42, "frobozz", false);
+            Assert.IsNotNull(s);
+
+            s = container.GetService<ISampleService<int>>(42, "frobozz");
+            Assert.IsNotNull(s);
+            s = container.GetService<ISampleService<int>>(42, false);
+            Assert.IsNotNull(s);
+
+            s = container.GetService<ISampleService<int>>(null, "frobozz", false);
+            Assert.IsNotNull(s);
+        }
+
+        [Test]
         public void ContainerShouldBeAbleToRegisterGenericTypeAndResolveConcreteServiceType()
         {
             var container = new ServiceContainer();
@@ -652,7 +672,7 @@ namespace LinFu.UnitTests.IOC
             container.AddFactory(mockFactory.Object);
 
             var instance =
-                (SampleClassWithFactoryDependency) container.AutoCreate(typeof (SampleClassWithFactoryDependency));
+                (SampleClassWithFactoryDependency)container.AutoCreate(typeof(SampleClassWithFactoryDependency));
 
             Assert.IsNotNull(instance);
 

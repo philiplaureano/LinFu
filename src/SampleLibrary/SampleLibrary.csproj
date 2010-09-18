@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{DEFBEF97-B03C-448F-9518-394735439E2E}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -61,6 +61,7 @@
     <Compile Include="AOP\SampleStaticClassWithStaticMethod.cs" />
     <Compile Include="AOP\SampleTypeActivator.cs" />
     <Compile Include="IOC\ISampleInterceptedInterface.cs" />
+    <Compile Include="IOC\ISampleServiceOfT.cs" />
     <Compile Include="IOC\ISampleServiceWithGenericMethods.cs" />
     <Compile Include="IOC\ISampleWrappedInterface.cs" />
     <Compile Include="IOC\ITargetHolder.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="IOC\SamplePreprocessor.cs" />
     <Compile Include="IOC\SampleRecursiveTestComponent1.cs" />
     <Compile Include="IOC\SampleRecursiveTestComponent2.cs" />
+    <Compile Include="IOC\SampleServiceOfT.cs" />
     <Compile Include="IOC\SampleStronglyTypedFactoryWithNamedService.cs" />
     <Compile Include="Proxy\ClassWithNestedOpenGenericParameters.cs" />
     <Compile Include="Proxy\SampleClassWithPropertyInitializedInCtor.cs" />

@@ -91,9 +91,16 @@ namespace LinFu.IoC
 
             var definitionType = serviceType.GetGenericTypeDefinition();
             var genericServiceInfo = new ServiceInfo(serviceName, definitionType, serviceInfo.ArgumentTypes);
-
-            if (base.ContainsFactory(genericServiceInfo))
+            
+            // Find the generic factory that can specifically handle the given argument types
+            var containsGenericFactory = base.ContainsFactory(genericServiceInfo);
+            if (containsGenericFactory)
                 return base.GetFactory(genericServiceInfo);
+
+            // Use the default generic factory if we can't match the given arguments
+            var defaultGenericServiceInfo = new ServiceInfo(serviceName, definitionType);
+            if (base.ContainsFactory(defaultGenericServiceInfo))
+                return base.GetFactory(defaultGenericServiceInfo);
 
             if (definitionType != typeof(IFactory<>))
                 return factory;

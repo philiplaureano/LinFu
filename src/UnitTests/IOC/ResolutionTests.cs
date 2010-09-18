@@ -59,6 +59,7 @@ namespace LinFu.UnitTests.IOC
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Services.Length > 0);
         }
+
         [Test]
         public void ShouldAutoCreateClassWithServiceArrayAsConstructorArgument()
         {
