@@ -8,6 +8,7 @@ using LinFu.IoC.Interfaces;
 using Moq;
 using NUnit.Framework;
 using SampleLibrary;
+using SampleLibrary.IOC.BugFixes;
 
 namespace LinFu.UnitTests.IOC.Factories
 {
@@ -156,7 +157,7 @@ namespace LinFu.UnitTests.IOC.Factories
             var mock = new Mock<ISampleService>();
             var container = new ServiceContainer();
             container.LoadFromBaseDirectory("*.dll");
-            
+
             container.AddService(mock.Object);
             var result = container.GetService<string>("SampleFactoryWithConstructorArguments");
 
@@ -172,6 +173,21 @@ namespace LinFu.UnitTests.IOC.Factories
 
             var serviceInstance = container.GetService<ISampleService>("Test");
             Assert.IsNotNull(serviceInstance);
+        }
+
+        [Test]
+        public void ShouldBeAbleToCreateClosedGenericTypeUsingACustomFactoryInstance()
+        {
+            var container = new ServiceContainer();
+            container.Initialize();
+            container.LoadFrom(typeof(MyClass<>).Assembly);
+
+            // Get ServiceNotFoundException here instead of a service instance.
+            var serviceName = "frobozz";
+            MyClass<string> service = container.GetService<MyClass<string>>(serviceName);
+
+            Console.WriteLine("foo");
+            Assert.AreEqual(serviceName, service.Value);
         }
     }
 }

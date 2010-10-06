@@ -62,7 +62,7 @@ namespace LinFu.IoC
                 return base.ContainsFactory(actualServiceInfo);
             }
 
-            return result;
+            return false;
         }
 
         /// <summary>
@@ -80,9 +80,7 @@ namespace LinFu.IoC
             var serviceName = serviceInfo.ServiceName;
 
             // Use the default factory for this service type if no other factory exists
-            var defaultServiceInfo = new ServiceInfo(serviceInfo.ServiceName, serviceInfo.ServiceType);
-            if (factory == null && base.ContainsFactory(defaultServiceInfo))
-                factory = base.GetFactory(defaultServiceInfo);
+            factory = GetDefaultFactory(serviceName, serviceType, factory);
 
             // Attempt to create the service type using
             // the generic factories, if possible
@@ -91,7 +89,7 @@ namespace LinFu.IoC
 
             var definitionType = serviceType.GetGenericTypeDefinition();
             var genericServiceInfo = new ServiceInfo(serviceName, definitionType, serviceInfo.ArgumentTypes);
-            
+
             // Find the generic factory that can specifically handle the given argument types
             var containsGenericFactory = base.ContainsFactory(genericServiceInfo);
             if (containsGenericFactory)
@@ -102,11 +100,47 @@ namespace LinFu.IoC
             if (base.ContainsFactory(defaultGenericServiceInfo))
                 return base.GetFactory(defaultGenericServiceInfo);
 
+
             if (definitionType != typeof(IFactory<>))
                 return factory;
 
             var typeArguments = serviceType.GetGenericArguments();
             var actualServiceType = typeArguments[0];
+            factory = GetGenericFactory(serviceInfo, factory, serviceName, actualServiceType);
+
+            return factory;
+        }
+        
+        /// <summary>
+        /// Gets the default factory for a particular service type if no other factory instance can be found.
+        /// </summary>
+        /// <param name="serviceName">The name of the service.</param>
+        /// <param name="serviceType">The service type.</param>
+        /// <param name="factory">The original factory instance that was supposed to be created in order to instantiate the service instance.</param>
+        /// <returns>The actual factory instance that will be used to create the service instance.</returns>
+        private IFactory GetDefaultFactory(string serviceName, Type serviceType, IFactory factory)
+        {
+            var defaultNamedServiceInfo = new ServiceInfo(serviceName, serviceType);
+            if (factory == null && base.ContainsFactory(defaultNamedServiceInfo))
+                factory = base.GetFactory(defaultNamedServiceInfo);
+
+            var defaultServiceInfo = new ServiceInfo(string.Empty, serviceType);
+            if (factory == null && base.ContainsFactory(defaultServiceInfo))
+                factory = base.GetFactory(defaultServiceInfo);
+
+            return factory;
+        }
+
+        /// <summary>
+        /// Gets the generic factory for a concrete service type.
+        /// </summary>
+        /// <param name="serviceInfo">The <see cref="IServiceInfo"/> object that describes the service to be created.</param>
+        /// <param name="factory">The factory instance that will be used to create the service.</param>
+        /// <param name="serviceName">The name of the service.</param>
+        /// <param name="actualServiceType">The service type.</param>
+        /// <returns>A factory instance that can create the generic type.</returns>
+        private IFactory GetGenericFactory(IServiceInfo serviceInfo, IFactory factory, string serviceName, Type actualServiceType)
+        {
             var info = new ServiceInfo(serviceName, actualServiceType, serviceInfo.ArgumentTypes);
 
             if (base.ContainsFactory(info))
