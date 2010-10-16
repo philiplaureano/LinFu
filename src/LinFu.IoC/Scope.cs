@@ -17,7 +17,7 @@ namespace LinFu.IoC
     {
         private IServiceContainer _container;
         private int _threadId;
-        private readonly List<IDisposable> _disposables = new List<IDisposable>();
+        private readonly List<WeakReference> _disposables = new List<WeakReference>();
         private bool _disposed;
 
         /// <summary>
@@ -35,7 +35,14 @@ namespace LinFu.IoC
             // Dispose all child objects
             foreach(var item in _disposables)
             {
-                item.Dispose();
+                if (item == null)
+                    continue;
+
+                var target = item.Target as IDisposable;
+                if (target == null)
+                    continue;
+
+                target.Dispose();
             }
             
             _disposed = true;
@@ -63,7 +70,8 @@ namespace LinFu.IoC
                 return;
 
             var disposable = result.ActualResult as IDisposable;
-            _disposables.Add(disposable);
+            var weakRef = new WeakReference(disposable);
+            _disposables.Add(weakRef);
         }
 
         /// <summary>
