@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace LinFu.Proxy
 {
@@ -16,11 +14,15 @@ namespace LinFu.Proxy
         internal ProxyCacheEntry(Type baseType, Type[] interfaces)
         {
             BaseType = baseType;
-            Interfaces = interfaces;            
+            Interfaces = interfaces;
         }
+
+        #region Nested type: EqualityComparer
 
         internal class EqualityComparer : IEqualityComparer<ProxyCacheEntry>
         {
+            #region IEqualityComparer<ProxyCacheEntry> Members
+
             public bool Equals(ProxyCacheEntry x, ProxyCacheEntry y)
             {
                 // Match the base t ypes
@@ -37,7 +39,7 @@ namespace LinFu.Proxy
                 if ((x.Interfaces == null && y.Interfaces != null) ||
                     (y.Interfaces == null && x.Interfaces != null))
                     return false;
-                
+
                 // Initialize both interface lists and 
                 // set them up for comparison
                 var interfaceList = new HashSet<Type>();
@@ -53,7 +55,7 @@ namespace LinFu.Proxy
                 if (interfaceList.Count != targetList.Count)
                     return false;
 
-                foreach (var current in targetList)
+                foreach (Type current in targetList)
                 {
                     if (!interfaceList.Contains(current))
                         return false;
@@ -70,15 +72,19 @@ namespace LinFu.Proxy
 
                 // HACK: Calculate the hash code
                 // by XORing all the types together
-                var baseType = obj.BaseType;
+                Type baseType = obj.BaseType;
                 int result = baseType.GetHashCode();
-                foreach(var type in types)
+                foreach (Type type in types)
                 {
                     result ^= type.GetHashCode();
                 }
 
                 return result;
             }
+
+            #endregion
         }
+
+        #endregion
     }
 }

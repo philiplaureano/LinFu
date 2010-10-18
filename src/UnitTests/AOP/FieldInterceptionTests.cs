@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 using LinFu.AOP.Cecil.Extensions;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
@@ -15,7 +14,6 @@ namespace LinFu.UnitTests.AOP
     {
         public class FieldInterceptorImpl : IFieldInterceptor
         {
-
             #region IFieldInterceptor Members
 
             public bool CanIntercept(IFieldInterceptionContext context)
@@ -41,7 +39,7 @@ namespace LinFu.UnitTests.AOP
         public void ShouldSetAndGetTheSameFieldValue()
         {
             AssemblyDefinition myLibrary = AssemblyFactory.GetAssembly("SampleLibrary.dll");
-            var module = myLibrary.MainModule;
+            ModuleDefinition module = myLibrary.MainModule;
 
             foreach (TypeDefinition type in myLibrary.MainModule.Types)
             {
@@ -51,20 +49,20 @@ namespace LinFu.UnitTests.AOP
                 type.InterceptAllFields();
             }
 
-            var loadedAssembly = myLibrary.ToAssembly();
-            var targetType = (from t in loadedAssembly.GetTypes()
-                              where t.Name.Contains("SampleClassWithReadOnlyField")
-                              select t).First();
+            Assembly loadedAssembly = myLibrary.ToAssembly();
+            Type targetType = (from t in loadedAssembly.GetTypes()
+                               where t.Name.Contains("SampleClassWithReadOnlyField")
+                               select t).First();
 
             object instance = Activator.CreateInstance(targetType);
             Assert.IsNotNull(instance);
 
-            var host = (IFieldInterceptionHost)instance;
+            var host = (IFieldInterceptionHost) instance;
             Assert.IsNotNull(host);
 
             host.FieldInterceptor = new FieldInterceptorImpl();
 
-            var targetProperty = targetType.GetProperty("Value");
+            PropertyInfo targetProperty = targetType.GetProperty("Value");
             targetProperty.SetValue(instance, "OtherValue", null);
 
             object actualValue = targetProperty.GetValue(instance, null);

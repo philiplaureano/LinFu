@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using LinFu.AOP.Interfaces;
 using LinFu.IoC.Configuration.Interfaces;
 
@@ -13,8 +10,8 @@ namespace LinFu.IoC.Interceptors
     /// </summary>
     internal class AroundInvokeAdapter : BaseInterceptor
     {
-        private readonly IAroundInvoke _wrapper;
         private readonly Func<object> _getTarget;
+        private readonly IAroundInvoke _wrapper;
 
         /// <summary>
         /// Initializes the <see cref="AroundInvokeAdapter"/> class.
@@ -23,7 +20,7 @@ namespace LinFu.IoC.Interceptors
         /// <param name="methodInvoke">The method invoker.</param>
         /// <param name="aroundInvoke">The target <see cref="IAroundInvoke"/> instance.</param>
         internal AroundInvokeAdapter(Func<object> getTarget, IMethodInvoke<MethodInfo> methodInvoke,
-            IAroundInvoke aroundInvoke)
+                                     IAroundInvoke aroundInvoke)
             : base(methodInvoke)
         {
             _wrapper = aroundInvoke;

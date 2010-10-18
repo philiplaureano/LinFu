@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.AOP.Interfaces;
 
 namespace LinFu.AOP.Cecil
@@ -24,6 +21,8 @@ namespace LinFu.AOP.Cecil
             _ex = ex;
             _invocationInfo = invocationInfo;
         }
+
+        #region IExceptionHandlerInfo Members
 
         /// <summary>
         /// Gets the value indicating the thrown exception.
@@ -57,5 +56,7 @@ namespace LinFu.AOP.Cecil
         /// </summary>
         /// <value>This should be <c>true</c> if the exception should be rethrown, otherwise, it must be <c>false</c>.</value>
         public bool ShouldSkipRethrow { get; set; }
+
+        #endregion
     }
 }

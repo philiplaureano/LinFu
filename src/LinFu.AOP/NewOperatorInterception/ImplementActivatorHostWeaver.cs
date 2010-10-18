@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
@@ -11,9 +8,9 @@ namespace LinFu.AOP.Cecil
 {
     internal class ImplementActivatorHostWeaver : ITypeWeaver
     {
-        private TypeReference _hostInterfaceType;
+        private readonly Func<TypeReference, bool> _filter;
         private TypeReference _activatorPropertyType;
-        private Func<TypeReference, bool> _filter;
+        private TypeReference _hostInterfaceType;
 
         public ImplementActivatorHostWeaver()
             : this(type => true)
@@ -24,6 +21,8 @@ namespace LinFu.AOP.Cecil
         {
             _filter = filter;
         }
+
+        #region ITypeWeaver Members
 
         public bool ShouldWeave(TypeDefinition item)
         {
@@ -55,11 +54,12 @@ namespace LinFu.AOP.Cecil
         {
             _hostInterfaceType = module.ImportType<IActivatorHost>();
             _activatorPropertyType = module.ImportType<ITypeActivator>();
-
         }
 
         public void ImportReferences(ModuleDefinition module)
         {
         }
+
+        #endregion
     }
 }

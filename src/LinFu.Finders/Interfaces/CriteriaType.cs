@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace LinFu.Finders.Interfaces
+﻿namespace LinFu.Finders.Interfaces
 {
     /// <summary>
     /// The enumeration that determines how a <see cref="ICriteria{T}"/> instance should

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace LinFu.AOP.Cecil
 {
@@ -14,7 +12,7 @@ namespace LinFu.AOP.Cecil
         private static readonly HashSet<int> _instances;
 
         static IgnoredInstancesRegistry()
-        {            
+        {
             _instances = new HashSet<int>();
         }
 
@@ -28,8 +26,8 @@ namespace LinFu.AOP.Cecil
             if (target == null)
                 throw new ArgumentNullException("target");
 
-            var hash = target.GetHashCode();
-            
+            int hash = target.GetHashCode();
+
             return _instances.Contains(hash);
         }
 
@@ -42,7 +40,7 @@ namespace LinFu.AOP.Cecil
             if (target == null)
                 throw new ArgumentNullException("target");
 
-            var hash = target.GetHashCode();
+            int hash = target.GetHashCode();
             _instances.Add(hash);
         }
     }

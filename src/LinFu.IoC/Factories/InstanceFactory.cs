@@ -1,5 +1,4 @@
-﻿using System;
-using LinFu.IoC.Interfaces;
+﻿using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC
 {

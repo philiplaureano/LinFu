@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.AOP.Cecil.Interfaces;
+﻿using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
+using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 namespace LinFu.AOP.Cecil
@@ -15,7 +12,7 @@ namespace LinFu.AOP.Cecil
     public class GetAroundInvokeProvider : IInstructionEmitter
     {
         private readonly VariableDefinition _aroundInvokeProvider;
-        private string _providerName;
+        private readonly string _providerName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAroundInvokeProvider"/> class.
@@ -28,18 +25,20 @@ namespace LinFu.AOP.Cecil
             _providerName = providerName;
         }
 
+        #region IInstructionEmitter Members
+
         /// <summary>
         /// Emits the call to obtain the <see cref="IAroundInvokeProvider"/> instance.
         /// </summary>
         /// <param name="IL">The <see cref="CilWorker"/> pointing to the target method body.</param>
         public void Emit(CilWorker IL)
         {
-            var method = IL.GetMethod();
-            var module = IL.GetModule();
+            MethodDefinition method = IL.GetMethod();
+            ModuleDefinition module = IL.GetModule();
 
             // var aroundInvokeProvider = this.AroundInvokeProvider;
             string propertyName = string.Format("get_{0}", _providerName);
-            var getAroundInvokeProvider = module.ImportMethod<IAroundInvokeHost>(propertyName);
+            MethodReference getAroundInvokeProvider = module.ImportMethod<IAroundInvokeHost>(propertyName);
 
             if (!method.HasThis)
             {
@@ -52,5 +51,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Callvirt, getAroundInvokeProvider);
             IL.Emit(OpCodes.Stloc, _aroundInvokeProvider);
         }
+
+        #endregion
     }
 }

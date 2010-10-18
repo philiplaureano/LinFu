@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil.Cil;
 
@@ -12,8 +10,8 @@ namespace LinFu.AOP.Cecil
     /// </summary>
     public class AddOriginalInstructions : IInstructionEmitter
     {
-        private readonly IEnumerable<Instruction> _oldInstructions;
         private readonly Instruction _endLabel;
+        private readonly IEnumerable<Instruction> _oldInstructions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AddOriginalInstructions"/> class.
@@ -26,6 +24,8 @@ namespace LinFu.AOP.Cecil
             _endLabel = endLabel;
         }
 
+        #region IInstructionEmitter Members
+
         /// <summary>
         /// Adds the original instructions to a given method body.
         /// </summary>
@@ -33,7 +33,7 @@ namespace LinFu.AOP.Cecil
         public void Emit(CilWorker IL)
         {
             var originalInstructions = new List<Instruction>(_oldInstructions);
-            var lastInstruction = originalInstructions.LastOrDefault();
+            Instruction lastInstruction = originalInstructions.LastOrDefault();
 
             if (lastInstruction != null && lastInstruction.OpCode == OpCodes.Ret)
             {
@@ -44,7 +44,7 @@ namespace LinFu.AOP.Cecil
                 lastInstruction.Operand = _endLabel;
             }
 
-            foreach (var instruction in (IEnumerable<Instruction>) originalInstructions)
+            foreach (Instruction instruction in (IEnumerable<Instruction>) originalInstructions)
             {
                 if (instruction.OpCode != OpCodes.Ret || instruction == lastInstruction)
                     continue;
@@ -59,10 +59,12 @@ namespace LinFu.AOP.Cecil
             }
 
             // Emit the original instructions
-            foreach (var instruction in originalInstructions)
+            foreach (Instruction instruction in originalInstructions)
             {
                 IL.Append(instruction);
             }
         }
+
+        #endregion
     }
 }

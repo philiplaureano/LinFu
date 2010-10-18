@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace LinFu.IoC.Interfaces
@@ -8,6 +7,13 @@ namespace LinFu.IoC.Interfaces
     /// </summary>
     public interface IFactoryStorage
     {
+        /// <summary>
+        /// Gets a value indicating the list of <see cref="IServiceInfo"/> objects
+        /// that describe each available factory in the current <see cref="IFactoryStorage"/>
+        /// instance.
+        /// </summary>
+        IEnumerable<IServiceInfo> AvailableFactories { get; }
+
         /// <summary>
         /// Determines which factories should be used
         /// for a particular service request.
@@ -29,12 +35,5 @@ namespace LinFu.IoC.Interfaces
         /// <param name="serviceInfo">The <see cref="IServiceInfo"/> object that describes the target factory.</param>
         /// <returns>Returns <c>true</c> if the factory exists; otherwise, it will return <c>false</c>.</returns>
         bool ContainsFactory(IServiceInfo serviceInfo);
-
-        /// <summary>
-        /// Gets a value indicating the list of <see cref="IServiceInfo"/> objects
-        /// that describe each available factory in the current <see cref="IFactoryStorage"/>
-        /// instance.
-        /// </summary>
-        IEnumerable<IServiceInfo> AvailableFactories { get; }
     }
 }

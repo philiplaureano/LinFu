@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace LinFu.Reflection
 {
@@ -17,10 +14,7 @@ namespace LinFu.Reflection
         /// </summary>
         public static bool IsRunningOnMono
         {
-            get
-            {
-                return Type.GetType("Mono.Runtime", false) != null;
-            }
+            get { return Type.GetType("Mono.Runtime", false) != null; }
         }
     }
 }

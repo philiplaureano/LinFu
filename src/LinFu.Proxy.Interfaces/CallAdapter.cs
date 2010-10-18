@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.AOP.Interfaces;
+﻿using LinFu.AOP.Interfaces;
 
 namespace LinFu.Proxy
 {
@@ -22,6 +18,8 @@ namespace LinFu.Proxy
         {
             _wrapper = wrapper;
         }
+
+        #region IInterceptor Members
 
         /// <summary>
         /// Intercepts a method call and passes the <see cref="IInvocationInfo"/> arguments
@@ -44,5 +42,7 @@ namespace LinFu.Proxy
 
             return result;
         }
+
+        #endregion
     }
 }

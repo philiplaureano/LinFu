@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC
@@ -22,6 +20,8 @@ namespace LinFu.IoC
             _postProcessors = postProcessors;
         }
 
+        #region IPostProcessor Members
+
         /// <summary>
         /// A method that passes every request result made
         /// to the list of postprocessors.
@@ -33,8 +33,8 @@ namespace LinFu.IoC
             // Let each postprocessor inspect 
             // the results and/or modify the 
             // returned object instance
-            var postprocessors = _postProcessors.ToArray();
-            foreach (var postProcessor in postprocessors)
+            IPostProcessor[] postprocessors = _postProcessors.ToArray();
+            foreach (IPostProcessor postProcessor in postprocessors)
             {
                 if (postProcessor == null)
                     continue;
@@ -42,5 +42,7 @@ namespace LinFu.IoC
                 postProcessor.PostProcess(result);
             }
         }
+
+        #endregion
     }
 }

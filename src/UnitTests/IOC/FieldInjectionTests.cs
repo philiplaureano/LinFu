@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using LinFu.IoC;
 using NUnit.Framework;
 using SampleLibrary;
 using SampleLibrary.IOC;
-using LinFu.IoC;
-using LinFu.IoC.Configuration;
 
 namespace LinFu.UnitTests.IOC
 {
     [TestFixture]
-    public class FieldInjectionTests : BaseTestFixture 
+    public class FieldInjectionTests : BaseTestFixture
     {
         [Test]
         public void ShouldAutoInjectField()
@@ -31,7 +27,7 @@ namespace LinFu.UnitTests.IOC
             // On initialization, the instance.SomeField value
             // should be a SampleClass type
             Assert.IsNotNull(instance.SomeField);
-            Assert.IsInstanceOfType(typeof(SampleClass), instance.SomeField);
+            Assert.IsInstanceOfType(typeof (SampleClass), instance.SomeField);
         }
     }
 }

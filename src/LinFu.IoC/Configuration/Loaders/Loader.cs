@@ -1,10 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using LinFu.IoC.Configuration.Interfaces;
-using LinFu.IoC.Configuration.Loaders;
-using LinFu.IoC.Interceptors;
+﻿using System.Reflection;
 using LinFu.IoC.Interfaces;
 using LinFu.Reflection;
 
@@ -26,9 +20,9 @@ namespace LinFu.IoC.Configuration
             _containerLoader = this.CreateDefaultContainerLoader();
 
             // Load everything else into the container
-            var hostAssembly = typeof(Loader).Assembly;
+            Assembly hostAssembly = typeof (Loader).Assembly;
             QueuedActions.Add(container => container.LoadFrom(hostAssembly));
-            
+
             // Make sure that the plugins are only added once
             if (!Plugins.HasElementWith(p => p is AutoPropertyInjector))
                 Plugins.Add(new AutoPropertyInjector());
@@ -46,21 +40,15 @@ namespace LinFu.IoC.Configuration
 
             FileLoaders.Add(_containerLoader);
         }
-     
+
         /// <summary>
         /// Gets or sets the value indicating the <see cref="IAssemblyLoader"/> instance
         /// that will be used to load assemblies into memory.
         /// </summary>
         public IAssemblyLoader<Assembly> AssemblyLoader
         {
-            get
-            {
-                return _containerLoader.AssemblyLoader;
-            }
-            set
-            {
-                _containerLoader.AssemblyLoader = value;
-            }
+            get { return _containerLoader.AssemblyLoader; }
+            set { _containerLoader.AssemblyLoader = value; }
         }
     }
 }

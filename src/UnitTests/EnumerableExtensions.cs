@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace LinFu.UnitTests
 {
@@ -9,7 +6,7 @@ namespace LinFu.UnitTests
     {
         public static bool AreEqualTo<T>(this IEnumerable<T> expectedArray, IEnumerable<T> actualArray)
         {
-            var areEqual = true;
+            bool areEqual = true;
 
             var expectedItems = new Queue<T>(expectedArray);
             var actualItems = new Queue<T>(actualArray);
@@ -19,8 +16,8 @@ namespace LinFu.UnitTests
 
             while (expectedItems.Count > 0)
             {
-                var expectedItem = expectedItems.Dequeue();
-                var actualItem = actualItems.Dequeue();
+                T expectedItem = expectedItems.Dequeue();
+                T actualItem = actualItems.Dequeue();
 
                 if (Equals(expectedItem, actualItem))
                     continue;

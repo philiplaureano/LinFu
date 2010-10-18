@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using LinFu.IoC.Configuration.Interfaces;
 using LinFu.IoC.Interfaces;
 
@@ -24,7 +22,7 @@ namespace LinFu.IoC.Configuration
         /// </summary>
         protected MemberResolver()
         {
-            _getFinder = container=>container.GetService<IMethodFinder<TMember>>();
+            _getFinder = container => container.GetService<IMethodFinder<TMember>>();
         }
 
         /// <summary>
@@ -37,6 +35,8 @@ namespace LinFu.IoC.Configuration
             _getFinder = getFinder;
         }
 
+        #region IMemberResolver<TMember> Members
+
         /// <summary>
         /// Uses the <paramref name="container"/> to determine which member to use from
         /// the <paramref name="concreteType">concrete type</paramref>.
@@ -46,13 +46,13 @@ namespace LinFu.IoC.Configuration
         /// <param name="finderContext">The <see cref="IMethodFinderContext"/> that describes the target method.</param>        
         /// <returns>A member instance if a match is found; otherwise, it will return <c>null</c>.</returns>
         public TMember ResolveFrom(Type concreteType, IServiceContainer container,
-            IMethodFinderContext finderContext)
+                                   IMethodFinderContext finderContext)
         {
-            var constructors = GetMembers(concreteType);
+            IEnumerable<TMember> constructors = GetMembers(concreteType);
             if (constructors == null)
                 return null;
 
-            var resolver = GetMethodFinder(container);
+            IMethodFinder<TMember> resolver = GetMethodFinder(container);
             TMember bestMatch = resolver.GetBestMatch(constructors, finderContext);
 
             // If all else fails, find the
@@ -60,7 +60,7 @@ namespace LinFu.IoC.Configuration
             // best match by default
             if (bestMatch == null)
             {
-                var defaultResult = GetDefaultResult(concreteType);
+                TMember defaultResult = GetDefaultResult(concreteType);
 
                 bestMatch = defaultResult;
             }
@@ -68,6 +68,8 @@ namespace LinFu.IoC.Configuration
             Debug.Assert(bestMatch != null);
             return bestMatch;
         }
+
+        #endregion
 
         /// <summary>
         /// Determines the <see cref="IMethodFinder{T}"/> that will be used

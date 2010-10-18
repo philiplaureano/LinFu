@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC
@@ -11,6 +8,8 @@ namespace LinFu.IoC
     /// </summary>
     public class FactoryRequest : IFactoryRequest
     {
+        #region IFactoryRequest Members
+
         /// <summary>
         /// Gets the value indicating the service container that made the service request.
         /// </summary>
@@ -20,25 +19,18 @@ namespace LinFu.IoC
         /// Gets the value indicating the service name.
         /// </summary>
         /// <remarks>A null service name indicates that no service name was given during the request.</remarks>
-        public string ServiceName
-        {
-            get; set;
-        }
+        public string ServiceName { get; set; }
 
         /// <summary>
         /// Gets the value indicating the requested service type.
         /// </summary>
-        public Type ServiceType
-        {
-            get; set;
-        }
+        public Type ServiceType { get; set; }
 
         /// <summary>
         /// Gets the value indicating the additional arguments given in the factory request.
         /// </summary>
-        public object[] Arguments
-        {
-            get; set;
-        }
+        public object[] Arguments { get; set; }
+
+        #endregion
     }
 }

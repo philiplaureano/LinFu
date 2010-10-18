@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC
@@ -11,10 +10,10 @@ namespace LinFu.IoC
     /// </summary>
     internal class ServiceInfo : IServiceInfo
     {
-        private readonly Type _serviceType;
-        private readonly string _serviceName;
         private readonly IEnumerable<Type> _arguments;
-        
+        private readonly string _serviceName;
+        private readonly Type _serviceType;
+
         /// <summary>
         /// Initializes the class with the given <paramref name="serviceName"/>
         /// and <paramref name="serviceType"/>.
@@ -42,15 +41,14 @@ namespace LinFu.IoC
             _arguments = arguments;
         }
 
+        #region IServiceInfo Members
+
         /// <summary>
         /// The name of the service being created. By default, this property is blank.
         /// </summary>
         public string ServiceName
         {
-            get
-            {
-                return _serviceName;
-            }
+            get { return _serviceName; }
         }
 
         /// <summary>
@@ -58,10 +56,7 @@ namespace LinFu.IoC
         /// </summary>
         public Type ServiceType
         {
-            get
-            {
-                return _serviceType;
-            }
+            get { return _serviceType; }
         }
 
         /// <summary>
@@ -72,6 +67,8 @@ namespace LinFu.IoC
             get { return _arguments; }
         }
 
+        #endregion
+
         /// <summary>
         /// Displays the name of the current service and the current service type.
         /// </summary>
@@ -81,6 +78,7 @@ namespace LinFu.IoC
             return string.Format("Service Name: '{0}', Service Type = '{1}'", ServiceName,
                                  ServiceType.AssemblyQualifiedName);
         }
+
         /// <summary>
         /// Determines if the other object is equal to the current <see cref="IServiceInfo"/> instance.
         /// </summary>
@@ -107,7 +105,7 @@ namespace LinFu.IoC
             hash ^= _serviceType.GetHashCode();
 
             // Hash the arguments
-            foreach(var argType in _arguments)
+            foreach (Type argType in _arguments)
             {
                 if (argType == null)
                     continue;
@@ -116,7 +114,7 @@ namespace LinFu.IoC
             }
 
             // Hash the number of arguments
-            var argCount = _arguments == null ? 0 : _arguments.Count();
+            int argCount = _arguments == null ? 0 : _arguments.Count();
             if (argCount > 0)
                 hash ^= argCount.GetHashCode();
 

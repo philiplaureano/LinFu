@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using LinFu.IoC.Configuration.Interfaces;
 
 namespace LinFu.IoC.Configuration
@@ -48,22 +45,18 @@ namespace LinFu.IoC.Configuration
             Type = property.PropertyType;
         }
 
+        #region INamedType Members
+
         /// <summary>
         /// Gets or sets a value indicating the name that will be associated with the current type.
         /// </summary>
-        public string Name
-        {
-            get;
-            set;
-        }
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the value indicating the current target type.
         /// </summary>
-        public Type Type
-        {
-            get;
-            set;
-        }
+        public Type Type { get; set; }
+
+        #endregion
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 
 namespace LinFu.Reflection
@@ -16,7 +15,7 @@ namespace LinFu.Reflection
     /// <typeparam name="TAssembly">The assembly type.</typeparam>
     /// <typeparam name="TType">The target type.</typeparam>
     public class AssemblyTargetLoader<TTarget, TAssembly, TType> : IAssemblyTargetLoader<TTarget, TAssembly, TType>,
-        IActionLoader<TTarget, string>
+                                                                   IActionLoader<TTarget, string>
     {
         private readonly IList<IActionLoader<TTarget, TType>> _typeLoaders = new List<IActionLoader<TTarget, TType>>();
         private IActionLoader<IList<Action<TTarget>>, TAssembly> _assemblyActionLoader;
@@ -25,20 +24,11 @@ namespace LinFu.Reflection
         /// <summary>
         /// Initializes a new instance of the <see cref="AssemblyTargetLoader{TTarget,TAssembly,TType}"/> class.
         /// </summary>
-        public AssemblyTargetLoader(ITypeExtractor<TAssembly, TType> typeExtractor, IAssemblyLoader<TAssembly> assemblyLoader)
+        public AssemblyTargetLoader(ITypeExtractor<TAssembly, TType> typeExtractor,
+                                    IAssemblyLoader<TAssembly> assemblyLoader)
         {
             _assemblyActionLoader = new AssemblyActionLoader<TTarget, TAssembly, TType>(() => TypeLoaders, typeExtractor);
             _assemblyLoader = assemblyLoader;
-        }
-
-        /// <summary>
-        /// The <see cref="IAssemblyLoader"/> instance that will load
-        /// the target assemblies.
-        /// </summary>
-        public virtual IAssemblyLoader<TAssembly> AssemblyLoader
-        {
-            get { return _assemblyLoader; }
-            set { _assemblyLoader = value; }
         }
 
         /// <summary>
@@ -50,6 +40,18 @@ namespace LinFu.Reflection
         {
             get { return _assemblyActionLoader; }
             set { _assemblyActionLoader = value; }
+        }
+
+        #region IAssemblyTargetLoader<TTarget,TAssembly,TType> Members
+
+        /// <summary>
+        /// The <see cref="IAssemblyLoader"/> instance that will load
+        /// the target assemblies.
+        /// </summary>
+        public virtual IAssemblyLoader<TAssembly> AssemblyLoader
+        {
+            get { return _assemblyLoader; }
+            set { _assemblyLoader = value; }
         }
 
         /// <summary>
@@ -72,7 +74,7 @@ namespace LinFu.Reflection
         /// <returns>Returns <c>true</c> if the file can be loaded; otherwise, the result is <c>false</c>.</returns>
         public virtual bool CanLoad(string filename)
         {
-            var extension = Path.GetExtension(filename).ToLower();
+            string extension = Path.GetExtension(filename).ToLower();
             return TypeLoaders.Count > 0 &&
                    (extension == ".dll" || extension == ".exe") &&
                    File.Exists(filename);
@@ -88,7 +90,7 @@ namespace LinFu.Reflection
         /// <returns>A set of <see cref="Action{IServiceContainer}"/> instances to apply to a target type.</returns>
         public virtual IEnumerable<Action<TTarget>> Load(string filename)
         {
-            var assembly = default(TAssembly);
+            TAssembly assembly = default(TAssembly);
 
             if (AssemblyLoader == null)
                 throw new ArgumentException("The assembly loader cannot be null");
@@ -97,7 +99,7 @@ namespace LinFu.Reflection
             assembly = AssemblyLoader.Load(filename);
 
             var results = new List<Action<TTarget>>();
-            var listActions = AssemblyActionLoader.Load(assembly);
+            IEnumerable<Action<IList<Action<TTarget>>>> listActions = AssemblyActionLoader.Load(assembly);
             foreach (var action in listActions)
             {
                 action(results);
@@ -105,6 +107,8 @@ namespace LinFu.Reflection
 
             return results;
         }
+
+        #endregion
     }
 
     /// <summary>

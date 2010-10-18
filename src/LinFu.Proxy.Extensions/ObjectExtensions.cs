@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.IoC;
-using LinFu.IoC.Configuration;
 using LinFu.IoC.Interfaces;
 using LinFu.IoC.Reflection;
 using LinFu.Proxy.Interfaces;
@@ -32,7 +28,7 @@ namespace LinFu.Proxy
         /// <returns>The return value from the target method.</returns>
         public static T CreateDuck<T>(this object target, params Type[] baseInterfaces)
         {
-            return (T)target.CreateDuck(typeof(T), baseInterfaces);
+            return (T) target.CreateDuck(typeof (T), baseInterfaces);
         }
 
         /// <summary>
@@ -47,7 +43,7 @@ namespace LinFu.Proxy
         {
             Func<string, Type[], object[], object> implementation
                 = (methodName, typeArguments, arguments) =>
-                      target.Invoke(methodName, typeArguments, arguments);
+                  target.Invoke(methodName, typeArguments, arguments);
 
             var proxyFactory = _container.GetService<IProxyFactory>();
             return proxyFactory.CreateProxy(duckType, implementation, baseInterfaces);

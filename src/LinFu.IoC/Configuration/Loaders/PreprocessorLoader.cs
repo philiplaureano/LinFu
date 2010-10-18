@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 using LinFu.IoC.Interfaces;
 using LinFu.Reflection;
 
@@ -15,6 +15,8 @@ namespace LinFu.IoC.Configuration.Loaders
     /// </summary>
     internal class PreProcessorLoader : IActionLoader<IServiceContainer, Type>
     {
+        #region IActionLoader<IServiceContainer,Type> Members
+
         /// <summary>
         /// Determines if the plugin loader can load the <paramref name="inputType"/>.
         /// </summary>
@@ -26,18 +28,18 @@ namespace LinFu.IoC.Configuration.Loaders
             try
             {
                 // The type must have a default constructor
-                var defaultConstructor = inputType.GetConstructor(new Type[0]);
+                ConstructorInfo defaultConstructor = inputType.GetConstructor(new Type[0]);
                 if (defaultConstructor == null)
                     return false;
 
                 // It must have the PreprocessorAttribute defined
-                var attributes = inputType.GetCustomAttributes(typeof(PreprocessorAttribute), true);
-                var attributeList = attributes.Cast<PreprocessorAttribute>();
+                object[] attributes = inputType.GetCustomAttributes(typeof (PreprocessorAttribute), true);
+                IEnumerable<PreprocessorAttribute> attributeList = attributes.Cast<PreprocessorAttribute>();
 
                 if (attributeList.Count() == 0)
                     return false;
 
-                return typeof(IPreProcessor).IsAssignableFrom(inputType);
+                return typeof (IPreProcessor).IsAssignableFrom(inputType);
             }
             catch (TypeInitializationException)
             {
@@ -48,7 +50,7 @@ namespace LinFu.IoC.Configuration.Loaders
             {
                 // Ignore the error
                 return false;
-            }           
+            }
         }
 
         /// <summary>
@@ -71,7 +73,9 @@ namespace LinFu.IoC.Configuration.Loaders
             Action<IServiceContainer> assignPreprocessor =
                 container => container.PreProcessors.Add(instance);
 
-            return new[] { assignPreprocessor };
+            return new[] {assignPreprocessor};
         }
+
+        #endregion
     }
 }

@@ -11,15 +11,16 @@ namespace LinFu.IoC.Configuration
         private readonly Type _serviceType;
 
         /// <summary>
+        /// The additional parameters supported by the custom factory.
+        /// </summary>
+        public Type[] ArgumentTypes;
+
+        /// <summary>
         /// The service name that will be associated
         /// with the service type.
         /// </summary>
         public string ServiceName;
 
-        /// <summary>
-        /// The additional parameters supported by the custom factory.
-        /// </summary>
-        public Type[] ArgumentTypes;
         /// <summary>
         /// Marks a target type as a custom factory
         /// that can create object instances that

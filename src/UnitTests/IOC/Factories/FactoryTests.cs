@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using LinFu.IoC;
-using LinFu.IoC.Configuration;
 using LinFu.IoC.Factories;
 using LinFu.IoC.Interfaces;
 using Moq;
@@ -47,14 +46,14 @@ namespace LinFu.UnitTests.IOC.Factories
             mockFactory.Expect(f => f.CreateInstance(It.Is<IFactoryRequest>(request => request.Container == container)))
                 .Returns(mockService.Object);
 
-            Assert.IsInstanceOfType(typeof(IFactory), adapter);
+            Assert.IsInstanceOfType(typeof (IFactory), adapter);
 
-            var factoryRequest = new FactoryRequest()
-                              {
-                                  ServiceName = null,
-                                  ServiceType = typeof(ISerializable),
-                                  Container = container
-                              };
+            var factoryRequest = new FactoryRequest
+                                     {
+                                         ServiceName = null,
+                                         ServiceType = typeof (ISerializable),
+                                         Container = container
+                                     };
 
             adapter.CreateInstance(factoryRequest);
 
@@ -129,26 +128,18 @@ namespace LinFu.UnitTests.IOC.Factories
         }
 
         [Test]
-        public void SingletonFactoryShouldCreateTheSameInstanceOnce()
+        public void ShouldBeAbleToCreateClosedGenericTypeUsingACustomFactoryInstance()
         {
-            var factory = new SingletonFactory<ISerializable>(createInstance);
             var container = new ServiceContainer();
+            container.Initialize();
+            container.LoadFrom(typeof (MyClass<>).Assembly);
 
-            var request = new FactoryRequest()
-                              {
-                                  ServiceName = null,
-                                  Arguments = new object[0],
-                                  Container = container,
-                                  ServiceType = typeof(ISerializable)
-                              };
+            // Get ServiceNotFoundException here instead of a service instance.
+            string serviceName = "frobozz";
+            var service = container.GetService<MyClass<string>>(serviceName);
 
-            ISerializable first = factory.CreateInstance(request);
-            ISerializable second = factory.CreateInstance(request);
-
-            // Both instances must be the same
-            Assert.AreSame(first, second);
-            Assert.IsNotNull(first);
-            Assert.IsNotNull(second);
+            Console.WriteLine("foo");
+            Assert.AreEqual(serviceName, service.Value);
         }
 
         [Test]
@@ -169,25 +160,33 @@ namespace LinFu.UnitTests.IOC.Factories
         public void ShouldLoadStronglyTypedFactoryFromLoadFromExtensionMethod()
         {
             var container = new ServiceContainer();
-            container.LoadFrom(typeof(SampleClass).Assembly);
+            container.LoadFrom(typeof (SampleClass).Assembly);
 
             var serviceInstance = container.GetService<ISampleService>("Test");
             Assert.IsNotNull(serviceInstance);
         }
 
         [Test]
-        public void ShouldBeAbleToCreateClosedGenericTypeUsingACustomFactoryInstance()
+        public void SingletonFactoryShouldCreateTheSameInstanceOnce()
         {
+            var factory = new SingletonFactory<ISerializable>(createInstance);
             var container = new ServiceContainer();
-            container.Initialize();
-            container.LoadFrom(typeof(MyClass<>).Assembly);
 
-            // Get ServiceNotFoundException here instead of a service instance.
-            var serviceName = "frobozz";
-            MyClass<string> service = container.GetService<MyClass<string>>(serviceName);
+            var request = new FactoryRequest
+                              {
+                                  ServiceName = null,
+                                  Arguments = new object[0],
+                                  Container = container,
+                                  ServiceType = typeof (ISerializable)
+                              };
 
-            Console.WriteLine("foo");
-            Assert.AreEqual(serviceName, service.Value);
+            ISerializable first = factory.CreateInstance(request);
+            ISerializable second = factory.CreateInstance(request);
+
+            // Both instances must be the same
+            Assert.AreSame(first, second);
+            Assert.IsNotNull(first);
+            Assert.IsNotNull(second);
         }
     }
 }

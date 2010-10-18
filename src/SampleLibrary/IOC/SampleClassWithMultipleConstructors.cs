@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace SampleLibrary.IOC
+﻿namespace SampleLibrary.IOC
 {
     public class SampleClassWithMultipleConstructors
     {
@@ -23,28 +18,23 @@ namespace SampleLibrary.IOC
             SecondService = secondService;
         }
 
-        public SampleClassWithMultipleConstructors(ISampleService firstService, ISampleService secondService, ISampleGenericService<int> otherService)
+        public SampleClassWithMultipleConstructors(ISampleService firstService, ISampleService secondService,
+                                                   ISampleGenericService<int> otherService)
         {
             // This is a dummy constructor that will be used
             // to attempt to confuse the fuzzy constructor search
         }
 
-        public SampleClassWithMultipleConstructors(ISampleService firstService, ISampleService secondService, 
-            ISampleGenericService<int> otherService, ISampleGenericService<string> someOtherService)
+        public SampleClassWithMultipleConstructors(ISampleService firstService, ISampleService secondService,
+                                                   ISampleGenericService<int> otherService,
+                                                   ISampleGenericService<string> someOtherService)
         {
             // This is a dummy constructor that will be used
             // to attempt to confuse the fuzzy constructor search
         }
 
-        public ISampleService FirstService
-        {
-            get; private set;
-        }
+        public ISampleService FirstService { get; private set; }
 
-        public ISampleService SecondService
-        {
-            get;
-            private set;
-        }
+        public ISampleService SecondService { get; private set; }
     }
 }

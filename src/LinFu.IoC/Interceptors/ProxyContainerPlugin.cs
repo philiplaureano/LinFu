@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.IoC.Configuration.Interfaces;
+﻿using LinFu.IoC.Configuration.Interfaces;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC.Interceptors
@@ -25,6 +21,8 @@ namespace LinFu.IoC.Interceptors
             _injector = injector;
         }
 
+        #region IContainerPlugin Members
+
         /// <summary>
         /// Injects a <see cref="ProxyInjector"/> into the <paramref name="target">target container</paramref>.
         /// </summary>
@@ -42,5 +40,7 @@ namespace LinFu.IoC.Interceptors
         {
             // Do nothing
         }
+
+        #endregion
     }
 }

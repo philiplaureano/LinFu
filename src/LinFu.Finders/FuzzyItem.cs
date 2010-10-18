@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.Finders.Interfaces;
 
 namespace LinFu.Finders
@@ -14,9 +11,9 @@ namespace LinFu.Finders
     public class FuzzyItem<T> : IFuzzyItem<T>
     {
         private readonly T _item;
-        private int _testCount;
-        private int _matches;
         private bool _failed;
+        private int _matches;
+        private int _testCount;
 
         /// <summary>
         /// Initializes the <see cref="FuzzyItem{T}"/> class with the given <paramref name="item"/>.
@@ -27,6 +24,8 @@ namespace LinFu.Finders
             _item = item;
             _failed = false;
         }
+
+        #region IFuzzyItem<T> Members
 
         /// <summary>
         /// Reports the probability of a match
@@ -47,7 +46,7 @@ namespace LinFu.Finders
                 if (_testCount == 0)
                     return 0;
 
-                result = ((double)_matches) / ((double)_testCount);
+                result = (_matches)/((double) _testCount);
 
                 return result;
             }
@@ -69,18 +68,18 @@ namespace LinFu.Finders
         public void Test(ICriteria<T> criteria)
         {
             // Determine the weight multiplier of this test
-            var weight = criteria.Weight;
+            int weight = criteria.Weight;
 
             // Ignore any further criteria tests
             // if this item fails
             if (_failed)
                 return;
 
-            var predicate = criteria.Predicate;
+            Func<T, bool> predicate = criteria.Predicate;
             if (predicate == null)
                 return;
 
-            var result = predicate(_item);
+            bool result = predicate(_item);
 
             // If the critical test fails, all matches will be reset
             // to zero and no further matches will be counted
@@ -110,5 +109,7 @@ namespace LinFu.Finders
             _matches = 0;
             _failed = false;
         }
+
+        #endregion
     }
 }

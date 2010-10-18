@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.IoC;
-using LinFu.IoC.Configuration;
 using LinFu.IoC.Interfaces;
 using LinFu.Proxy.Interfaces;
 
@@ -15,8 +10,8 @@ namespace LinFu.IoC.Interceptors
     /// </summary>
     internal class ProxyInjector : IPostProcessor
     {
-        private readonly Func<IServiceRequestResult, bool> _filterPredicate;
         private readonly Func<IServiceRequestResult, object> _createProxy;
+        private readonly Func<IServiceRequestResult, bool> _filterPredicate;
 
         /// <summary>
         /// Initializes the class with the <paramref name="filterPredicate"/>
@@ -25,11 +20,13 @@ namespace LinFu.IoC.Interceptors
         /// <param name="filterPredicate">The predicate that will determine which service requests will be proxied.</param>
         /// <param name="createProxy">The factory method that will generate the proxy instance itself.</param>
         internal ProxyInjector(Func<IServiceRequestResult, bool> filterPredicate,
-            Func<IServiceRequestResult, object> createProxy)
+                               Func<IServiceRequestResult, object> createProxy)
         {
             _filterPredicate = filterPredicate;
             _createProxy = createProxy;
         }
+
+        #region IPostProcessor Members
 
         /// <summary>
         /// A method that injects service proxies in place of the actual <see cref="IServiceRequestResult.ActualResult"/>.
@@ -40,8 +37,8 @@ namespace LinFu.IoC.Interceptors
             if (!_filterPredicate(result))
                 return;
 
-            var container = result.Container;
-            var hasProxyFactory = container.Contains(typeof(IProxyFactory));
+            IServiceContainer container = result.Container;
+            bool hasProxyFactory = container.Contains(typeof (IProxyFactory));
 
             // Inject proxies only if a
             // proxy factory instance is available
@@ -49,12 +46,14 @@ namespace LinFu.IoC.Interceptors
                 return;
 
             // Sealed types cannot be intercepted
-            var serviceType = result.ServiceType;
+            Type serviceType = result.ServiceType;
             if (result.ActualResult != null && serviceType.IsSealed)
                 return;
 
             // Replace the actual result with the proxy itself
             result.ActualResult = _createProxy(result);
         }
+
+        #endregion
     }
 }

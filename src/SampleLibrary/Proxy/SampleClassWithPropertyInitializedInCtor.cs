@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace SampleLibrary.Proxy
+﻿namespace SampleLibrary.Proxy
 {
     public class SampleClassWithPropertyInitializedInCtor
     {
@@ -12,11 +7,7 @@ namespace SampleLibrary.Proxy
             SomeProp = "abcdefg";
         }
 
-        public virtual string SomeProp
-        {
-            get;
-            set;
-        }
+        public virtual string SomeProp { get; set; }
 
         public virtual void DoSomething(out int value)
         {

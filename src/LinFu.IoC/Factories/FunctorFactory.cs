@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC.Factories
@@ -22,6 +19,8 @@ namespace LinFu.IoC.Factories
             _factoryMethod = factoryMethod;
         }
 
+        #region IFactory Members
+
         /// <summary>
         /// Instantiates an object reference using the given factory method.
         /// </summary>
@@ -31,5 +30,7 @@ namespace LinFu.IoC.Factories
         {
             return _factoryMethod(request);
         }
+
+        #endregion
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using LinFu.AOP.Cecil;
 using LinFu.AOP.Cecil.Extensions;
 using LinFu.AOP.Cecil.Interfaces;
@@ -12,9 +11,9 @@ using Mono.Cecil;
 
 namespace PostWeaver
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             if (args == null || args.Length == 0)
             {
@@ -22,19 +21,19 @@ namespace PostWeaver
                 return;
             }
 
-            var inputFile = args[0];
+            string inputFile = args[0];
             if (!File.Exists(inputFile))
                 throw new FileNotFoundException(inputFile);
 
-            var targetFile = inputFile;
-            var assembly = AssemblyFactory.GetAssembly(targetFile);
-            var targetDirectory = Path.GetDirectoryName(targetFile);
+            string targetFile = inputFile;
+            AssemblyDefinition assembly = AssemblyFactory.GetAssembly(targetFile);
+            string targetDirectory = Path.GetDirectoryName(targetFile);
 
-            var filenameWithoutExtension = Path.GetFileNameWithoutExtension(targetFile);
-            var pdbFileName = string.Format("{0}.pdb", filenameWithoutExtension);
-            var pdbExists = File.Exists(pdbFileName);
+            string filenameWithoutExtension = Path.GetFileNameWithoutExtension(targetFile);
+            string pdbFileName = string.Format("{0}.pdb", filenameWithoutExtension);
+            bool pdbExists = File.Exists(pdbFileName);
 
-            var module = assembly.MainModule;
+            ModuleDefinition module = assembly.MainModule;
 
             if (pdbExists)
                 module.LoadSymbols();
@@ -63,7 +62,7 @@ namespace PostWeaver
                 assembly.InterceptExceptions(methodFilter);
                 return;
             }
-            
+
             assembly.InterceptAllExceptions();
         }
 
@@ -77,7 +76,7 @@ namespace PostWeaver
                 assembly.InterceptFields(hostTypeFilter, fieldFilter);
                 return;
             }
-                
+
             assembly.InterceptAllFields();
         }
 

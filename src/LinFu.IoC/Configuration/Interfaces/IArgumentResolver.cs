@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+﻿using System.Collections.Generic;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC.Configuration.Interfaces
@@ -21,6 +17,7 @@ namespace LinFu.IoC.Configuration.Interfaces
         /// <param name="container">The container that will provide the method arguments.</param>
         /// <param name="additionalArguments">The additional arguments that will be passed to the target method.</param>
         /// <returns>An array of objects that represent the arguments to be passed to the target method.</returns>
-        object[] ResolveFrom(IEnumerable<INamedType> parameterTypes, IServiceContainer container, params object[] additionalArguments);
+        object[] ResolveFrom(IEnumerable<INamedType> parameterTypes, IServiceContainer container,
+                             params object[] additionalArguments);
     }
 }

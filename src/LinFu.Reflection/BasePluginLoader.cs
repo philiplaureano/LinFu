@@ -11,7 +11,8 @@ namespace LinFu.Reflection
     /// </summary>    
     /// <typeparam name="TTarget">The target type being configured.</typeparam>
     /// <typeparam name="TAttribute">The attribute type that will be used to mark a type as a plugin.</typeparam>
-    public abstract class BasePluginLoader<TTarget, TAttribute> : IActionLoader<ILoader<TTarget>, Type> where TAttribute : Attribute
+    public abstract class BasePluginLoader<TTarget, TAttribute> : IActionLoader<ILoader<TTarget>, Type>
+        where TAttribute : Attribute
     {
         #region IActionLoader<ILoader<TTarget>,Type> Members
 
@@ -24,8 +25,8 @@ namespace LinFu.Reflection
         {
             try
             {
-                IEnumerable<TAttribute> attributes = inputType.GetCustomAttributes(typeof(TAttribute), true)
-                .Cast<TAttribute>();
+                IEnumerable<TAttribute> attributes = inputType.GetCustomAttributes(typeof (TAttribute), true)
+                    .Cast<TAttribute>();
 
                 // The type must have a default constructor
                 ConstructorInfo defaultConstructor = inputType.GetConstructor(new Type[0]);
@@ -45,7 +46,7 @@ namespace LinFu.Reflection
             {
                 // Ignore the error
                 return false;
-            }          
+            }
         }
 
         /// <summary>

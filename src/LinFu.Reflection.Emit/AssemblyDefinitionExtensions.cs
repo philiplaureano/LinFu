@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Reflection;
-using System.Text;
 using Mono.Cecil;
 
 namespace LinFu.Reflection.Emit
@@ -28,7 +24,7 @@ namespace LinFu.Reflection.Emit
             {
                 // Persist the assembly to the stream
                 AssemblyFactory.SaveAssembly(definition, stream);
-                var buffer = stream.GetBuffer();
+                byte[] buffer = stream.GetBuffer();
                 result = Assembly.Load(buffer);
             }
 

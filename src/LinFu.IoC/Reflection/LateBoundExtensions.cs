@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using LinFu.IoC.Configuration;
 using LinFu.IoC.Configuration.Interfaces;
 using LinFu.IoC.Interfaces;
@@ -46,31 +45,33 @@ namespace LinFu.IoC.Reflection
         /// <returns>The method return value.</returns>
         public static object Invoke(this object instance, string methodName, MethodFinderContext context)
         {
-            var targetType = instance.GetType();
-            var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic;
+            Type targetType = instance.GetType();
+            BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic;
 
             // Group the methods by name
             var methodMap = new Dictionary<string, List<MethodInfo>>();
-            var methods = targetType.GetMethods(flags);
-            foreach (var method in methods)
+            MethodInfo[] methods = targetType.GetMethods(flags);
+            foreach (MethodInfo method in methods)
             {
-                var name = method.Name;
+                string name = method.Name;
                 if (!methodMap.ContainsKey(name))
                     methodMap[name] = new List<MethodInfo>();
 
-                var currentList = methodMap[name];
+                List<MethodInfo> currentList = methodMap[name];
                 currentList.Add(method);
             }
 
-            var targetMethods = methodMap.ContainsKey(methodName) ? methodMap[methodName] : (new MethodInfo[0]).ToList();
+            List<MethodInfo> targetMethods = methodMap.ContainsKey(methodName)
+                                                 ? methodMap[methodName]
+                                                 : (new MethodInfo[0]).ToList();
             var finder = _container.GetService<IMethodFinder<MethodInfo>>();
 
-            var targetMethod = finder.GetBestMatch(targetMethods, context);
+            MethodInfo targetMethod = finder.GetBestMatch(targetMethods, context);
 
             // Search the methods that match the given method name
             if (targetMethod == null || targetMethods.Count == 0)
             {
-                var message = string.Format("Method '{0}' not found on type '{1}'", methodName, targetType);
+                string message = string.Format("Method '{0}' not found on type '{1}'", methodName, targetType);
                 throw new ArgumentException(message, "methodName");
             }
 
@@ -96,7 +97,7 @@ namespace LinFu.IoC.Reflection
             if (instance == null)
                 throw new NullReferenceException("instance");
 
-            var context = new MethodFinderContext(new Type[] { typeof(T1) }, arguments, null);
+            var context = new MethodFinderContext(new[] {typeof (T1)}, arguments, null);
             return Invoke(instance, methodName, context);
         }
 
@@ -114,7 +115,7 @@ namespace LinFu.IoC.Reflection
             if (instance == null)
                 throw new NullReferenceException("instance");
 
-            var typeArguments = new Type[] {typeof (T1), typeof (T2)};
+            var typeArguments = new[] {typeof (T1), typeof (T2)};
             return Invoke(instance, methodName, typeArguments, arguments);
         }
 
@@ -133,7 +134,7 @@ namespace LinFu.IoC.Reflection
             if (instance == null)
                 throw new NullReferenceException("instance");
 
-            var typeArguments = new Type[] { typeof(T1), typeof(T2), typeof(T3) };
+            var typeArguments = new[] {typeof (T1), typeof (T2), typeof (T3)};
             return Invoke(instance, methodName, typeArguments, arguments);
         }
 
@@ -153,7 +154,7 @@ namespace LinFu.IoC.Reflection
             if (instance == null)
                 throw new NullReferenceException("instance");
 
-            var typeArguments = new Type[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4) };
+            var typeArguments = new[] {typeof (T1), typeof (T2), typeof (T3), typeof (T4)};
             return Invoke(instance, methodName, typeArguments, arguments);
         }
 
@@ -165,7 +166,8 @@ namespace LinFu.IoC.Reflection
         /// <param name="typeArguments">The type arguments that will be passed to the target method.</param>
         /// <param name="arguments">The arguments that will be passed to the target method.</param>
         /// <returns>The method return value.</returns>
-        public static object Invoke(this object instance, string methodName, Type[] typeArguments, params object[] arguments)
+        public static object Invoke(this object instance, string methodName, Type[] typeArguments,
+                                    params object[] arguments)
         {
             var context = new MethodFinderContext(typeArguments, arguments, null);
             return Invoke(instance, methodName, context);

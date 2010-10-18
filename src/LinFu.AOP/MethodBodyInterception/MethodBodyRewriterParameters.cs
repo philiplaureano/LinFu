@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
@@ -14,16 +12,16 @@ namespace LinFu.AOP.Cecil
     /// </summary>
     public class MethodBodyRewriterParameters : IMethodBodyRewriterParameters
     {
+        private readonly VariableDefinition _aroundInvokeProvider;
         private readonly CilWorker _cilWorker;
+        private readonly VariableDefinition _classMethodReplacementProvider;
+        private readonly Func<ModuleDefinition, MethodReference> _getMethodReplacementProviderMethod;
         private readonly VariableDefinition _interceptionDisabled;
         private readonly VariableDefinition _invocationInfo;
-        private readonly VariableDefinition _returnValue;
-        private readonly VariableDefinition _aroundInvokeProvider;
         private readonly VariableDefinition _methodReplacementProvider;
-        private readonly VariableDefinition _classMethodReplacementProvider;
         private readonly IEnumerable<Instruction> _oldInstructions;
-        private readonly Func<ModuleDefinition, MethodReference> _getMethodReplacementProviderMethod;
         private readonly Type _registryType;
+        private readonly VariableDefinition _returnValue;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MethodBodyRewriterParameters"/> class.
@@ -38,14 +36,15 @@ namespace LinFu.AOP.Cecil
         /// <param name="classMethodReplacementProvider">The class-level<see cref="IMethodReplacementProvider"/> instance.</param>
         /// <param name="getMethodReplacementProviderMethod">The functor that resolves the GetMethodReplacementProvider method.</param>
         /// <param name="registryType">The interception registry type that will be responsible for handling class-level interception events.</param>
-        public MethodBodyRewriterParameters(CilWorker IL, IEnumerable<Instruction> oldInstructions, 
-            VariableDefinition interceptionDisabled, 
-            VariableDefinition invocationInfo, 
-            VariableDefinition returnValue,
-            VariableDefinition methodReplacementProvider, 
-            VariableDefinition aroundInvokeProvider, 
-            VariableDefinition classMethodReplacementProvider, 
-            Func<ModuleDefinition, MethodReference> getMethodReplacementProviderMethod, Type registryType)
+        public MethodBodyRewriterParameters(CilWorker IL, IEnumerable<Instruction> oldInstructions,
+                                            VariableDefinition interceptionDisabled,
+                                            VariableDefinition invocationInfo,
+                                            VariableDefinition returnValue,
+                                            VariableDefinition methodReplacementProvider,
+                                            VariableDefinition aroundInvokeProvider,
+                                            VariableDefinition classMethodReplacementProvider,
+                                            Func<ModuleDefinition, MethodReference> getMethodReplacementProviderMethod,
+                                            Type registryType)
         {
             _cilWorker = IL;
             _oldInstructions = oldInstructions;
@@ -58,6 +57,8 @@ namespace LinFu.AOP.Cecil
             _getMethodReplacementProviderMethod = getMethodReplacementProviderMethod;
             _registryType = registryType;
         }
+
+        #region IMethodBodyRewriterParameters Members
 
         /// <summary>
         /// Gets the value indicating the list of old instructions in the current method body.
@@ -149,5 +150,7 @@ namespace LinFu.AOP.Cecil
         {
             get { return _getMethodReplacementProviderMethod; }
         }
+
+        #endregion
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using LinFu.IoC.Interfaces;
+﻿using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC
 {
@@ -47,7 +46,7 @@ namespace LinFu.IoC
             if (_factory == null)
                 return default(T);
 
-            IFactory<T> factory = _factory as IFactory<T>;
+            var factory = _factory as IFactory<T>;
             if (factory == null)
                 return default(T);
 
@@ -55,6 +54,8 @@ namespace LinFu.IoC
         }
 
         #endregion
+
+        #region IFactory<T> Members
 
         T IFactory<T>.CreateInstance(IFactoryRequest request)
         {
@@ -64,5 +65,7 @@ namespace LinFu.IoC
 
             return factory.CreateInstance(request);
         }
+
+        #endregion
     }
 }

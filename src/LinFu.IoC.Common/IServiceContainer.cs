@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC.Interfaces
 {
@@ -32,7 +31,8 @@ namespace LinFu.IoC.Interfaces
         /// <param name="serviceType">The type of service that the factory will be able to create.</param>
         /// <param name="additionalParameterTypes">The list of additional parameters that this factory type will support.</param>
         /// <param name="factory">The <see cref="IFactory"/> instance that will create the object instance.</param>
-        void AddFactory(string serviceName, Type serviceType, IEnumerable<Type> additionalParameterTypes, IFactory factory);
+        void AddFactory(string serviceName, Type serviceType, IEnumerable<Type> additionalParameterTypes,
+                        IFactory factory);
 
         /// <summary>
         /// Determines whether or not a service can be created using

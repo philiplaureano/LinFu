@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.IoC.Interfaces;
+﻿using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC.Configuration
 {
@@ -11,14 +7,12 @@ namespace LinFu.IoC.Configuration
     /// </summary>
     internal class ServiceInstance : IServiceInstance
     {
-        public IServiceInfo ServiceInfo
-        {
-            get; internal set;
-        }
+        #region IServiceInstance Members
 
-        public object Object
-        {
-            get; internal set;
-        }
+        public IServiceInfo ServiceInfo { get; internal set; }
+
+        public object Object { get; internal set; }
+
+        #endregion
     }
 }

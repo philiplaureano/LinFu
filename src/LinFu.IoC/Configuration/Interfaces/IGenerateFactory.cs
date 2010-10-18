@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.IoC.Factories;
+﻿using LinFu.IoC.Factories;
 
 namespace LinFu.IoC.Configuration
 {

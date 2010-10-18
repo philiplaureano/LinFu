@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Mono.Cecil;
+﻿using Mono.Cecil;
 
 namespace LinFu.AOP.Cecil.Interfaces
 {
     /// <summary>
     /// Represents a type that determines which host methods should be modified for method call interception.
     /// </summary>
-    public interface IMethodFilter 
+    public interface IMethodFilter
     {
         /// <summary>
         /// Determines whether or not a particular method should be modified.

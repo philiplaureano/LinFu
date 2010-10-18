@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC.Factories
@@ -14,17 +12,20 @@ namespace LinFu.IoC.Factories
     public class DelegateFactory : IFactory
     {
         private readonly MulticastDelegate _targetDelegate;
+
         /// <summary>
         /// Initializes the class with the given <paramref name="targetDelegate"/>
         /// </summary>
         /// <param name="targetDelegate">The delegate that will be used to instantiate the factory.</param>
         public DelegateFactory(MulticastDelegate targetDelegate)
         {
-            if (targetDelegate.Method.ReturnType == typeof(void))
+            if (targetDelegate.Method.ReturnType == typeof (void))
                 throw new ArgumentException("The factory delegate must have a return type.");
 
             _targetDelegate = targetDelegate;
         }
+
+        #region IFactory Members
 
         /// <summary>
         /// Instantiates the service type using the given delegate.
@@ -36,15 +37,15 @@ namespace LinFu.IoC.Factories
             object result = null;
             try
             {
-                var target = _targetDelegate.Target;
-                var method = _targetDelegate.Method;
-                var argCount = request.Arguments.Length;
-                var methodArgCount = method.GetParameters().Count();
+                object target = _targetDelegate.Target;
+                MethodInfo method = _targetDelegate.Method;
+                int argCount = request.Arguments.Length;
+                int methodArgCount = method.GetParameters().Count();
 
                 if (argCount != methodArgCount)
                     throw new ArgumentException("Parameter Count Mismatch");
 
-                result = _targetDelegate.DynamicInvoke(request.Arguments);                
+                result = _targetDelegate.DynamicInvoke(request.Arguments);
             }
             catch (TargetInvocationException ex)
             {
@@ -54,5 +55,7 @@ namespace LinFu.IoC.Factories
 
             return result;
         }
+
+        #endregion
     }
 }

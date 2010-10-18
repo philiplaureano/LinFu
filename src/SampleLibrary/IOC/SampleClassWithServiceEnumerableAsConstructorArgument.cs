@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace SampleLibrary.IOC
 {
@@ -11,9 +8,7 @@ namespace SampleLibrary.IOC
         {
             Services = services;
         }
-        public IEnumerable<ISampleService> Services
-        {
-            get; private set;
-        }
+
+        public IEnumerable<ISampleService> Services { get; private set; }
     }
 }

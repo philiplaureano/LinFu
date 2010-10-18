@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using LinFu.Finders;
-using LinFu.Finders.Interfaces;
 using LinFu.IoC.Configuration.Interfaces;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// Represents the default implementation of the <see cref="IMemberResolver{ConstructorInfo}"/> class.
+    /// Represents the default implementation of the <see cref="IMemberResolver{TMember}"/> class.
     /// </summary>
     public class ConstructorResolver : MemberResolver<ConstructorInfo>
     {
@@ -18,15 +15,15 @@ namespace LinFu.IoC.Configuration
         /// Initializes the class with the default values.
         /// </summary>
         public ConstructorResolver()
-        {            
+        {
         }
 
         /// <summary>
         /// Initializes the class using the custom method finder.
         /// </summary>
         /// <param name="getFinder">The functor that will be used to instantiate the method finder.</param>
-        public ConstructorResolver(Func<IServiceContainer, 
-            IMethodFinder<ConstructorInfo>> getFinder) : base(getFinder)
+        public ConstructorResolver(Func<IServiceContainer,
+                                       IMethodFinder<ConstructorInfo>> getFinder) : base(getFinder)
         {
         }
 

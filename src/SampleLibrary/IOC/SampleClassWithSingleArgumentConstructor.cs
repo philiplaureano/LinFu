@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace SampleLibrary.IOC
+﻿namespace SampleLibrary.IOC
 {
     public class SampleClassWithSingleArgumentConstructor
     {
@@ -11,9 +6,7 @@ namespace SampleLibrary.IOC
         {
             Service = service;
         }
-        public ISampleService Service
-        {
-            get; set;
-        }
+
+        public ISampleService Service { get; set; }
     }
 }

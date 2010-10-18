@@ -1,15 +1,22 @@
-﻿namespace SampleLibrary
+﻿using System;
+
+namespace SampleLibrary
 {
     public class SampleClass : ISampleService, ISampleGenericService<int>
     {
-        public bool Called
-        {
-            get; set;
-        }
+        #region ISampleGenericService<int> Members
+
+        public bool Called { get; set; }
+
+        #endregion
+
+        #region ISampleService Members
 
         public void DoSomething()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

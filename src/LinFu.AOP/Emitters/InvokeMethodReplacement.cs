@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.AOP.Cecil.Interfaces;
+﻿using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using MethodDefinitionExtensions=LinFu.AOP.Cecil.Extensions.MethodDefinitionExtensions;
+using MethodDefinitionExtensions = LinFu.AOP.Cecil.Extensions.MethodDefinitionExtensions;
 
 namespace LinFu.AOP.Cecil
 {
@@ -16,10 +12,10 @@ namespace LinFu.AOP.Cecil
     /// </summary>
     public class InvokeMethodReplacement : IInstructionEmitter
     {
-        private readonly Instruction _executeOriginalInstructions;
-        private readonly VariableDefinition _methodReplacementProvider;
         private readonly VariableDefinition _classMethodReplacementProvider;
+        private readonly Instruction _executeOriginalInstructions;
         private readonly VariableDefinition _invocationInfo;
+        private readonly VariableDefinition _methodReplacementProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InvokeMethodReplacement"/> class.
@@ -28,7 +24,10 @@ namespace LinFu.AOP.Cecil
         /// <param name="methodReplacementProvider">The variable that contains the <see cref="IMethodReplacementProvider"/> instance.</param>
         /// <param name="classMethodReplacementProvider">The variable that contains the class-level <see cref="IMethodReplacementProvider"/> instance.</param>
         /// <param name="invocationInfo">The variable that contains the <see cref="IInvocationInfo"/> instance.</param>
-        public InvokeMethodReplacement(Instruction executeOriginalInstructions, VariableDefinition methodReplacementProvider, VariableDefinition classMethodReplacementProvider, VariableDefinition invocationInfo)
+        public InvokeMethodReplacement(Instruction executeOriginalInstructions,
+                                       VariableDefinition methodReplacementProvider,
+                                       VariableDefinition classMethodReplacementProvider,
+                                       VariableDefinition invocationInfo)
         {
             _executeOriginalInstructions = executeOriginalInstructions;
             _methodReplacementProvider = methodReplacementProvider;
@@ -36,20 +35,22 @@ namespace LinFu.AOP.Cecil
             _invocationInfo = invocationInfo;
         }
 
+        #region IInstructionEmitter Members
+
         /// <summary>
         /// Emits the instructions that call the method replacement instead of the original method body.
         /// </summary>
         /// <param name="IL">The <see cref="CilWorker"/> that points to the current method body.</param>
         public void Emit(CilWorker IL)
         {
-            var module = IL.GetModule();
-            var method = IL.GetMethod();
-            var returnType = method.ReturnType.ReturnType;
-            var methodReplacement = MethodDefinitionExtensions.AddLocal(method, typeof(IInterceptor));
+            ModuleDefinition module = IL.GetModule();
+            MethodDefinition method = IL.GetMethod();
+            TypeReference returnType = method.ReturnType.ReturnType;
+            VariableDefinition methodReplacement = MethodDefinitionExtensions.AddLocal(method, typeof (IInterceptor));
 
             GetMethodReplacementInstance(method, IL, methodReplacement, _methodReplacementProvider, _invocationInfo);
 
-            var skipGetClassMethodReplacement = IL.Create(OpCodes.Nop);
+            Instruction skipGetClassMethodReplacement = IL.Create(OpCodes.Nop);
             IL.Emit(OpCodes.Ldloc, methodReplacement);
             IL.Emit(OpCodes.Brtrue, skipGetClassMethodReplacement);
 
@@ -63,10 +64,13 @@ namespace LinFu.AOP.Cecil
             InvokeInterceptor(module, IL, methodReplacement, returnType, _invocationInfo);
         }
 
+        #endregion
+
         private static void InvokeInterceptor(ModuleDefinition module, CilWorker IL,
-    VariableDefinition methodReplacement, TypeReference returnType, VariableDefinition invocationInfo)
+                                              VariableDefinition methodReplacement, TypeReference returnType,
+                                              VariableDefinition invocationInfo)
         {
-            var interceptMethod = module.ImportMethod<IInterceptor>("Intercept");
+            MethodReference interceptMethod = module.ImportMethod<IInterceptor>("Intercept");
             IL.Emit(OpCodes.Ldloc, methodReplacement);
             IL.Emit(OpCodes.Ldloc, invocationInfo);
             IL.Emit(OpCodes.Callvirt, interceptMethod);
@@ -74,18 +78,19 @@ namespace LinFu.AOP.Cecil
         }
 
         private static void GetMethodReplacementInstance(MethodDefinition method,
-            CilWorker IL,
-            VariableDefinition methodReplacement,
-            VariableDefinition methodReplacementProvider, VariableDefinition invocationInfo)
+                                                         CilWorker IL,
+                                                         VariableDefinition methodReplacement,
+                                                         VariableDefinition methodReplacementProvider,
+                                                         VariableDefinition invocationInfo)
         {
-            var declaringType = method.DeclaringType;
-            var module = declaringType.Module;
-            var pushInstance = method.HasThis ? IL.Create(OpCodes.Ldarg_0) : IL.Create(OpCodes.Ldnull);
+            TypeDefinition declaringType = method.DeclaringType;
+            ModuleDefinition module = declaringType.Module;
+            Instruction pushInstance = method.HasThis ? IL.Create(OpCodes.Ldarg_0) : IL.Create(OpCodes.Ldnull);
 
-            var getReplacement = module.ImportMethod<IMethodReplacementProvider>("GetMethodReplacement");
+            MethodReference getReplacement = module.ImportMethod<IMethodReplacementProvider>("GetMethodReplacement");
             IL.Emit(OpCodes.Ldloc, methodReplacementProvider);
 
-            var skipGetMethodReplacement = IL.Create(OpCodes.Nop);
+            Instruction skipGetMethodReplacement = IL.Create(OpCodes.Nop);
             IL.Emit(OpCodes.Brfalse, skipGetMethodReplacement);
             IL.Emit(OpCodes.Ldloc, methodReplacementProvider);
 

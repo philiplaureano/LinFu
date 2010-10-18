@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.IoC.Configuration;
 using LinFu.IoC.Configuration.Interfaces;
 using LinFu.IoC.Interfaces;
@@ -26,10 +23,10 @@ namespace LinFu.IoC
         public static IUsingLambda<TService> Inject<TService>(this IServiceContainer container, string serviceName)
         {
             var context = new InjectionContext<TService>
-            {
-                ServiceName = serviceName,
-                Container = container
-            };
+                              {
+                                  ServiceName = serviceName,
+                                  Container = container
+                              };
 
             return new UsingLambda<TService>(context);
         }
@@ -44,10 +41,10 @@ namespace LinFu.IoC
         public static IUsingLambda<TService> Inject<TService>(this IServiceContainer container)
         {
             var context = new InjectionContext<TService>
-            {
-                ServiceName = null,
-                Container = container
-            };
+                              {
+                                  ServiceName = null,
+                                  Container = container
+                              };
 
             return new UsingLambda<TService>(context);
         }
@@ -70,9 +67,10 @@ namespace LinFu.IoC
         /// <param name="container">The container that will create the service itself.</param>
         /// <param name="serviceName">The name of the service to initialize.</param>
         /// <returns>A <see cref="IPropertyInjectionLambda{T}"/> instance. This cannot be <c>null</c>.</returns>
-        public static IPropertyInjectionLambda<TService> Initialize<TService>(this IServiceContainer container, string serviceName)
+        public static IPropertyInjectionLambda<TService> Initialize<TService>(this IServiceContainer container,
+                                                                              string serviceName)
         {
-            var context = new ActionContext<TService>()
+            var context = new ActionContext<TService>
                               {
                                   ServiceName = serviceName,
                                   Container = container,
@@ -80,6 +78,7 @@ namespace LinFu.IoC
 
             return new PropertyInjectionLambda<TService>(context);
         }
+
         /// <summary>
         /// Converts a <see cref="Func{Type, IServiceContainer, TArgs, TService}"/>
         /// lambda into an equivalent <see cref="Func{Type, IContainer, TArgs, TService}"/>
@@ -89,7 +88,8 @@ namespace LinFu.IoC
         /// <param name="func">The lambda function to be converted.</param>
         /// <returns>The equivalent <see cref="Func{IFactoryRequest, TService}"/>
         /// that delegates its calls back to the <paramref name="func"/> lambda function.</returns>
-        internal static Func<IFactoryRequest, TService> CreateAdapter<TService>(this Func<IFactoryRequest, TService> func)
+        internal static Func<IFactoryRequest, TService> CreateAdapter<TService>(
+            this Func<IFactoryRequest, TService> func)
         {
             Func<IFactoryRequest, TService> adapter = func;
 

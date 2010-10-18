@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Reflection;
 using LinFu.IoC.Configuration.Interfaces;
-using System.Reflection;
 
 namespace LinFu.IoC.Configuration
 {
@@ -14,6 +10,8 @@ namespace LinFu.IoC.Configuration
     public class ReflectionMethodBuilder<TMethod> : IMethodBuilder<TMethod>
         where TMethod : MethodBase
     {
+        #region IMethodBuilder<TMethod> Members
+
         /// <summary>
         /// Returns the <paramref name="existingMethod"/> unmodified.
         /// </summary>
@@ -23,5 +21,7 @@ namespace LinFu.IoC.Configuration
         {
             return existingMethod;
         }
+
+        #endregion
     }
 }

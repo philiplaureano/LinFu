@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using LinFu.IoC.Configuration.Interfaces;
 using LinFu.IoC.Interfaces;
 
@@ -48,12 +47,13 @@ namespace LinFu.IoC.Configuration
         protected override IEnumerable<FieldInfo> GetMembers(Type targetType, IServiceContainer container)
         {
             // The field type must exist in the container and must be marked as public
-            var results = from field in targetType.GetFields(BindingFlags.Public | BindingFlags.Instance)
-                          let fieldType = field.FieldType
-                          let attributes = field.GetCustomAttributes(_attributeType, false)
-                          where attributes != null && attributes.Length > 0 &&
-                                container.Contains(fieldType) 
-                          select field;
+            IEnumerable<FieldInfo> results =
+                from field in targetType.GetFields(BindingFlags.Public | BindingFlags.Instance)
+                let fieldType = field.FieldType
+                let attributes = field.GetCustomAttributes(_attributeType, false)
+                where attributes != null && attributes.Length > 0 &&
+                      container.Contains(fieldType)
+                select field;
 
             return results;
         }

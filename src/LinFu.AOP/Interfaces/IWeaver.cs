@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Mono.Cecil;
-
-namespace LinFu.AOP.Cecil.Interfaces
+﻿namespace LinFu.AOP.Cecil.Interfaces
 {
     /// <summary>
     /// Represents a class that can weave (or modify) 
@@ -13,7 +7,7 @@ namespace LinFu.AOP.Cecil.Interfaces
     /// <typeparam name="T">The type of object to modify.</typeparam>
     /// <typeparam name="THost">The host that holds the item to be modified.</typeparam>
     public interface IWeaver<T, THost> : IHostWeaver<THost>
-    {        
+    {
         /// <summary>
         /// Determines whether or not the current item should be modified.
         /// </summary>

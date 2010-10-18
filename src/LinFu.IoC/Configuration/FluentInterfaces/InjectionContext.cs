@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.IoC.Configuration;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC.Configuration
@@ -20,9 +16,6 @@ namespace LinFu.IoC.Configuration
         /// instantiate the actual <typeparamref name="TService"/>
         /// instance.
         /// </summary>
-        public Func<IFactoryRequest, TService> FactoryMethod
-        {
-            get; set;
-        }
+        public Func<IFactoryRequest, TService> FactoryMethod { get; set; }
     }
 }

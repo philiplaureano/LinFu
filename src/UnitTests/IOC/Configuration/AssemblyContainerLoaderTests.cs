@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using LinFu.IoC.Configuration;
 using LinFu.IoC.Interfaces;
@@ -50,7 +49,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             // to load the assembly
             string filename = "input.dll";
 
-            _mockAssemblyLoader.Expect(loader => loader.Load(filename)).Returns(typeof(SampleClass).Assembly);
+            _mockAssemblyLoader.Expect(loader => loader.Load(filename)).Returns(typeof (SampleClass).Assembly);
 
             containerLoader.AssemblyLoader = _mockAssemblyLoader.Object;
             containerLoader.Load(filename);
@@ -62,16 +61,16 @@ namespace LinFu.UnitTests.IOC.Configuration
             var containerLoader = new AssemblyContainerLoader();
             string filename = "input.dll";
 
-            Assembly targetAssembly = typeof(SampleClass).Assembly;
+            Assembly targetAssembly = typeof (SampleClass).Assembly;
 
             // Make sure that it calls the assembly loader
             _mockAssemblyLoader.Expect(loader => loader.Load(filename)).Returns(targetAssembly);
 
             // It must call the Type Extractor
             _mockTypeExtractor.Expect(extractor => extractor.GetTypes(targetAssembly))
-                .Returns(new[] { typeof(SampleClass) });
+                .Returns(new[] {typeof (SampleClass)});
 
-           
+
             var assemblyActionLoader = new AssemblyActionLoader<IServiceContainer>(() => containerLoader.TypeLoaders);
             assemblyActionLoader.TypeExtractor = _mockTypeExtractor.Object;
 
@@ -87,20 +86,20 @@ namespace LinFu.UnitTests.IOC.Configuration
             var containerLoader = new AssemblyContainerLoader();
             string filename = "input.dll";
 
-            Assembly targetAssembly = typeof(SampleClass).Assembly;
+            Assembly targetAssembly = typeof (SampleClass).Assembly;
 
             // Make sure that it calls the assembly loader
             _mockAssemblyLoader.Expect(loader => loader.Load(filename)).Returns(targetAssembly);
 
             // It must call the Type Extractor
             _mockTypeExtractor.Expect(extractor => extractor.GetTypes(targetAssembly))
-                .Returns(new[] { typeof(SampleClass) });
+                .Returns(new[] {typeof (SampleClass)});
 
             // Make sure that it calls the type loaders
-            _mockTypeLoader.Expect(loader => loader.CanLoad(typeof(SampleClass))).Returns(true);
-            _mockTypeLoader.Expect(loader => loader.Load(typeof(SampleClass)))
+            _mockTypeLoader.Expect(loader => loader.CanLoad(typeof (SampleClass))).Returns(true);
+            _mockTypeLoader.Expect(loader => loader.Load(typeof (SampleClass)))
                 .Returns(new Action<IServiceContainer>[0]);
-           
+
             var assemblyActionLoader = new AssemblyActionLoader<IServiceContainer>(() => containerLoader.TypeLoaders);
             assemblyActionLoader.TypeExtractor = _mockTypeExtractor.Object;
 
@@ -122,7 +121,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             containerLoader.TypeLoaders.Add(mockTypeLoader.Object);
 
             // This should return true
-            string validFile = typeof(AssemblyContainerLoaderTests).Assembly.Location;
+            string validFile = typeof (AssemblyContainerLoaderTests).Assembly.Location;
             Assert.IsTrue(containerLoader.CanLoad(validFile));
 
             // This should return false;

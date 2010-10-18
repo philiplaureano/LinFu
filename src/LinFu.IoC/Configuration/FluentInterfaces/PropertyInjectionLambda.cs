@@ -23,6 +23,8 @@ namespace LinFu.IoC.Configuration
             _context = context;
         }
 
+        #region IPropertyInjectionLambda<TService> Members
+
         /// <summary>
         /// Initializes service instances with the given
         /// <paramref name="action"/>.
@@ -50,6 +52,8 @@ namespace LinFu.IoC.Configuration
             AddPostProcessor(_context);
         }
 
+        #endregion
+
         /// <summary>
         /// Attaches the action associated with the <see cref="ActionContext{TService}"/>
         /// instance to the target container embedded within the <see cref="ActionContext{TService}"/>
@@ -58,9 +62,9 @@ namespace LinFu.IoC.Configuration
         /// <param name="context">The context that will be associated with the target container.</param>
         private static void AddPostProcessor(ActionContext<TService> context)
         {
-            var targetContainer = context.Container;
+            IServiceContainer targetContainer = context.Container;
             var postProcessor = new ActionPostProcessor<TService>(context);
             targetContainer.PostProcessors.Add(postProcessor);
-        }        
+        }
     }
 }

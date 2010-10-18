@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace LinFu.IoC.Configuration
@@ -14,12 +12,35 @@ namespace LinFu.IoC.Configuration
         private readonly Dictionary<int, Dictionary<Type, int>> _counts = new Dictionary<int, Dictionary<Type, int>>();
 
         /// <summary>
+        /// Gets the value indicating the types that are
+        /// currently being counted.
+        /// </summary>
+        public IEnumerable<Type> AvailableTypes
+        {
+            get
+            {
+                int threadId = Thread.CurrentThread.ManagedThreadId;
+
+                if (!_counts.ContainsKey(threadId))
+                    return new Type[0];
+
+                var results = new List<Type>();
+                foreach (Type type in _counts[threadId].Keys)
+                {
+                    results.Add(type);
+                }
+
+                return results;
+            }
+        }
+
+        /// <summary>
         /// Increments the count for the current <paramref name="type"/>.
         /// </summary>
         /// <param name="type">The type being counted.</param>
         public void Increment(Type type)
         {
-            var threadId = Thread.CurrentThread.ManagedThreadId;
+            int threadId = Thread.CurrentThread.ManagedThreadId;
 
             // Create a new counter, if necessary
             if (!_counts.ContainsKey(threadId))
@@ -30,7 +51,7 @@ namespace LinFu.IoC.Configuration
                 }
             }
 
-            var currentCounts = _counts[threadId];
+            Dictionary<Type, int> currentCounts = _counts[threadId];
             if (!currentCounts.ContainsKey(type))
             {
                 lock (currentCounts)
@@ -38,7 +59,7 @@ namespace LinFu.IoC.Configuration
                     currentCounts[type] = 0;
                 }
             }
-       
+
             lock (currentCounts)
             {
                 currentCounts[type]++;
@@ -52,12 +73,12 @@ namespace LinFu.IoC.Configuration
         /// <returns>The number of occurrences for the given type.</returns>
         public int CountOf(Type type)
         {
-            var threadId = Thread.CurrentThread.ManagedThreadId;
+            int threadId = Thread.CurrentThread.ManagedThreadId;
 
             if (!_counts.ContainsKey(threadId))
                 return 0;
 
-            var currentCounts = _counts[threadId];
+            Dictionary<Type, int> currentCounts = _counts[threadId];
             return currentCounts[type];
         }
 
@@ -67,11 +88,11 @@ namespace LinFu.IoC.Configuration
         /// <param name="type">The type being counted.</param>
         public void Decrement(Type type)
         {
-            var currentCount = CountOf(type);
+            int currentCount = CountOf(type);
             if (currentCount > 0)
                 currentCount--;
 
-            var threadId = Thread.CurrentThread.ManagedThreadId;
+            int threadId = Thread.CurrentThread.ManagedThreadId;
 
             // Create a new counter, if necessary
             if (!_counts.ContainsKey(threadId))
@@ -83,33 +104,10 @@ namespace LinFu.IoC.Configuration
             }
 
             // Split the counts by thread
-            var currentCounts = _counts[threadId];
+            Dictionary<Type, int> currentCounts = _counts[threadId];
             lock (currentCounts)
             {
                 currentCounts[type] = currentCount;
-            }
-        }
-
-        /// <summary>
-        /// Gets the value indicating the types that are
-        /// currently being counted.
-        /// </summary>
-        public IEnumerable<Type> AvailableTypes
-        {
-            get
-            {
-                var threadId = Thread.CurrentThread.ManagedThreadId;
-
-                if (!_counts.ContainsKey(threadId))
-                    return new Type[0];
-
-                var results = new List<Type>();
-                foreach (var type in _counts[threadId].Keys)
-                {
-                    results.Add(type);
-                }
-                
-                return results;
             }
         }
 

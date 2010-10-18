@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
@@ -11,13 +8,15 @@ namespace LinFu.AOP.Cecil
 {
     internal class ImplementMethodReplacementHost : ITypeWeaver
     {
-        private TypeReference _hostType;
         private readonly Func<TypeReference, bool> _filter;
+        private TypeReference _hostType;
 
         public ImplementMethodReplacementHost(Func<TypeReference, bool> filter)
         {
             _filter = filter;
         }
+
+        #region ITypeWeaver Members
 
         public virtual bool ShouldWeave(TypeDefinition item)
         {
@@ -41,10 +40,10 @@ namespace LinFu.AOP.Cecil
         {
             if (item.Interfaces.Contains(_hostType))
                 return;
-            
+
             item.Interfaces.Add(_hostType);
-            item.AddProperty("MethodBodyReplacementProvider", typeof(IMethodReplacementProvider));
-            item.AddProperty("MethodCallReplacementProvider", typeof(IMethodReplacementProvider));
+            item.AddProperty("MethodBodyReplacementProvider", typeof (IMethodReplacementProvider));
+            item.AddProperty("MethodCallReplacementProvider", typeof (IMethodReplacementProvider));
         }
 
         public virtual void AddAdditionalMembers(ModuleDefinition host)
@@ -53,7 +52,9 @@ namespace LinFu.AOP.Cecil
 
         public virtual void ImportReferences(ModuleDefinition module)
         {
-            _hostType = module.Import(typeof(IMethodReplacementHost));
+            _hostType = module.Import(typeof (IMethodReplacementHost));
         }
+
+        #endregion
     }
 }

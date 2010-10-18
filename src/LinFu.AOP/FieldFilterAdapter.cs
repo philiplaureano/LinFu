@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil;
 
@@ -23,6 +20,8 @@ namespace LinFu.AOP.Cecil
             _filter = filter;
         }
 
+        #region IFieldFilter Members
+
         /// <summary>
         /// Determines whether or not a particular field get or set should be intercepted.
         /// </summary>
@@ -33,5 +32,7 @@ namespace LinFu.AOP.Cecil
         {
             return _filter(targetField);
         }
+
+        #endregion
     }
 }

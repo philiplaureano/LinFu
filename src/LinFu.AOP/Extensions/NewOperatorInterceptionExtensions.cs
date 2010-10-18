@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Mono.Cecil;
 using LinFu.AOP.Cecil.Interfaces;
+using Mono.Cecil;
 
 namespace LinFu.AOP.Cecil.Extensions
 {
@@ -12,14 +9,13 @@ namespace LinFu.AOP.Cecil.Extensions
     /// </summary>
     public static class NewOperatorInterceptionExtensions
     {
-
         /// <summary>
         /// Modifies a <paramref name="target"/> to support intercepting all calls to the 'new' operator.
         /// </summary>
         /// <param name="target">The assembly to be modified.</param>
         public static void InterceptAllNewInstances(this IReflectionStructureVisitable target)
         {
-            var typeFilter = GetTypeFilter();
+            Func<TypeReference, bool> typeFilter = GetTypeFilter();
             target.InterceptNewInstances(typeFilter);
         }
 
@@ -29,7 +25,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="target">The assembly to be modified.</param>
         public static void InterceptAllNewInstances(this IReflectionVisitable target)
         {
-            var typeFilter = GetTypeFilter();
+            Func<TypeReference, bool> typeFilter = GetTypeFilter();
             target.InterceptNewInstances(typeFilter);
         }
 
@@ -54,7 +50,8 @@ namespace LinFu.AOP.Cecil.Extensions
                 (constructor, declaringType) => methodFilter(constructor) && typeFilter(declaringType);
 
             Func<MethodReference, TypeReference, MethodReference, bool> filter =
-                (ctor, declaringType, declaringMethod) => constructorFilter(ctor, declaringType) && methodFilter(declaringMethod);
+                (ctor, declaringType, declaringMethod) =>
+                constructorFilter(ctor, declaringType) && methodFilter(declaringMethod);
 
             var redirector = new RedirectNewInstancesToActivator(filter);
             target.InterceptNewInstancesWith(redirector, methodFilter);
@@ -75,11 +72,13 @@ namespace LinFu.AOP.Cecil.Extensions
         ///     (constructor, concreteType, hostMethod) => concreteType.Name == "Foo";
         /// </code>
         /// </remarks>
-        public static void InterceptNewInstances(this IReflectionStructureVisitable target, Func<MethodReference, TypeReference, bool> constructorFilter,
+        public static void InterceptNewInstances(this IReflectionStructureVisitable target,
+                                                 Func<MethodReference, TypeReference, bool> constructorFilter,
                                                  Func<MethodReference, bool> methodFilter)
         {
             Func<MethodReference, TypeReference, MethodReference, bool> filter =
-                (ctor, declaringType, declaringMethod) => constructorFilter(ctor, declaringType) && methodFilter(declaringMethod);
+                (ctor, declaringType, declaringMethod) =>
+                constructorFilter(ctor, declaringType) && methodFilter(declaringMethod);
 
             var redirector = new RedirectNewInstancesToActivator(filter);
             target.InterceptNewInstancesWith(redirector, methodFilter);
@@ -98,7 +97,8 @@ namespace LinFu.AOP.Cecil.Extensions
         ///     concreteType => concreteType.Name == "Foo";
         /// </code>
         /// </remarks>
-        public static void InterceptNewInstances(this IReflectionStructureVisitable target, Func<TypeReference, bool> typeFilter)
+        public static void InterceptNewInstances(this IReflectionStructureVisitable target,
+                                                 Func<TypeReference, bool> typeFilter)
         {
             target.InterceptNewInstances(typeFilter, m => true);
         }
@@ -135,14 +135,16 @@ namespace LinFu.AOP.Cecil.Extensions
         ///     (constructor, concreteType, hostMethod) => concreteType.Name == "Foo";
         /// </code>
         /// </remarks>
-        public static void InterceptNewInstances(this IReflectionStructureVisitable target, Func<TypeReference, bool> typeFilter,
+        public static void InterceptNewInstances(this IReflectionStructureVisitable target,
+                                                 Func<TypeReference, bool> typeFilter,
                                                  Func<MethodReference, bool> methodFilter)
         {
             Func<MethodReference, TypeReference, bool> constructorFilter =
                 (constructor, declaringType) => methodFilter(constructor) && typeFilter(declaringType);
 
             Func<MethodReference, TypeReference, MethodReference, bool> filter =
-                (ctor, declaringType, declaringMethod) => constructorFilter(ctor, declaringType) && methodFilter(declaringMethod);
+                (ctor, declaringType, declaringMethod) =>
+                constructorFilter(ctor, declaringType) && methodFilter(declaringMethod);
 
             var redirector = new RedirectNewInstancesToActivator(filter);
             target.InterceptNewInstancesWith(redirector, methodFilter);
@@ -163,11 +165,13 @@ namespace LinFu.AOP.Cecil.Extensions
         ///     (constructor, concreteType, hostMethod) => concreteType.Name == "Foo";
         /// </code>
         /// </remarks>
-        public static void InterceptNewInstances(this IReflectionVisitable target, Func<MethodReference, TypeReference, bool> constructorFilter,
+        public static void InterceptNewInstances(this IReflectionVisitable target,
+                                                 Func<MethodReference, TypeReference, bool> constructorFilter,
                                                  Func<MethodReference, bool> methodFilter)
         {
             Func<MethodReference, TypeReference, MethodReference, bool> filter =
-                (ctor, declaringType, declaringMethod) => constructorFilter(ctor, declaringType) && methodFilter(declaringMethod);
+                (ctor, declaringType, declaringMethod) =>
+                constructorFilter(ctor, declaringType) && methodFilter(declaringMethod);
 
             var redirector = new RedirectNewInstancesToActivator(filter);
             target.InterceptNewInstancesWith(redirector, methodFilter);
@@ -179,7 +183,8 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="target">The item to be modified.</param>
         /// <param name="newInstanceFilter">The filter that will determine which constructor calls should be intercepted.</param>
         /// <param name="methodFilter">The filter that will determine which host methods should be modified to support new instance interception.</param>
-        public static void InterceptNewInstances(this IReflectionStructureVisitable target, INewInstanceFilter newInstanceFilter, IMethodFilter methodFilter)
+        public static void InterceptNewInstances(this IReflectionStructureVisitable target,
+                                                 INewInstanceFilter newInstanceFilter, IMethodFilter methodFilter)
         {
             var redirector = new RedirectNewInstancesToActivator(newInstanceFilter);
             target.InterceptNewInstancesWith(redirector, methodFilter.ShouldWeave);
@@ -191,7 +196,8 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="target">The item to be modified.</param>
         /// <param name="newInstanceFilter">The filter that will determine which constructor calls should be intercepted.</param>
         /// <param name="methodFilter">The filter that will determine which host methods should be modified to support new instance interception.</param>
-        public static void InterceptNewInstances(this IReflectionVisitable target, INewInstanceFilter newInstanceFilter, IMethodFilter methodFilter)
+        public static void InterceptNewInstances(this IReflectionVisitable target, INewInstanceFilter newInstanceFilter,
+                                                 IMethodFilter methodFilter)
         {
             var redirector = new RedirectNewInstancesToActivator(newInstanceFilter);
             target.InterceptNewInstancesWith(redirector, methodFilter.ShouldWeave);
@@ -203,7 +209,8 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="target">The host that contains the methods that will be modified.</param>
         /// <param name="weaver">The custom <see cref="INewObjectWeaver"/> that will replace all calls to the new operator with the custom code emitted by the given weaver.</param>
         /// <param name="filter">The method filter that will determine which methods should be modified.</param>
-        public static void InterceptNewInstancesWith(this IReflectionStructureVisitable target, INewObjectWeaver weaver, Func<MethodReference, bool> filter)
+        public static void InterceptNewInstancesWith(this IReflectionStructureVisitable target, INewObjectWeaver weaver,
+                                                     Func<MethodReference, bool> filter)
         {
             var interceptNewCalls = new InterceptNewCalls(weaver);
             target.WeaveWith(interceptNewCalls, filter);
@@ -215,7 +222,8 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="target">The host that contains the methods that will be modified.</param>
         /// <param name="weaver">The custom <see cref="INewObjectWeaver"/> that will replace all calls to the new operator with the custom code emitted by the given weaver.</param>
         /// <param name="filter">The method filter that will determine which methods should be modified.</param>
-        public static void InterceptNewInstancesWith(this IReflectionVisitable target, INewObjectWeaver weaver, Func<MethodReference, bool> filter)
+        public static void InterceptNewInstancesWith(this IReflectionVisitable target, INewObjectWeaver weaver,
+                                                     Func<MethodReference, bool> filter)
         {
             var interceptNewCalls = new InterceptNewCalls(weaver);
             target.WeaveWith(interceptNewCalls, filter);
@@ -225,10 +233,10 @@ namespace LinFu.AOP.Cecil.Extensions
         {
             return type =>
                        {
-                           var result = !type.IsValueType;
+                           bool result = !type.IsValueType;
 
-                           var module = type.Module;
-                           var moduleName = module.Name;
+                           ModuleDefinition module = type.Module;
+                           string moduleName = module.Name;
 
                            if (moduleName.StartsWith("LinFu.AOP"))
                                return false;

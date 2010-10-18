@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Mono.Cecil;
 using LinFu.AOP.Cecil.Interfaces;
-using LinFu.Reflection.Emit;
 using LinFu.AOP.Interfaces;
+using LinFu.Reflection.Emit;
+using Mono.Cecil;
 
 namespace LinFu.AOP.Cecil
 {
@@ -14,7 +11,7 @@ namespace LinFu.AOP.Cecil
     /// </summary>
     public class ImplementFieldInterceptionHostWeaver : ITypeWeaver
     {
-        private Func<TypeReference, bool> _filter;
+        private readonly Func<TypeReference, bool> _filter;
         private TypeReference _hostInterfaceType;
         private TypeReference _interceptorPropertyType;
 
@@ -26,6 +23,8 @@ namespace LinFu.AOP.Cecil
         {
             _filter = filter;
         }
+
+        #region ITypeWeaver Members
 
         /// <summary>
         /// Determines whether or not a type should be modified.
@@ -79,5 +78,7 @@ namespace LinFu.AOP.Cecil
             _hostInterfaceType = module.ImportType<IFieldInterceptionHost>();
             _interceptorPropertyType = module.ImportType<IFieldInterceptor>();
         }
+
+        #endregion
     }
 }

@@ -1,22 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.AOP.Interfaces;
+﻿using LinFu.AOP.Interfaces;
 
 namespace SampleLibrary.AOP
 {
     public class SampleAroundInvoke : IAroundInvoke
     {
-        public bool BeforeInvokeWasCalled
-        {
-            get; private set;
-        }
+        public bool BeforeInvokeWasCalled { get; private set; }
 
-        public bool AfterInvokeWasCalled
-        {
-            get; private set;
-        }
+        public bool AfterInvokeWasCalled { get; private set; }
+
+        #region IAroundInvoke Members
 
         public void BeforeInvoke(IInvocationInfo info)
         {
@@ -27,5 +19,7 @@ namespace SampleLibrary.AOP
         {
             AfterInvokeWasCalled = true;
         }
+
+        #endregion
     }
 }

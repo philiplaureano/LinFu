@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using Mono.Cecil;
-
-namespace LinFu.Proxy.Interfaces
+﻿namespace LinFu.Proxy.Interfaces
 {
     ///// <summary>
     ///// Represents a class that is responsible for

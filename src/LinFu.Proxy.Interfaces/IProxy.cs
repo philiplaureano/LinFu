@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.AOP.Interfaces;
+﻿using LinFu.AOP.Interfaces;
 
 namespace LinFu.Proxy.Interfaces
 {

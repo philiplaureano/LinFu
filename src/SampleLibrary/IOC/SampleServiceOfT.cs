@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.IoC.Configuration;
-using SampleLibrary.IOC;
+﻿using LinFu.IoC.Configuration;
 
 namespace SampleLibrary.IOC
 {
-    [Implements(typeof(ISampleService<>), LifecycleType.OncePerRequest)]
+    [Implements(typeof (ISampleService<>), LifecycleType.OncePerRequest)]
     public class SampleService<T> : ISampleService<T>
     {
         public SampleService(string text, bool b)
@@ -35,8 +30,12 @@ namespace SampleLibrary.IOC
             Bool = b;
         }
 
+        #region ISampleService<T> Members
+
         public int Int { get; set; }
         public string Text { get; set; }
         public bool Bool { get; set; }
+
+        #endregion
     }
 }

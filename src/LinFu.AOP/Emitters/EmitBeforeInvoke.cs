@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
@@ -16,9 +13,9 @@ namespace LinFu.AOP.Cecil
     public class EmitBeforeInvoke : IInstructionEmitter
     {
         private readonly VariableDefinition _invocationInfo;
+        private readonly Type _registryType;
         private readonly VariableDefinition _surroundingClassImplementation;
         private readonly VariableDefinition _surroundingImplementation;
-        private readonly Type _registryType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EmitBeforeInvoke"/> class.
@@ -27,10 +24,10 @@ namespace LinFu.AOP.Cecil
         /// <param name="surroundingClassImplementation">The variable that contains the class-level <see cref="IAroundInvoke"/> instance.</param>
         /// <param name="surroundingImplementation">The variable that contains the instance-level <see cref="IAroundInvoke"/> instance.</param>
         /// <param name="registryType">The interception registry type that will be responsible for handling class-level interception events.</param>
-        public EmitBeforeInvoke(VariableDefinition invocationInfo, 
-            VariableDefinition surroundingClassImplementation, 
-            VariableDefinition surroundingImplementation, 
-            Type registryType)
+        public EmitBeforeInvoke(VariableDefinition invocationInfo,
+                                VariableDefinition surroundingClassImplementation,
+                                VariableDefinition surroundingImplementation,
+                                Type registryType)
         {
             _invocationInfo = invocationInfo;
             _surroundingClassImplementation = surroundingClassImplementation;
@@ -38,29 +35,33 @@ namespace LinFu.AOP.Cecil
             _registryType = registryType;
         }
 
+        #region IInstructionEmitter Members
+
         /// <summary>
         /// Emits the call to the <see cref="IAfterInvoke"/> instance.
         /// </summary>
         /// <param name="IL">The <see cref="CilWorker"/> that points to the current method body.</param>
         public void Emit(CilWorker IL)
         {
-            var targetMethod = IL.GetMethod();
-            var declaringType = targetMethod.DeclaringType;
-            var module = declaringType.Module;
+            MethodDefinition targetMethod = IL.GetMethod();
+            TypeDefinition declaringType = targetMethod.DeclaringType;
+            ModuleDefinition module = declaringType.Module;
 
             var getSurroundingClassImplementation = new GetSurroundingClassImplementation(_invocationInfo,
-                                                                                          _surroundingClassImplementation, _registryType.GetMethod("GetSurroundingImplementation"));
+                                                                                          _surroundingClassImplementation,
+                                                                                          _registryType.GetMethod(
+                                                                                              "GetSurroundingImplementation"));
 
             // var classAroundInvoke = AroundInvokeRegistry.GetSurroundingImplementation(info);           
             getSurroundingClassImplementation.Emit(IL);
 
             // classAroundInvoke.BeforeInvoke(info);
-            var skipInvoke = IL.Create(OpCodes.Nop);
+            Instruction skipInvoke = IL.Create(OpCodes.Nop);
 
-            IL.Emit(OpCodes.Ldloc, _surroundingClassImplementation);            
+            IL.Emit(OpCodes.Ldloc, _surroundingClassImplementation);
             IL.Emit(OpCodes.Brfalse, skipInvoke);
 
-            var beforeInvoke = module.ImportMethod<IBeforeInvoke>("BeforeInvoke");
+            MethodReference beforeInvoke = module.ImportMethod<IBeforeInvoke>("BeforeInvoke");
 
             // surroundingImplementation.BeforeInvoke(invocationInfo);
             IL.Emit(OpCodes.Ldloc, _surroundingClassImplementation);
@@ -73,11 +74,11 @@ namespace LinFu.AOP.Cecil
             if (!targetMethod.HasThis)
                 return;
 
-            var skipInvoke1 = IL.Create(OpCodes.Nop);
+            Instruction skipInvoke1 = IL.Create(OpCodes.Nop);
             IL.Emit(OpCodes.Ldloc, _surroundingImplementation);
             IL.Emit(OpCodes.Brfalse, skipInvoke1);
 
-            var beforeInvoke1 = module.ImportMethod<IBeforeInvoke>("BeforeInvoke");
+            MethodReference beforeInvoke1 = module.ImportMethod<IBeforeInvoke>("BeforeInvoke");
 
             // surroundingImplementation.BeforeInvoke(invocationInfo);
             IL.Emit(OpCodes.Ldloc, _surroundingImplementation);
@@ -87,5 +88,7 @@ namespace LinFu.AOP.Cecil
             IL.Append(skipInvoke1);
             // }
         }
+
+        #endregion
     }
 }

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil;
-using LinFu.AOP.Cecil.Interfaces;
 
 namespace LinFu.AOP.Cecil.Extensions
 {

@@ -1,5 +1,4 @@
-﻿using System;
-using LinFu.IoC.Interfaces;
+﻿using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC.Factories
 {
@@ -10,6 +9,8 @@ namespace LinFu.IoC.Factories
     /// <typeparam name="T"></typeparam>
     public abstract class BaseFactory<T> : IFactory<T>, IFactory
     {
+        #region IFactory Members
+
         /// <summary>
         /// Creates a service instance using the given container.
         /// </summary>
@@ -19,6 +20,10 @@ namespace LinFu.IoC.Factories
         {
             return CreateInstance(request);
         }
+
+        #endregion
+
+        #region IFactory<T> Members
 
         /// <summary>
         /// Creates a service instance using the given container.
@@ -32,5 +37,7 @@ namespace LinFu.IoC.Factories
         /// <param name="request">The <see cref="IFactoryRequest"/> instance that describes the requested service.</param>
         /// <returns>An object instance that represents the service to be created. This cannot be <c>null</c>.</returns>
         public abstract T CreateInstance(IFactoryRequest request);
+
+        #endregion
     }
 }

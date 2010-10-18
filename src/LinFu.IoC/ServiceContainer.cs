@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using LinFu.IoC.Configuration;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC
@@ -46,6 +44,17 @@ namespace LinFu.IoC
         }
 
         /// <summary>
+        /// Gets the value indicating the <see cref="IFactoryStorage"/> instance
+        /// that will be used to store each <see cref="IFactory"/> instance.
+        /// </summary>
+        internal IFactoryStorage FactoryStorage
+        {
+            get { return _factoryStorage; }
+        }
+
+        #region IServiceContainer Members
+
+        /// <summary>
         /// Gets or sets a <see cref="bool">System.Boolean</see> value
         /// that determines whether or not the container should throw
         /// a <see cref="ServiceNotFoundException"/> if a requested service
@@ -62,7 +71,8 @@ namespace LinFu.IoC
         /// <param name="serviceType">The type of service that the factory will be able to create.</param>
         /// <param name="additionalParameterTypes">The list of additional parameters that this factory type will support.</param>
         /// <param name="factory">The <see cref="IFactory"/> instance that will create the object instance.</param>
-        public virtual void AddFactory(string serviceName, Type serviceType, IEnumerable<Type> additionalParameterTypes, IFactory factory)
+        public virtual void AddFactory(string serviceName, Type serviceType, IEnumerable<Type> additionalParameterTypes,
+                                       IFactory factory)
         {
             FactoryStorage.AddFactory(serviceName, serviceType, additionalParameterTypes, factory);
         }
@@ -130,7 +140,7 @@ namespace LinFu.IoC
                 factory = FactoryStorage.GetFactory(serviceName, serviceType, additionalArguments);
 
             var serviceRequest = new ServiceRequest(serviceName, serviceType, additionalArguments, factory, this);
-            var instance = _getServiceBehavior.GetService(serviceRequest);
+            object instance = _getServiceBehavior.GetService(serviceRequest);
 
             if (SuppressErrors == false && instance == null && serviceName == null)
                 throw new ServiceNotFoundException(serviceType);
@@ -156,18 +166,6 @@ namespace LinFu.IoC
         }
 
         /// <summary>
-        /// Gets the value indicating the <see cref="IFactoryStorage"/> instance
-        /// that will be used to store each <see cref="IFactory"/> instance.
-        /// </summary>
-        internal IFactoryStorage FactoryStorage
-        {
-            get
-            {
-                return _factoryStorage;
-            }
-        }
-
-        /// <summary>
         /// The list of postprocessors that will handle every
         /// service request result.
         /// </summary>
@@ -190,10 +188,9 @@ namespace LinFu.IoC
         /// </summary>
         public virtual IEnumerable<IServiceInfo> AvailableServices
         {
-            get
-            {
-                return FactoryStorage.AvailableFactories;
-            }
+            get { return FactoryStorage.AvailableFactories; }
         }
+
+        #endregion
     }
 }

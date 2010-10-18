@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using LinFu.AOP.Interfaces;
-using LinFu.AOP;
 using LinFu.IoC.Configuration;
 using LinFu.IoC.Configuration.Interfaces;
 using LinFu.IoC.Interfaces;
@@ -31,6 +29,8 @@ namespace LinFu.IoC.Interceptors
             _loaderHost = loaderHost;
         }
 
+        #region ITypeLoader Members
+
         /// <summary>
         /// Loads an <see cref="IInterceptor"/> derived class into a particular <see cref="IServiceContainer"/> instance
         /// so that the current interceptor type can intercept calls made to services created from the given
@@ -50,8 +50,8 @@ namespace LinFu.IoC.Interceptors
             {
                 getInterceptor = result =>
                                      {
-                                         var target = result.ActualResult;
-                                         var container = result.Container;
+                                         object target = result.ActualResult;
+                                         IServiceContainer container = result.Container;
                                          var methodInvoke = container.GetService<IMethodInvoke<MethodInfo>>();
                                          var factory = container.GetService<IProxyFactory>();
 
@@ -71,7 +71,7 @@ namespace LinFu.IoC.Interceptors
                 var aroundInvoke = typeInstance as IAroundInvoke;
                 getInterceptor = result =>
                                      {
-                                         var container = result.Container;
+                                         IServiceContainer container = result.Container;
                                          var methodInvoke = container.GetService<IMethodInvoke<MethodInfo>>();
                                          var factory = container.GetService<IProxyFactory>();
 
@@ -82,9 +82,9 @@ namespace LinFu.IoC.Interceptors
 
                                          // HACK: The adapter can't be created until runtime since
                                          // the aroundInvoke instance needs an actual target
-                                         var target = result.ActualResult;
+                                         object target = result.ActualResult;
                                          var adapter = new AroundInvokeAdapter(() => target,
-                                             methodInvoke, aroundInvoke);
+                                                                               methodInvoke, aroundInvoke);
 
                                          var redirector = new Redirector(() => target, adapter, factory, methodInvoke);
 
@@ -98,17 +98,17 @@ namespace LinFu.IoC.Interceptors
                 return new Action<IServiceContainer>[0];
 
             // Determine which service types should be intercepted
-            var attributes = from attribute in input.GetCustomAttributes(typeof(InterceptsAttribute), false)
-                             let currentAttribute = attribute as InterceptsAttribute
-                             where currentAttribute != null
-                             select currentAttribute;
+            IEnumerable<InterceptsAttribute> attributes =
+                from attribute in input.GetCustomAttributes(typeof (InterceptsAttribute), false)
+                let currentAttribute = attribute as InterceptsAttribute
+                where currentAttribute != null
+                select currentAttribute;
 
             var interceptedTypes = new Dictionary<Type, HashSet<string>>();
-            foreach (var attribute in attributes)
+            foreach (InterceptsAttribute attribute in attributes)
             {
-
-                var serviceName = attribute.ServiceName;
-                var serviceType = attribute.TargetType;
+                string serviceName = attribute.ServiceName;
+                Type serviceType = attribute.TargetType;
 
                 // Keep track of the service name and service type
                 // and mark the current type for interception
@@ -127,45 +127,51 @@ namespace LinFu.IoC.Interceptors
 
             // Match the service type with the current type
             Func<IServiceRequestResult, bool> filter = request =>
-                {
-                    var container = request.Container;
+                                                           {
+                                                               IServiceContainer container = request.Container;
 
-                    // There must be a valid proxy factory
-                    if (container == null || !container.Contains(typeof(IProxyFactory)))
-                        return false;
+                                                               // There must be a valid proxy factory
+                                                               if (container == null ||
+                                                                   !container.Contains(typeof (IProxyFactory)))
+                                                                   return false;
 
-                    var serviceType = request.ServiceType;
-                    // Ignore requests to intercept IMethodInvoke<MethodInfo>
-                    if (serviceType == typeof(IMethodInvoke<MethodInfo>))
-                        return false;
+                                                               Type serviceType = request.ServiceType;
+                                                               // Ignore requests to intercept IMethodInvoke<MethodInfo>
+                                                               if (serviceType == typeof (IMethodInvoke<MethodInfo>))
+                                                                   return false;
 
-                    // Sealed types cannot be proxied by default
-                    if (serviceType.IsSealed)
-                        return false;
+                                                               // Sealed types cannot be proxied by default
+                                                               if (serviceType.IsSealed)
+                                                                   return false;
 
-                    // Match any service name if the service name is blank
-                    if (request.ServiceName == null && interceptedTypes.ContainsKey(serviceType))
-                        return true;
+                                                               // Match any service name if the service name is blank
+                                                               if (request.ServiceName == null &&
+                                                                   interceptedTypes.ContainsKey(serviceType))
+                                                                   return true;
 
-                    // Match the service name and type
-                    if (interceptedTypes.ContainsKey(serviceType) &&
-                        interceptedTypes[serviceType].Contains(request.ServiceName))
-                        return true;
+                                                               // Match the service name and type
+                                                               if (interceptedTypes.ContainsKey(serviceType) &&
+                                                                   interceptedTypes[serviceType].Contains(
+                                                                       request.ServiceName))
+                                                                   return true;
 
-                    if (!serviceType.IsGenericType)
-                        return false;
+                                                               if (!serviceType.IsGenericType)
+                                                                   return false;
 
-                    // Determine if an interceptor can intercept the
-                    // entire family of generic types
-                    var baseDefinition = serviceType.GetGenericTypeDefinition();
+                                                               // Determine if an interceptor can intercept the
+                                                               // entire family of generic types
+                                                               Type baseDefinition =
+                                                                   serviceType.GetGenericTypeDefinition();
 
-                    // The list of intercepted types should contain
-                    // the generic type definition and its matching 
-                    // service name
-                    var serviceName = request.ServiceName;
+                                                               // The list of intercepted types should contain
+                                                               // the generic type definition and its matching 
+                                                               // service name
+                                                               string serviceName = request.ServiceName;
 
-                    return interceptedTypes.ContainsKey(baseDefinition) && interceptedTypes[baseDefinition].Contains(serviceName);
-                };
+                                                               return interceptedTypes.ContainsKey(baseDefinition) &&
+                                                                      interceptedTypes[baseDefinition].Contains(
+                                                                          serviceName);
+                                                           };
 
             // Create the proxy using the service request
             Func<IServiceRequestResult, object> createProxy = request => CreateProxyFrom(request, getInterceptor);
@@ -179,40 +185,6 @@ namespace LinFu.IoC.Interceptors
         }
 
         /// <summary>
-        /// Generates a proxy instance from an existing <see cref="IServiceRequestResult"/> instance.
-        /// </summary>
-        /// <param name="request">The <see cref="IServiceRequestResult"/> instance that describes the proxy type that must be generated.</param>
-        /// <param name="getInterceptor">The <see cref="IInterceptor"/> functor that will create the interceptor which will handle all calls made to the proxy instance.</param>
-        /// <returns
-        /// >A service proxy.</returns>
-        private static object CreateProxyFrom(IServiceRequestResult request, Func<IServiceRequestResult, IInterceptor> getInterceptor)
-        {
-            var interceptor = getInterceptor(request);
-
-            var container = request.Container;
-            var proxyFactory =
-                container.GetService<IProxyFactory>();
-
-            // The proxy factory must exist
-            if (proxyFactory == null)
-                return null;
-
-            // Generate the proxy type
-            var proxyType = proxyFactory.CreateProxyType(request.ServiceType,
-                                                         new Type[0]);
-
-            // The generated proxy instance
-            // must implement IProxy
-            var proxy = Activator.CreateInstance(proxyType) as IProxy;
-
-            // Assign the interceptor
-            if (proxy != null)
-                proxy.Interceptor = interceptor;
-
-            return proxy;
-        }
-
-        /// <summary>
         /// Determines whether or not a target type is an interceptor.
         /// </summary>
         /// <param name="inputType">The target type currently being tested.</param>
@@ -221,16 +193,16 @@ namespace LinFu.IoC.Interceptors
         {
             try
             {
-                var attributes = inputType.GetCustomAttributes(typeof(InterceptsAttribute), false);
+                object[] attributes = inputType.GetCustomAttributes(typeof (InterceptsAttribute), false);
 
                 if (attributes == null)
                     attributes = new object[0];
 
                 // The target type must have at least one InterceptsAttribute defined
-                var matches = from attribute in attributes
-                              let currentAttribute = attribute as InterceptsAttribute
-                              where currentAttribute != null
-                              select currentAttribute;
+                IEnumerable<InterceptsAttribute> matches = from attribute in attributes
+                                                           let currentAttribute = attribute as InterceptsAttribute
+                                                           where currentAttribute != null
+                                                           select currentAttribute;
 
                 return matches.Count() > 0;
             }
@@ -243,7 +215,44 @@ namespace LinFu.IoC.Interceptors
             {
                 // Ignore the error
                 return false;
-            }           
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Generates a proxy instance from an existing <see cref="IServiceRequestResult"/> instance.
+        /// </summary>
+        /// <param name="request">The <see cref="IServiceRequestResult"/> instance that describes the proxy type that must be generated.</param>
+        /// <param name="getInterceptor">The <see cref="IInterceptor"/> functor that will create the interceptor which will handle all calls made to the proxy instance.</param>
+        /// <returns
+        /// >A service proxy.</returns>
+        private static object CreateProxyFrom(IServiceRequestResult request,
+                                              Func<IServiceRequestResult, IInterceptor> getInterceptor)
+        {
+            IInterceptor interceptor = getInterceptor(request);
+
+            IServiceContainer container = request.Container;
+            var proxyFactory =
+                container.GetService<IProxyFactory>();
+
+            // The proxy factory must exist
+            if (proxyFactory == null)
+                return null;
+
+            // Generate the proxy type
+            Type proxyType = proxyFactory.CreateProxyType(request.ServiceType,
+                                                          new Type[0]);
+
+            // The generated proxy instance
+            // must implement IProxy
+            var proxy = Activator.CreateInstance(proxyType) as IProxy;
+
+            // Assign the interceptor
+            if (proxy != null)
+                proxy.Interceptor = interceptor;
+
+            return proxy;
         }
     }
 }

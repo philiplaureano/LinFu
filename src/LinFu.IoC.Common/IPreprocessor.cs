@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace LinFu.IoC.Interfaces
+﻿namespace LinFu.IoC.Interfaces
 {
     /// <summary>
     /// Represents a class that can inspect or modify service requests

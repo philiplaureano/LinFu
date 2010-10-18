@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using LinFu.IoC.Configuration.Interfaces;
 
 namespace LinFu.IoC.Configuration
@@ -12,6 +9,8 @@ namespace LinFu.IoC.Configuration
     /// </summary>
     public class ConstructorInvoke : IMethodInvoke<ConstructorInfo>
     {
+        #region IMethodInvoke<ConstructorInfo> Members
+
         /// <summary>
         /// Invokes the <paramref name="targetMethod"/> constructor
         /// using the given <paramref name="arguments"/>.
@@ -22,8 +21,10 @@ namespace LinFu.IoC.Configuration
         /// <returns>The method return value.</returns>
         public object Invoke(object target, ConstructorInfo targetMethod, params object[] arguments)
         {
-            var declaringType = targetMethod.DeclaringType;
+            Type declaringType = targetMethod.DeclaringType;
             return Activator.CreateInstance(declaringType, arguments);
         }
+
+        #endregion
     }
 }

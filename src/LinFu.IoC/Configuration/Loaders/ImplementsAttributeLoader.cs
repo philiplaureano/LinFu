@@ -16,7 +16,9 @@ namespace LinFu.IoC.Configuration.Loaders
     /// </summary>
     /// <seealso cref="IFactory"/>
     public class ImplementsAttributeLoader : ITypeLoader
-    {       
+    {
+        #region ITypeLoader Members
+
         /// <summary>
         /// Converts a given <see cref="System.Type"/> into
         /// a set of <see cref="Action{IServiceContainer}"/> instances so that
@@ -30,7 +32,7 @@ namespace LinFu.IoC.Configuration.Loaders
         {
             // Extract the Implements attribute from the source type
             ICustomAttributeProvider provider = sourceType;
-            object[] attributes = provider.GetCustomAttributes(typeof(ImplementsAttribute), false);
+            object[] attributes = provider.GetCustomAttributes(typeof (ImplementsAttribute), false);
             List<ImplementsAttribute> attributeList = attributes.Cast<ImplementsAttribute>().ToList();
 
             var results = new List<Action<IServiceContainer>>();
@@ -71,6 +73,32 @@ namespace LinFu.IoC.Configuration.Loaders
         }
 
         /// <summary>
+        /// Determines whether or not the current <paramref name="sourceType"/>
+        /// can be loaded.
+        /// </summary>
+        /// <param name="sourceType">The source type currently being loaded.</param>
+        /// <returns>Returns <c>true</c> if the type is a class type; otherwise, it returns <c>false</c>.</returns>
+        public bool CanLoad(Type sourceType)
+        {
+            try
+            {
+                return sourceType.IsClass;
+            }
+            catch (TypeInitializationException)
+            {
+                // Ignore the error
+                return false;
+            }
+            catch (FileNotFoundException)
+            {
+                // Ignore the error
+                return false;
+            }
+        }
+
+        #endregion
+
+        /// <summary>
         /// Creates a factory instance that can create instaces of the given
         /// <paramref name="serviceType"/>  using the <paramref name="implementingType"/>
         /// as the implementation.
@@ -86,62 +114,39 @@ namespace LinFu.IoC.Configuration.Loaders
             Func<IFactoryRequest, object> factoryMethod =
                 request =>
                     {
-                        var currentContainer = (IServiceContainer)request.Container;
-                        var arguments = request.Arguments;
+                        IServiceContainer currentContainer = request.Container;
+                        object[] arguments = request.Arguments;
                         var builder = currentContainer.GetService<IFactoryBuilder>();
 
                         // HACK: If the service type is a type definition and
                         // the implementing type is a type definition,
                         // assume that the service type has the same number of
                         // generic arguments as the implementing type
-                        var actualServiceType = serviceType;
-                        var actualImplementingType = implementingType;
+                        Type actualServiceType = serviceType;
+                        Type actualImplementingType = implementingType;
                         if (serviceType.IsGenericTypeDefinition && implementingType.IsGenericTypeDefinition &&
                             serviceType.GetGenericArguments().Count() == implementingType.GetGenericArguments().Count())
                         {
-                            var typeArguments = request.ServiceType.GetGenericArguments();
+                            Type[] typeArguments = request.ServiceType.GetGenericArguments();
                             actualServiceType = serviceType.MakeGenericType(typeArguments);
                             actualImplementingType = implementingType.MakeGenericType(typeArguments);
                         }
 
-                        var actualFactory = builder.CreateFactory(actualServiceType, actualImplementingType, lifecycle);
+                        IFactory actualFactory = builder.CreateFactory(actualServiceType, actualImplementingType,
+                                                                       lifecycle);
 
-                        var factoryRequest = new FactoryRequest()
-                        {
-                            ServiceType = serviceType,
-                            ServiceName = request.ServiceName,
-                            Arguments = arguments,
-                            Container = currentContainer
-                        };
+                        var factoryRequest = new FactoryRequest
+                                                 {
+                                                     ServiceType = serviceType,
+                                                     ServiceName = request.ServiceName,
+                                                     Arguments = arguments,
+                                                     Container = currentContainer
+                                                 };
 
                         return actualFactory.CreateInstance(factoryRequest);
                     };
 
             return new FunctorFactory(factoryMethod);
         }
-
-        /// <summary>
-        /// Determines whether or not the current <paramref name="sourceType"/>
-        /// can be loaded.
-        /// </summary>
-        /// <param name="sourceType">The source type currently being loaded.</param>
-        /// <returns>Returns <c>true</c> if the type is a class type; otherwise, it returns <c>false</c>.</returns>
-        public bool CanLoad(Type sourceType)
-        {
-            try
-            {
-                return sourceType.IsClass;
-            }           
-            catch (TypeInitializationException)
-            {
-                // Ignore the error
-                return false;
-            }
-            catch (FileNotFoundException)
-            {
-                // Ignore the error
-                return false;
-            }               
-        }        
     }
 }

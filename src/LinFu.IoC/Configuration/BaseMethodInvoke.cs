@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
-using LinFu.IoC.Configuration.Interfaces;
 using System.Reflection.Emit;
+using LinFu.IoC.Configuration.Interfaces;
 using LinFu.IoC.Interfaces;
 using LinFu.Reflection;
 
@@ -25,7 +22,7 @@ namespace LinFu.IoC.Configuration
         public BaseMethodInvoke()
         {
             // HACK: Set the ReflectionMethodBuilder as the default builder
-            if (typeof(TMethod) == typeof(MethodInfo))
+            if (typeof (TMethod) == typeof (MethodInfo))
                 _builder = new ReflectionMethodBuilder<MethodInfo>() as IMethodBuilder<TMethod>;
         }
 
@@ -35,15 +32,25 @@ namespace LinFu.IoC.Configuration
         /// </summary>
         protected IMethodBuilder<TMethod> MethodBuilder
         {
-            get
-            {
-                return _builder;
-            }
-            set
-            {
-                _builder = value;
-            }
+            get { return _builder; }
+            set { _builder = value; }
         }
+
+        #region IInitialize Members
+
+        /// <summary>
+        /// Initializes the class with the <paramref name="source">source service container.</paramref>
+        /// </summary>
+        /// <param name="source">The <see cref="IServiceContainer"/> instance that will initialize this class.</param>
+        public void Initialize(IServiceContainer source)
+        {
+            _builder = source.GetService<IMethodBuilder<TMethod>>();
+        }
+
+        #endregion
+
+        #region IMethodInvoke<TMethod> Members
+
         /// <summary>
         /// Instantiates an object instance with the <paramref name="targetMethod"/>
         /// and <paramref name="arguments"/>.
@@ -53,7 +60,7 @@ namespace LinFu.IoC.Configuration
         /// <param name="arguments">The arguments to be used with the method.</param>
         /// <returns>An object reference that represents the method return value.</returns>
         public object Invoke(object target, TMethod targetMethod,
-                                 object[] arguments)
+                             object[] arguments)
         {
             object result = null;
 
@@ -61,7 +68,7 @@ namespace LinFu.IoC.Configuration
             if (!_cache.ContainsKey(targetMethod))
                 GenerateTargetMethod(targetMethod);
 
-            var factoryMethod = _cache[targetMethod];
+            MethodBase factoryMethod = _cache[targetMethod];
 
             try
             {
@@ -75,6 +82,8 @@ namespace LinFu.IoC.Configuration
             return result;
         }
 
+        #endregion
+
         /// <summary>
         /// Invokes the <paramref name="targetMethod"/> with the given <paramref name="arguments"/>.
         /// </summary>
@@ -84,7 +93,7 @@ namespace LinFu.IoC.Configuration
         /// <param name="arguments">The method arguments.</param>
         /// <returns>The return value from the target method.</returns>
         protected virtual object DoInvoke(object target, TMethod originalMethod, MethodBase targetMethod,
-            object[] arguments)
+                                          object[] arguments)
         {
             object result = targetMethod.Invoke(target, arguments);
 
@@ -109,15 +118,6 @@ namespace LinFu.IoC.Configuration
             {
                 _cache[targetMethod] = result;
             }
-        }
-
-        /// <summary>
-        /// Initializes the class with the <paramref name="source">source service container.</paramref>
-        /// </summary>
-        /// <param name="source">The <see cref="IServiceContainer"/> instance that will initialize this class.</param>
-        public void Initialize(IServiceContainer source)
-        {
-            _builder = source.GetService<IMethodBuilder<TMethod>>();
         }
     }
 }

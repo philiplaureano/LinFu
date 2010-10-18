@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC.Factories
@@ -9,7 +6,7 @@ namespace LinFu.IoC.Factories
     /// <summary>
     /// A class that converts a delegate into an <see cref="IFactory"/> instance.
     /// </summary>
-    public class FunctorFactory<T> : IFactory<T>, IFactory  
+    public class FunctorFactory<T> : IFactory<T>, IFactory
     {
         private readonly Func<IFactoryRequest, T> _factoryMethod;
 
@@ -19,7 +16,7 @@ namespace LinFu.IoC.Factories
         /// <param name="factoryMethod">The delegate that will be used to instantiate a type.</param>
         public FunctorFactory(Func<IFactoryRequest, object> factoryMethod)
         {
-            _factoryMethod = request => (T)factoryMethod(request);
+            _factoryMethod = request => (T) factoryMethod(request);
         }
 
         /// <summary>
@@ -31,6 +28,8 @@ namespace LinFu.IoC.Factories
             _factoryMethod = factoryMethod;
         }
 
+        #region IFactory Members
+
         /// <summary>
         /// Instantiates an object reference using the given factory method.
         /// </summary>
@@ -41,9 +40,15 @@ namespace LinFu.IoC.Factories
             return _factoryMethod(request);
         }
 
+        #endregion
+
+        #region IFactory<T> Members
+
         T IFactory<T>.CreateInstance(IFactoryRequest request)
         {
             return _factoryMethod(request);
         }
+
+        #endregion
     }
 }

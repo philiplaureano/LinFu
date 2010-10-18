@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using LinFu.IoC.Configuration.Interfaces;
-using LinFu.IoC.Configuration.Loaders;
 using LinFu.IoC.Factories;
 using LinFu.IoC.Interfaces;
 
@@ -23,10 +20,12 @@ namespace LinFu.IoC.Configuration
         /// </summary>
         static FactoryBuilder()
         {
-            _factoryTypes[LifecycleType.OncePerRequest] = typeof(OncePerRequestFactory<>);
-            _factoryTypes[LifecycleType.OncePerThread] = typeof(OncePerThreadFactory<>);
-            _factoryTypes[LifecycleType.Singleton] = typeof(SingletonFactory<>);
+            _factoryTypes[LifecycleType.OncePerRequest] = typeof (OncePerRequestFactory<>);
+            _factoryTypes[LifecycleType.OncePerThread] = typeof (OncePerThreadFactory<>);
+            _factoryTypes[LifecycleType.Singleton] = typeof (SingletonFactory<>);
         }
+
+        #region IFactoryBuilder Members
 
         /// <summary>
         /// Creates a factory instance that can create instaces of the given
@@ -53,37 +52,39 @@ namespace LinFu.IoC.Configuration
 
             Func<IFactoryRequest, object> factoryMethod =
                 request =>
-                {
-                    var serviceName = request.ServiceName;
-                    var type = request.ServiceType;
-                    var currentContainer = request.Container;
-                    var arguments = request.Arguments;
-
-                    // Determine the implementing type
-                    var concreteType = GetActualType(type, implementingType);
-
-                    // The concrete type cannot be null
-                    if (concreteType == null)
-                        return null;
-
-                    // Generate the concrete factory instance 
-                    // at runtime
-                    Type factoryType = factoryTypeDefinition.MakeGenericType(type);
-                    var factory = CreateFactory(type, concreteType, factoryType);
-
-                    var factoryRequest = new FactoryRequest()
                     {
-                        ServiceType = serviceType,
-                        ServiceName = serviceName,
-                        Arguments = arguments,
-                        Container = currentContainer
-                    };
+                        string serviceName = request.ServiceName;
+                        Type type = request.ServiceType;
+                        IServiceContainer currentContainer = request.Container;
+                        object[] arguments = request.Arguments;
 
-                    return factory.CreateInstance(factoryRequest);
-                };
+                        // Determine the implementing type
+                        Type concreteType = GetActualType(type, implementingType);
+
+                        // The concrete type cannot be null
+                        if (concreteType == null)
+                            return null;
+
+                        // Generate the concrete factory instance 
+                        // at runtime
+                        Type factoryType = factoryTypeDefinition.MakeGenericType(type);
+                        IFactory factory = CreateFactory(type, concreteType, factoryType);
+
+                        var factoryRequest = new FactoryRequest
+                                                 {
+                                                     ServiceType = serviceType,
+                                                     ServiceName = serviceName,
+                                                     Arguments = arguments,
+                                                     Container = currentContainer
+                                                 };
+
+                        return factory.CreateInstance(factoryRequest);
+                    };
 
             return new FunctorFactory(factoryMethod);
         }
+
+        #endregion
 
         /// <summary>
         /// Creates a factory instance that can create instaces of the given
@@ -98,7 +99,7 @@ namespace LinFu.IoC.Configuration
         {
             // Create the factory itself
             MulticastDelegate factoryMethod = CreateFactoryMethod(serviceType, actualType);
-            
+
             object factoryInstance = factoryType.AutoCreateFrom(_dummyContainer, factoryMethod);
             var result = factoryInstance as IFactory;
 
@@ -116,7 +117,7 @@ namespace LinFu.IoC.Configuration
             if (!implementingType.ContainsGenericParameters)
                 return implementingType;
 
-            var actualType = implementingType;
+            Type actualType = implementingType;
 
             // The service type must be a generic type with
             // closed generic parameters
@@ -126,10 +127,10 @@ namespace LinFu.IoC.Configuration
 
             // Attempt to apply the generic parameters of the service type
             // to the implementing type
-            var typeParameters = serviceType.GetGenericArguments();
+            Type[] typeParameters = serviceType.GetGenericArguments();
             try
             {
-                var concreteType = implementingType.MakeGenericType(typeParameters);
+                Type concreteType = implementingType.MakeGenericType(typeParameters);
 
                 // The concrete type must derive from the given service type
                 if (serviceType.IsAssignableFrom(concreteType))
@@ -157,7 +158,7 @@ namespace LinFu.IoC.Configuration
         {
             BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Static;
 
-            MethodInfo factoryMethodDefinition = typeof(FactoryBuilder).GetMethod("CreateFactoryMethodInternal", flags);
+            MethodInfo factoryMethodDefinition = typeof (FactoryBuilder).GetMethod("CreateFactoryMethodInternal", flags);
             MethodInfo factoryMethod = factoryMethodDefinition.MakeGenericMethod(serviceType, implementingType);
 
             // Create the Func<IFactoryRequest, TService> factory delegate
@@ -177,18 +178,19 @@ namespace LinFu.IoC.Configuration
             where TImplementation : TService
         {
             return request =>
-            {
-                var container = request.Container;
-                var arguments = request.Arguments;
-                var serviceContainer = (IServiceContainer)container;
+                       {
+                           IServiceContainer container = request.Container;
+                           object[] arguments = request.Arguments;
+                           IServiceContainer serviceContainer = container;
 
-                // Attempt to autoresolve the constructor
-                if (serviceContainer != null)
-                    return (TService)serviceContainer.AutoCreateInternal(typeof(TImplementation), arguments);
+                           // Attempt to autoresolve the constructor
+                           if (serviceContainer != null)
+                               return
+                                   (TService) serviceContainer.AutoCreateInternal(typeof (TImplementation), arguments);
 
-                // Otherwise, use the default constructor
-                return (TService)Activator.CreateInstance(typeof(TImplementation), arguments);
-            };
+                           // Otherwise, use the default constructor
+                           return (TService) Activator.CreateInstance(typeof (TImplementation), arguments);
+                       };
         }
     }
 }

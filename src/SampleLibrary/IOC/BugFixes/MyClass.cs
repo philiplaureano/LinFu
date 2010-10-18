@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace SampleLibrary.IOC.BugFixes
+﻿namespace SampleLibrary.IOC.BugFixes
 {
     public class MyClass<T>
     {

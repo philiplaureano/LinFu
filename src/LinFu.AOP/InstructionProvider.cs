@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -13,6 +10,8 @@ namespace LinFu.AOP.Cecil
     /// </summary>
     internal class InstructionProvider : IInstructionProvider
     {
+        #region IInstructionProvider Members
+
         /// <summary>
         /// Determines the instructions for a given method.
         /// </summary>
@@ -29,5 +28,7 @@ namespace LinFu.AOP.Cecil
 
             return oldInstructions;
         }
+
+        #endregion
     }
 }

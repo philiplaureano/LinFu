@@ -48,16 +48,16 @@ namespace LinFu.IoC.Factories
         /// <returns>A service instance as a singleton.</returns>
         public override T CreateInstance(IFactoryRequest request)
         {
-            var key = new { request.ServiceName, request.ServiceType, request.Container };
+            var key = new {request.ServiceName, request.ServiceType, request.Container};
 
             if (_instances.ContainsKey(key))
                 return _instances[key];
-                        
+
             lock (_lock)
             {
                 T result = _createInstance(request);
                 if (result != null)
-                {                    
+                {
                     _instances[key] = result;
                 }
             }

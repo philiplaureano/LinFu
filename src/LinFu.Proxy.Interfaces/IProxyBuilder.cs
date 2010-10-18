@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Mono.Cecil;
 
 namespace LinFu.Proxy.Interfaces
@@ -23,6 +21,5 @@ namespace LinFu.Proxy.Interfaces
         /// <param name="targetType">The <see cref="TypeDefinition"/> that represents the type to be created.</param>
         void Construct(Type baseType, IEnumerable<Type> interfaces,
                        ModuleDefinition module, TypeDefinition targetType);
-        
     }
 }

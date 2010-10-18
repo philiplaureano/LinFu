@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using LinFu.IoC;
-using LinFu.IoC.Configuration;
-using LinFu.IoC.Configuration.Interfaces;
-using LinFu.IoC.Reflection;
+﻿using LinFu.IoC;
 using LinFu.Proxy;
-using LinFu.Proxy.Interfaces;
 using Moq;
 using NUnit.Framework;
 using SampleLibrary;

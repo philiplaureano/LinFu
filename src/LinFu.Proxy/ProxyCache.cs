@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.IoC.Configuration;
 using LinFu.Proxy.Interfaces;
 
@@ -10,10 +8,13 @@ namespace LinFu.Proxy
     /// <summary>
     /// Represents the default implementation of the <see cref="IProxyCache"/> interface.
     /// </summary>
-    [Implements(typeof(IProxyCache), LifecycleType.OncePerRequest)]
+    [Implements(typeof (IProxyCache), LifecycleType.OncePerRequest)]
     internal class ProxyCache : IProxyCache
     {
-        private static readonly Dictionary<ProxyCacheEntry, Type> _cache = new Dictionary<ProxyCacheEntry, Type>(new ProxyCacheEntry.EqualityComparer());
+        private static readonly Dictionary<ProxyCacheEntry, Type> _cache =
+            new Dictionary<ProxyCacheEntry, Type>(new ProxyCacheEntry.EqualityComparer());
+
+        #region IProxyCache Members
 
         /// <summary>
         /// Determines whether or not the cache contains an existing proxy type
@@ -56,5 +57,7 @@ namespace LinFu.Proxy
                 _cache[entry] = result;
             }
         }
+
+        #endregion
     }
 }

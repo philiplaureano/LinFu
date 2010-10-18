@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace LinFu.AOP.Interfaces
 {
@@ -21,11 +19,11 @@ namespace LinFu.AOP.Interfaces
         /// <returns>An <see cref="IAroundInvoke"/> instance that will be used to wrap a method call or method body.</returns>
         public static IAroundInvoke GetSurroundingImplementation(IInvocationInfo context)
         {
-            var resultList = (from p in _providers
-                              where p != null
-                              let aroundInvoke = p.GetSurroundingImplementation(context)
-                              where aroundInvoke != null
-                              select aroundInvoke).ToList();
+            List<IAroundInvoke> resultList = (from p in _providers
+                                              where p != null
+                                              let aroundInvoke = p.GetSurroundingImplementation(context)
+                                              where aroundInvoke != null
+                                              select aroundInvoke).ToList();
 
             if (resultList.Count == 0)
                 return null;

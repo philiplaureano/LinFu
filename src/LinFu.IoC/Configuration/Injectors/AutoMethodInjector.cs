@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 using LinFu.IoC.Configuration.Interfaces;
 using LinFu.IoC.Interfaces;
-using System.Reflection;
 
 namespace LinFu.IoC.Configuration
 {
@@ -23,13 +21,14 @@ namespace LinFu.IoC.Configuration
         /// <param name="resolver">The <see cref="IArgumentResolver"/> that will determine which arguments will be assigned to the target member.</param>
         /// <param name="additionalArguments">The additional arguments that were passed to the <see cref="IServiceRequestResult"/> during the instantiation process.</param>
         /// <param name="container">The container that will provide the service instances.</param>
-        protected override void Inject(object target, MethodInfo method, 
-            IArgumentResolver resolver, IServiceContainer container, object[] additionalArguments)
+        protected override void Inject(object target, MethodInfo method,
+                                       IArgumentResolver resolver, IServiceContainer container,
+                                       object[] additionalArguments)
         {
-            var parameterTypes = from p in method.GetParameters()
-                                 select new NamedType(p) as INamedType;
+            IEnumerable<INamedType> parameterTypes = from p in method.GetParameters()
+                                                     select new NamedType(p) as INamedType;
 
-            var arguments = resolver.ResolveFrom(parameterTypes, container, additionalArguments);
+            object[] arguments = resolver.ResolveFrom(parameterTypes, container, additionalArguments);
 
             // Invoke the target method
             method.Invoke(target, arguments);

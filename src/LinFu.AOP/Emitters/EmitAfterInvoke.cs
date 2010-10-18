@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.AOP.Cecil.Interfaces;
+﻿using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
@@ -15,10 +11,10 @@ namespace LinFu.AOP.Cecil
     /// </summary>
     public class EmitAfterInvoke : IInstructionEmitter
     {
-        private readonly VariableDefinition _surroundingImplementation;
-        private readonly VariableDefinition _surroundingClassImplementation;
         private readonly VariableDefinition _invocationInfo;
         private readonly VariableDefinition _returnValue;
+        private readonly VariableDefinition _surroundingClassImplementation;
+        private readonly VariableDefinition _surroundingImplementation;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EmitAfterInvoke"/> class.
@@ -27,8 +23,9 @@ namespace LinFu.AOP.Cecil
         /// <param name="surroundingClassImplementation">The variable that contains the class-level <see cref="IAroundInvoke"/> instance.</param>
         /// <param name="invocationInfo">The variable that contains the <see cref="IInvocationInfo"/> instance.</param>
         /// <param name="returnValue">The local vaiable that contains the return value of the target method.</param>
-        public EmitAfterInvoke(VariableDefinition surroundingImplementation, VariableDefinition surroundingClassImplementation,
-            VariableDefinition invocationInfo, VariableDefinition returnValue)
+        public EmitAfterInvoke(VariableDefinition surroundingImplementation,
+                               VariableDefinition surroundingClassImplementation,
+                               VariableDefinition invocationInfo, VariableDefinition returnValue)
         {
             _surroundingImplementation = surroundingImplementation;
             _surroundingClassImplementation = surroundingClassImplementation;
@@ -36,13 +33,15 @@ namespace LinFu.AOP.Cecil
             _returnValue = returnValue;
         }
 
+        #region IInstructionEmitter Members
+
         /// <summary>
         /// Emits the call to the <see cref="IAfterInvoke"/> instance.
         /// </summary>
         /// <param name="IL">The <see cref="CilWorker"/> that points to the current method body.</param>
         public void Emit(CilWorker IL)
         {
-            var module = IL.GetModule();
+            ModuleDefinition module = IL.GetModule();
 
             // instanceAroundInvoke.AfterInvoke(info, returnValue);
             Emit(IL, module, _surroundingImplementation, _invocationInfo, _returnValue);
@@ -51,14 +50,16 @@ namespace LinFu.AOP.Cecil
             Emit(IL, module, _surroundingClassImplementation, _invocationInfo, _returnValue);
         }
 
-        private static void Emit(CilWorker IL, ModuleDefinition module,
-           VariableDefinition surroundingImplementation,
-           VariableDefinition invocationInfo,
-           VariableDefinition returnValue)
-        {
-            var skipInvoke = IL.Create(OpCodes.Nop);
+        #endregion
 
-            var skipPrint = IL.Create(OpCodes.Nop);
+        private static void Emit(CilWorker IL, ModuleDefinition module,
+                                 VariableDefinition surroundingImplementation,
+                                 VariableDefinition invocationInfo,
+                                 VariableDefinition returnValue)
+        {
+            Instruction skipInvoke = IL.Create(OpCodes.Nop);
+
+            Instruction skipPrint = IL.Create(OpCodes.Nop);
             IL.Emit(OpCodes.Ldloc, surroundingImplementation);
             IL.Emit(OpCodes.Brtrue, skipPrint);
 
@@ -66,7 +67,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Ldloc, surroundingImplementation);
             IL.Emit(OpCodes.Brfalse, skipInvoke);
 
-            var aroundInvoke = module.ImportMethod<IAfterInvoke>("AfterInvoke");
+            MethodReference aroundInvoke = module.ImportMethod<IAfterInvoke>("AfterInvoke");
             IL.Emit(OpCodes.Ldloc, surroundingImplementation);
             IL.Emit(OpCodes.Ldloc, invocationInfo);
             IL.Emit(OpCodes.Ldloc, returnValue);

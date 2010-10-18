@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+﻿using System.Reflection;
 using LinFu.Reflection;
 
 namespace LinFu.IoC.Configuration
@@ -25,9 +21,13 @@ namespace LinFu.IoC.Configuration
             _targetAssembly = targetAssembly;
         }
 
+        #region IAssemblyLoader Members
+
         public Assembly Load(string assemblyFile)
         {
             return _targetAssembly;
         }
+
+        #endregion
     }
 }

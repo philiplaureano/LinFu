@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using LinFu.AOP.Cecil;
 using LinFu.AOP.Cecil.Extensions;
 using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
-using LinFu.Proxy.Interfaces;
-using LinFu.IoC;
 using LinFu.IoC.Configuration;
 using LinFu.IoC.Interfaces;
+using LinFu.Proxy.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using MethodBody = Mono.Cecil.Cil.MethodBody;
 
 namespace LinFu.Proxy
 {
@@ -22,7 +20,7 @@ namespace LinFu.Proxy
     /// Provides the default implementation for the
     /// <see cref="IMethodBodyEmitter"/> interface.
     /// </summary>
-    [Implements(typeof(IMethodBodyEmitter), LifecycleType.OncePerRequest)]
+    [Implements(typeof (IMethodBodyEmitter), LifecycleType.OncePerRequest)]
     internal class MethodBodyEmitter : IMethodBodyEmitter, IInitialize
     {
         /// <summary>
@@ -38,6 +36,21 @@ namespace LinFu.Proxy
         /// </summary>
         public IEmitInvocationInfo InvocationInfoEmitter { get; set; }
 
+        #region IInitialize Members
+
+        /// <summary>
+        /// Initializes the MethodBodyEmitter class.
+        /// </summary>
+        /// <param name="source"></param>
+        public void Initialize(IServiceContainer source)
+        {
+            InvocationInfoEmitter = (IEmitInvocationInfo) source.GetService(typeof (IEmitInvocationInfo));
+        }
+
+        #endregion
+
+        #region IMethodBodyEmitter Members
+
         /// <summary>
         /// Generates a method body for the <paramref name="targetMethod"/>.
         /// </summary>
@@ -45,7 +58,7 @@ namespace LinFu.Proxy
         /// <param name="targetMethod">The target method that will contain the new method body.</param>
         public void Emit(MethodInfo originalMethod, MethodDefinition targetMethod)
         {
-            var invocationInfo = targetMethod.AddLocal<IInvocationInfo>();
+            VariableDefinition invocationInfo = targetMethod.AddLocal<IInvocationInfo>();
             invocationInfo.Name = "___invocationInfo___";
 
             // Emit the code to generate the IInvocationInfo instance
@@ -53,22 +66,22 @@ namespace LinFu.Proxy
             if (InvocationInfoEmitter != null)
                 InvocationInfoEmitter.Emit(originalMethod, targetMethod, invocationInfo);
 
-            var declaringType = targetMethod.DeclaringType;
-            var module = declaringType.Module;
-            var proxyType = module.ImportType<IProxy>();
-            var getInterceptorMethod = module.ImportMethod("get_Interceptor", typeof(IProxy));
-            var interceptor = targetMethod.AddLocal<IInterceptor>();
-            var arguments = targetMethod.AddLocal<object[]>();
+            TypeDefinition declaringType = targetMethod.DeclaringType;
+            ModuleDefinition module = declaringType.Module;
+            TypeReference proxyType = module.ImportType<IProxy>();
+            MethodReference getInterceptorMethod = module.ImportMethod("get_Interceptor", typeof (IProxy));
+            VariableDefinition interceptor = targetMethod.AddLocal<IInterceptor>();
+            VariableDefinition arguments = targetMethod.AddLocal<object[]>();
 
             // if (!(this is IProxy))
-            var IL = targetMethod.GetILGenerator();
+            CilWorker IL = targetMethod.GetILGenerator();
             IL.Emit(OpCodes.Ldarg_0);
             IL.Emit(OpCodes.Isinst, proxyType);
 
-            var noImplementationFound = IL.Create(OpCodes.Nop);
+            Instruction noImplementationFound = IL.Create(OpCodes.Nop);
             IL.Emit(OpCodes.Brfalse, noImplementationFound);
 
-            var endLabel = IL.Create(OpCodes.Nop);
+            Instruction endLabel = IL.Create(OpCodes.Nop);
             EmitGetInterceptorInstruction(IL, proxyType, getInterceptorMethod);
             IL.Emit(OpCodes.Stloc, interceptor);
 
@@ -79,19 +92,20 @@ namespace LinFu.Proxy
 
 
             // var returnValue = interceptor.Intercept(info);
-            var voidType = module.ImportType(typeof(void));
-            var interceptMethod = module.ImportMethod<IInterceptor>("Intercept", typeof(IInvocationInfo));
+            TypeReference voidType = module.ImportType(typeof (void));
+            MethodReference interceptMethod = module.ImportMethod<IInterceptor>("Intercept", typeof (IInvocationInfo));
             IL.Emit(OpCodes.Ldloc, interceptor);
             IL.Emit(OpCodes.Ldloc, invocationInfo);
             IL.Emit(OpCodes.Callvirt, interceptMethod);
 
             // Save the ref arguments
-            var parameters = from ParameterDefinition param in targetMethod.Parameters
-                             select param;
-            
+            IEnumerable<ParameterDefinition> parameters = from ParameterDefinition param in targetMethod.Parameters
+                                                          select param;
+
             // Determine the return type
-            var returnType = targetMethod.ReturnType != null ?
-                targetMethod.ReturnType.ReturnType : voidType;
+            TypeReference returnType = targetMethod.ReturnType != null
+                                           ? targetMethod.ReturnType.ReturnType
+                                           : voidType;
 
             IL.PackageReturnValue(module, returnType);
 
@@ -108,13 +122,16 @@ namespace LinFu.Proxy
             IL.Emit(OpCodes.Ret);
         }
 
+        #endregion
+
         /// <summary>
         /// Emits the IL instructions to obtain an <see cref="IInterceptor"/> instance for the proxy type.
         /// </summary>
         /// <param name="IL">The <see cref="CilWorker"/> responsible for emitting the method body.</param>
         /// <param name="proxyType">The proxy type.</param>
         /// <param name="getInterceptorMethod">The getter method for the interceptor.</param>
-        protected virtual void EmitGetInterceptorInstruction(CilWorker IL, TypeReference proxyType, MethodReference getInterceptorMethod)
+        protected virtual void EmitGetInterceptorInstruction(CilWorker IL, TypeReference proxyType,
+                                                             MethodReference getInterceptorMethod)
         {
             IL.Emit(OpCodes.Ldarg_0);
             IL.Emit(OpCodes.Isinst, proxyType);
@@ -128,12 +145,12 @@ namespace LinFu.Proxy
         /// <param name="IL">The <see cref="CilWorker"/> responsible for emitting the method body.</param>
         protected virtual void ImplementNotFound(CilWorker IL)
         {
-            var body = IL.GetBody();
-            var declaringType = body.Method.DeclaringType;
+            MethodBody body = IL.GetBody();
+            TypeDefinition declaringType = body.Method.DeclaringType;
             ModuleDefinition module = declaringType.Module;
 
             // throw new NotImplementedException();
-            var notImplementedConstructor = module.ImportConstructor<NotImplementedException>();
+            MethodReference notImplementedConstructor = module.ImportConstructor<NotImplementedException>();
             IL.Emit(OpCodes.Newobj, notImplementedConstructor);
             IL.Emit(OpCodes.Throw);
         }
@@ -148,22 +165,22 @@ namespace LinFu.Proxy
         /// <param name="invocationInfo">The local variable that contains the <see cref="IInvocationInfo"/> instance.</param>
         /// <param name="arguments">The local variable that will store the arguments from the <see cref="IInvocationInfo"/> instance.</param>
         private static void SaveRefArguments(CilWorker IL, IEnumerable<ParameterDefinition> parameters,
-            VariableDefinition invocationInfo, VariableDefinition arguments)
+                                             VariableDefinition invocationInfo, VariableDefinition arguments)
         {
-            var body = IL.GetBody();
-            var targetMethod = body.Method;
-            var declaringType = targetMethod.DeclaringType;
-            var module = declaringType.Module;
+            MethodBody body = IL.GetBody();
+            MethodDefinition targetMethod = body.Method;
+            TypeDefinition declaringType = targetMethod.DeclaringType;
+            ModuleDefinition module = declaringType.Module;
 
             // Save the arguments returned from the handler method
-            var getArguments = module.ImportMethod<IInvocationInfo>("get_Arguments");
+            MethodReference getArguments = module.ImportMethod<IInvocationInfo>("get_Arguments");
 
             IL.Emit(OpCodes.Ldloc, invocationInfo);
             IL.Emit(OpCodes.Callvirt, getArguments);
             IL.Emit(OpCodes.Stloc, arguments);
 
             int index = 0;
-            foreach (var param in parameters)
+            foreach (ParameterDefinition param in parameters)
             {
                 if (!param.IsByRef())
                 {
@@ -183,18 +200,10 @@ namespace LinFu.Proxy
                 if (referenceType == null)
                     continue;
 
-                var actualParameterType = referenceType.ElementType;
+                TypeReference actualParameterType = referenceType.ElementType;
                 IL.Emit(OpCodes.Unbox_Any, actualParameterType);
                 IL.Stind(param.ParameterType);
             }
-        }
-        /// <summary>
-        /// Initializes the MethodBodyEmitter class.
-        /// </summary>
-        /// <param name="source"></param>
-        public void Initialize(IServiceContainer source)
-        {
-            InvocationInfoEmitter = (IEmitInvocationInfo)source.GetService(typeof(IEmitInvocationInfo));
         }
     }
 }

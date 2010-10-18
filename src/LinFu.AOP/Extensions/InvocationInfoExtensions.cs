@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+﻿using System.Reflection;
 using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using Mono.Cecil;
@@ -24,10 +20,11 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="method">The method whose implementation will be intercepted.</param>
         /// <param name="targetMethod">The actual method that will contain the resulting instructions.</param>
         /// <param name="invocationInfo">The <see cref="VariableDefinition">local variable</see> that will store the current <see cref="IInvocationInfo"/> instance.</param>
-        public static void Emit(this IEmitInvocationInfo emitter, MethodInfo method, MethodDefinition targetMethod, VariableDefinition invocationInfo)
+        public static void Emit(this IEmitInvocationInfo emitter, MethodInfo method, MethodDefinition targetMethod,
+                                VariableDefinition invocationInfo)
         {
-            var module = targetMethod.DeclaringType.Module;
-            var interceptedMethod = module.Import(method);
+            ModuleDefinition module = targetMethod.DeclaringType.Module;
+            MethodReference interceptedMethod = module.Import(method);
             emitter.Emit(targetMethod, interceptedMethod, invocationInfo);
         }
 
@@ -41,9 +38,9 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <returns>The return value of the method call.</returns>
         public static object Proceed(this IInvocationInfo info)
         {
-            var targetMethod = info.TargetMethod;
-            var target = info.Target;
-            var arguments = info.Arguments;
+            MethodBase targetMethod = info.TargetMethod;
+            object target = info.Target;
+            object[] arguments = info.Arguments;
 
             return targetMethod.Invoke(target, arguments);
         }
@@ -59,8 +56,8 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <returns>The return value of the method call.</returns>
         public static object Proceed(this IInvocationInfo info, object target)
         {
-            var targetMethod = info.TargetMethod;
-            var arguments = info.Arguments;
+            MethodBase targetMethod = info.TargetMethod;
+            object[] arguments = info.Arguments;
 
             return targetMethod.Invoke(target, arguments);
         }
@@ -78,7 +75,7 @@ namespace LinFu.AOP.Cecil.Extensions
         public static object Proceed(this IInvocationInfo info, object target,
                                      params object[] arguments)
         {
-            var targetMethod = info.TargetMethod;
+            MethodBase targetMethod = info.TargetMethod;
             return targetMethod.Invoke(target, arguments);
         }
     }

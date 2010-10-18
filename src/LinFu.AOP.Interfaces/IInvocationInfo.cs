@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace LinFu.AOP.Interfaces
 {
@@ -33,10 +30,7 @@ namespace LinFu.AOP.Interfaces
         /// The <see cref="StackTrace"/> associated
         /// with the method call when the call was made.
         /// </summary>
-        StackTrace StackTrace
-        {
-            get;
-        }
+        StackTrace StackTrace { get; }
 
         /// <summary>
         /// The parameter types for the current target method.

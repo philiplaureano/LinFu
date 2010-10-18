@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using LinFu.AOP.Interfaces;
 using LinFu.IoC.Configuration.Interfaces;
 
@@ -12,7 +9,7 @@ namespace LinFu.IoC.Interceptors
     /// An interceptor that intercepts <see cref="IInvocationInfo"/> instances
     /// and replaces the original target instance with a surrogate instance.
     /// </summary>
-    internal class InvocationInfoInterceptor : BaseInterceptor 
+    internal class InvocationInfoInterceptor : BaseInterceptor
     {
         private static readonly MethodInfo _targetMethod;
         private readonly Func<object> _getActualTarget;
@@ -20,7 +17,7 @@ namespace LinFu.IoC.Interceptors
 
         static InvocationInfoInterceptor()
         {
-            var targetProperty = typeof (IInvocationInfo).GetProperty("Target");
+            PropertyInfo targetProperty = typeof (IInvocationInfo).GetProperty("Target");
             _targetMethod = targetProperty.GetGetMethod();
         }
 
@@ -30,8 +27,8 @@ namespace LinFu.IoC.Interceptors
         /// <param name="getActualTarget">The <see cref="Func{TResult}"/> that will provide the target instance that will be used for the method invocation.</param>
         /// <param name="methodInvoke">The method invoker.</param>
         /// <param name="realInfo">The <see cref="IInvocationInfo"/> instance that describes the current execution context.</param>
-        internal InvocationInfoInterceptor(IInvocationInfo realInfo, Func<object> getActualTarget, 
-            IMethodInvoke<MethodInfo> methodInvoke) : base(methodInvoke)
+        internal InvocationInfoInterceptor(IInvocationInfo realInfo, Func<object> getActualTarget,
+                                           IMethodInvoke<MethodInfo> methodInvoke) : base(methodInvoke)
         {
             _getActualTarget = getActualTarget;
             _realInfo = realInfo;
@@ -39,13 +36,13 @@ namespace LinFu.IoC.Interceptors
 
         public override object Intercept(IInvocationInfo info)
         {
-            var targetMethod = info.TargetMethod;
+            MethodBase targetMethod = info.TargetMethod;
 
             // Intercept calls made only to the IInvocationInfo interface
-            if (targetMethod.DeclaringType  != typeof(IInvocationInfo) || targetMethod.Name != "get_Target")
+            if (targetMethod.DeclaringType != typeof (IInvocationInfo) || targetMethod.Name != "get_Target")
                 return base.Intercept(info);
 
-            var target = _getActualTarget();
+            object target = _getActualTarget();
 
             // Replace the proxy with the actual target           
             return target;

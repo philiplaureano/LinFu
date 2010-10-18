@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC
@@ -11,10 +8,10 @@ namespace LinFu.IoC
     /// </summary>
     internal class ServiceRequest : ServiceInfo, IServiceRequest
     {
+        private readonly IServiceContainer _container;
         private readonly object[] _proposedArguments;
         private readonly IFactory _proposedFactory;
-        private readonly IServiceContainer _container;
-        
+
         /// <summary>
         /// Initializes the <see cref="ServiceRequest"/> class.
         /// </summary>
@@ -24,7 +21,8 @@ namespace LinFu.IoC
         /// <param name="proposedFactory">The <see cref="IFactory"/> instance that will be used to handle the service request.</param>
         /// <param name="container">The host container.</param>
         internal ServiceRequest(string serviceName, Type serviceType,
-            object[] proposedArguments, IFactory proposedFactory, IServiceContainer container) : base(serviceName, serviceType)
+                                object[] proposedArguments, IFactory proposedFactory, IServiceContainer container)
+            : base(serviceName, serviceType)
         {
             _proposedArguments = proposedArguments;
             _proposedFactory = proposedFactory;
@@ -38,6 +36,8 @@ namespace LinFu.IoC
             // property
             ActualFactory = proposedFactory;
         }
+
+        #region IServiceRequest Members
 
         /// <summary>
         /// Gets the value indicating the original arguments that
@@ -69,20 +69,14 @@ namespace LinFu.IoC
         /// Gets or sets the value indicating the actual arguments that
         /// will be used for the service request.
         /// </summary>
-        public object[] ActualArguments
-        {
-            get; 
-            set;
-        }
+        public object[] ActualArguments { get; set; }
 
         /// <summary>
         /// Gets or sets the value indicating the actual <see cref="IFactory"/> instance
         /// that will be used to handle the service request.
         /// </summary>
-        public IFactory ActualFactory
-        {
-            get;
-            set;
-        }           
+        public IFactory ActualFactory { get; set; }
+
+        #endregion
     }
 }

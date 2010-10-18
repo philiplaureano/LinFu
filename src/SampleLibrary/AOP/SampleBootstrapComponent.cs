@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.AOP.Interfaces;
+﻿using LinFu.AOP.Interfaces;
 
 namespace SampleLibrary.AOP
 {
     public class SampleBootstrapComponent : IBootStrappedComponent
     {
-        public bool Called
-        {
-            get; private set;
-        }
+        public bool Called { get; private set; }
+
+        #region IBootStrappedComponent Members
 
         public void Initialize()
         {
             Called = true;
         }
+
+        #endregion
     }
 }

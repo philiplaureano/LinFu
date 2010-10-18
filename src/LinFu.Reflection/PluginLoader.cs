@@ -23,7 +23,7 @@ namespace LinFu.Reflection
         public override bool CanLoad(Type inputType)
         {
             return base.CanLoad(inputType) &&
-                   typeof(ILoaderPlugin<TTarget>).IsAssignableFrom(inputType);
+                   typeof (ILoaderPlugin<TTarget>).IsAssignableFrom(inputType);
         }
 
         /// <summary>
@@ -43,20 +43,20 @@ namespace LinFu.Reflection
             // Assign it to the target loader
             Action<ILoader<TTarget>> result =
                 loader =>
-                {
-                    // If possible, initialize the plugin
-                    // with the loader
-                    if (plugin is IInitialize<ILoader<TTarget>>)
                     {
-                        var target = plugin as IInitialize<ILoader<TTarget>>;
-                        target.Initialize(loader);
-                    }
+                        // If possible, initialize the plugin
+                        // with the loader
+                        if (plugin is IInitialize<ILoader<TTarget>>)
+                        {
+                            var target = plugin as IInitialize<ILoader<TTarget>>;
+                            target.Initialize(loader);
+                        }
 
-                    loader.Plugins.Add(plugin);
-                };
+                        loader.Plugins.Add(plugin);
+                    };
 
             // Package it into an array and return the result
-            return new[] { result };
+            return new[] {result};
         }
     }
 }

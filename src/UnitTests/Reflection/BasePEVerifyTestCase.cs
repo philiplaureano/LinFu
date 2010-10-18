@@ -21,11 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
 using System.IO;
 using NUnit.Framework;
-
 
 namespace LinFu.UnitTests.Reflection
 {
@@ -39,7 +36,7 @@ namespace LinFu.UnitTests.Reflection
             OnInit();
         }
 
-        [TearDown]     
+        [TearDown]
         public void Term()
         {
             OnTerm();
@@ -47,7 +44,7 @@ namespace LinFu.UnitTests.Reflection
             lock (_disposalList)
             {
                 // Delete the files tagged for removal
-                foreach(var file in _disposalList)
+                foreach (string file in _disposalList)
                 {
                     if (!File.Exists(file))
                         continue;
@@ -55,15 +52,15 @@ namespace LinFu.UnitTests.Reflection
                     File.Delete(file);
                 }
                 _disposalList.Clear();
-            }            
+            }
         }
 
         protected virtual void OnInit()
         {
         }
+
         protected virtual void OnTerm()
         {
-            
         }
 
         protected static void AutoDelete(string filename)
@@ -73,17 +70,18 @@ namespace LinFu.UnitTests.Reflection
 
             _disposalList.Add(filename);
         }
+
         protected void PEVerify(string assemblyLocation)
         {
             var pathKeys = new[]
-                           {
-                               "sdkDir",
-                               "x86SdkDir",
-                               "sdkDirUnderVista"
-                           };
+                               {
+                                   "sdkDir",
+                                   "x86SdkDir",
+                                   "sdkDirUnderVista"
+                               };
 
             var process = new Process();
-            var peVerifyLocation = string.Empty;
+            string peVerifyLocation = string.Empty;
 
 
             peVerifyLocation = GetPEVerifyLocation(pathKeys, peVerifyLocation);
@@ -102,10 +100,10 @@ namespace LinFu.UnitTests.Reflection
             process.StartInfo.CreateNoWindow = true;
             process.Start();
 
-            var processOutput = process.StandardOutput.ReadToEnd();
+            string processOutput = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
 
-            var result = string.Format("PEVerify Exit Code: {0}", process.ExitCode);
+            string result = string.Format("PEVerify Exit Code: {0}", process.ExitCode);
 
             Console.WriteLine(GetType().FullName + ": " + result);
 
@@ -118,10 +116,10 @@ namespace LinFu.UnitTests.Reflection
 
         private static string GetPEVerifyLocation(IEnumerable<string> pathKeys, string peVerifyLocation)
         {
-            foreach(var key in pathKeys)
+            foreach (string key in pathKeys)
             {
-                var directory = ConfigurationManager.AppSettings[key];
-                
+                string directory = ConfigurationManager.AppSettings[key];
+
                 if (string.IsNullOrEmpty(directory))
                     continue;
 

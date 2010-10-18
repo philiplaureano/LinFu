@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC.Configuration.Injectors
@@ -12,8 +9,8 @@ namespace LinFu.IoC.Configuration.Injectors
     /// </summary>
     public class CustomFactoryInjector : IPreProcessor
     {
-        private readonly Type _serviceType;
         private readonly IFactory _factory;
+        private readonly Type _serviceType;
 
         /// <summary>
         /// Initializes the class with the given service type and factory.
@@ -26,6 +23,8 @@ namespace LinFu.IoC.Configuration.Injectors
             _factory = factory;
         }
 
+        #region IPreProcessor Members
+
         /// <summary>
         /// Injects the given factory into the target container.
         /// </summary>
@@ -37,8 +36,8 @@ namespace LinFu.IoC.Configuration.Injectors
             if (request.ActualFactory != null)
                 return;
 
-            var serviceType = request.ServiceType;
-            
+            Type serviceType = request.ServiceType;
+
             // Skip any service requests for types that are generic type definitions
             if (serviceType.IsGenericTypeDefinition)
                 return;
@@ -55,5 +54,7 @@ namespace LinFu.IoC.Configuration.Injectors
             // Inject the custom factory itself            
             request.ActualFactory = _factory;
         }
+
+        #endregion
     }
 }

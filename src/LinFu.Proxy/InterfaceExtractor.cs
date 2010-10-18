@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.Proxy.Interfaces;
 using LinFu.IoC.Configuration;
+using LinFu.Proxy.Interfaces;
 
 namespace LinFu.Proxy
 {
@@ -11,9 +9,11 @@ namespace LinFu.Proxy
     /// Provides the default implementation for the 
     /// <see cref="IExtractInterfaces"/> interface.
     /// </summary>
-    [Implements(typeof(IExtractInterfaces), LifecycleType.OncePerRequest)]
+    [Implements(typeof (IExtractInterfaces), LifecycleType.OncePerRequest)]
     public class InterfaceExtractor : IExtractInterfaces
     {
+        #region IExtractInterfaces Members
+
         /// <summary>
         /// Determines which interfaces a given type should implement.
         /// </summary>
@@ -21,7 +21,7 @@ namespace LinFu.Proxy
         /// <param name="interfaceList">The list of interfaces already being implemented. </param>
         public void GetInterfaces(Type currentType, HashSet<Type> interfaceList)
         {
-            var interfaces = currentType.GetInterfaces();
+            Type[] interfaces = currentType.GetInterfaces();
             if (interfaces == null || interfaces.Length == 0)
                 return;
 
@@ -34,5 +34,7 @@ namespace LinFu.Proxy
                 GetInterfaces(current, interfaceList);
             }
         }
+
+        #endregion
     }
 }

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using LinFu.AOP.Cecil.Interfaces;
 using LinFu.Reflection;
 using LinFu.Reflection.Emit;
@@ -38,11 +36,22 @@ namespace LinFu.AOP.Cecil.Loaders
         /// <summary>
         /// Gets or sets the value indicating the <see cref="IPdbLoader"/> that will be used to load debug symbols into memory.
         /// </summary>
-        public IPdbLoader PdbLoader
+        public IPdbLoader PdbLoader { get; set; }
+
+        /// <summary>
+        /// Gets the value indicating the list of <see cref="Action{T}"/> delegates
+        /// that will be used to modify the assemblies loaded into memory.
+        /// </summary>
+        public virtual IList<Action<AssemblyDefinition>> AssemblyWeavers
         {
-            get;
-            set;
+            get { return _assemblyWeavers; }
         }
+
+        /// <summary>
+        /// Gets or sets the value indicating the <see cref="IVerifier"/>
+        /// instance that will be used to ensure that the modified assemblies are valid.
+        /// </summary>
+        public virtual IVerifier AssemblyVerifier { get; set; }
 
         /// <summary>
         /// Modifies a given assembly prior to being loaded from disk.
@@ -51,13 +60,13 @@ namespace LinFu.AOP.Cecil.Loaders
         /// <returns>A valid assembly.</returns>
         public override Assembly Load(string assemblyFile)
         {
-            var targetAssembly = AssemblyFactory.GetAssembly(assemblyFile);
+            AssemblyDefinition targetAssembly = AssemblyFactory.GetAssembly(assemblyFile);
 
             // Strongly-named assemblies cannot be modified
             if (targetAssembly.Name.HasPublicKey)
                 return base.Load(assemblyFile);
 
-            var assemblyFileName = Path.GetFileNameWithoutExtension(assemblyFile);
+            string assemblyFileName = Path.GetFileNameWithoutExtension(assemblyFile);
 
             string pdbFile = string.Format("{0}.pdb", assemblyFileName);
             bool hasSymbols = File.Exists(pdbFile);
@@ -87,28 +96,9 @@ namespace LinFu.AOP.Cecil.Loaders
             if (PdbLoader == null || !hasSymbols)
                 return targetAssembly.ToAssembly();
 
-            var pdbBytes = File.ReadAllBytes(pdbFile);
+            byte[] pdbBytes = File.ReadAllBytes(pdbFile);
 
             return PdbLoader.LoadAssembly(memoryStream.ToArray(), pdbBytes);
-        }
-
-        /// <summary>
-        /// Gets the value indicating the list of <see cref="Action{T}"/> delegates
-        /// that will be used to modify the assemblies loaded into memory.
-        /// </summary>
-        public virtual IList<Action<AssemblyDefinition>> AssemblyWeavers
-        {
-            get { return _assemblyWeavers; }
-        }
-
-        /// <summary>
-        /// Gets or sets the value indicating the <see cref="IVerifier"/>
-        /// instance that will be used to ensure that the modified assemblies are valid.
-        /// </summary>
-        public virtual IVerifier AssemblyVerifier
-        {
-            get;
-            set;
         }
     }
 }

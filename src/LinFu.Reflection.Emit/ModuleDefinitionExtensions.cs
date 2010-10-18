@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Mono.Cecil;
-using Mono.Cecil.Cil;
-using MethodAttributes=Mono.Cecil.MethodAttributes;
-using MethodImplAttributes=Mono.Cecil.MethodImplAttributes;
-using TypeAttributes=Mono.Cecil.TypeAttributes;
+using TypeAttributes = Mono.Cecil.TypeAttributes;
 
 namespace LinFu.Reflection.Emit
 {
@@ -27,16 +22,16 @@ namespace LinFu.Reflection.Emit
         /// <param name="baseType">The base class of the new type.</param>
         /// <returns>A <see cref="TypeDefinition"/> representing the new class being created.</returns>
         public static TypeDefinition DefineClass(this ModuleDefinition mainModule,
-            string typeName, string namespaceName, TypeAttributes attributes,
-            TypeReference baseType)
+                                                 string typeName, string namespaceName, TypeAttributes attributes,
+                                                 TypeReference baseType)
         {
             var resultType = new TypeDefinition(typeName, namespaceName,
-                                               attributes, baseType);
+                                                attributes, baseType);
 
             mainModule.Types.Add(resultType);
             return resultType;
         }
-        
+
         /// <summary>
         /// Imports a constructor with the given <paramref name="constructorParameters"/>
         /// into the target <paramref name="module"/>.
@@ -45,9 +40,10 @@ namespace LinFu.Reflection.Emit
         /// <param name="module">The <see cref="ModuleDefinition"/> that will import the target constructor.</param>
         /// <param name="constructorParameters">The list of <see cref="System.Type"/> objects that describe the signature of the constructor.</param>
         /// <returns>A <see cref="MethodReference"/> that represents the constructor itself.</returns>
-        public static MethodReference ImportConstructor<T>(this ModuleDefinition module, params Type[] constructorParameters)
+        public static MethodReference ImportConstructor<T>(this ModuleDefinition module,
+                                                           params Type[] constructorParameters)
         {
-            return module.Import(typeof(T).GetConstructor(constructorParameters));
+            return module.Import(typeof (T).GetConstructor(constructorParameters));
         }
 
         /// <summary>
@@ -72,7 +68,8 @@ namespace LinFu.Reflection.Emit
         /// <param name="declaringType">The <see cref="System.Type"/> instance that holds the target method.</param>
         /// <param name="flags">The <see cref="BindingFlags"/> that describes the visibility and behavior of the target method.</param>
         /// <returns>A <see cref="MethodReference"/> that represents the method being imported.</returns>
-        public static MethodReference ImportMethod(this ModuleDefinition module, string methodName, Type declaringType, BindingFlags flags)
+        public static MethodReference ImportMethod(this ModuleDefinition module, string methodName, Type declaringType,
+                                                   BindingFlags flags)
         {
             return module.Import(declaringType.GetMethod(methodName, flags));
         }
@@ -87,7 +84,7 @@ namespace LinFu.Reflection.Emit
         /// <returns>A <see cref="MethodReference"/> that represents the method being imported.</returns>
         public static MethodReference ImportMethod<T>(this ModuleDefinition module, string methodName)
         {
-            return module.Import(typeof(T).GetMethod(methodName));
+            return module.Import(typeof (T).GetMethod(methodName));
         }
 
         /// <summary>
@@ -99,9 +96,10 @@ namespace LinFu.Reflection.Emit
         /// <param name="module">The <see cref="ModuleDefinition"/> instance that will import the actual method.</param>
         /// <param name="methodName">The name of the method being imported.</param>
         /// <returns>A <see cref="MethodReference"/> that represents the method being imported.</returns>
-        public static MethodReference ImportMethod<T>(this ModuleDefinition module, string methodName, params Type[] parameterTypes)
+        public static MethodReference ImportMethod<T>(this ModuleDefinition module, string methodName,
+                                                      params Type[] parameterTypes)
         {
-            return module.Import(typeof(T).GetMethod(methodName, parameterTypes));
+            return module.Import(typeof (T).GetMethod(methodName, parameterTypes));
         }
 
         /// <summary>
@@ -114,9 +112,9 @@ namespace LinFu.Reflection.Emit
         /// <param name="flags">The <see cref="BindingFlags"/> that describes the visibility and behavior of the target method.</param>
         /// <returns>A <see cref="MethodReference"/> that represents the method being imported.</returns>
         public static MethodReference ImportMethod<T>(this ModuleDefinition module,
-            string methodName, BindingFlags flags)
+                                                      string methodName, BindingFlags flags)
         {
-            return module.Import(typeof(T).GetMethod(methodName, flags));
+            return module.Import(typeof (T).GetMethod(methodName, flags));
         }
 
         /// <summary>
@@ -128,7 +126,7 @@ namespace LinFu.Reflection.Emit
         /// <returns>A <see cref="TypeReference"/> instance that represents the imported type.</returns>
         public static TypeReference ImportType<T>(this ModuleDefinition module)
         {
-            return module.Import(typeof(T));
+            return module.Import(typeof (T));
         }
 
         /// <summary>
@@ -152,8 +150,8 @@ namespace LinFu.Reflection.Emit
         public static TypeDefinition GetType(this ModuleDefinition module, string typeName)
         {
             TypeDefinition result = (from TypeDefinition t in module.Types
-                          where t.Name == typeName
-                          select t).FirstOrDefault();
+                                     where t.Name == typeName
+                                     select t).FirstOrDefault();
 
             return result;
         }

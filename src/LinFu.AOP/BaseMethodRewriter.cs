@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -15,10 +12,7 @@ namespace LinFu.AOP.Cecil
     {
         private readonly HashSet<TypeDefinition> _modifiedTypes = new HashSet<TypeDefinition>();
 
-        /// <summary>
-        /// Initializes a new instance of the MethodRewriter class.
-        /// </summary>
-        protected BaseMethodRewriter() { }
+        #region IMethodRewriter Members
 
         /// <summary>
         /// Rewrites a target method using the given CilWorker.
@@ -31,12 +25,12 @@ namespace LinFu.AOP.Cecil
             if (!ShouldRewrite(method))
                 return;
 
-            var declaringType = method.DeclaringType;
+            TypeDefinition declaringType = method.DeclaringType;
 
-            var body = IL.GetBody();
+            MethodBody body = IL.GetBody();
             body.InitLocals = true;
 
-            var module = declaringType.Module;
+            ModuleDefinition module = declaringType.Module;
 
             // Interfaces and Enums cannot be modified
             if (declaringType.IsInterface || declaringType.IsEnum)
@@ -54,24 +48,6 @@ namespace LinFu.AOP.Cecil
 
             RewriteMethodBody(method, IL, oldInstructions);
         }
-
-        /// <summary>
-        /// Determines whether or not the given method should be modified.
-        /// </summary>
-        /// <param name="targetMethod">The target method.</param>
-        /// <returns>A <see cref="bool"/> indicating whether or not a method should be rewritten.</returns>
-        protected virtual bool ShouldRewrite(MethodDefinition targetMethod)
-        {
-            return true;
-        }
-
-        /// <summary>
-        /// Rewrites the instructions in the target method body.
-        /// </summary>
-        /// <param name="method">The target method.</param>
-        /// <param name="IL">The <see cref="CilWorker"/> instance that represents the method body.</param>
-        /// <param name="oldInstructions">The IL instructions of the original method body.</param>
-        protected abstract void RewriteMethodBody(MethodDefinition method, CilWorker IL, IEnumerable<Instruction> oldInstructions);
 
 
         /// <summary>
@@ -97,5 +73,26 @@ namespace LinFu.AOP.Cecil
         public virtual void AddLocals(MethodDefinition hostMethod)
         {
         }
+
+        #endregion
+
+        /// <summary>
+        /// Determines whether or not the given method should be modified.
+        /// </summary>
+        /// <param name="targetMethod">The target method.</param>
+        /// <returns>A <see cref="bool"/> indicating whether or not a method should be rewritten.</returns>
+        protected virtual bool ShouldRewrite(MethodDefinition targetMethod)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Rewrites the instructions in the target method body.
+        /// </summary>
+        /// <param name="method">The target method.</param>
+        /// <param name="IL">The <see cref="CilWorker"/> instance that represents the method body.</param>
+        /// <param name="oldInstructions">The IL instructions of the original method body.</param>
+        protected abstract void RewriteMethodBody(MethodDefinition method, CilWorker IL,
+                                                  IEnumerable<Instruction> oldInstructions);
     }
 }

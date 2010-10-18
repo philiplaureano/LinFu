@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace LinFu.AOP.Interfaces
 {
@@ -17,11 +14,13 @@ namespace LinFu.AOP.Interfaces
         /// <param name="targetType">The type to be created.</param>
         /// <param name="constructorArguments">The arguments that will be passed to the constructor.</param>
         /// <returns>An object reference that matches the given <paramref name="targetType"/>.</returns>
-        public static object CreateInstance(this IActivator<IActivationContext> activator, Type targetType, object[] constructorArguments)
+        public static object CreateInstance(this IActivator<IActivationContext> activator, Type targetType,
+                                            object[] constructorArguments)
         {
             var context = new ActivationContext(targetType, constructorArguments);
             return activator.CreateInstance(context);
         }
+
         /// <summary>
         /// Instantiates the <paramref name="targetType"/> with the given <paramref name="activator"/> and <paramref name="constructorArguments"/>.
         /// </summary>
@@ -31,7 +30,7 @@ namespace LinFu.AOP.Interfaces
         /// <returns>An object reference that matches the given <paramref name="targetType"/>.</returns>
         public static T CreateInstance<T>(this IActivator<IActivationContext> activator, object[] constructorArguments)
         {
-            return (T)activator.CreateInstance(typeof(T), constructorArguments);
+            return (T) activator.CreateInstance(typeof (T), constructorArguments);
         }
     }
 }

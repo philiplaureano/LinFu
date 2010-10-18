@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.AOP.Interfaces;
 
 namespace LinFu.AOP.Interfaces
 {
@@ -11,8 +7,8 @@ namespace LinFu.AOP.Interfaces
     /// </summary>
     public class ActivationContext : IActivationContext
     {
-        private readonly Type _concreteType;
         private readonly object[] _additionalArguments;
+        private readonly Type _concreteType;
 
         /// <summary>
         /// Initializes the context with the given parameters.
@@ -24,6 +20,8 @@ namespace LinFu.AOP.Interfaces
             _concreteType = concreteType;
             _additionalArguments = additionalArguments;
         }
+
+        #region IActivationContext Members
 
         /// <summary>
         /// Gets the value indicating the type to be instantiated.
@@ -40,5 +38,7 @@ namespace LinFu.AOP.Interfaces
         {
             get { return _additionalArguments; }
         }
+
+        #endregion
     }
 }

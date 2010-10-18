@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
-using System.Text;
 using LinFu.IoC;
 using LinFu.IoC.Configuration;
 using LinFu.IoC.Configuration.Interfaces;
@@ -20,10 +17,11 @@ namespace LinFu.UnitTests.Finders
             var container = new ServiceContainer();
             container.LoadFromBaseDirectory("*.dll");
 
-            var context = new MethodFinderContext(new Type[]{typeof(object)}, new object[0], typeof(void));
-            var methods = typeof(SampleClassWithGenericMethod).GetMethods(BindingFlags.Public | BindingFlags.Instance);
+            var context = new MethodFinderContext(new[] {typeof (object)}, new object[0], typeof (void));
+            MethodInfo[] methods =
+                typeof (SampleClassWithGenericMethod).GetMethods(BindingFlags.Public | BindingFlags.Instance);
             var finder = container.GetService<IMethodFinder<MethodInfo>>();
-            var result = finder.GetBestMatch(methods, context);
+            MethodInfo result = finder.GetBestMatch(methods, context);
 
             Assert.IsTrue(result.IsGenericMethod);
             Assert.IsTrue(result.GetGenericArguments().Count() == 1);

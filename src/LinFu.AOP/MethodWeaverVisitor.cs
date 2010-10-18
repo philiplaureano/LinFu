@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.AOP.Cecil.Interfaces;
+﻿using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil;
 
 namespace LinFu.AOP.Cecil
@@ -11,7 +7,7 @@ namespace LinFu.AOP.Cecil
     /// Represents a visitor class that can iterate over <see cref="MethodDefinition"/>
     /// instances.
     /// </summary>
-    public class MethodWeaverVisitor : LinFu.AOP.Cecil.BaseReflectionVisitor
+    public class MethodWeaverVisitor : BaseReflectionVisitor
     {
         private readonly IMethodWeaver _methodWeaver;
 

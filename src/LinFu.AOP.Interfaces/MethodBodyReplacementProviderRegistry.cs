@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace LinFu.AOP.Interfaces
+﻿namespace LinFu.AOP.Interfaces
 {
     /// <summary>
     /// Represents a static type that allows users to register a method replacement provider from a single location.

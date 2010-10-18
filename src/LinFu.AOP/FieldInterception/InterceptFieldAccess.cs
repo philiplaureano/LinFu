@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Reflection;
 using LinFu.AOP.Cecil.Interfaces;
-using Mono.Cecil.Cil;
-using Mono.Cecil;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
-using System.Reflection;
+using Mono.Cecil;
+using Mono.Cecil.Cil;
 
 namespace LinFu.AOP.Cecil
 {
@@ -18,20 +16,18 @@ namespace LinFu.AOP.Cecil
     internal class InterceptFieldAccess : InstructionSwapper
     {
         private static readonly HashSet<OpCode> _fieldInstructions = new HashSet<OpCode>();
-        private TypeReference _fieldInterceptionHostType;
+        private readonly IFieldFilter _filter;
+        private MethodReference _canIntercept;
+        private VariableDefinition _currentArgument;
+        private VariableDefinition _fieldContext;
 
         private MethodReference _fieldContextCtor;
-        private MethodReference _getInterceptor;
+        private TypeReference _fieldInterceptionHostType;
+        private VariableDefinition _fieldInterceptor;
         private MethodReference _getInstanceInterceptor;
-        private MethodReference _canIntercept;
+        private MethodReference _getInterceptor;
         private MethodReference _getValue;
         private MethodReference _setValue;
-
-        private VariableDefinition _fieldContext;
-        private VariableDefinition _fieldInterceptor;
-        private VariableDefinition _currentArgument;
-
-        private readonly IFieldFilter _filter;
 
         static InterceptFieldAccess()
         {
@@ -76,12 +72,13 @@ namespace LinFu.AOP.Cecil
         /// <param name="module">The module that will be modified.</param>
         public override void ImportReferences(ModuleDefinition module)
         {
-            var parameterTypes = new Type[] { typeof(object), typeof(MethodBase), typeof(FieldInfo), typeof(Type) };
-            
+            var parameterTypes = new[] {typeof (object), typeof (MethodBase), typeof (FieldInfo), typeof (Type)};
+
             _fieldInterceptionHostType = module.ImportType<IFieldInterceptionHost>();
 
             _fieldContextCtor = module.ImportConstructor<FieldInterceptionContext>(parameterTypes);
-            module.ImportMethod<FieldInfo>("GetFieldFromHandle", new Type[] { typeof(RuntimeFieldHandle), typeof(RuntimeTypeHandle) });
+            module.ImportMethod<FieldInfo>("GetFieldFromHandle",
+                                           new[] {typeof (RuntimeFieldHandle), typeof (RuntimeTypeHandle)});
             module.ImportMethod<object>("GetType");
             _getInterceptor = module.ImportMethod<FieldInterceptorRegistry>("GetInterceptor");
             _getInstanceInterceptor = module.ImportMethod<IFieldInterceptionHost>("get_FieldInterceptor");
@@ -104,7 +101,7 @@ namespace LinFu.AOP.Cecil
                 return false;
 
             // Match the field filter
-            var targetField = (FieldReference)oldInstruction.Operand;
+            var targetField = (FieldReference) oldInstruction.Operand;
 
             return _filter.ShouldWeave(hostMethod, targetField);
         }
@@ -117,9 +114,9 @@ namespace LinFu.AOP.Cecil
         /// <param name="IL">The CilWorker that will be used to emit the method body instructions.</param>
         protected override void Replace(Instruction oldInstruction, MethodDefinition hostMethod, CilWorker IL)
         {
-            var targetField = (FieldReference)oldInstruction.Operand;
-            var fieldType = targetField.FieldType;
-            var isSetter = oldInstruction.OpCode == OpCodes.Stsfld || oldInstruction.OpCode == OpCodes.Stfld;
+            var targetField = (FieldReference) oldInstruction.Operand;
+            TypeReference fieldType = targetField.FieldType;
+            bool isSetter = oldInstruction.OpCode == OpCodes.Stsfld || oldInstruction.OpCode == OpCodes.Stfld;
 
             if (isSetter)
             {
@@ -137,7 +134,7 @@ namespace LinFu.AOP.Cecil
                 IL.Emit((OpCodes.Ldnull));
 
             // Push the current method
-            var module = hostMethod.DeclaringType.Module;
+            ModuleDefinition module = hostMethod.DeclaringType.Module;
 
             // Push the current method onto the stack
             IL.PushMethod(hostMethod, module);
@@ -152,7 +149,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Newobj, _fieldContextCtor);
             IL.Emit(OpCodes.Stloc, _fieldContext);
 
-            var skipInterception = IL.Create(OpCodes.Nop);
+            Instruction skipInterception = IL.Create(OpCodes.Nop);
             // Obtain an interceptor instance
             if (hostMethod.IsStatic)
             {
@@ -181,9 +178,9 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Callvirt, _canIntercept);
             IL.Emit(OpCodes.Brfalse, skipInterception);
 
-            var isGetter = oldInstruction.OpCode == OpCodes.Ldsfld || oldInstruction.OpCode == OpCodes.Ldfld;
+            bool isGetter = oldInstruction.OpCode == OpCodes.Ldsfld || oldInstruction.OpCode == OpCodes.Ldfld;
 
-            var endLabel = IL.Create(OpCodes.Nop);
+            Instruction endLabel = IL.Create(OpCodes.Nop);
 
             //Call the interceptor instead of the getter or setter
             if (isGetter)

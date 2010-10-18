@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.IoC.Interfaces;
+﻿using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC
 {
@@ -22,6 +18,8 @@ namespace LinFu.IoC
             _instance = instance;
         }
 
+        #region ICreateInstance Members
+
         /// <summary>
         /// Returns the object instance that given when the <see cref="CreatorFromInstance"/> class instance was initialized.
         /// </summary>
@@ -32,5 +30,7 @@ namespace LinFu.IoC
         {
             return _instance;
         }
+
+        #endregion
     }
 }

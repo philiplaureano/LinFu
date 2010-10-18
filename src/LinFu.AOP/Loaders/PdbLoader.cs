@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Reflection;
 using LinFu.AOP.Cecil.Interfaces;
-using System.Reflection;
 using Mono.Cecil;
-using System.IO;
 
 namespace LinFu.AOP.Cecil.Loaders
 {
@@ -14,6 +9,8 @@ namespace LinFu.AOP.Cecil.Loaders
     /// </summary>
     public class PdbLoader : IPdbLoader
     {
+        #region IPdbLoader Members
+
         /// <summary>
         /// Loads an assembly into memory.
         /// </summary>
@@ -35,7 +32,7 @@ namespace LinFu.AOP.Cecil.Loaders
         /// <param name="assembly">The assembly that contains the symbols to be loaded.</param>
         public void LoadSymbols(AssemblyDefinition assembly)
         {
-            var mainModule = assembly.MainModule;
+            ModuleDefinition mainModule = assembly.MainModule;
             mainModule.LoadSymbols();
         }
 
@@ -48,5 +45,7 @@ namespace LinFu.AOP.Cecil.Loaders
             // Update the debug symbols
             targetAssembly.MainModule.SaveSymbols();
         }
+
+        #endregion
     }
 }

@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil;
 
@@ -55,9 +52,10 @@ namespace LinFu.AOP.Cecil.Extensions
         /// </summary>
         /// <param name="target">The target to be modified.</param>
         /// <param name="methodFilter">The method filter that will determine the methods that will be modified.</param>
-        public static void InterceptMethodBody(this IReflectionStructureVisitable target, Func<MethodReference, bool> methodFilter)
+        public static void InterceptMethodBody(this IReflectionStructureVisitable target,
+                                               Func<MethodReference, bool> methodFilter)
         {
-            var typeFilter = GetTypeFilter();
+            Func<TypeReference, bool> typeFilter = GetTypeFilter();
             target.Accept(new ImplementModifiableType(typeFilter));
 
             var interceptMethodBody = new InterceptMethodBody(methodFilter);
@@ -69,11 +67,12 @@ namespace LinFu.AOP.Cecil.Extensions
         /// </summary>
         /// <param name="target">The target to be modified.</param>
         /// <param name="methodFilter">The method filter that will determine the methods that will be modified.</param>
-        public static void InterceptMethodBody(this IReflectionVisitable target, Func<MethodReference, bool> methodFilter)
+        public static void InterceptMethodBody(this IReflectionVisitable target,
+                                               Func<MethodReference, bool> methodFilter)
         {
-            var typeFilter = GetTypeFilter();
+            Func<TypeReference, bool> typeFilter = GetTypeFilter();
             target.Accept(new ImplementModifiableType(typeFilter));
-            
+
             var interceptMethodBody = new InterceptMethodBody(methodFilter);
             target.WeaveWith(interceptMethodBody, methodFilter);
         }
@@ -82,7 +81,7 @@ namespace LinFu.AOP.Cecil.Extensions
         {
             return type =>
                        {
-                           var actualType = type.Resolve();
+                           TypeDefinition actualType = type.Resolve();
                            if (actualType.IsValueType || actualType.IsInterface)
                                return false;
 

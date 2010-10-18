@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.IoC.Configuration.Interfaces;
 using System.Reflection;
+using LinFu.IoC.Configuration.Interfaces;
 
 namespace LinFu.IoC.Configuration.Injectors
 {
@@ -14,6 +12,8 @@ namespace LinFu.IoC.Configuration.Injectors
     public class NullMemberInjectionFilter<TMember> : IMemberInjectionFilter<TMember>
         where TMember : MemberInfo
     {
+        #region IMemberInjectionFilter<TMember> Members
+
         /// <summary>
         /// Always returns an empty list of injectable members.
         /// </summary>
@@ -23,5 +23,7 @@ namespace LinFu.IoC.Configuration.Injectors
         {
             return new TMember[0];
         }
+
+        #endregion
     }
 }

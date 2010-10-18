@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace LinFu.Reflection
 {
@@ -20,9 +19,9 @@ namespace LinFu.Reflection
         /// <returns>Returns <c>true</c> if at least one match is found; otherwise, it will return <c>false</c>.</returns>
         public static bool HasElementWith<T>(this IEnumerable<T> items, Func<T, bool> predicate)
         {
-            var matches = from item in items
-                          where predicate(item)
-                          select item;
+            IEnumerable<T> matches = from item in items
+                                     where predicate(item)
+                                     select item;
 
             return matches.Count() > 0;
         }

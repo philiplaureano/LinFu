@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil;
 
@@ -11,10 +8,10 @@ namespace LinFu.AOP.Cecil
     /// Represents a visitor class that can iterate over <see cref="TypeDefinition"/>
     /// instances.
     /// </summary>
-    public class TypeWeaverVisitor : LinFu.AOP.Cecil.BaseReflectionVisitor
+    public class TypeWeaverVisitor : BaseReflectionVisitor
     {
-        private ITypeWeaver _weaver;
-        private HashSet<ModuleDefinition> _visitedModules = new HashSet<ModuleDefinition>();
+        private readonly HashSet<ModuleDefinition> _visitedModules = new HashSet<ModuleDefinition>();
+        private readonly ITypeWeaver _weaver;
 
         /// <summary>
         /// Initializes a new instance of the TypeWeaverVisitor class.
@@ -37,7 +34,7 @@ namespace LinFu.AOP.Cecil
             if (!_weaver.ShouldWeave(type))
                 return;
 
-            var module = type.Module;
+            ModuleDefinition module = type.Module;
             if (!_visitedModules.Contains(module))
             {
                 _weaver.ImportReferences(module);

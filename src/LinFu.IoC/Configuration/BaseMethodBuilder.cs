@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
 using LinFu.IoC.Configuration.Interfaces;
 
 namespace LinFu.IoC.Configuration
@@ -15,6 +14,8 @@ namespace LinFu.IoC.Configuration
     public abstract class BaseMethodBuilder<TMethod> : IMethodBuilder<TMethod>
         where TMethod : MethodBase
     {
+        #region IMethodBuilder<TMethod> Members
+
         /// <summary>
         /// Creates a method from the <paramref name="existingMethod"/>.
         /// </summary>
@@ -22,17 +23,17 @@ namespace LinFu.IoC.Configuration
         /// <returns>A method based on the old method.</returns>
         public MethodBase CreateMethod(TMethod existingMethod)
         {
-            var returnType = GetReturnType(existingMethod);
-            var parameterTypes = (from p in existingMethod.GetParameters()
-                                  select p.ParameterType).ToArray();
+            Type returnType = GetReturnType(existingMethod);
+            Type[] parameterTypes = (from p in existingMethod.GetParameters()
+                                     select p.ParameterType).ToArray();
 
             // Determine the method signature
             IList<Type> parameterList = GetParameterList(existingMethod, parameterTypes);
 
-            var declaringType = existingMethod.DeclaringType;
-            var module = declaringType.Module;
+            Type declaringType = existingMethod.DeclaringType;
+            Module module = declaringType.Module;
             var dynamicMethod = new DynamicMethod(string.Empty, returnType, parameterList.ToArray(), module);
-            var IL = dynamicMethod.GetILGenerator();
+            ILGenerator IL = dynamicMethod.GetILGenerator();
 
             // Push the target instance, if necessary
             PushInstance(IL, existingMethod);
@@ -49,6 +50,8 @@ namespace LinFu.IoC.Configuration
             return dynamicMethod;
         }
 
+        #endregion
+
         /// <summary>
         /// Pushes the method arguments onto the stack.
         /// </summary>
@@ -56,12 +59,12 @@ namespace LinFu.IoC.Configuration
         /// <param name="targetMethod">The target method that will be invoked.</param>
         protected virtual void PushMethodArguments(ILGenerator IL, MethodBase targetMethod)
         {
-            var parameterTypes = (from p in targetMethod.GetParameters()
-                                  select p.ParameterType).ToArray();
+            Type[] parameterTypes = (from p in targetMethod.GetParameters()
+                                     select p.ParameterType).ToArray();
 
             // Push the method arguments onto the stack
-            var parameterCount = parameterTypes.Length;
-            for (var index = 0; index < parameterCount; index++)
+            int parameterCount = parameterTypes.Length;
+            for (int index = 0; index < parameterCount; index++)
             {
                 IL.Emit(OpCodes.Ldarg, index);
             }
@@ -74,7 +77,7 @@ namespace LinFu.IoC.Configuration
         /// <param name="parameterTypes">The target method argument types.</param>
         /// <returns>The list of <see cref="System.Type"/> objects that describe the signature of the method to generate.</returns>
         protected virtual IList<Type> GetParameterList(TMethod existingMethod, Type[] parameterTypes)
-        {            
+        {
             return new List<Type>(parameterTypes);
         }
 

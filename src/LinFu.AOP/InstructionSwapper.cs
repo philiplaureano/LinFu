@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -14,20 +11,16 @@ namespace LinFu.AOP.Cecil
     public abstract class InstructionSwapper : BaseMethodRewriter
     {
         /// <summary>
-        /// Initializes a new instance of the MethodRewriter class.
-        /// </summary>
-        protected InstructionSwapper() { }
-
-        /// <summary>
         /// Rewrites the instructions in the target method body.
         /// </summary>
         /// <param name="method">The target method.</param>
         /// <param name="IL">The <see cref="CilWorker"/> instance that represents the method body.</param>
         /// <param name="oldInstructions">The IL instructions of the original method body.</param>
-        protected override void RewriteMethodBody(MethodDefinition method, CilWorker IL, IEnumerable<Instruction> oldInstructions)
+        protected override void RewriteMethodBody(MethodDefinition method, CilWorker IL,
+                                                  IEnumerable<Instruction> oldInstructions)
         {
             var newInstructions = new Queue<Instruction>();
-            foreach (var instruction in oldInstructions)
+            foreach (Instruction instruction in oldInstructions)
             {
                 if (!ShouldReplace(instruction, method))
                 {
@@ -37,7 +30,7 @@ namespace LinFu.AOP.Cecil
 
                 Replace(instruction, method, IL);
             }
-        }        
+        }
 
         /// <summary>
         /// Determines whether or not the method rewriter should replace the <paramref name="oldInstruction"/>.

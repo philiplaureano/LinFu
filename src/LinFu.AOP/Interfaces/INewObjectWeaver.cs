@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Mono.Cecil;
+﻿using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 namespace LinFu.AOP.Cecil.Interfaces
@@ -37,6 +33,7 @@ namespace LinFu.AOP.Cecil.Interfaces
         /// <param name="IL">The CilWorker that will be used to replace the existing instructions in the method body.</param>
         /// <param name="targetConstructor">The constructor that is currently being used to instantiate the concrete type.</param>
         /// <param name="concreteType">The <see cref="System.Type"/> that describes the object type that needs to be instantiated.</param>
-        void EmitNewObject(MethodDefinition hostMethod, CilWorker IL, MethodReference targetConstructor, TypeReference concreteType);
+        void EmitNewObject(MethodDefinition hostMethod, CilWorker IL, MethodReference targetConstructor,
+                           TypeReference concreteType);
     }
 }

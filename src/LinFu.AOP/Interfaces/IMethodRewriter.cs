@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
+﻿using Mono.Cecil;
 
 namespace LinFu.AOP.Cecil.Interfaces
 {
@@ -16,6 +11,6 @@ namespace LinFu.AOP.Cecil.Interfaces
         /// Adds local variables to the <paramref name="hostMethod"/>.
         /// </summary>
         /// <param name="hostMethod">The target method.</param>
-        void AddLocals(MethodDefinition hostMethod);        
+        void AddLocals(MethodDefinition hostMethod);
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
+﻿using Mono.Cecil;
 
 namespace LinFu.AOP.Cecil
 {
@@ -18,7 +13,7 @@ namespace LinFu.AOP.Cecil
         /// <param name="sourceAssembly"></param>
         public static void RemoveStrongName(this AssemblyDefinition sourceAssembly)
         {
-            var nameDef = sourceAssembly.Name;
+            AssemblyNameDefinition nameDef = sourceAssembly.Name;
 
             // Remove the strong name
             nameDef.PublicKey = null;

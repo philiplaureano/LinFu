@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.Reflection;
 
 namespace LinFu.AOP.Interfaces
@@ -23,10 +21,7 @@ namespace LinFu.AOP.Interfaces
         /// </summary>
         public static BootStrapRegistry Instance
         {
-            get
-            {
-                return NestedLoader.Instance;
-            }
+            get { return NestedLoader.Instance; }
         }
 
         /// <summary>
@@ -37,7 +32,7 @@ namespace LinFu.AOP.Interfaces
             lock (_components)
             {
                 _components.LoadFrom(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
-                foreach (var component in _components)
+                foreach (IBootStrappedComponent component in _components)
                 {
                     try
                     {
@@ -45,10 +40,10 @@ namespace LinFu.AOP.Interfaces
                     }
                     catch (Exception ex)
                     {
-
-                        var componentName = component != null ? component.GetType().Name : "(unknown)";
-                        var message = string.Format("{0} Error: Unable to load component '{1}' - {2}", GetType().FullName,
-                                                    componentName, ex.ToString());
+                        string componentName = component != null ? component.GetType().Name : "(unknown)";
+                        string message = string.Format("{0} Error: Unable to load component '{1}' - {2}",
+                                                       GetType().FullName,
+                                                       componentName, ex);
 
                         throw new BootstrapException(message, ex);
                     }
@@ -65,6 +60,8 @@ namespace LinFu.AOP.Interfaces
             return _components;
         }
 
+        #region Nested type: NestedLoader
+
         private class NestedLoader
         {
             internal static readonly BootStrapRegistry Instance;
@@ -77,5 +74,6 @@ namespace LinFu.AOP.Interfaces
             }
         }
 
+        #endregion
     }
 }

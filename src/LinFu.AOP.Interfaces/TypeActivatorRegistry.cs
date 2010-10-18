@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace LinFu.AOP.Interfaces
 {
@@ -25,7 +22,7 @@ namespace LinFu.AOP.Interfaces
                 throw new ArgumentNullException("context");
 
             // Use the static activator by default
-            var currentActivator = _activator;
+            ITypeActivator currentActivator = _activator;
 
             // Use the activator attached to the target if it exists
             var host = context.Target as IActivatorHost;

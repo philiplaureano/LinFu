@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+﻿using System.Reflection;
 using LinFu.IoC.Configuration.Interfaces;
 using LinFu.IoC.Interfaces;
 
@@ -23,18 +19,18 @@ namespace LinFu.IoC.Configuration
         /// <param name="additionalArguments">The additional arguments that were passed to the <see cref="IServiceRequestResult"/> during the instantiation process. Note: This parameter will be ignored by this override.</param>
         /// <param name="container">The container that will provide the service instances.</param>
         protected override void Inject(object target, FieldInfo member, IArgumentResolver argumentResolver,
-            IServiceContainer container, object[] additionalArguments)
+                                       IServiceContainer container, object[] additionalArguments)
         {
             // Get the field value from the container
             var fieldType = new NamedType(member.FieldType);
-            var fieldValues = argumentResolver.ResolveFrom(new NamedType[] { fieldType }, container);
+            object[] fieldValues = argumentResolver.ResolveFrom(new[] {fieldType}, container);
 
             if (fieldValues == null || fieldValues.Length == 0)
                 return;
 
             // Cast the field value to the target type
-            var value = fieldValues[0];
+            object value = fieldValues[0];
             member.SetValue(target, value);
-        }       
+        }
     }
 }

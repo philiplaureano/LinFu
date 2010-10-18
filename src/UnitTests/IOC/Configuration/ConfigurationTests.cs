@@ -22,7 +22,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             IAssemblyLoader loader = new AssemblyLoader();
 
             // The loader should return a valid assembly
-            Assembly result = loader.Load(typeof(SampleClass).Assembly.Location);
+            Assembly result = loader.Load(typeof (SampleClass).Assembly.Location);
             Assert.IsNotNull(result);
         }
 
@@ -38,7 +38,7 @@ namespace LinFu.UnitTests.IOC.Configuration
 
             IEnumerable<IPostProcessor> matches = from p in container.PostProcessors
                                                   where p != null &&
-                                                        p.GetType() == typeof(SamplePostProcessor)
+                                                        p.GetType() == typeof (SamplePostProcessor)
                                                   select p;
 
             Assert.IsTrue(matches.Count() > 0, "The postprocessor failed to load.");
@@ -55,12 +55,13 @@ namespace LinFu.UnitTests.IOC.Configuration
             loader.LoadInto(container);
 
             IEnumerable<IPreProcessor> matches = from p in container.PreProcessors
-                                                  where p != null &&
-                                                        p.GetType() == typeof(SamplePreprocessor)
-                                                  select p;
+                                                 where p != null &&
+                                                       p.GetType() == typeof (SamplePreprocessor)
+                                                 select p;
 
             Assert.IsTrue(matches.Count() > 0, "The preprocessor failed to load.");
         }
+
         [Test]
         public void CreatedServicesMustBeAbleToInitializeThemselves()
         {
@@ -131,7 +132,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             var mockLoader = new Mock<IContainerLoader>(MockBehavior.Loose);
             var mockListing = new Mock<IDirectoryListing>();
 
-            var loader = new Loader<IServiceContainer>()
+            var loader = new Loader<IServiceContainer>
                              {
                                  DirectoryLister = mockListing.Object
                              };
@@ -211,7 +212,7 @@ namespace LinFu.UnitTests.IOC.Configuration
         [Test]
         public void TypeExtractorMustListTypesFromGivenAssembly()
         {
-            Assembly targetAssembly = typeof(SampleClass).Assembly;
+            Assembly targetAssembly = typeof (SampleClass).Assembly;
 
             ITypeExtractor extractor = new TypeExtractor();
             IEnumerable<Type> results = extractor.GetTypes(targetAssembly);

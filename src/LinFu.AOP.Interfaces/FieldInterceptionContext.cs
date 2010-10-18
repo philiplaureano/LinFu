@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Reflection;
 
 namespace LinFu.AOP.Interfaces
@@ -26,41 +23,29 @@ namespace LinFu.AOP.Interfaces
             HostType = hostType;
         }
 
+        #region IFieldInterceptionContext Members
+
         /// <summary>
         /// Gets a value indicating the target instance that is attached to the target field.
         /// </summary>
-        public object Target
-        {
-            get;
-            internal set;
-        }
+        public object Target { get; internal set; }
 
 
         /// <summary>
         /// Gets a value indicating the host method that is currently accessing the target field.
         /// </summary>
-        public MethodBase TargetMethod
-        {
-            get;
-            internal set;
-        }
+        public MethodBase TargetMethod { get; internal set; }
 
         /// <summary>
         /// Gets a value indicating the field that is currently being accessed by the target method.
         /// </summary>
-        public FieldInfo TargetField
-        {
-            get;
-            internal set;
-        }
+        public FieldInfo TargetField { get; internal set; }
 
         /// <summary>
         /// Gets a value indicating the <see cref="System.Type"/> that holds the target field.
         /// </summary>
-        public Type HostType
-        {
-            get;
-            internal set;
-        }
+        public Type HostType { get; internal set; }
+
+        #endregion
     }
 }

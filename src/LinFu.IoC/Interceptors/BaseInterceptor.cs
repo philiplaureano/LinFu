@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+﻿using System.Reflection;
 using LinFu.AOP.Interfaces;
 using LinFu.IoC.Configuration;
 using LinFu.IoC.Configuration.Interfaces;
@@ -34,12 +30,6 @@ namespace LinFu.IoC.Interceptors
         }
 
         /// <summary>
-        /// Gets the target object instance.
-        /// </summary>
-        /// <param name="info">The <see cref="IInvocationInfo"/> instance that describes the current execution context.</param>
-        protected abstract object GetTarget(IInvocationInfo info);
-
-        /// <summary>
         /// Gets the value indicating the <see cref="IMethodInvoke{TMethod}"/> instance
         /// that will be used to invoke the target method.
         /// </summary>
@@ -47,7 +37,8 @@ namespace LinFu.IoC.Interceptors
         {
             get { return _methodInvoke; }
         }
-        
+
+        #region IInterceptor Members
 
         /// <summary>
         /// Intercepts a method call using the given
@@ -57,14 +48,22 @@ namespace LinFu.IoC.Interceptors
         /// contain all the necessary information associated with a 
         /// particular method call.</param>
         /// <returns>The return value of the target method. If the return type of the target
-        /// method is <see cref="Void"/>, then the return value will be ignored.</returns>
+        /// method is <see cref="void"/>, then the return value will be ignored.</returns>
         public virtual object Intercept(IInvocationInfo info)
         {
-            var target = GetTarget(info);
-            var method = info.TargetMethod;
-            var arguments = info.Arguments;
+            object target = GetTarget(info);
+            MethodBase method = info.TargetMethod;
+            object[] arguments = info.Arguments;
 
-            return _methodInvoke.Invoke(target, (MethodInfo)method, arguments);
+            return _methodInvoke.Invoke(target, (MethodInfo) method, arguments);
         }
+
+        #endregion
+
+        /// <summary>
+        /// Gets the target object instance.
+        /// </summary>
+        /// <param name="info">The <see cref="IInvocationInfo"/> instance that describes the current execution context.</param>
+        protected abstract object GetTarget(IInvocationInfo info);
     }
 }

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
 using LinFu.IoC.Interfaces;
 using LinFu.Reflection;
 
@@ -13,10 +11,11 @@ namespace LinFu.IoC.Configuration
     /// </summary>
     public class Initializer<T> : IPostProcessor
     {
-        private static readonly HashSet<HashableWeakReference> _instances = new HashSet<HashableWeakReference>(new HashableWeakReferenceComparer());
+        private static readonly HashSet<HashableWeakReference> _instances =
+            new HashSet<HashableWeakReference>(new HashableWeakReferenceComparer());
+
+        private static int _initializeCallCount;
         private readonly Func<IServiceRequestResult, T> _getSource;
-        static private int _initializeCallCount;
-        #region IPostProcessor Members
 
         /// <summary>
         /// Initializes the class with the given <paramref name="getSource"/> delegate.
@@ -26,6 +25,8 @@ namespace LinFu.IoC.Configuration
         {
             _getSource = getSource;
         }
+
+        #region IPostProcessor Members
 
         /// <summary>
         /// Initializes every service that implements
@@ -37,7 +38,7 @@ namespace LinFu.IoC.Configuration
             var originalResult = result.OriginalResult as IInitialize<T>;
             var actualResult = result.ActualResult as IInitialize<T>;
 
-            var source = _getSource(result);
+            T source = _getSource(result);
 
             // Initialize the original result, if possible
             Initialize(originalResult, source);
@@ -45,7 +46,9 @@ namespace LinFu.IoC.Configuration
             // Initialize the actual result
             Initialize(actualResult, source);
         }
-        
+
+        #endregion
+
         /// <summary>
         /// Initializes the <paramref name="target"/> with the given <paramref name="source"/> instance.
         /// </summary>
@@ -56,7 +59,7 @@ namespace LinFu.IoC.Configuration
             if (target == null)
                 return;
 
-            if ((_initializeCallCount = ++_initializeCallCount % 100) == 0)
+            if ((_initializeCallCount = ++_initializeCallCount%100) == 0)
                 _instances.RemoveWhere(w => !w.IsAlive);
 
             // Make sure that the target is initialized only once
@@ -69,24 +72,7 @@ namespace LinFu.IoC.Configuration
             _instances.Add(weakReference);
         }
 
-        #endregion
-
-        private class HashableWeakReferenceComparer : IEqualityComparer<HashableWeakReference>
-        {
-            public bool Equals(HashableWeakReference x, HashableWeakReference y)
-            {
-                return x.Target == y.Target;
-            }
-
-            int IEqualityComparer<HashableWeakReference>.GetHashCode(HashableWeakReference obj)
-            {
-                if (obj == null)
-                {
-                    throw new ArgumentNullException("obj");
-                }
-                return obj.GetHashCode();
-            }
-        }
+        #region Nested type: HashableWeakReference
 
         private class HashableWeakReference : WeakReference
         {
@@ -102,5 +88,32 @@ namespace LinFu.IoC.Configuration
                 return _hashCode;
             }
         }
+
+        #endregion
+
+        #region Nested type: HashableWeakReferenceComparer
+
+        private class HashableWeakReferenceComparer : IEqualityComparer<HashableWeakReference>
+        {
+            #region IEqualityComparer<Initializer<T>.HashableWeakReference> Members
+
+            public bool Equals(HashableWeakReference x, HashableWeakReference y)
+            {
+                return x.Target == y.Target;
+            }
+
+            int IEqualityComparer<HashableWeakReference>.GetHashCode(HashableWeakReference obj)
+            {
+                if (obj == null)
+                {
+                    throw new ArgumentNullException("obj");
+                }
+                return obj.GetHashCode();
+            }
+
+            #endregion
+        }
+
+        #endregion
     }
 }

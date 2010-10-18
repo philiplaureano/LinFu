@@ -1,6 +1,4 @@
-﻿using LinFu.IoC.Interfaces;
-
-namespace LinFu.IoC.Interfaces
+﻿namespace LinFu.IoC.Interfaces
 {
     /// <summary>
     /// A strongly-typed version of <see cref="IFactory"/>. Allows users

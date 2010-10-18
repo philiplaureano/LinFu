@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil;
 
@@ -20,10 +18,10 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="weaver">The <see cref="ITypeWeaver"/> instance that will modify the methods in the given target type.</param>
         public static void WeaveWith(this TypeDefinition targetType, IMethodWeaver weaver)
         {
-            var module = targetType.Module;
-            var targetMethods = from MethodDefinition method in targetType.Methods
-                                where weaver.ShouldWeave(method)
-                                select method;
+            ModuleDefinition module = targetType.Module;
+            IEnumerable<MethodDefinition> targetMethods = from MethodDefinition method in targetType.Methods
+                                                          where weaver.ShouldWeave(method)
+                                                          select method;
 
             // Modify the host module
             weaver.ImportReferences(module);
@@ -31,10 +29,10 @@ namespace LinFu.AOP.Cecil.Extensions
             // Add any additional members to the target type
             weaver.AddAdditionalMembers(targetType);
 
-            foreach (var item in targetMethods)
+            foreach (MethodDefinition item in targetMethods)
             {
                 weaver.Weave(item);
             }
-        }        
+        }
     }
 }

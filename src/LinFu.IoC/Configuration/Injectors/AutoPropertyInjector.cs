@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
-using System.Text;
 using LinFu.IoC.Configuration.Interfaces;
 using LinFu.IoC.Interfaces;
 
@@ -23,19 +20,20 @@ namespace LinFu.IoC.Configuration
         /// <param name="additionalArguments">The additional arguments that were passed to the <see cref="IServiceRequestResult"/> during the instantiation process.</param>
         /// <param name="container">The container that will provide the service instances.</param>
         protected override void Inject(object target, PropertyInfo property,
-            IArgumentResolver resolver, IServiceContainer container, object[] additionalArguments)
+                                       IArgumentResolver resolver, IServiceContainer container,
+                                       object[] additionalArguments)
         {
             var setter = container.GetService<IPropertySetter>();
             if (setter == null)
                 return;
 
             // Determine the property value
-            var results = resolver.ResolveFrom(new[] { new NamedType(property),  }, container);
-            var propertyValue = results.FirstOrDefault();
-            
+            object[] results = resolver.ResolveFrom(new[] {new NamedType(property),}, container);
+            object propertyValue = results.FirstOrDefault();
+
             if (propertyValue == null)
                 return;
-            
+
             // Call the setter against the target property
             setter.Set(target, property, propertyValue);
         }

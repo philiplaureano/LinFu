@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil;
 using NUnit.Framework;
@@ -13,16 +11,28 @@ namespace LinFu.UnitTests.Tools
 {
     internal class PEVerifier : IVerifier
     {
-        private string _filename = string.Empty;
-        private string location = string.Empty;
+        private readonly string location = string.Empty;
         private bool _failed;
+        private string _filename = string.Empty;
+
         internal PEVerifier(string filename)
         {
-            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
             location = Path.Combine(baseDirectory, filename);
 
             _filename = filename;
         }
+
+        #region IVerifier Members
+
+        public void Verify(AssemblyDefinition assembly)
+        {
+            // Save the assembly to the temporary file and verify it
+            AssemblyFactory.SaveAssembly(assembly, location);
+            PEVerify(location);
+        }
+
+        #endregion
 
         ~PEVerifier()
         {
@@ -37,28 +47,17 @@ namespace LinFu.UnitTests.Tools
             }
         }
 
-        #region IVerifier Members
-
-        public void Verify(Mono.Cecil.AssemblyDefinition assembly)
-        {
-            // Save the assembly to the temporary file and verify it
-            AssemblyFactory.SaveAssembly(assembly, location);
-            PEVerify(location);
-        }
-
-        #endregion
-
         private void PEVerify(string assemblyLocation)
         {
             var pathKeys = new[]
-                           {
-                               "sdkDir",
-                               "x86SdkDir",
-                               "sdkDirUnderVista"
-                           };
+                               {
+                                   "sdkDir",
+                                   "x86SdkDir",
+                                   "sdkDirUnderVista"
+                               };
 
             var process = new Process();
-            var peVerifyLocation = string.Empty;
+            string peVerifyLocation = string.Empty;
 
 
             peVerifyLocation = GetPEVerifyLocation(pathKeys, peVerifyLocation);
@@ -78,10 +77,10 @@ namespace LinFu.UnitTests.Tools
             process.StartInfo.CreateNoWindow = true;
             process.Start();
 
-            var processOutput = process.StandardOutput.ReadToEnd();
+            string processOutput = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
 
-            var result = string.Format("PEVerify Exit Code: {0}", process.ExitCode);
+            string result = string.Format("PEVerify Exit Code: {0}", process.ExitCode);
 
             Console.WriteLine(GetType().FullName + ": " + result);
 
@@ -95,9 +94,9 @@ namespace LinFu.UnitTests.Tools
 
         private static string GetPEVerifyLocation(IEnumerable<string> pathKeys, string peVerifyLocation)
         {
-            foreach (var key in pathKeys)
+            foreach (string key in pathKeys)
             {
-                var directory = ConfigurationManager.AppSettings[key];
+                string directory = ConfigurationManager.AppSettings[key];
 
                 if (string.IsNullOrEmpty(directory))
                     continue;

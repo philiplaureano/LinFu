@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.IoC.Factories;
 using LinFu.IoC.Interfaces;
 
@@ -27,6 +24,8 @@ namespace LinFu.IoC.Configuration
             _context = context;
         }
 
+        #region IGenerateFactory<TService> Members
+
         /// <summary>
         /// Creates a singleton factory.
         /// </summary>
@@ -35,6 +34,7 @@ namespace LinFu.IoC.Configuration
         {
             AddFactory(adapter => new SingletonFactory<TService>(adapter));
         }
+
         /// <summary>
         /// Creates a once per thread factory.
         /// </summary>
@@ -53,6 +53,8 @@ namespace LinFu.IoC.Configuration
             AddFactory(adapter => new OncePerRequestFactory<TService>(adapter));
         }
 
+        #endregion
+
         /// <summary>
         /// Adds a factory to the container by using the 
         /// <paramref name="createFactory"/> delegate to
@@ -61,14 +63,14 @@ namespace LinFu.IoC.Configuration
         /// </summary>
         /// <param name="createFactory">The delegate that will create the actual factory instance.</param>
         private void AddFactory(Func<Func<IFactoryRequest, TService>,
-            IFactory<TService>> createFactory)
+                                    IFactory<TService>> createFactory)
         {
-            var container = _context.Container;
-            var adapter = _context.FactoryMethod.CreateAdapter();
-            var factory = createFactory(adapter);
-            var serviceName = _context.ServiceName;
+            IServiceContainer container = _context.Container;
+            Func<IFactoryRequest, TService> adapter = _context.FactoryMethod.CreateAdapter();
+            IFactory<TService> factory = createFactory(adapter);
+            string serviceName = _context.ServiceName;
 
-            container.AddFactory<TService>(serviceName, factory);
+            container.AddFactory(serviceName, factory);
         }
     }
 }

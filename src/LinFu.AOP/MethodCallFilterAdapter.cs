@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil;
-using Mono.Cecil.Cil;
 
 namespace LinFu.AOP.Cecil
 {
@@ -21,11 +17,14 @@ namespace LinFu.AOP.Cecil
         /// </summary>
         /// <param name="hostMethodFilter">The method filter that will determine the host methods that will be modified for interception.</param>
         /// <param name="methodCallFilter">The method filter that will determine which method calls will be intercepted.</param>
-        public MethodCallFilterAdapter(Func<MethodReference, bool> hostMethodFilter, Func<MethodReference, bool> methodCallFilter)
+        public MethodCallFilterAdapter(Func<MethodReference, bool> hostMethodFilter,
+                                       Func<MethodReference, bool> methodCallFilter)
         {
             _hostMethodFilter = hostMethodFilter;
             _methodCallFilter = methodCallFilter;
         }
+
+        #region IMethodCallFilter Members
 
         /// <summary>
         /// Determines whether or not a particular method call should be intercepted.
@@ -37,6 +36,8 @@ namespace LinFu.AOP.Cecil
         public bool ShouldWeave(TypeReference targetType, MethodReference hostMethod, MethodReference currentMethodCall)
         {
             return _hostMethodFilter(hostMethod) && _methodCallFilter(currentMethodCall);
-        }        
+        }
+
+        #endregion
     }
 }

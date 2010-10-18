@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using LinFu.IoC.Configuration;
 using LinFu.IoC.Interfaces;
 using LinFu.Reflection;
 
@@ -16,6 +15,8 @@ namespace LinFu.IoC.Configuration.Loaders
     /// </summary>
     internal class PostProcessorLoader : IActionLoader<IServiceContainer, Type>
     {
+        #region IActionLoader<IServiceContainer,Type> Members
+
         /// <summary>
         /// Determines if the plugin loader can load the <paramref name="inputType"/>.
         /// </summary>
@@ -27,25 +28,25 @@ namespace LinFu.IoC.Configuration.Loaders
             try
             {
                 // The type must have a default constructor
-                var defaultConstructor = inputType.GetConstructor(new Type[0]);
+                ConstructorInfo defaultConstructor = inputType.GetConstructor(new Type[0]);
                 if (defaultConstructor == null)
                     return false;
 
                 // It must have the PostProcessorAttribute defined
-                object[] attributes = inputType.GetCustomAttributes(typeof(PostProcessorAttribute), true);
+                object[] attributes = inputType.GetCustomAttributes(typeof (PostProcessorAttribute), true);
                 IEnumerable<PostProcessorAttribute> attributeList = attributes.Cast<PostProcessorAttribute>();
 
                 if (attributeList.Count() == 0)
                     return false;
 
-                return typeof(IPostProcessor).IsAssignableFrom(inputType);
+                return typeof (IPostProcessor).IsAssignableFrom(inputType);
             }
             catch (TypeInitializationException)
             {
                 // Ignore the error
                 return false;
             }
-            catch(FileNotFoundException)
+            catch (FileNotFoundException)
             {
                 // Ignore the error
                 return false;
@@ -72,7 +73,9 @@ namespace LinFu.IoC.Configuration.Loaders
             Action<IServiceContainer> assignPostProcessor =
                 container => container.PostProcessors.Add(instance);
 
-            return new[] { assignPostProcessor };
+            return new[] {assignPostProcessor};
         }
+
+        #endregion
     }
 }

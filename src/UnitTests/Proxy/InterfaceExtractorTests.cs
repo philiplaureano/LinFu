@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using LinFu.Proxy;
 using NUnit.Framework;
 using SampleLibrary;
@@ -14,7 +13,7 @@ namespace LinFu.UnitTests.Proxy
         [Test]
         public void InterfaceExtractorShouldReturnTheCorrectResults()
         {
-            var baseType = typeof (SampleClass);
+            Type baseType = typeof (SampleClass);
             var extractor = new InterfaceExtractor();
             var interfaces = new HashSet<Type>();
 
@@ -24,9 +23,9 @@ namespace LinFu.UnitTests.Proxy
             Assert.IsTrue(interfaces.Contains(typeof (ISampleGenericService<int>)));
 
             // The result list must only contain interface types
-            var nonInterfaceTypes = from t in interfaces
-                                    where !t.IsInterface
-                                    select t;
+            IEnumerable<Type> nonInterfaceTypes = from t in interfaces
+                                                  where !t.IsInterface
+                                                  select t;
 
             Assert.IsTrue(nonInterfaceTypes.Count() == 0);
         }

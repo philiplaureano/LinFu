@@ -2,7 +2,6 @@
 using System.Linq;
 using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
-using LinFu.IoC;
 using LinFu.IoC.Configuration;
 using LinFu.IoC.Interfaces;
 using LinFu.Reflection.Emit;
@@ -16,9 +15,11 @@ namespace LinFu.AOP.Cecil.Factories
     /// that emit the necessary <see cref="IInvocationInfo"/> information
     /// and store it in a local variable named '__invocationInfo___'.
     /// </summary>
-    [Factory(typeof(Action<MethodDefinition>), ServiceName = "AddInvocationInfo")]
+    [Factory(typeof (Action<MethodDefinition>), ServiceName = "AddInvocationInfo")]
     public class AddInvocationInfoActionFactory : IFactory
     {
+        #region IFactory Members
+
         /// <summary>
         /// Generates the <see cref="Action{T}"/> delegate that will emit
         /// the necessary <see cref="IInvocationInfo"/> information.
@@ -27,29 +28,31 @@ namespace LinFu.AOP.Cecil.Factories
         /// <returns>A delegate that can emit the necessary <see cref="IInvocationInfo"/> context that will allow other developers to infer information about the method currently being executed.</returns>
         public object CreateInstance(IFactoryRequest request)
         {
-            var container = request.Container;
+            IServiceContainer container = request.Container;
             Action<MethodDefinition> result =
                 method =>
-                {
-                    var body = method.Body;
+                    {
+                        MethodBody body = method.Body;
 
-                    // Add the IInvocationInfo 
-                    // instance only once
-                    var localAlreadyExists = (from VariableDefinition local in body.Variables
-                                  where local.Name == "___invocationInfo___"
-                                  select local).Count() > 0;
+                        // Add the IInvocationInfo 
+                        // instance only once
+                        bool localAlreadyExists = (from VariableDefinition local in body.Variables
+                                                   where local.Name == "___invocationInfo___"
+                                                   select local).Count() > 0;
 
-                    if (localAlreadyExists)
-                        return;
+                        if (localAlreadyExists)
+                            return;
 
-                    var variable = method.AddLocal<IInvocationInfo>();
-                    variable.Name = "___invocationInfo___";
+                        VariableDefinition variable = method.AddLocal<IInvocationInfo>();
+                        variable.Name = "___invocationInfo___";
 
-                    var emitInfo = (IEmitInvocationInfo)container.GetService(typeof(IEmitInvocationInfo));
-                    emitInfo.Emit(method, method, variable);
-                };
+                        var emitInfo = (IEmitInvocationInfo) container.GetService(typeof (IEmitInvocationInfo));
+                        emitInfo.Emit(method, method, variable);
+                    };
 
             return result;
         }
+
+        #endregion
     }
 }

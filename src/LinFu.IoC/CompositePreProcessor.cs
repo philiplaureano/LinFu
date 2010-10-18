@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC
@@ -22,6 +19,8 @@ namespace LinFu.IoC
             _preProcessors = preProcessors;
         }
 
+        #region IPreProcessor Members
+
         /// <summary>
         /// A method that passes every request result made
         /// to the list of preprocessors.
@@ -29,10 +28,12 @@ namespace LinFu.IoC
         /// <param name="request">The parameter that describes the context of the service request.</param>
         public void Preprocess(IServiceRequest request)
         {
-            foreach (var preprocessor in _preProcessors)
+            foreach (IPreProcessor preprocessor in _preProcessors)
             {
                 preprocessor.Preprocess(request);
             }
         }
+
+        #endregion
     }
 }

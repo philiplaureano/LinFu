@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.IoC.Configuration;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC.Configuration
@@ -17,10 +13,14 @@ namespace LinFu.IoC.Configuration
     internal class ActionPostProcessor<TService> : IPostProcessor
     {
         private readonly ActionContext<TService> _context;
+
         internal ActionPostProcessor(ActionContext<TService> context)
         {
             _context = context;
         }
+
+        #region IPostProcessor Members
+
         public void PostProcess(IServiceRequestResult result)
         {
             // Ignore any null results
@@ -28,20 +28,22 @@ namespace LinFu.IoC.Configuration
                 return;
 
             // The service type must match the current service
-            if (result.ServiceType != typeof(TService))
+            if (result.ServiceType != typeof (TService))
                 return;
 
             // The service names must be equal
             if (result.ServiceName != _context.ServiceName)
                 return;
 
-            var service = (TService)result.ActualResult;
-            var container = result.Container;
-            var action = _context.Action;
+            var service = (TService) result.ActualResult;
+            IServiceContainer container = result.Container;
+            Action<IServiceContainer, TService> action = _context.Action;
 
             // Execute the action associated with the
             // context
             action(container, service);
         }
+
+        #endregion
     }
 }

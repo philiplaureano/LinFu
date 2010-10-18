@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.IoC.Configuration.Interfaces;
 
 namespace LinFu.IoC.Configuration
@@ -18,8 +16,9 @@ namespace LinFu.IoC.Configuration
         public MethodFinderContext(params object[] arguments)
         {
             TypeArguments = new Type[0];
-            Arguments = arguments;            
+            Arguments = arguments;
         }
+
         /// <summary>
         /// Initializes the context with the default values.
         /// </summary>
@@ -33,28 +32,23 @@ namespace LinFu.IoC.Configuration
             ReturnType = returnType;
         }
 
+        #region IMethodFinderContext Members
+
         /// <summary>
         /// Gets or sets the value indicating the type arguments that will be passed to the target method.
         /// </summary>
-        public IEnumerable<Type> TypeArguments
-        {
-            get; set;
-        }
-        
+        public IEnumerable<Type> TypeArguments { get; set; }
+
         /// <summary>
         /// Gets or sets the value indicating the list of arguments that will be passed to the target method.
         /// </summary>
-        public IEnumerable<object> Arguments
-        {
-            get; set;
-        }
+        public IEnumerable<object> Arguments { get; set; }
 
         /// <summary>
         /// Gets or sets the value indicating the <see cref="System.Type">return type</see> of the target method.
         /// </summary>
-        public Type ReturnType
-        {
-            get; set;
-        }
+        public Type ReturnType { get; set; }
+
+        #endregion
     }
 }

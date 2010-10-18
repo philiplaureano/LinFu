@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace LinFu.AOP.Interfaces
+﻿namespace LinFu.AOP.Interfaces
 {
     /// <summary>
     /// Represents a type that can intercept activation requests.

@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using LinFu.AOP.Interfaces;
 
 namespace LinFu.AOP.Cecil
@@ -16,13 +14,13 @@ namespace LinFu.AOP.Cecil
     [Serializable]
     public class InvocationInfo : IInvocationInfo
     {
+        private readonly object[] _arguments;
+        private readonly Type[] _parameterTypes;
+        private readonly Type _returnType;
+        private readonly StackTrace _stackTrace;
         private readonly object _target;
         private readonly MethodBase _targetMethod;
-        private readonly StackTrace _stackTrace;
-        private readonly Type[] _parameterTypes;
         private readonly Type[] _typeArguments;
-        private readonly object[] _arguments;
-        private readonly Type _returnType;
 
         /// <summary>
         /// Initializes the <see cref="InvocationInfo"/> instance.
@@ -38,8 +36,8 @@ namespace LinFu.AOP.Cecil
         /// </param>
         /// <param name="returnType">The return type of the target method.</param>
         /// <param name="arguments">The arguments used in the method call.</param>
-        public InvocationInfo(object target, MethodBase targetMethod, 
-                              StackTrace stackTrace, Type[] parameterTypes, 
+        public InvocationInfo(object target, MethodBase targetMethod,
+                              StackTrace stackTrace, Type[] parameterTypes,
                               Type[] typeArguments, Type returnType, object[] arguments)
         {
             _target = target;
@@ -52,15 +50,27 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
+        /// This is the actual calling method that invoked the <see cref="TargetMethod"/>.
+        /// </summary>
+        public MethodBase CallingMethod
+        {
+            get
+            {
+                StackFrame frame = _stackTrace.GetFrame(0);
+
+                return frame.GetMethod();
+            }
+        }
+
+        #region IInvocationInfo Members
+
+        /// <summary>
         /// The target instance currently being called.
         /// </summary>
         /// <remarks>This typically is a reference to a proxy object.</remarks>
         public object Target
         {
-            get
-            {
-                return _target;
-            }
+            get { return _target; }
         }
 
         /// <summary>
@@ -68,10 +78,7 @@ namespace LinFu.AOP.Cecil
         /// </summary>
         public MethodBase TargetMethod
         {
-            get
-            {
-                return _targetMethod;
-            }
+            get { return _targetMethod; }
         }
 
         /// <summary>
@@ -84,27 +91,11 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// This is the actual calling method that invoked the <see cref="TargetMethod"/>.
-        /// </summary>
-        public MethodBase CallingMethod
-        {
-            get
-            {
-                var frame = _stackTrace.GetFrame(0);
-
-                return frame.GetMethod();
-            }
-        }
-
-        /// <summary>
         /// The return type of the <see cref="TargetMethod"/>.
         /// </summary>
         public Type ReturnType
         {
-            get
-            {
-                return _returnType;
-            }
+            get { return _returnType; }
         }
 
         /// <summary>
@@ -123,10 +114,7 @@ namespace LinFu.AOP.Cecil
         /// </remarks>
         public Type[] ParameterTypes
         {
-            get
-            {
-                return _parameterTypes;
-            }
+            get { return _parameterTypes; }
         }
 
         /// <summary>
@@ -136,10 +124,7 @@ namespace LinFu.AOP.Cecil
         /// </summary>
         public Type[] TypeArguments
         {
-            get
-            {
-                return _typeArguments;
-            }
+            get { return _typeArguments; }
         }
 
         /// <summary>
@@ -147,11 +132,10 @@ namespace LinFu.AOP.Cecil
         /// </summary>
         public object[] Arguments
         {
-            get
-            {
-                return _arguments;
-            }
+            get { return _arguments; }
         }
+
+        #endregion
 
         /// <summary>
         /// Returns a string that represents the current object.
@@ -160,14 +144,14 @@ namespace LinFu.AOP.Cecil
         public override string ToString()
         {
             var writer = new StringWriter();
-            var targetMethod = TargetMethod;
+            MethodBase targetMethod = TargetMethod;
 
             writer.Write("{0}.{1}(", targetMethod.DeclaringType, targetMethod.Name);
 
             var arguments = new Queue<object>(Arguments);
             while (arguments.Count > 0)
             {
-                var argument = arguments.Dequeue();
+                object argument = arguments.Dequeue();
 
                 if (argument is string)
                     argument = string.Format("\"{0}\"", argument);

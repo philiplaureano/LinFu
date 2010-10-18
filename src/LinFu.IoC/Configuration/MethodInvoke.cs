@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace LinFu.IoC.Configuration
 {
@@ -27,7 +24,8 @@ namespace LinFu.IoC.Configuration
         /// <param name="targetMethod">The actual method that will be invoked.</param>
         /// <param name="arguments">The method arguments.</param>
         /// <returns>The return value from the target method.</returns>
-        protected override object DoInvoke(object target, MethodInfo originalMethod, MethodBase targetMethod, object[] arguments)
+        protected override object DoInvoke(object target, MethodInfo originalMethod, MethodBase targetMethod,
+                                           object[] arguments)
         {
             var actualArguments = new List<object>();
 
@@ -40,7 +38,7 @@ namespace LinFu.IoC.Configuration
             try
             {
                 result = targetMethod.Invoke(targetMethod.IsStatic ? null : target,
-                    actualArguments.ToArray());
+                                             actualArguments.ToArray());
             }
             catch (TargetInvocationException ex)
             {

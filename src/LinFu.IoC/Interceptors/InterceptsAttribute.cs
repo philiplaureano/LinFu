@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace LinFu.IoC.Interceptors
 {
@@ -11,8 +8,8 @@ namespace LinFu.IoC.Interceptors
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class InterceptsAttribute : Attribute
     {
-        private readonly Type _targetType;
         private readonly string _serviceName;
+        private readonly Type _targetType;
 
         /// <summary>
         /// Initializes the class with the given <paramref name="targetType"/>.
@@ -40,6 +37,7 @@ namespace LinFu.IoC.Interceptors
         {
             get { return _serviceName; }
         }
+
         /// <summary>
         /// Gets the value indicating the target type that will be intercepted.
         /// </summary>

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -13,12 +10,9 @@ namespace LinFu.AOP.Cecil
     /// </summary>
     public abstract class MethodRewriter : IMethodRewriter
     {
-        private HashSet<TypeDefinition> _modifiedTypes = new HashSet<TypeDefinition>();
+        private readonly HashSet<TypeDefinition> _modifiedTypes = new HashSet<TypeDefinition>();
 
-        /// <summary>
-        /// Initializes a new instance of the MethodRewriter class.
-        /// </summary>
-        protected MethodRewriter() { }
+        #region IMethodRewriter Members
 
         /// <summary>
         /// Rewrites a target method using the given CilWorker.
@@ -28,8 +22,8 @@ namespace LinFu.AOP.Cecil
         /// <param name="oldInstructions">The original instructions from the target method body.</param>
         public void Rewrite(MethodDefinition method, CilWorker IL, IEnumerable<Instruction> oldInstructions)
         {
-            var declaringType = method.DeclaringType;
-            var module = declaringType.Module;
+            TypeDefinition declaringType = method.DeclaringType;
+            ModuleDefinition module = declaringType.Module;
 
             // Interfaces and Enums cannot be modified
             if (declaringType.IsInterface || declaringType.IsEnum)
@@ -46,7 +40,7 @@ namespace LinFu.AOP.Cecil
             }
 
             var newInstructions = new Queue<Instruction>();
-            foreach (var instruction in oldInstructions)
+            foreach (Instruction instruction in oldInstructions)
             {
                 // Intercept only the load field and the load static field instruction
                 if (!ShouldReplace(instruction, method))
@@ -82,6 +76,8 @@ namespace LinFu.AOP.Cecil
         public virtual void AddLocals(MethodDefinition hostMethod)
         {
         }
+
+        #endregion
 
         /// <summary>
         /// Determines whether or not the method rewriter should replace the <paramref name="oldInstruction"/>.

@@ -1,26 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace SampleLibrary.IOC
+﻿namespace SampleLibrary.IOC
 {
     public class SampleLazyService : ISampleService
     {
-        public static bool IsInitialized
-        {
-            get; private set;
-        }
-
-        public SampleLazyService ()
+        public SampleLazyService()
         {
             IsInitialized = true;
         }
+
+        public static bool IsInitialized { get; private set; }
+
+        #region ISampleService Members
 
         public void DoSomething()
         {
             IsInitialized = true;
         }
+
+        #endregion
 
         public static void Reset()
         {

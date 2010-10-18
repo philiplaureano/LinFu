@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Reflection;
 using LinFu.AOP.Interfaces;
-using LinFu.Proxy.Interfaces;
 
 namespace LinFu.Proxy.Interfaces
 {
@@ -26,7 +23,7 @@ namespace LinFu.Proxy.Interfaces
         /// <param name="baseInterfaces">The additional list of interfaces that the proxy will implement.</param>
         /// <returns>A valid proxy instance.</returns>
         public static object CreateProxy(this IProxyFactory factory, Type instanceType,
-            IInvokeWrapper wrapper, params Type[] baseInterfaces)
+                                         IInvokeWrapper wrapper, params Type[] baseInterfaces)
         {
             // Convert the wrapper to an IInterceptor instance.
             var adapter = new CallAdapter(wrapper);
@@ -46,10 +43,10 @@ namespace LinFu.Proxy.Interfaces
         /// <param name="baseInterfaces">The additional list of interfaces that the proxy will implement.</param>
         /// <returns>A valid proxy instance.</returns>
         public static object CreateProxy(this IProxyFactory factory, Type instanceType,
-            IInterceptor interceptor, params Type[] baseInterfaces)
+                                         IInterceptor interceptor, params Type[] baseInterfaces)
         {
-            var proxyType = factory.CreateProxyType(instanceType, baseInterfaces);
-            var proxyInstance = (IProxy)Activator.CreateInstance(proxyType);
+            Type proxyType = factory.CreateProxyType(instanceType, baseInterfaces);
+            var proxyInstance = (IProxy) Activator.CreateInstance(proxyType);
 
             proxyInstance.Interceptor = interceptor;
 
@@ -69,9 +66,9 @@ namespace LinFu.Proxy.Interfaces
         /// <param name="baseInterfaces">The additional list of interfaces that the proxy will implement.</param>
         /// <returns>A valid proxy instance.</returns>
         public static T CreateProxy<T>(this IProxyFactory factory, IInvokeWrapper wrapper,
-            params Type[] baseInterfaces)
+                                       params Type[] baseInterfaces)
         {
-            return (T)factory.CreateProxy(typeof(T), wrapper, baseInterfaces);
+            return (T) factory.CreateProxy(typeof (T), wrapper, baseInterfaces);
         }
 
         /// <summary>
@@ -87,9 +84,9 @@ namespace LinFu.Proxy.Interfaces
         /// <param name="baseInterfaces">The additional list of interfaces that the proxy will implement.</param>
         /// <returns>A valid proxy instance.</returns>
         public static T CreateProxy<T>(this IProxyFactory factory, IInterceptor interceptor,
-            params Type[] baseInterfaces)
+                                       params Type[] baseInterfaces)
         {
-            return (T)factory.CreateProxy(typeof(T), interceptor, baseInterfaces);
+            return (T) factory.CreateProxy(typeof (T), interceptor, baseInterfaces);
         }
 
         /// <summary>
@@ -106,13 +103,14 @@ namespace LinFu.Proxy.Interfaces
         /// <param name="proxyImplementation">The functor that will invoked every time a method is called on the proxy.</param>
         /// <param name="baseInterfaces">The additional list of interfaces that the proxy will implement.</param>
         /// <returns>A valid proxy instance.</returns>
-        public static T CreateProxy<T>(this IProxyFactory proxyFactory, 
-            Func<string, Type[], object[], object> proxyImplementation, params Type[] baseInterfaces)
+        public static T CreateProxy<T>(this IProxyFactory proxyFactory,
+                                       Func<string, Type[], object[], object> proxyImplementation,
+                                       params Type[] baseInterfaces)
         {
-            var targetType = typeof(T);
+            Type targetType = typeof (T);
             object result = CreateProxy(proxyFactory, targetType, proxyImplementation, baseInterfaces);
 
-            return (T)result;
+            return (T) result;
         }
 
         /// <summary>
@@ -130,17 +128,19 @@ namespace LinFu.Proxy.Interfaces
         /// <param name="baseInterfaces">The additional list of interfaces that the proxy will implement.</param>
         /// <returns>A valid proxy instance.</returns>
         public static object CreateProxy(this IProxyFactory proxyFactory, Type targetType,
-            Func<string, Type[], object[], object> proxyImplementation, params Type[] baseInterfaces)
+                                         Func<string, Type[], object[], object> proxyImplementation,
+                                         params Type[] baseInterfaces)
         {
             Func<IInvocationInfo, object> doIntercept = info =>
-            {
-                var targetMethod = info.TargetMethod;
-                var methodName = targetMethod.Name;
-                var arguments = info.Arguments;
-                Type[] typeArguments = info.TypeArguments;
+                                                            {
+                                                                MethodBase targetMethod = info.TargetMethod;
+                                                                string methodName = targetMethod.Name;
+                                                                object[] arguments = info.Arguments;
+                                                                Type[] typeArguments = info.TypeArguments;
 
-                return proxyImplementation(methodName, typeArguments, arguments);
-            };
+                                                                return proxyImplementation(methodName, typeArguments,
+                                                                                           arguments);
+                                                            };
 
             var interceptor = new FunctorAsInterceptor(doIntercept);
             return proxyFactory.CreateProxy(targetType, interceptor, baseInterfaces);

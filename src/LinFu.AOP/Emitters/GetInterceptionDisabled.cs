@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.AOP.Cecil.Interfaces;
+﻿using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
@@ -15,8 +11,8 @@ namespace LinFu.AOP.Cecil
     /// </summary>
     public class GetInterceptionDisabled : IInstructionEmitter
     {
-        private MethodReference _hostMethod;
-        private VariableDefinition _interceptionDisabled;
+        private readonly MethodReference _hostMethod;
+        private readonly VariableDefinition _interceptionDisabled;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetInterceptionDisabled"/> class.
@@ -39,15 +35,18 @@ namespace LinFu.AOP.Cecil
             _interceptionDisabled = interceptionDisabled;
         }
 
+        #region IInstructionEmitter Members
+
         /// <summary>
         /// Emits the instructions that determine whether or not method interception is disabled.
         /// </summary>
         /// <param name="IL">The <see cref="CilWorker"/> instance responsible for adding or removing instructions to the method body.</param>
         public void Emit(CilWorker IL)
         {
-            var module = IL.GetModule();
-            var modifiableType = module.ImportType<IModifiableType>();            
-            var getInterceptionDisabledMethod = module.ImportMethod<IModifiableType>("get_IsInterceptionDisabled");
+            ModuleDefinition module = IL.GetModule();
+            TypeReference modifiableType = module.ImportType<IModifiableType>();
+            MethodReference getInterceptionDisabledMethod =
+                module.ImportMethod<IModifiableType>("get_IsInterceptionDisabled");
             if (!_hostMethod.HasThis)
             {
                 IL.Emit(OpCodes.Ldc_I4_0);
@@ -55,13 +54,13 @@ namespace LinFu.AOP.Cecil
                 return;
             }
 
-            var skipLabel = IL.Create(OpCodes.Nop);
+            Instruction skipLabel = IL.Create(OpCodes.Nop);
 
             // var interceptionDisabled = this.IsInterceptionDisabled;
             IL.Emit(OpCodes.Ldarg_0);
             IL.Emit(OpCodes.Isinst, modifiableType);
             IL.Emit(OpCodes.Brfalse, skipLabel);
-            
+
             IL.Emit(OpCodes.Ldarg_0);
             IL.Emit(OpCodes.Isinst, modifiableType);
             IL.Emit(OpCodes.Callvirt, getInterceptionDisabledMethod);
@@ -69,5 +68,7 @@ namespace LinFu.AOP.Cecil
 
             IL.Append(skipLabel);
         }
+
+        #endregion
     }
 }

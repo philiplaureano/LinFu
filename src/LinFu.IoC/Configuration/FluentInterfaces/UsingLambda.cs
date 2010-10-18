@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC.Configuration
@@ -27,6 +24,8 @@ namespace LinFu.IoC.Configuration
             _context = context;
         }
 
+        #region IUsingLambda<TService> Members
+
         /// <summary>
         /// Creates a service instance using the
         /// concrete <typeparamref name="TConcrete"/> type 
@@ -39,10 +38,13 @@ namespace LinFu.IoC.Configuration
         {
             // Let the container decide which constructor should be used at runtime
             Func<IFactoryRequest, TService> factoryMethod = request =>
-                {
-                    var container = (IServiceContainer)request.Container;
-                    return (TService)container.AutoCreate(typeof(TConcrete), request.Arguments);
-                };
+                                                                {
+                                                                    IServiceContainer container = request.Container;
+                                                                    return
+                                                                        (TService)
+                                                                        container.AutoCreate(typeof (TConcrete),
+                                                                                             request.Arguments);
+                                                                };
 
             var context = new InjectionContext<TService>
                               {
@@ -67,14 +69,14 @@ namespace LinFu.IoC.Configuration
         public IGenerateFactory<TService> Using(Func<IServiceContainer, object[], TService> factoryMethod)
         {
             Func<IFactoryRequest, TService> adapter =
-                (request) => factoryMethod((IServiceContainer)request.Container, request.Arguments);
+                (request) => factoryMethod(request.Container, request.Arguments);
 
             var context = new InjectionContext<TService>
-            {
-                Container = _context.Container,
-                FactoryMethod = adapter,
-                ServiceName = _context.ServiceName
-            };
+                              {
+                                  Container = _context.Container,
+                                  FactoryMethod = adapter,
+                                  ServiceName = _context.ServiceName
+                              };
 
             return new GenerateFactory<TService>(context);
         }
@@ -91,14 +93,14 @@ namespace LinFu.IoC.Configuration
         public IGenerateFactory<TService> Using(Func<IServiceContainer, TService> factoryMethod)
         {
             Func<IFactoryRequest, TService> adapter =
-                request => factoryMethod((IServiceContainer)request.Container);
+                request => factoryMethod(request.Container);
 
             var context = new InjectionContext<TService>
-            {
-                Container = _context.Container,
-                FactoryMethod = adapter,
-                ServiceName = _context.ServiceName
-            };
+                              {
+                                  Container = _context.Container,
+                                  FactoryMethod = adapter,
+                                  ServiceName = _context.ServiceName
+                              };
 
             return new GenerateFactory<TService>(context);
         }
@@ -116,5 +118,7 @@ namespace LinFu.IoC.Configuration
             Func<IServiceContainer, object[], TService> adapter = (container, arguments) => factoryMethod();
             return Using(adapter);
         }
+
+        #endregion
     }
 }

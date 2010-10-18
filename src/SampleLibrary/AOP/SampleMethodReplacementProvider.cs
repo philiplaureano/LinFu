@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.AOP.Interfaces;
+﻿using LinFu.AOP.Interfaces;
 
 namespace SampleLibrary.AOP
 {
     public class SampleMethodReplacementProvider : IMethodReplacementProvider
     {
-        private IInterceptor _interceptor;
+        private readonly IInterceptor _interceptor;
+
         public SampleMethodReplacementProvider(IInterceptor interceptor)
         {
             _interceptor = interceptor;
         }
+
+        #region IMethodReplacementProvider Members
 
         public bool CanReplace(object host, IInvocationInfo info)
         {
@@ -23,5 +22,7 @@ namespace SampleLibrary.AOP
         {
             return _interceptor;
         }
+
+        #endregion
     }
 }

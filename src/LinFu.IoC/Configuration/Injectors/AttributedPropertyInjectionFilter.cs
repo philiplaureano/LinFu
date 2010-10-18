@@ -2,18 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using LinFu.IoC.Configuration.Interfaces;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// A default implementation of the <see cref="IMemberInjectionFilter{PropertyInfo}"/>
+    /// A default implementation of the <see cref="IMemberInjectionFilter{TMember}"/>
     /// class that returns properties which have the <see cref="InjectAttribute"/>
     /// defined.
     /// </summary>
-    [Implements(typeof(IMemberInjectionFilter<PropertyInfo>), LifecycleType.OncePerRequest)]
+    [Implements(typeof (IMemberInjectionFilter<PropertyInfo>), LifecycleType.OncePerRequest)]
     public class AttributedPropertyInjectionFilter : BaseMemberInjectionFilter<PropertyInfo>
     {
         private readonly Type _attributeType;
@@ -45,15 +44,15 @@ namespace LinFu.IoC.Configuration
         /// <param name="container">The source container that will supply the property values for the selected properties.</param>
         /// <param name="properties">The list of properties to be filtered.</param>
         /// <returns>A list of properties that should be injected.</returns>
-        protected override IEnumerable<PropertyInfo> Filter(IServiceContainer container, 
-            IEnumerable<PropertyInfo> properties)
+        protected override IEnumerable<PropertyInfo> Filter(IServiceContainer container,
+                                                            IEnumerable<PropertyInfo> properties)
         {
             // The property must have the custom attribute defined 
-            var results = from p in properties
-                          let propertyType = p.PropertyType                          
-                          let attributes = p.GetCustomAttributes(_attributeType, false)
-                          where attributes != null && attributes.Length > 0
-                          select p;
+            IEnumerable<PropertyInfo> results = from p in properties
+                                                let propertyType = p.PropertyType
+                                                let attributes = p.GetCustomAttributes(_attributeType, false)
+                                                where attributes != null && attributes.Length > 0
+                                                select p;
 
             return results;
         }
@@ -70,21 +69,21 @@ namespace LinFu.IoC.Configuration
             IEnumerable<PropertyInfo> results;
             try
             {
-                var items = from p in targetType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                            let propertyType = p == null ? typeof(void) : p.PropertyType
-                            let isServiceArray = propertyType != null ? propertyType.ExistsAsServiceArray() : ioc=>false
-                            let isCompatible = isServiceArray(container) || container.Contains(propertyType)
-                            where p != null && p.CanWrite && isCompatible
-                            select p;
-                
+                IEnumerable<PropertyInfo> items =
+                    from p in targetType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                    let propertyType = p == null ? typeof (void) : p.PropertyType
+                    let isServiceArray = propertyType != null ? propertyType.ExistsAsServiceArray() : ioc => false
+                    let isCompatible = isServiceArray(container) || container.Contains(propertyType)
+                    where p != null && p.CanWrite && isCompatible
+                    select p;
+
                 results = items;
             }
             catch (Exception ex)
             {
-                
                 throw ex;
             }
-            
+
 
             return results;
         }

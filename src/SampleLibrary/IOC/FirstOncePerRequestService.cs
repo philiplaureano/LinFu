@@ -1,17 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.IoC.Configuration;
 
 namespace SampleLibrary
 {
-    [Implements(typeof(ISampleService), LifecycleType.OncePerRequest, ServiceName="FirstOncePerRequestService")]
+    [Implements(typeof (ISampleService), LifecycleType.OncePerRequest, ServiceName = "FirstOncePerRequestService")]
     public class FirstOncePerRequestService : ISampleService
     {
+        #region ISampleService Members
+
         public void DoSomething()
         {
             throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

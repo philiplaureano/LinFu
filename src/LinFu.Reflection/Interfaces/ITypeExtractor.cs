@@ -8,8 +8,8 @@ namespace LinFu.Reflection
     /// Represents a type that can extract <see cref="System.Type"/>
     /// objects from an <see cref="Assembly"/> instance.
     /// </summary>
-    public interface ITypeExtractor : ITypeExtractor<Assembly, Type> 
-    {       
+    public interface ITypeExtractor : ITypeExtractor<Assembly, Type>
+    {
     }
 
     /// <summary>

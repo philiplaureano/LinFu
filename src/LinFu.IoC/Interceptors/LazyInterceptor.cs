@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using LinFu.AOP.Interfaces;
 
 namespace LinFu.IoC.Interceptors
@@ -13,7 +10,7 @@ namespace LinFu.IoC.Interceptors
     /// </summary>
     /// <typeparam name="T">The type of object to intercept.</typeparam>
     public class LazyInterceptor<T> : BaseInterceptor
-        where T: class
+        where T : class
     {
         private readonly Func<T> _getInstance;
 
@@ -24,7 +21,7 @@ namespace LinFu.IoC.Interceptors
         /// <param name="getInstance">The functor that will be used to create the actual object instance.</param>
         public LazyInterceptor(Func<T> getInstance)
         {
-            _getInstance = getInstance;    
+            _getInstance = getInstance;
         }
 
         /// <summary>
@@ -46,9 +43,9 @@ namespace LinFu.IoC.Interceptors
         /// <returns>The return value of the target method.</returns>
         public override object Intercept(IInvocationInfo info)
         {
-            var target = _getInstance();
-            var arguments = info.Arguments;
-            var method = info.TargetMethod;
+            T target = _getInstance();
+            object[] arguments = info.Arguments;
+            MethodBase method = info.TargetMethod;
 
             object result = null;
             try
@@ -59,7 +56,7 @@ namespace LinFu.IoC.Interceptors
             {
                 throw ex.InnerException;
             }
-            
+
             return result;
         }
     }

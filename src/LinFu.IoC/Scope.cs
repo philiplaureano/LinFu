@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using LinFu.IoC.Interfaces;
 using LinFu.IoC.Configuration;
+using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC
 {
@@ -15,41 +13,35 @@ namespace LinFu.IoC
     /// </summary>
     public class Scope : IScope, IPostProcessor, IInitialize
     {
-        private IServiceContainer _container;
-        private int _threadId;
         private readonly List<WeakReference> _disposables = new List<WeakReference>();
+        private IServiceContainer _container;
         private bool _disposed;
+        private int _threadId;
+
+        #region IInitialize Members
 
         /// <summary>
-        /// Disposes the services that have been created while the scope has been active.
+        /// Inserts the scope into the target <paramref name="source">container</paramref>.
         /// </summary>
-        public void Dispose()
+        /// <param name="source">The container that will hold the scope instance.</param>
+        public void Initialize(IServiceContainer source)
         {
-            if (_disposed)
-                return;
-
-            if (_threadId != Thread.CurrentThread.ManagedThreadId)
-                throw new InvalidOperationException(
-                    "The scope object can only be disposed from within the thread that created it.");
-
-            // Dispose all child objects
-            foreach(var item in _disposables)
+            lock (this)
             {
-                if (item == null)
-                    continue;
+                _container = source;
 
-                var target = item.Target as IDisposable;
-                if (target == null)
-                    continue;
+                // Use the same thread ID as the service instantiation call
+                _threadId = Thread.CurrentThread.ManagedThreadId;
 
-                target.Dispose();
+                // Monitor the container for 
+                // any IDisposable instances that need to be disposed
+                _container.PostProcessors.Add(this);
             }
-            
-            _disposed = true;
-            
-            // Remove the scope from the target container
-            _container.PostProcessors.Remove(this);
         }
+
+        #endregion
+
+        #region IPostProcessor Members
 
         /// <summary>
         /// Monitors the <see cref="IServiceContainer"/> for any services that are created and automatically disposes them
@@ -74,23 +66,41 @@ namespace LinFu.IoC
             _disposables.Add(weakRef);
         }
 
+        #endregion
+
+        #region IScope Members
+
         /// <summary>
-        /// Inserts the scope into the target <paramref name="source">container</paramref>.
+        /// Disposes the services that have been created while the scope has been active.
         /// </summary>
-        /// <param name="source">The container that will hold the scope instance.</param>
-        public void Initialize(IServiceContainer source)
+        public void Dispose()
         {
-            lock(this)
+            if (_disposed)
+                return;
+
+            if (_threadId != Thread.CurrentThread.ManagedThreadId)
+                throw new InvalidOperationException(
+                    "The scope object can only be disposed from within the thread that created it.");
+
+            // Dispose all child objects
+            foreach (WeakReference item in _disposables)
             {
-                _container = source;
+                if (item == null)
+                    continue;
 
-                // Use the same thread ID as the service instantiation call
-                _threadId = Thread.CurrentThread.ManagedThreadId;
+                var target = item.Target as IDisposable;
+                if (target == null)
+                    continue;
 
-                // Monitor the container for 
-                // any IDisposable instances that need to be disposed
-                _container.PostProcessors.Add(this);
+                target.Dispose();
             }
+
+            _disposed = true;
+
+            // Remove the scope from the target container
+            _container.PostProcessors.Remove(this);
         }
+
+        #endregion
     }
 }

@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
 using LinFu.AOP.Cecil.Extensions;
-using LinFu.AOP.Interfaces;
-using LinFu.Reflection;
 using LinFu.Reflection.Emit;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -72,7 +66,7 @@ namespace LinFu.AOP.Tasks
         {
             // The output file name will be the same as the target
             // file by default 
-            var outputFile = OutputFile;
+            string outputFile = OutputFile;
             if (string.IsNullOrEmpty(outputFile))
                 outputFile = TargetFile;
 
@@ -81,13 +75,13 @@ namespace LinFu.AOP.Tasks
             {
                 Log.LogMessage("PostWeaving Assembly '{0}' -> '{1}'", TargetFile, outputFile);
 
-                var assembly = AssemblyFactory.GetAssembly(TargetFile);
+                AssemblyDefinition assembly = AssemblyFactory.GetAssembly(TargetFile);
 
-                var filenameWithoutExtension = Path.GetFileNameWithoutExtension(TargetFile);
-                var pdbFileName = string.Format("{0}.pdb", filenameWithoutExtension);
-                var pdbExists = File.Exists(pdbFileName);
+                string filenameWithoutExtension = Path.GetFileNameWithoutExtension(TargetFile);
+                string pdbFileName = string.Format("{0}.pdb", filenameWithoutExtension);
+                bool pdbExists = File.Exists(pdbFileName);
 
-                var module = assembly.MainModule;
+                ModuleDefinition module = assembly.MainModule;
 
                 if (pdbExists)
                     module.LoadSymbols();
@@ -96,10 +90,10 @@ namespace LinFu.AOP.Tasks
                     assembly.InterceptAllMethodCalls();
 
                 if (InterceptAllNewInstances)
-                    assembly.InterceptAllNewInstances();                
+                    assembly.InterceptAllNewInstances();
 
                 if (InterceptAllMethodBodies)
-                    assembly.InterceptAllMethodBodies();                
+                    assembly.InterceptAllMethodBodies();
 
                 if (InterceptAllFields)
                     assembly.InterceptAllFields();
@@ -115,7 +109,6 @@ namespace LinFu.AOP.Tasks
             }
             catch (Exception ex)
             {
-
                 Log.LogErrorFromException(ex);
                 result = false;
             }

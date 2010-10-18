@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.AOP.Interfaces;
 
 namespace LinFu.Proxy.Interfaces
@@ -12,7 +9,7 @@ namespace LinFu.Proxy.Interfaces
     public class FunctorAsInterceptor : IInterceptor
     {
         private readonly Func<IInvocationInfo, object> _doIntercept;
-        
+
         /// <summary>
         /// Initializes the class with the given <paramref name="intercept">functor</paramref>.
         /// </summary>
@@ -21,6 +18,8 @@ namespace LinFu.Proxy.Interfaces
         {
             _doIntercept = intercept;
         }
+
+        #region IInterceptor Members
 
         /// <summary>
         /// A method that redirects the method calls to 
@@ -35,5 +34,7 @@ namespace LinFu.Proxy.Interfaces
 
             return _doIntercept(info);
         }
+
+        #endregion
     }
 }

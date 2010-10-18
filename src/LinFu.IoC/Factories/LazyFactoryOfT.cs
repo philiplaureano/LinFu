@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC.Factories
@@ -12,7 +9,7 @@ namespace LinFu.IoC.Factories
     /// <typeparam name="T">The service type to be created.</typeparam>
     public class LazyFactory<T> : IFactory<T>, IFactory
     {
-        private Func<IFactoryRequest, IFactory> _getFactory;
+        private readonly Func<IFactoryRequest, IFactory> _getFactory;
 
         /// <summary>
         /// Initializes the factory with the given <paramref name="getFactory"/> functor.
@@ -22,6 +19,18 @@ namespace LinFu.IoC.Factories
         {
             _getFactory = getFactory;
         }
+
+        #region IFactory Members
+
+        object IFactory.CreateInstance(IFactoryRequest request)
+        {
+            IFactory<T> thisFactory = this;
+            return thisFactory.CreateInstance(request);
+        }
+
+        #endregion
+
+        #region IFactory<T> Members
 
         /// <summary>
         /// Instantiates the service type using the actual factory.
@@ -41,10 +50,6 @@ namespace LinFu.IoC.Factories
             return factory.CreateInstance(request);
         }
 
-        object IFactory.CreateInstance(IFactoryRequest request)
-        {
-            IFactory<T> thisFactory = this;
-            return thisFactory.CreateInstance(request);
-        }
+        #endregion
     }
 }

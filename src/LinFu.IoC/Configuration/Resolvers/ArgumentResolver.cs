@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using LinFu.Finders;
 using LinFu.IoC.Configuration.Interfaces;
 using LinFu.IoC.Interfaces;
@@ -14,6 +13,8 @@ namespace LinFu.IoC.Configuration
     /// </summary>
     public class ArgumentResolver : IArgumentResolver
     {
+        #region IArgumentResolver Members
+
         /// <summary>
         /// Generates method arguments from the given <paramref name="parameterTypes"/>
         /// and <paramref name="container"/>.
@@ -22,23 +23,24 @@ namespace LinFu.IoC.Configuration
         /// <param name="container">The container that will provide the method arguments.</param>
         /// <param name="additionalArguments">The additional arguments that will be passed to the target method.</param>
         /// <returns>An array of objects that represent the arguments to be passed to the target method.</returns>
-        public object[] ResolveFrom(IEnumerable<INamedType> parameterTypes, IServiceContainer container, params object[] additionalArguments)
+        public object[] ResolveFrom(IEnumerable<INamedType> parameterTypes, IServiceContainer container,
+                                    params object[] additionalArguments)
         {
-            var enumerableDefinition = typeof(IEnumerable<>);
-            var factoryDefinition = typeof (IFactory<>);
+            Type enumerableDefinition = typeof (IEnumerable<>);
+            Type factoryDefinition = typeof (IFactory<>);
             var argumentList = new List<object>();
-            foreach (var namedType in parameterTypes)
+            foreach (INamedType namedType in parameterTypes)
             {
-                var parameterType = namedType.Type;
+                Type parameterType = namedType.Type;
 
                 // Use the named service instance if possible
-                var parameterName = namedType.Name;
+                string parameterName = namedType.Name;
                 string serviceName = null;
 
                 if (!string.IsNullOrEmpty(parameterName) && parameterName.Length > 1)
                 {
-                    var firstChar = parameterName.First().ToString();
-                    var remainingText = parameterName.Substring(1);
+                    string firstChar = parameterName.First().ToString();
+                    string remainingText = parameterName.Substring(1);
                     serviceName = string.Format("{0}{1}", firstChar.ToUpper(), remainingText);
                 }
 
@@ -46,7 +48,7 @@ namespace LinFu.IoC.Configuration
                 {
                     // Instantiate the service type and build
                     // the argument list
-                    var currentArgument = container.GetService(serviceName, parameterType);
+                    object currentArgument = container.GetService(serviceName, parameterType);
                     argumentList.Add(currentArgument);
                     continue;
                 }
@@ -54,12 +56,12 @@ namespace LinFu.IoC.Configuration
                 // Substitute the parameter if and only if 
                 // the container does not have service that
                 // that matches the parameter type
-                var parameterTypeExists = container.Contains(parameterType);                               
+                bool parameterTypeExists = container.Contains(parameterType);
                 if (parameterTypeExists)
                 {
                     // Instantiate the service type and build
                     // the argument list
-                    var currentArgument = container.GetService(parameterType);
+                    object currentArgument = container.GetService(parameterType);
                     argumentList.Add(currentArgument);
                     continue;
                 }
@@ -80,7 +82,7 @@ namespace LinFu.IoC.Configuration
                     // set of services as a parameter value
                     AddArrayArgument(parameterType, container, argumentList);
                     continue;
-                }                               
+                }
             }
 
             // Append the existing arguments
@@ -89,6 +91,8 @@ namespace LinFu.IoC.Configuration
 
             return argumentList.ToArray();
         }
+
+        #endregion
 
         /// <summary>
         /// Constructs an array of services using the services currently available
@@ -100,19 +104,19 @@ namespace LinFu.IoC.Configuration
         private static void AddArrayArgument(Type parameterType, IServiceContainer container,
                                              ICollection<object> argumentList)
         {
-            var isArrayOfServices = parameterType.ExistsAsServiceArray();
+            Func<IServiceContainer, bool> isArrayOfServices = parameterType.ExistsAsServiceArray();
             if (!isArrayOfServices(container))
                 return;
 
-            var elementType = parameterType.GetElementType();
+            Type elementType = parameterType.GetElementType();
 
             // Instantiate all services that match
             // the element type
-            var services = (from info in container.AvailableServices
-                            where info.ServiceType == elementType
-                            select container.GetService(info));
+            IEnumerable<object> services = (from info in container.AvailableServices
+                                            where info.ServiceType == elementType
+                                            select container.GetService(info));
 
-            var serviceArray = services.Cast(elementType);
+            object serviceArray = services.Cast(elementType);
             argumentList.Add(serviceArray);
         }
 
@@ -124,12 +128,13 @@ namespace LinFu.IoC.Configuration
         /// <param name="parameterType">The current constructor parameter type.</param>
         /// <param name="container">The container that will provide the argument values.</param>
         /// <param name="argumentList">The list that will hold the arguments to be passed to the constructor.</param>
-        private static void AddEnumerableArgument(Type parameterType, IServiceContainer container, ICollection<object> argumentList)
+        private static void AddEnumerableArgument(Type parameterType, IServiceContainer container,
+                                                  ICollection<object> argumentList)
         {
-            var elementType = parameterType.GetGenericArguments()[0];
-            var baseElementDefinition = elementType.IsGenericType
-                                            ? elementType.GetGenericTypeDefinition()
-                                            : null;
+            Type elementType = parameterType.GetGenericArguments()[0];
+            Type baseElementDefinition = elementType.IsGenericType
+                                             ? elementType.GetGenericTypeDefinition()
+                                             : null;
 
             // There has to be at least one service
             Func<IServiceInfo, bool> condition =
@@ -148,15 +153,15 @@ namespace LinFu.IoC.Configuration
 
             // Build the IEnumerable<> list of services
             // that match the gvien condition
-            var services = container.GetServices(condition);
-            foreach (var service in services)
+            IEnumerable<IServiceInstance> services = container.GetServices(condition);
+            foreach (IServiceInstance service in services)
             {
                 serviceList.Add(service.Object);
             }
 
             IEnumerable enumerable = serviceList.AsEnumerable();
 
-            var result = enumerable.Cast(elementType);
+            object result = enumerable.Cast(elementType);
             argumentList.Add(result);
         }
     }

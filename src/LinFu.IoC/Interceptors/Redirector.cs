@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using LinFu.AOP.Interfaces;
 using LinFu.IoC.Configuration.Interfaces;
 using LinFu.Proxy.Interfaces;
@@ -17,8 +14,9 @@ namespace LinFu.IoC.Interceptors
         private readonly Func<object> _getActualTarget;
         private readonly IInterceptor _interceptor;
         private readonly IProxyFactory _proxyFactory;
+
         public Redirector(Func<object> getActualTarget, IInterceptor targetInterceptor, IProxyFactory factory,
-            IMethodInvoke<MethodInfo> methodInvoke)
+                          IMethodInvoke<MethodInfo> methodInvoke)
             : base(methodInvoke)
         {
             _getActualTarget = getActualTarget;
@@ -30,13 +28,13 @@ namespace LinFu.IoC.Interceptors
         {
             // Instead of using the proxy as the target,
             // modify the InvocationInfo to show the actual target
-            var proxyType = _proxyFactory.CreateProxyType(typeof(IInvocationInfo), new Type[0]);
+            Type proxyType = _proxyFactory.CreateProxyType(typeof (IInvocationInfo), new Type[0]);
             var infoProxy = Activator.CreateInstance(proxyType) as IProxy;
 
             if (infoProxy == null)
                 return base.Intercept(info);
 
-            var modifiedInfo = (IInvocationInfo)infoProxy;
+            var modifiedInfo = (IInvocationInfo) infoProxy;
 
             // Replace the proxy target with the actual target
             var infoInterceptor = new InvocationInfoInterceptor(info, _getActualTarget, MethodInvoker);

@@ -35,12 +35,12 @@ namespace LinFu.Reflection
     public class Loader<TTarget, TAssembly, TType> : ILoader<TTarget>
     {
         private readonly List<Action<TTarget>> _actions = new List<Action<TTarget>>();
+        private readonly HashSet<string> _loadedFiles = new HashSet<string>();
         private readonly List<Action<ILoader<TTarget>>> _loaderActions = new List<Action<ILoader<TTarget>>>();
         private readonly List<IActionLoader<TTarget, string>> _loaders = new List<IActionLoader<TTarget, string>>();
 
         private readonly AssemblyTargetLoader<ILoader<TTarget>, TAssembly, TType> _pluginLoader;
         private readonly List<ILoaderPlugin<TTarget>> _plugins = new List<ILoaderPlugin<TTarget>>();
-        private readonly HashSet<string> _loadedFiles = new HashSet<string>();
 
         /// <summary>
         /// Initializes the target with the default settings.
@@ -53,7 +53,8 @@ namespace LinFu.Reflection
         /// <summary>
         /// Initializes the target with the default settings.
         /// </summary>
-        public Loader(ITypeExtractor<TAssembly, TType> typeExtractor, IAssemblyLoader<TAssembly> assemblyLoader, IActionLoader<ILoader<TTarget>, TType> pluginTypeLoader)
+        public Loader(ITypeExtractor<TAssembly, TType> typeExtractor, IAssemblyLoader<TAssembly> assemblyLoader,
+                      IActionLoader<ILoader<TTarget>, TType> pluginTypeLoader)
         {
             _pluginLoader = new AssemblyTargetLoader<ILoader<TTarget>, TAssembly, TType>(typeExtractor, assemblyLoader);
             DirectoryLister = new DefaultDirectoryLister();
@@ -62,6 +63,8 @@ namespace LinFu.Reflection
             // on every LoadDirectory() call
             _pluginLoader.TypeLoaders.Add(pluginTypeLoader);
         }
+
+        #region ILoader<TTarget> Members
 
         /// <summary>
         /// The list of actions that will execute
@@ -121,9 +124,9 @@ namespace LinFu.Reflection
         public void LoadDirectory(string directory, string filespec)
         {
             // Determine which files currently exist
-            var files = DirectoryLister.GetFiles(directory, filespec);
+            IEnumerable<string> files = DirectoryLister.GetFiles(directory, filespec);
 
-            foreach (var currentFile in files)
+            foreach (string currentFile in files)
             {
                 // Make sure the file is loaded only once
                 if (_loadedFiles.Contains(currentFile))
@@ -135,7 +138,7 @@ namespace LinFu.Reflection
                 {
                     // Immediately execute any custom loader actions
                     // embedded in the file itself
-                    var customActions = _pluginLoader.Load(currentFile);
+                    IEnumerable<Action<ILoader<TTarget>>> customActions = _pluginLoader.Load(currentFile);
                     foreach (var customAction in customActions)
                     {
                         customAction(this);
@@ -199,6 +202,21 @@ namespace LinFu.Reflection
         }
 
         /// <summary>
+        /// Clears the currently loaded configuration
+        /// and resets the loader back to its defaults.
+        /// </summary>
+        public void Reset()
+        {
+            _loaders.Clear();
+            _plugins.Clear();
+            _actions.Clear();
+            _loaderActions.Clear();
+            _loadedFiles.Clear();
+        }
+
+        #endregion
+
+        /// <summary>
         /// Monitors the given <paramref name="directory"/> for any file changes and
         /// updates the current loader whenever the files that match the given <paramref name="fileSpec"/>
         /// are loaded into memory
@@ -211,18 +229,18 @@ namespace LinFu.Reflection
             if (!Directory.Exists(directory))
                 throw new DirectoryNotFoundException(directory);
 
-            FileSystemEventHandler handler = (source, e) => 
-                {
-                    LoadDirectory(directory, fileSpec);
-                    LoadInto(target);
-                };
+            FileSystemEventHandler handler = (source, e) =>
+                                                 {
+                                                     LoadDirectory(directory, fileSpec);
+                                                     LoadInto(target);
+                                                 };
 
-            var fullPath = Path.GetFullPath(directory);
+            string fullPath = Path.GetFullPath(directory);
             var watcher = new FileSystemWatcher(fullPath, fileSpec);
             watcher.Created += handler;
             watcher.Changed += handler;
             watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
-           | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+                                   | NotifyFilters.FileName | NotifyFilters.DirectoryName;
 
             watcher.EnableRaisingEvents = true;
         }
@@ -235,19 +253,6 @@ namespace LinFu.Reflection
         protected virtual bool ShouldLoad(ILoaderPlugin<TTarget> plugin)
         {
             return true;
-        }
-
-        /// <summary>
-        /// Clears the currently loaded configuration
-        /// and resets the loader back to its defaults.
-        /// </summary>
-        public void Reset()
-        {
-            _loaders.Clear();
-            _plugins.Clear();
-            _actions.Clear();
-            _loaderActions.Clear();
-            _loadedFiles.Clear();
         }
 
 
@@ -263,7 +268,7 @@ namespace LinFu.Reflection
                 if (loader == null || !loader.CanLoad(currentFile))
                     continue;
 
-                var actions = loader.Load(currentFile);
+                IEnumerable<Action<TTarget>> actions = loader.Load(currentFile);
                 if (actions.Count() == 0)
                     continue;
 

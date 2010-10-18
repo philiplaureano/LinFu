@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil;
 
@@ -24,6 +21,8 @@ namespace LinFu.AOP.Cecil
             _filter = filter;
         }
 
+        #region INewInstanceFilter Members
+
         /// <summary>
         /// Determines whether or not a particular constructor call should be intercepted by the postweaver.
         /// </summary>
@@ -31,9 +30,12 @@ namespace LinFu.AOP.Cecil
         /// <param name="concreteType">The concrete type that contains the new instance call.</param>
         /// <param name="hostMethod">The host method that contains the new operator call.</param>
         /// <returns>Returns <c>true</c> if the new operator call should be intercepted; otherwise, it should return <c>false</c>.</returns>
-        public bool ShouldWeave(MethodReference currentConstructor, TypeReference concreteType, MethodReference hostMethod)
+        public bool ShouldWeave(MethodReference currentConstructor, TypeReference concreteType,
+                                MethodReference hostMethod)
         {
             return _filter(currentConstructor, concreteType, hostMethod);
         }
+
+        #endregion
     }
 }

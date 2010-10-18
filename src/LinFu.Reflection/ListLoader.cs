@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace LinFu.Reflection
 {
@@ -13,6 +11,8 @@ namespace LinFu.Reflection
     public class CollectionLoader<T> : IActionLoader<ICollection<T>, Type>
         where T : class
     {
+        #region IActionLoader<ICollection<T>,Type> Members
+
         /// <summary>
         /// Creates the list of actions that load the target collection into memory.
         /// </summary>
@@ -22,7 +22,7 @@ namespace LinFu.Reflection
         {
             var actionList = new List<Action<ICollection<T>>>();
 
-            var component = (T)Activator.CreateInstance(input);
+            var component = (T) Activator.CreateInstance(input);
             actionList.Add(items => items.Add(component));
 
             return actionList;
@@ -37,7 +37,7 @@ namespace LinFu.Reflection
         {
             try
             {
-                if (!typeof(T).IsAssignableFrom(inputType))
+                if (!typeof (T).IsAssignableFrom(inputType))
                     return false;
 
                 if (!inputType.IsClass)
@@ -51,13 +51,15 @@ namespace LinFu.Reflection
                 // Ignore the error
                 return false;
             }
-            catch(FileNotFoundException)
+            catch (FileNotFoundException)
             {
                 // Ignore the error
                 return false;
             }
-           
+
             return true;
         }
+
+        #endregion
     }
 }

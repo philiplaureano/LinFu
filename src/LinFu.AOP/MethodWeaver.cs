@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -14,9 +12,9 @@ namespace LinFu.AOP.Cecil
     public class MethodWeaver : IMethodWeaver
     {
         private readonly Func<MethodReference, bool> _filter;
+        private readonly IInstructionProvider _instructionProvider;
         private readonly IMethodRewriter _rewriter;
         private readonly HashSet<MethodReference> _visitedMethods = new HashSet<MethodReference>();
-        private readonly IInstructionProvider _instructionProvider;
 
         /// <summary>
         /// Initializes a new instance of the MethodWeaver class.
@@ -34,12 +32,15 @@ namespace LinFu.AOP.Cecil
         /// <param name="rewriter">The <see cref="IMethodRewriter"/> instance that will modify the existing method.</param>
         /// <param name="instructionProvider">The provider that will obtain the original instructions for the target method.</param>
         /// <param name="filter">The filter that determines which methods should be modified.</param>        
-        public MethodWeaver(IMethodRewriter rewriter, IInstructionProvider instructionProvider, Func<MethodReference, bool> filter)
+        public MethodWeaver(IMethodRewriter rewriter, IInstructionProvider instructionProvider,
+                            Func<MethodReference, bool> filter)
         {
             _filter = filter;
             _rewriter = rewriter;
             _instructionProvider = instructionProvider;
         }
+
+        #region IMethodWeaver Members
 
         /// <summary>
         /// Determines whether or not a method should be modified.
@@ -66,34 +67,17 @@ namespace LinFu.AOP.Cecil
         /// <param name="method">The target method.</param>
         public void Weave(MethodDefinition method)
         {
-            var body = method.Body;
-            var IL = body.CilWorker;
+            MethodBody body = method.Body;
+            CilWorker IL = body.CilWorker;
 
             // Skip empty methods
-            var instructionCount = body.Instructions.Count;
+            int instructionCount = body.Instructions.Count;
             if (instructionCount == 0)
                 return;
 
             Rewrite(method);
 
             _visitedMethods.Add(method);
-        }
-
-        /// <summary>
-        /// Rewrites an existing method.
-        /// </summary>
-        /// <param name="method">The method that needs to be modified.</param>
-        private void Rewrite(MethodDefinition method)
-        {
-            var body = method.Body;
-            var IL = body.CilWorker;
-
-            var oldInstructions = _instructionProvider.GetInstructions(method);
-
-            body.Instructions.Clear();
-
-            _rewriter.AddLocals(method);
-            _rewriter.Rewrite(method, IL, oldInstructions);
         }
 
         /// <summary>
@@ -118,6 +102,25 @@ namespace LinFu.AOP.Cecil
                 return;
 
             _rewriter.ImportReferences(module);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Rewrites an existing method.
+        /// </summary>
+        /// <param name="method">The method that needs to be modified.</param>
+        private void Rewrite(MethodDefinition method)
+        {
+            MethodBody body = method.Body;
+            CilWorker IL = body.CilWorker;
+
+            IEnumerable<Instruction> oldInstructions = _instructionProvider.GetInstructions(method);
+
+            body.Instructions.Clear();
+
+            _rewriter.AddLocals(method);
+            _rewriter.Rewrite(method, IL, oldInstructions);
         }
     }
 }

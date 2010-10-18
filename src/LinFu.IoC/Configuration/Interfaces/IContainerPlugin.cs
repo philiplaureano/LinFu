@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.IoC.Interfaces;
+﻿using LinFu.IoC.Interfaces;
 using LinFu.Reflection;
 
 namespace LinFu.IoC.Configuration.Interfaces

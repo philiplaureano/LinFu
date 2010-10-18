@@ -1,36 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Reflection;
 using LinFu.AOP.Cecil.Extensions;
 using LinFu.AOP.Cecil.Interfaces;
+using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using LinFu.AOP.Interfaces;
-using System.Reflection;
 
 namespace LinFu.AOP.Cecil
 {
     internal class RedirectNewInstancesToActivator : INewObjectWeaver
     {
-        private MethodReference _getTypeFromHandle;
-        private MethodReference _methodActivationContextCtor;
-        private MethodReference _createInstance;
-        private MethodReference _objectListCtor;
+        private readonly INewInstanceFilter _filter;
         private MethodReference _addMethod;
-        private MethodReference _toArrayMethod;
-        private MethodReference _reverseMethod;
-        private MethodReference _getStaticActivator;
         private MethodReference _canActivate;
-        private MethodReference _getItem;
 
         private VariableDefinition _constructorArguments;
-        private VariableDefinition _currentArgument;
-        private VariableDefinition _methodContext;
+        private MethodReference _createInstance;
         private VariableDefinition _currentActivator;
-
-        private INewInstanceFilter _filter;
+        private VariableDefinition _currentArgument;
+        private MethodReference _getItem;
+        private MethodReference _getStaticActivator;
+        private MethodReference _getTypeFromHandle;
+        private MethodReference _methodActivationContextCtor;
+        private VariableDefinition _methodContext;
+        private MethodReference _objectListCtor;
+        private MethodReference _reverseMethod;
+        private MethodReference _toArrayMethod;
 
         public RedirectNewInstancesToActivator(INewInstanceFilter filter)
         {
@@ -40,7 +37,9 @@ namespace LinFu.AOP.Cecil
         public RedirectNewInstancesToActivator(Func<MethodReference, TypeReference, MethodReference, bool> filter)
         {
             _filter = new NewInstanceInterceptionAdapter(filter);
-        }        
+        }
+
+        #region INewObjectWeaver Members
 
         public bool ShouldIntercept(MethodReference constructor, TypeReference concreteType, MethodReference hostMethod)
         {
@@ -59,31 +58,36 @@ namespace LinFu.AOP.Cecil
         }
 
         public void ImportReferences(ModuleDefinition module)
-        {            
-
+        {
             // Static method imports
-            _getStaticActivator = module.ImportMethod("GetActivator", typeof(TypeActivatorRegistry), BindingFlags.Public | BindingFlags.Static);
-            _getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle", BindingFlags.Public | BindingFlags.Static);
+            _getStaticActivator = module.ImportMethod("GetActivator", typeof (TypeActivatorRegistry),
+                                                      BindingFlags.Public | BindingFlags.Static);
+            _getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle",
+                                                           BindingFlags.Public | BindingFlags.Static);
 
             // Constructor imports
-            _methodActivationContextCtor = module.ImportConstructor<TypeActivationContext>(typeof(object), typeof(MethodBase), typeof(Type), typeof(object[]));
+            _methodActivationContextCtor = module.ImportConstructor<TypeActivationContext>(typeof (object),
+                                                                                           typeof (MethodBase),
+                                                                                           typeof (Type),
+                                                                                           typeof (object[]));
 
             // Instance method imports
             _objectListCtor = module.ImportConstructor<List<object>>(new Type[0]);
             _toArrayMethod = module.ImportMethod<List<object>>("ToArray", new Type[0]);
-            _addMethod = module.ImportMethod<List<object>>("Add", new Type[] { typeof(object) });
+            _addMethod = module.ImportMethod<List<object>>("Add", new[] {typeof (object)});
             _reverseMethod = module.ImportMethod<List<object>>("Reverse", new Type[0]);
             _canActivate = module.ImportMethod<ITypeActivator>("CanActivate");
-            _getItem = module.ImportMethod<List<object>>("get_Item", new Type[] { typeof(int) });
+            _getItem = module.ImportMethod<List<object>>("get_Item", new[] {typeof (int)});
 
-            var createInstanceMethod = typeof(IActivator<ITypeActivationContext>).GetMethod("CreateInstance");
+            MethodInfo createInstanceMethod = typeof (IActivator<ITypeActivationContext>).GetMethod("CreateInstance");
 
             _createInstance = module.Import(createInstanceMethod);
         }
 
-        public void EmitNewObject(MethodDefinition hostMethod, CilWorker IL, MethodReference targetConstructor, TypeReference concreteType)
+        public void EmitNewObject(MethodDefinition hostMethod, CilWorker IL, MethodReference targetConstructor,
+                                  TypeReference concreteType)
         {
-            var parameters = targetConstructor.Parameters;
+            ParameterDefinitionCollection parameters = targetConstructor.Parameters;
             Instruction skipInterception = IL.Create(OpCodes.Nop);
 
             SaveConstructorArguments(IL, parameters);
@@ -92,8 +96,8 @@ namespace LinFu.AOP.Cecil
             // Skip the interception if an activator cannot be found            
             EmitGetActivator(hostMethod, IL, skipInterception);
 
-            IL.Emit(OpCodes.Stloc, _currentActivator);            
-            
+            IL.Emit(OpCodes.Stloc, _currentActivator);
+
             IL.Emit(OpCodes.Ldloc, _currentActivator);
             IL.Emit(OpCodes.Brfalse, skipInterception);
 
@@ -105,7 +109,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Brfalse, skipInterception);
 
             // Use the activator to create the object instance
-            EmitCreateInstance(IL);            
+            EmitCreateInstance(IL);
 
             // }
             Instruction endCreate = IL.Create(OpCodes.Nop);
@@ -115,10 +119,10 @@ namespace LinFu.AOP.Cecil
 
             // Restore the arguments that were popped off the stack
             // by the list of constructor arguments
-            var parameterCount = parameters.Count;
-            for (var index = 0; index < parameterCount; index++)
+            int parameterCount = parameters.Count;
+            for (int index = 0; index < parameterCount; index++)
             {
-                var currentParameter = parameters[index];
+                ParameterDefinition currentParameter = parameters[index];
 
                 IL.Emit(OpCodes.Ldloc, _constructorArguments);
                 IL.Emit(OpCodes.Ldc_I4, index);
@@ -132,6 +136,16 @@ namespace LinFu.AOP.Cecil
             IL.Append(endCreate);
         }
 
+        public void AddLocals(MethodDefinition hostMethod)
+        {
+            _constructorArguments = hostMethod.AddLocal<List<object>>();
+            _currentArgument = hostMethod.AddLocal<object>();
+            _methodContext = hostMethod.AddLocal<ITypeActivationContext>();
+            _currentActivator = hostMethod.AddLocal<ITypeActivator>();
+        }
+
+        #endregion
+
         private void EmitCreateInstance(CilWorker IL)
         {
             // T instance = this.Activator.CreateInstance(context);
@@ -143,12 +157,12 @@ namespace LinFu.AOP.Cecil
         private void EmitCreateMethodActivationContext(MethodDefinition method, CilWorker IL, TypeReference concreteType)
         {
             // TODO: Add static method support
-            var pushThis = method.IsStatic ? IL.Create(OpCodes.Ldnull) : IL.Create(OpCodes.Ldarg_0);
+            Instruction pushThis = method.IsStatic ? IL.Create(OpCodes.Ldnull) : IL.Create(OpCodes.Ldarg_0);
 
             // Push the 'this' pointer onto the stack
             IL.Append(pushThis);
 
-            var module = method.DeclaringType.Module;
+            ModuleDefinition module = method.DeclaringType.Module;
 
             // Push the current method onto the stack
             IL.PushMethod(method, module);
@@ -167,15 +181,15 @@ namespace LinFu.AOP.Cecil
 
         private void SaveConstructorArguments(CilWorker IL, ParameterDefinitionCollection parameters)
         {
-            var parameterCount = parameters.Count;
+            int parameterCount = parameters.Count;
 
             IL.Emit(OpCodes.Newobj, _objectListCtor);
             IL.Emit(OpCodes.Stloc, _constructorArguments);
 
-            var index = parameterCount - 1;
+            int index = parameterCount - 1;
             while (index >= 0)
             {
-                var param = parameters[index];
+                ParameterDefinition param = parameters[index];
 
                 SaveConstructorArgument(IL, param);
 
@@ -190,7 +204,7 @@ namespace LinFu.AOP.Cecil
         private void SaveConstructorArgument(CilWorker IL, ParameterDefinition param)
         {
             // Box the type if necessary
-            var parameterType = param.ParameterType;
+            TypeReference parameterType = param.ParameterType;
             if (parameterType.IsValueType || parameterType is GenericParameter)
                 IL.Emit(OpCodes.Box, parameterType);
 
@@ -204,17 +218,9 @@ namespace LinFu.AOP.Cecil
         }
 
         private void EmitGetActivator(MethodDefinition method, CilWorker IL, Instruction skipInterception)
-        {            
+        {
             IL.Emit(OpCodes.Ldloc, _methodContext);
             IL.Emit(OpCodes.Call, _getStaticActivator);
-        }
-
-        public void AddLocals(MethodDefinition hostMethod)
-        {
-            _constructorArguments = hostMethod.AddLocal<List<object>>();
-            _currentArgument = hostMethod.AddLocal<object>();
-            _methodContext = hostMethod.AddLocal<ITypeActivationContext>();
-            _currentActivator = hostMethod.AddLocal<ITypeActivator>();
         }
     }
 }

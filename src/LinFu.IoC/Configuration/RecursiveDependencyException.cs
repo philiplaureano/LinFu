@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using LinFu.IoC.Interfaces;
 
@@ -13,7 +12,7 @@ namespace LinFu.IoC.Configuration
     [Serializable]
     public class RecursiveDependencyException : Exception
     {
-        private LinkedList<Type> _typeChain;
+        private readonly LinkedList<Type> _typeChain;
 
         /// <summary>
         /// Initializes the <see cref="RecursiveDependencyException"/>
@@ -37,7 +36,7 @@ namespace LinFu.IoC.Configuration
                 return new LinkedList<Type>(_typeChain);
             }
         }
-        
+
         /// <summary>
         /// Gets the value indicating the error message from the <see cref="RecursiveDependencyException"/>.
         /// </summary>
@@ -45,11 +44,11 @@ namespace LinFu.IoC.Configuration
         {
             get
             {
-                var messageFormat = "Recursive Dependency Detected: {0}";
+                string messageFormat = "Recursive Dependency Detected: {0}";
                 var builder = new StringBuilder();
 
-                var currentNode = _typeChain.First;
-                while(currentNode != null)
+                LinkedListNode<Type> currentNode = _typeChain.First;
+                while (currentNode != null)
                 {
                     builder.AppendFormat("{0}", currentNode.Value.AssemblyQualifiedName);
 

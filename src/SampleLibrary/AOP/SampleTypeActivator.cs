@@ -1,18 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.AOP.Interfaces;
 
 namespace SampleLibrary.AOP
 {
     public class SampleTypeActivator : ITypeActivator
     {
-        private Func<ITypeActivationContext, object> _createInstance;
+        private readonly Func<ITypeActivationContext, object> _createInstance;
+
         public SampleTypeActivator(Func<ITypeActivationContext, object> createInstance)
         {
             _createInstance = createInstance;
         }
+
+        #region ITypeActivator Members
 
         public bool CanActivate(ITypeActivationContext context)
         {
@@ -23,5 +23,7 @@ namespace SampleLibrary.AOP
         {
             return _createInstance(context);
         }
+
+        #endregion
     }
 }

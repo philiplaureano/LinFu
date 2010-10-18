@@ -1,54 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using MethodBody = Mono.Cecil.Cil.MethodBody;
 
 namespace LinFu.AOP.Cecil
 {
     internal class InterceptMethodCalls : InstructionSwapper
     {
-        private MethodReference _stackCtor;
-        private MethodReference _invocationInfoCtor;
+        private readonly IMethodCallFilter _callFilter;
+        private VariableDefinition _aroundInvokeProvider;
+        private TypeReference _hostInterfaceType;
         private VariableDefinition _interceptionDisabled;
+        private MethodReference _invocationInfoCtor;
+        private VariableDefinition _methodReplacementProvider;
+        private VariableDefinition _returnValue;
+        private MethodReference _stackCtor;
 
         #region Method References
+
+        private MethodReference _canReplace;
+        private MethodReference _getProvider;
+        private MethodReference _getReplacement;
+        private MethodReference _getStaticProvider;
+        private MethodReference _intercept;
         private MethodReference _popMethod;
         private MethodReference _pushMethod;
         private MethodReference _toArray;
-        private MethodReference _canReplace;
-        private MethodReference _getProvider;
-        private MethodReference _getStaticProvider;
-        private MethodReference _getReplacement;
-        private MethodReference _intercept;
+
         #endregion
+
         #region Local Variables
-        private VariableDefinition _currentArguments;
+
+        private VariableDefinition _canReplaceFlag;
         private VariableDefinition _currentArgument;
-        private VariableDefinition _parameterTypes;
-        private VariableDefinition _typeArguments;
+        private VariableDefinition _currentArguments;
+        private VariableDefinition _instanceProvider;
         private VariableDefinition _invocationInfo;
+        private VariableDefinition _parameterTypes;
+        private VariableDefinition _replacement;
         private VariableDefinition _staticProvider;
         private VariableDefinition _target;
-        private VariableDefinition _replacement;
-        private VariableDefinition _canReplaceFlag;
-        private VariableDefinition _instanceProvider;
+        private VariableDefinition _typeArguments;
+
         #endregion
 
-        private TypeReference _hostInterfaceType;
-        private VariableDefinition _methodReplacementProvider;
-        private VariableDefinition _aroundInvokeProvider;
-        private VariableDefinition _returnValue;
-
-        private IMethodCallFilter _callFilter;
-
-        public InterceptMethodCalls(Func<MethodReference, bool> hostMethodFilter, Func<MethodReference, bool> methodCallFilter)
+        public InterceptMethodCalls(Func<MethodReference, bool> hostMethodFilter,
+                                    Func<MethodReference, bool> methodCallFilter)
         {
             _callFilter = new MethodCallFilterAdapter(hostMethodFilter, methodCallFilter);
         }
@@ -60,13 +63,16 @@ namespace LinFu.AOP.Cecil
 
         public override void ImportReferences(ModuleDefinition module)
         {
-            var types = new[] { typeof(object), 
-                                 typeof(MethodBase), 
-                                 typeof(StackTrace), 
-                                 typeof(Type[]), 
-                                 typeof(Type[]), 
-                                 typeof(Type), 
-                                 typeof(object[]) };
+            var types = new[]
+                            {
+                                typeof (object),
+                                typeof (MethodBase),
+                                typeof (StackTrace),
+                                typeof (Type[]),
+                                typeof (Type[]),
+                                typeof (Type),
+                                typeof (object[])
+                            };
 
             _invocationInfoCtor = module.ImportConstructor<InvocationInfo>(types);
             _stackCtor = module.ImportConstructor<Stack<object>>(new Type[0]);
@@ -75,7 +81,7 @@ namespace LinFu.AOP.Cecil
             _popMethod = module.ImportMethod<Stack<object>>("Pop");
             _toArray = module.ImportMethod<Stack<object>>("ToArray");
             _getProvider = module.ImportMethod<IMethodReplacementHost>("get_MethodCallReplacementProvider");
-            _getStaticProvider = module.ImportMethod("GetProvider", typeof(MethodCallReplacementProviderRegistry));
+            _getStaticProvider = module.ImportMethod("GetProvider", typeof (MethodCallReplacementProviderRegistry));
 
             _canReplace = module.ImportMethod<IMethodReplacementProvider>("CanReplace");
             _getReplacement = module.ImportMethod<IMethodReplacementProvider>("GetMethodReplacement");
@@ -85,7 +91,7 @@ namespace LinFu.AOP.Cecil
 
         public override void AddLocals(MethodDefinition hostMethod)
         {
-            var body = hostMethod.Body;
+            MethodBody body = hostMethod.Body;
             body.InitLocals = true;
 
             _currentArguments = hostMethod.AddLocal<Stack<object>>("__arguments");
@@ -108,14 +114,14 @@ namespace LinFu.AOP.Cecil
         }
 
         protected override void Replace(Instruction oldInstruction, MethodDefinition hostMethod,
-            CilWorker IL)
+                                        CilWorker IL)
         {
-            var targetMethod = (MethodReference)oldInstruction.Operand;
+            var targetMethod = (MethodReference) oldInstruction.Operand;
 
-            var callOriginalMethod = IL.Create(OpCodes.Nop);
-            var returnType = targetMethod.ReturnType.ReturnType;
-            var endLabel = IL.Create(OpCodes.Nop);
-            var module = hostMethod.DeclaringType.Module;
+            Instruction callOriginalMethod = IL.Create(OpCodes.Nop);
+            TypeReference returnType = targetMethod.ReturnType.ReturnType;
+            Instruction endLabel = IL.Create(OpCodes.Nop);
+            ModuleDefinition module = hostMethod.DeclaringType.Module;
 
             // Create the stack that will hold the method arguments
             IL.Emit(OpCodes.Newobj, _stackCtor);
@@ -131,7 +137,9 @@ namespace LinFu.AOP.Cecil
             getInterceptionDisabled.Emit(IL);
 
             var surroundMethodBody = new SurroundMethodBody(_methodReplacementProvider, _aroundInvokeProvider,
-                                                            _invocationInfo, _interceptionDisabled, _returnValue, typeof(AroundInvokeMethodCallRegistry), "AroundMethodCallProvider");
+                                                            _invocationInfo, _interceptionDisabled, _returnValue,
+                                                            typeof (AroundInvokeMethodCallRegistry),
+                                                            "AroundMethodCallProvider");
 
             surroundMethodBody.AddProlog(IL);
             // Use the MethodReplacementProvider attached to the
@@ -147,19 +155,20 @@ namespace LinFu.AOP.Cecil
         {
             IL.Emit(OpCodes.Ldloc, targetVariable);
 
-            var addInstance = module.Import(typeof(IgnoredInstancesRegistry).GetMethod("AddInstance"));
+            MethodReference addInstance = module.Import(typeof (IgnoredInstancesRegistry).GetMethod("AddInstance"));
             IL.Emit(OpCodes.Call, addInstance);
         }
 
-        private void Replace(CilWorker IL, Instruction oldInstruction, MethodReference targetMethod, MethodDefinition hostMethod, Instruction endLabel, Instruction callOriginalMethod)
+        private void Replace(CilWorker IL, Instruction oldInstruction, MethodReference targetMethod,
+                             MethodDefinition hostMethod, Instruction endLabel, Instruction callOriginalMethod)
         {
-            var returnType = targetMethod.ReturnType.ReturnType;
-            var module = hostMethod.DeclaringType.Module;
+            TypeReference returnType = targetMethod.ReturnType.ReturnType;
+            ModuleDefinition module = hostMethod.DeclaringType.Module;
             if (!hostMethod.IsStatic)
                 GetInstanceProvider(IL);
 
 
-            var pushInstance = hostMethod.HasThis ? IL.Create(OpCodes.Ldarg_0) : IL.Create(OpCodes.Ldnull);
+            Instruction pushInstance = hostMethod.HasThis ? IL.Create(OpCodes.Ldarg_0) : IL.Create(OpCodes.Ldnull);
 
             // If all else fails, use the static method replacement provider
             IL.Append(pushInstance);
@@ -167,11 +176,10 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Call, _getStaticProvider);
             IL.Emit(OpCodes.Stloc, _staticProvider);
 
-            var restoreArgumentStack = IL.Create(OpCodes.Nop);
+            Instruction restoreArgumentStack = IL.Create(OpCodes.Nop);
 
-            var callReplacement = IL.Create(OpCodes.Nop);
-            var useStaticProvider = IL.Create(OpCodes.Nop);
-
+            Instruction callReplacement = IL.Create(OpCodes.Nop);
+            Instruction useStaticProvider = IL.Create(OpCodes.Nop);
 
             #region Use the instance method replacement provider
 
@@ -231,7 +239,7 @@ namespace LinFu.AOP.Cecil
 
         private void GetInstanceProvider(CilWorker IL)
         {
-            var skipInstanceProvider = IL.Create(OpCodes.Nop);
+            Instruction skipInstanceProvider = IL.Create(OpCodes.Nop);
 
             IL.Emit(OpCodes.Ldarg_0);
             IL.Emit(OpCodes.Isinst, _hostInterfaceType);
@@ -261,7 +269,8 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        private void SaveInvocationInfo(CilWorker IL, MethodReference targetMethod, ModuleDefinition module, TypeReference returnType)
+        private void SaveInvocationInfo(CilWorker IL, MethodReference targetMethod, ModuleDefinition module,
+                                        TypeReference returnType)
         {
             // If the target method is an instance method, then the remaining item on the stack
             // will be the target object instance
@@ -271,7 +280,7 @@ namespace LinFu.AOP.Cecil
             foreach (ParameterReference param in targetMethod.Parameters)
             {
                 // Save the current argument
-                var parameterType = param.ParameterType;
+                TypeReference parameterType = param.ParameterType;
                 if (parameterType.IsValueType || parameterType is GenericParameter)
                     IL.Emit(OpCodes.Box, parameterType);
 
@@ -287,7 +296,7 @@ namespace LinFu.AOP.Cecil
                 IL.Emit(OpCodes.Ldnull);
 
             // Box the target, if necessary
-            var declaringType = targetMethod.GetDeclaringType();
+            TypeReference declaringType = targetMethod.GetDeclaringType();
             if (targetMethod.HasThis && (declaringType.IsValueType || declaringType is GenericParameter))
                 IL.Emit(OpCodes.Box, declaringType);
 
@@ -301,10 +310,10 @@ namespace LinFu.AOP.Cecil
             // Push the stack trace
             PushStackTrace(IL, module);
 
-            var systemType = module.Import(typeof(Type));
+            TypeReference systemType = module.Import(typeof (Type));
 
             // Save the parameter types
-            var parameterCount = targetMethod.Parameters.Count;
+            int parameterCount = targetMethod.Parameters.Count;
             IL.Emit(OpCodes.Ldc_I4, parameterCount);
             IL.Emit(OpCodes.Newarr, systemType);
             IL.Emit(OpCodes.Stloc, _parameterTypes);
@@ -313,7 +322,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Ldloc, _parameterTypes);
 
             // Save the type arguments
-            var genericParameterCount = targetMethod.GenericParameters.Count;
+            int genericParameterCount = targetMethod.GenericParameters.Count;
             IL.Emit(OpCodes.Ldc_I4, genericParameterCount);
             IL.Emit(OpCodes.Newarr, systemType);
             IL.Emit(OpCodes.Stloc, _typeArguments);
@@ -348,7 +357,7 @@ namespace LinFu.AOP.Cecil
 
         private void EmitCanReplace(CilWorker IL, IMethodSignature hostMethod, VariableDefinition provider)
         {
-            var skipGetProvider = IL.Create(OpCodes.Nop);
+            Instruction skipGetProvider = IL.Create(OpCodes.Nop);
 
             IL.Emit(OpCodes.Ldloc, provider);
             IL.Emit(OpCodes.Brfalse, skipGetProvider);
@@ -356,7 +365,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Ldloc, provider);
 
             // Push the host instance
-            var pushInstance = hostMethod.HasThis ? IL.Create(OpCodes.Ldarg_0) : IL.Create(OpCodes.Ldnull);
+            Instruction pushInstance = hostMethod.HasThis ? IL.Create(OpCodes.Ldarg_0) : IL.Create(OpCodes.Ldnull);
             IL.Append(pushInstance);
             IL.Emit(OpCodes.Ldloc, _invocationInfo);
             IL.Emit(OpCodes.Callvirt, _canReplace);
@@ -371,7 +380,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Ldloc, provider);
 
             // Push the host instance
-            var pushInstance = hostMethod.HasThis ? IL.Create(OpCodes.Ldarg_0) : IL.Create(OpCodes.Ldnull);
+            Instruction pushInstance = hostMethod.HasThis ? IL.Create(OpCodes.Ldarg_0) : IL.Create(OpCodes.Ldnull);
             IL.Append(pushInstance);
             IL.Emit(OpCodes.Ldloc, _invocationInfo);
             IL.Emit(OpCodes.Callvirt, _getReplacement);
@@ -381,12 +390,12 @@ namespace LinFu.AOP.Cecil
         protected override bool ShouldReplace(Instruction oldInstruction, MethodDefinition hostMethod)
         {
             // Intercept the call and callvirt instructions
-            var opCode = oldInstruction.OpCode;
+            OpCode opCode = oldInstruction.OpCode;
             if (opCode != OpCodes.Callvirt && opCode != OpCodes.Call)
                 return false;
 
-            var targetMethod = (MethodReference)oldInstruction.Operand;
-            var declaringType = targetMethod.DeclaringType;
+            var targetMethod = (MethodReference) oldInstruction.Operand;
+            TypeReference declaringType = targetMethod.DeclaringType;
 
 
             //return _hostMethodFilter(hostMethod) && _methodCallFilter(targetMethod);

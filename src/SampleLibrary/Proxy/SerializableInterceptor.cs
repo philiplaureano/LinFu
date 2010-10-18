@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.AOP.Interfaces;
 using System.Runtime.Serialization;
+using LinFu.AOP.Interfaces;
 
 namespace SampleLibrary.Proxy
 {
@@ -16,23 +13,27 @@ namespace SampleLibrary.Proxy
 
         public SerializableInterceptor(SerializationInfo info, StreamingContext context)
         {
-            Identifier = (Guid)info.GetValue("identifier", typeof(Guid));
+            Identifier = (Guid) info.GetValue("identifier", typeof (Guid));
         }
 
-        public Guid Identifier
-        {
-            get;
-            set;
-        }
+        public Guid Identifier { get; set; }
+
+        #region IInterceptor Members
 
         public object Intercept(IInvocationInfo info)
         {
             return null;
         }
 
+        #endregion
+
+        #region ISerializable Members
+
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("identifier", Identifier);
         }
+
+        #endregion
     }
 }

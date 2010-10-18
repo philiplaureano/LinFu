@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC
@@ -19,10 +16,10 @@ namespace LinFu.IoC
         /// <param name="container">The target service contaienr.</param>
         /// <param name="additionalArguments">The additional arguments that will be used to create the service instance.</param>
         /// <returns>A service instance.</returns>
-        public static object CreateInstance(this IFactory factory, Type serviceType, 
-            IServiceContainer container, params object[] additionalArguments)
+        public static object CreateInstance(this IFactory factory, Type serviceType,
+                                            IServiceContainer container, params object[] additionalArguments)
         {
-            var request = new FactoryRequest()
+            var request = new FactoryRequest
                               {
                                   ServiceName = null,
                                   ServiceType = serviceType,

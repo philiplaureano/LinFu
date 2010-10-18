@@ -12,6 +12,7 @@ namespace LinFu.IoC.Factories
     {
         private readonly Func<IFactoryRequest, T> _createInstance;
         private readonly Type _serviceType;
+
         /// <summary>
         /// Initializes the factory class using the <paramref name="createInstance"/>
         /// parameter as a factory delegate.
@@ -36,7 +37,7 @@ namespace LinFu.IoC.Factories
         public OncePerRequestFactory(Func<IFactoryRequest, T> createInstance)
         {
             _createInstance = createInstance;
-            _serviceType = typeof(T);
+            _serviceType = typeof (T);
         }
 
         /// <summary>

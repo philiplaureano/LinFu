@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using LinFu.Finders;
 using LinFu.Finders.Interfaces;
 using Moq;
@@ -12,15 +9,24 @@ namespace LinFu.UnitTests.Finders
     [TestFixture]
     public class FinderTests : BaseTestFixture
     {
+        private Mock<ICriteria<object>> GetMockCriteria(bool predicateResult, CriteriaType criteriaType, int weight)
+        {
+            var criteria = new Mock<ICriteria<object>>();
+            criteria.Expect(c => c.Predicate).Returns(predicate => predicateResult);
+            criteria.Expect(c => c.Type).Returns(criteriaType);
+            criteria.Expect(c => c.Weight).Returns(weight);
+            return criteria;
+        }
+
         [Test]
         public void ShouldBeAbleToAddCriteriaToList()
         {
             // Return a predicate that always returns true
             var mockCriteria = new Mock<ICriteria<object>>();
-            var criteria = mockCriteria.Object;
+            ICriteria<object> criteria = mockCriteria.Object;
 
             var mockFuzzyItem = new Mock<IFuzzyItem<object>>();
-            var fuzzyItem = mockFuzzyItem.Object;
+            IFuzzyItem<object> fuzzyItem = mockFuzzyItem.Object;
 
             // The Test method must be called on the fuzzy item
             mockFuzzyItem.Expect(fuzzy => fuzzy.Test(criteria));
@@ -50,6 +56,53 @@ namespace LinFu.UnitTests.Finders
         }
 
         [Test]
+        public void ShouldBeAbleToDetermineBestFuzzyMatch()
+        {
+            var mockFuzzyItem = new Mock<IFuzzyItem<object>>();
+            IFuzzyItem<object> fuzzyItem = mockFuzzyItem.Object;
+
+            // This should be the best match
+            mockFuzzyItem.Expect(f => f.Confidence).Returns(.8);
+
+            var otherMockFuzzyItem = new Mock<IFuzzyItem<object>>();
+            IFuzzyItem<object> fauxFuzzyItem = otherMockFuzzyItem.Object;
+
+            // This fuzzy item should be ignored since it has
+            // a lower confidence rate
+            otherMockFuzzyItem.Expect(f => f.Confidence).Returns(.1);
+
+            var fuzzyList = new List<IFuzzyItem<object>> {fuzzyItem, fauxFuzzyItem};
+
+            IFuzzyItem<object> bestMatch = fuzzyList.BestMatch();
+            Assert.AreSame(bestMatch, fuzzyItem);
+        }
+
+        [Test]
+        public void ShouldBeAbleToIgnoreFailedOptionalCriteria()
+        {
+            // The criteria will be set up to fail by default            
+            Mock<ICriteria<object>> falseCriteria = GetMockCriteria(false, CriteriaType.Optional, 1);
+
+            // Use the true criteria as the control result
+            Mock<ICriteria<object>> trueCriteria = GetMockCriteria(true, CriteriaType.Optional, 1);
+
+            var fuzzyList = new List<IFuzzyItem<object>>();
+            var fuzzyItem = new FuzzyItem<object>(new object());
+
+            fuzzyList.Add(fuzzyItem);
+
+            // Apply the criteria
+            fuzzyList.AddCriteria(trueCriteria.Object);
+            fuzzyList.AddCriteria(falseCriteria.Object);
+
+            // The score must be left unchanged
+            // since the criteria is optional and
+            // the failed predicate does not count
+            // against the current fuzzy item.
+            Assert.AreEqual(fuzzyItem.Confidence, 1);
+        }
+
+        [Test]
         public void ShouldNotBeAbleToIgnoreFailedCriticalCriteria()
         {
             var fuzzyList = new List<IFuzzyItem<object>>();
@@ -57,8 +110,8 @@ namespace LinFu.UnitTests.Finders
 
             fuzzyList.Add(fuzzyItem);
 
-            var trueCriteria = GetMockCriteria(true, CriteriaType.Standard, 2);            
-            var failedCriteria = GetMockCriteria(false, CriteriaType.Critical, 1);
+            Mock<ICriteria<object>> trueCriteria = GetMockCriteria(true, CriteriaType.Standard, 2);
+            Mock<ICriteria<object>> failedCriteria = GetMockCriteria(false, CriteriaType.Critical, 1);
 
             // Boost the first item results so that the best match
             // should be biased towards the first item
@@ -71,7 +124,7 @@ namespace LinFu.UnitTests.Finders
             fuzzyList.AddCriteria(trueCriteria.Object);
 
             // The first item should be the best match at this point
-            var bestMatch = fuzzyList.BestMatch();
+            IFuzzyItem<object> bestMatch = fuzzyList.BestMatch();
             Assert.AreSame(bestMatch, fuzzyItem);
 
             // Remove the second item from the list to avoid the
@@ -94,69 +147,14 @@ namespace LinFu.UnitTests.Finders
             // because of the failed criteria            
             Assert.AreSame(bestMatch, secondItem);
         }
-        [Test]
-        public void ShouldBeAbleToIgnoreFailedOptionalCriteria()
-        {
-            // The criteria will be set up to fail by default            
-            var falseCriteria = GetMockCriteria(false, CriteriaType.Optional, 1);
-
-            // Use the true criteria as the control result
-            var trueCriteria = GetMockCriteria(true, CriteriaType.Optional, 1);
-
-            var fuzzyList = new List<IFuzzyItem<object>>();
-            var fuzzyItem = new FuzzyItem<object>(new object());
-
-            fuzzyList.Add(fuzzyItem);
-
-            // Apply the criteria
-            fuzzyList.AddCriteria(trueCriteria.Object);
-            fuzzyList.AddCriteria(falseCriteria.Object);
-
-            // The score must be left unchanged
-            // since the criteria is optional and
-            // the failed predicate does not count
-            // against the current fuzzy item.
-            Assert.AreEqual(fuzzyItem.Confidence, 1);
-        }
-
-        private Mock<ICriteria<object>> GetMockCriteria(bool predicateResult, CriteriaType criteriaType, int weight)
-        {
-            var criteria = new Mock<ICriteria<object>>();
-            criteria.Expect(c => c.Predicate).Returns(predicate => predicateResult);
-            criteria.Expect(c => c.Type).Returns(criteriaType);
-            criteria.Expect(c => c.Weight).Returns(weight);
-            return criteria;
-        }
-
-        [Test]
-        public void ShouldBeAbleToDetermineBestFuzzyMatch()
-        {
-            var mockFuzzyItem = new Mock<IFuzzyItem<object>>();
-            var fuzzyItem = mockFuzzyItem.Object;
-
-            // This should be the best match
-            mockFuzzyItem.Expect(f => f.Confidence).Returns(.8);
-
-            var otherMockFuzzyItem = new Mock<IFuzzyItem<object>>();
-            var fauxFuzzyItem = otherMockFuzzyItem.Object;
-
-            // This fuzzy item should be ignored since it has
-            // a lower confidence rate
-            otherMockFuzzyItem.Expect(f => f.Confidence).Returns(.1);
-
-            var fuzzyList = new List<IFuzzyItem<object>> { fuzzyItem, fauxFuzzyItem };
-
-            var bestMatch = fuzzyList.BestMatch();
-            Assert.AreSame(bestMatch, fuzzyItem);
-        }
 
         [Test]
         public void ShouldReturnNullIfAllMatchScoresAreZero()
         {
             var fuzzyItem = new FuzzyItem<object>(new object());
-            var fuzzyList = new List<IFuzzyItem<object>> { fuzzyItem };
+            var fuzzyList = new List<IFuzzyItem<object>> {fuzzyItem};
 
-            var bestMatch = fuzzyList.BestMatch();
+            IFuzzyItem<object> bestMatch = fuzzyList.BestMatch();
 
             Assert.IsNull(bestMatch);
         }

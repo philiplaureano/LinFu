@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC
@@ -11,8 +8,10 @@ namespace LinFu.IoC
     /// </summary>
     public abstract class BaseFactoryStorage : IFactoryStorage
     {
-        private readonly object _lock = new object();
         private readonly Dictionary<IServiceInfo, IFactory> _entries = new Dictionary<IServiceInfo, IFactory>();
+        private readonly object _lock = new object();
+
+        #region IFactoryStorage Members
 
         /// <summary>
         /// Determines which factories should be used
@@ -36,7 +35,7 @@ namespace LinFu.IoC
         public virtual void AddFactory(IServiceInfo serviceInfo, IFactory factory)
         {
             lock (_lock)
-            {               
+            {
                 _entries[serviceInfo] = factory;
             }
         }
@@ -47,7 +46,7 @@ namespace LinFu.IoC
         /// <param name="serviceInfo">The <see cref="IServiceInfo"/> object that describes the target factory.</param>
         /// <returns>Returns <c>true</c> if the factory exists; otherwise, it will return <c>false</c>.</returns>
         public virtual bool ContainsFactory(IServiceInfo serviceInfo)
-        {            
+        {
             return _entries.ContainsKey(serviceInfo);
         }
 
@@ -58,10 +57,9 @@ namespace LinFu.IoC
         /// </summary>
         public virtual IEnumerable<IServiceInfo> AvailableFactories
         {
-            get
-            {                
-                return _entries.Keys;
-            }
+            get { return _entries.Keys; }
         }
+
+        #endregion
     }
 }

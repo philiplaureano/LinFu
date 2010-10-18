@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace LinFu.AOP.Interfaces
-{   
+﻿namespace LinFu.AOP.Interfaces
+{
     /// <summary>
     /// Represents a type that can catch thrown exceptions.
     /// </summary>
@@ -21,6 +16,6 @@ namespace LinFu.AOP.Interfaces
         /// Handles the exception specified in the <paramref name="exceptionHandlerInfo"/> instance.
         /// </summary>
         /// <param name="exceptionHandlerInfo">The object that describes the exception being thrown.</param>
-        void Catch(IExceptionHandlerInfo exceptionHandlerInfo);       
+        void Catch(IExceptionHandlerInfo exceptionHandlerInfo);
     }
 }

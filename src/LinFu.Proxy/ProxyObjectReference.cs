@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
-using LinFu.Proxy.Interfaces;
 using LinFu.AOP.Interfaces;
-using System.Reflection;
+using LinFu.Proxy.Interfaces;
 
 namespace LinFu.Proxy
 {
@@ -30,7 +27,7 @@ namespace LinFu.Proxy
             _baseType = Type.GetType(qualifiedName, true, false);
 
             // Rebuild the list of interfaces
-            List<Type> interfaceList = new List<Type>();
+            var interfaceList = new List<Type>();
             int interfaceCount = info.GetInt32("__baseInterfaceCount");
             for (int i = 0; i < interfaceCount; i++)
             {
@@ -42,13 +39,15 @@ namespace LinFu.Proxy
             }
 
             // Reconstruct the proxy
-            ProxyFactory factory = new ProxyFactory();
+            var factory = new ProxyFactory();
             Type proxyType = factory.CreateProxyType(_baseType, interfaceList.ToArray());
-            _proxy = (IProxy)Activator.CreateInstance(proxyType);
+            _proxy = (IProxy) Activator.CreateInstance(proxyType);
 
-            IInterceptor interceptor = (IInterceptor)info.GetValue("__interceptor", typeof(IInterceptor));
+            var interceptor = (IInterceptor) info.GetValue("__interceptor", typeof (IInterceptor));
             _proxy.Interceptor = interceptor;
         }
+
+        #region IObjectReference Members
 
         /// <summary>
         /// Returns the deserialized proxy instance.
@@ -60,6 +59,10 @@ namespace LinFu.Proxy
             return _proxy;
         }
 
+        #endregion
+
+        #region ISerializable Members
+
         /// <summary>
         /// Serializes the proxy to a stream. 
         /// </summary>
@@ -69,5 +72,7 @@ namespace LinFu.Proxy
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
         }
+
+        #endregion
     }
 }

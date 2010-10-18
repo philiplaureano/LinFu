@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using LinFu.AOP.Cecil.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
@@ -14,11 +11,11 @@ namespace LinFu.AOP.Cecil
     /// </summary>
     public class AddMethodReplacementImplementation : IInstructionEmitter
     {
-        private readonly IEnumerable<Instruction> _oldInstructions;
-        private readonly VariableDefinition _interceptionDisabled;
-        private readonly VariableDefinition _methodReplacementProvider;
         private readonly VariableDefinition _classMethodReplacementProvider;
+        private readonly VariableDefinition _interceptionDisabled;
         private readonly VariableDefinition _invocationInfo;
+        private readonly VariableDefinition _methodReplacementProvider;
+        private readonly IEnumerable<Instruction> _oldInstructions;
         private readonly VariableDefinition _returnValue;
 
         /// <summary>
@@ -33,7 +30,9 @@ namespace LinFu.AOP.Cecil
             _classMethodReplacementProvider = parameters.ClassMethodReplacementProvider;
             _invocationInfo = parameters.InvocationInfo;
             _returnValue = parameters.ReturnValue;
-        }        
+        }
+
+        #region IInstructionEmitter Members
 
         /// <summary>
         /// Adds method body interception to the target method.
@@ -41,18 +40,18 @@ namespace LinFu.AOP.Cecil
         /// <param name="IL">The <see cref="CilWorker"/> pointing to the target method body.</param>
         public void Emit(CilWorker IL)
         {
-            var method = IL.GetMethod();
-            var returnType = method.ReturnType.ReturnType;
+            MethodDefinition method = IL.GetMethod();
+            TypeReference returnType = method.ReturnType.ReturnType;
 
-            var endLabel = IL.Create(OpCodes.Nop);
-            var executeOriginalInstructions = IL.Create(OpCodes.Nop);
+            Instruction endLabel = IL.Create(OpCodes.Nop);
+            Instruction executeOriginalInstructions = IL.Create(OpCodes.Nop);
 
             // Execute the method body replacement if and only if
             // interception is enabled
             IL.Emit(OpCodes.Ldloc, _interceptionDisabled);
             IL.Emit(OpCodes.Brtrue, executeOriginalInstructions);
 
-            var invokeReplacement = IL.Create(OpCodes.Nop);
+            Instruction invokeReplacement = IL.Create(OpCodes.Nop);
 
             IL.Emit(OpCodes.Ldloc, _methodReplacementProvider);
             IL.Emit(OpCodes.Brtrue, invokeReplacement);
@@ -66,12 +65,14 @@ namespace LinFu.AOP.Cecil
             // This is equivalent to the following code:
             // var replacement = provider.GetMethodReplacement(info);
             var invokeMethodReplacement = new InvokeMethodReplacement(executeOriginalInstructions,
-                _methodReplacementProvider, _classMethodReplacementProvider, _invocationInfo);
+                                                                      _methodReplacementProvider,
+                                                                      _classMethodReplacementProvider, _invocationInfo);
             invokeMethodReplacement.Emit(IL);
 
             IL.Emit(OpCodes.Br, endLabel);
 
             #region The original instruction block
+
             IL.Append(executeOriginalInstructions);
             var addOriginalInstructions = new AddOriginalInstructions(_oldInstructions, endLabel);
             addOriginalInstructions.Emit(IL);
@@ -83,6 +84,8 @@ namespace LinFu.AOP.Cecil
 
             var saveReturnValue = new SaveReturnValue(returnType, _returnValue);
             saveReturnValue.Emit(IL);
-        }       
+        }
+
+        #endregion
     }
 }

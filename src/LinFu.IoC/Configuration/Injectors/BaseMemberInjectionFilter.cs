@@ -12,12 +12,27 @@ namespace LinFu.IoC.Configuration
     /// </summary>
     /// <typeparam name="TMember">The member type that will be filtered.</typeparam>
     public abstract class BaseMemberInjectionFilter<TMember> : IMemberInjectionFilter<TMember>, IInitialize
-        where TMember : MemberInfo 
+        where TMember : MemberInfo
     {
         private static readonly Dictionary<Type, IEnumerable<TMember>> _itemCache =
             new Dictionary<Type, IEnumerable<TMember>>();
 
         private IServiceContainer _container;
+
+        #region IInitialize Members
+
+        /// <summary>
+        /// Initializes the <see cref="BaseMemberInjectionFilter{TMember}"/> class.
+        /// </summary>
+        /// <param name="source">The host container.</param>
+        public virtual void Initialize(IServiceContainer source)
+        {
+            _container = source;
+        }
+
+        #endregion
+
+        #region IMemberInjectionFilter<TMember> Members
 
         /// <summary>
         /// Returns the list of <typeparamref name="TMember"/> objects
@@ -36,8 +51,8 @@ namespace LinFu.IoC.Configuration
                 // The property must have a getter and the current type
                 // must exist as either a service list or exist as an 
                 // existing service inside the current container
-                var members = from item in GetMembers(targetType, _container)                             
-                             select item;
+                IEnumerable<TMember> members = from item in GetMembers(targetType, _container)
+                                               select item;
 
                 lock (_itemCache)
                 {
@@ -49,6 +64,8 @@ namespace LinFu.IoC.Configuration
 
             return Filter(_container, items);
         }
+
+        #endregion
 
         /// <summary>
         /// Determines which members should be selected from the <paramref name="targetType"/>
@@ -66,18 +83,9 @@ namespace LinFu.IoC.Configuration
         /// <param name="items">The list of properties that will be filtered.</param>
         /// <returns>A list of properties that will be injected.</returns>
         protected virtual IEnumerable<TMember> Filter(IServiceContainer container,
-                                                            IEnumerable<TMember> items)
+                                                      IEnumerable<TMember> items)
         {
             return items;
-        }
-
-        /// <summary>
-        /// Initializes the <see cref="BaseMemberInjectionFilter{TMember}"/> class.
-        /// </summary>
-        /// <param name="source">The host container.</param>
-        public virtual void Initialize(IServiceContainer source)
-        {
-            _container = source;
         }
     }
 }

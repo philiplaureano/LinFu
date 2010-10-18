@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinFu.AOP.Interfaces;
+﻿using LinFu.AOP.Interfaces;
 
 namespace SampleLibrary.AOP
 {
@@ -12,16 +8,17 @@ namespace SampleLibrary.AOP
 
         public bool HasBeenCalled
         {
-            get
-            {
-                return _called;
-            }
+            get { return _called; }
         }
+
+        #region IInterceptor Members
 
         public object Intercept(IInvocationInfo info)
         {
             _called = true;
             return null;
         }
+
+        #endregion
     }
 }

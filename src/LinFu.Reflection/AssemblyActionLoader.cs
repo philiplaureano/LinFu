@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace LinFu.Reflection
 {
@@ -17,18 +16,27 @@ namespace LinFu.Reflection
     public class AssemblyActionLoader<TTarget, TAssembly, TType> : IActionLoader<IList<Action<TTarget>>, TAssembly>
     {
         private readonly Func<IList<IActionLoader<TTarget, TType>>> _getTypeLoaders;
-        private ITypeExtractor<TAssembly, TType> _typeExtractor;
+
         /// <summary>
         /// Initializes the class with a set of <see cref="IActionLoader{TTarget,Type}"/>
         /// instances that will be used to load the target assembly.
         /// </summary>
         /// <param name="getTypeLoaders">The delegate that will return the actual list of typeloaders.</param>
         /// <param name="typeExtractor">The type extractor that will be responsible for pulling the types out of the current assembly.</param>
-        public AssemblyActionLoader(Func<IList<IActionLoader<TTarget, TType>>> getTypeLoaders, ITypeExtractor<TAssembly, TType> typeExtractor)
+        public AssemblyActionLoader(Func<IList<IActionLoader<TTarget, TType>>> getTypeLoaders,
+                                    ITypeExtractor<TAssembly, TType> typeExtractor)
         {
             _getTypeLoaders = getTypeLoaders;
-            _typeExtractor = typeExtractor;
+            TypeExtractor = typeExtractor;
         }
+
+        /// <summary>
+        /// The <see cref="ITypeExtractor"/> instance that will
+        /// determine which types will be extracted from an assembly.
+        /// </summary>
+        public ITypeExtractor<TAssembly, TType> TypeExtractor { get; set; }
+
+        #region IActionLoader<IList<Action<TTarget>>,TAssembly> Members
 
         /// <summary>
         /// Loads the target assembly and creates an action that can
@@ -51,21 +59,7 @@ namespace LinFu.Reflection
             return assembly != null;
         }
 
-        /// <summary>
-        /// The <see cref="ITypeExtractor"/> instance that will
-        /// determine which types will be extracted from an assembly.
-        /// </summary>
-        public ITypeExtractor<TAssembly, TType> TypeExtractor
-        {
-            get
-            {
-                return _typeExtractor;
-            }
-            set
-            {
-                _typeExtractor = value;
-            }
-        }
+        #endregion
 
         /// <summary>
         /// Generates a list of actions from a target assemby.
@@ -81,7 +75,7 @@ namespace LinFu.Reflection
 
             // Pass the loaded types to
             // the type loaders for processing
-            foreach (var type in types)
+            foreach (TType type in types)
             {
                 // Skip any invalid types
                 if (type == null)
@@ -99,7 +93,7 @@ namespace LinFu.Reflection
         /// <param name="results">The list that will hold the actions which will configure the container.</param>
         private void LoadResultsFromType(TType type, ICollection<Action<TTarget>> results)
         {
-            var typeLoaders = _getTypeLoaders();
+            IList<IActionLoader<TTarget, TType>> typeLoaders = _getTypeLoaders();
             foreach (var typeLoader in typeLoaders)
             {
                 if (typeLoader == null || !typeLoader.CanLoad(type))

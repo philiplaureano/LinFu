@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
@@ -43,7 +41,8 @@ namespace LinFu.AOP.Cecil
         /// <param name="method">The target method.</param>
         /// <param name="IL">The <see cref="CilWorker"/> instance that represents the method body.</param>
         /// <param name="oldInstructions">The IL instructions of the original method body.</param>
-        protected override void RewriteMethodBody(MethodDefinition method, CilWorker IL, IEnumerable<Instruction> oldInstructions)
+        protected override void RewriteMethodBody(MethodDefinition method, CilWorker IL,
+                                                  IEnumerable<Instruction> oldInstructions)
         {
             if (IsExcluded(method))
             {
@@ -51,40 +50,50 @@ namespace LinFu.AOP.Cecil
                 return;
             }
 
-            var interceptionDisabled = method.AddLocal<bool>();
-            var invocationInfo = method.AddLocal<IInvocationInfo>();
-            var aroundInvokeProvider = method.AddLocal<IAroundInvokeProvider>();
-            var methodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
+            VariableDefinition interceptionDisabled = method.AddLocal<bool>();
+            VariableDefinition invocationInfo = method.AddLocal<IInvocationInfo>();
+            VariableDefinition aroundInvokeProvider = method.AddLocal<IAroundInvokeProvider>();
+            VariableDefinition methodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
 
 
-            var returnValue = method.AddLocal<object>();
-            var classMethodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
+            VariableDefinition returnValue = method.AddLocal<object>();
+            VariableDefinition classMethodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
 
             Func<ModuleDefinition, MethodReference> getInstanceMethodReplacementProviderMethod =
-                module => module.Import(typeof(IMethodReplacementHost).GetMethod("get_MethodBodyReplacementProvider"));
+                module => module.Import(typeof (IMethodReplacementHost).GetMethod("get_MethodBodyReplacementProvider"));
 
             var parameters = new MethodBodyRewriterParameters(IL,
-                oldInstructions,
-                interceptionDisabled,
-                invocationInfo, returnValue,
-                aroundInvokeProvider,
-                methodReplacementProvider,
-                classMethodReplacementProvider,
-                getInstanceMethodReplacementProviderMethod,
-                typeof(AroundMethodBodyRegistry));
+                                                              oldInstructions,
+                                                              interceptionDisabled,
+                                                              invocationInfo, returnValue,
+                                                              aroundInvokeProvider,
+                                                              methodReplacementProvider,
+                                                              classMethodReplacementProvider,
+                                                              getInstanceMethodReplacementProviderMethod,
+                                                              typeof (AroundMethodBodyRegistry));
 
             var emitter = new InvocationInfoEmitter(true);
 
-            IInstructionEmitter getMethodReplacementProvider = new GetMethodReplacementProvider(methodReplacementProvider, method,
-                getInstanceMethodReplacementProviderMethod);
+            IInstructionEmitter getMethodReplacementProvider =
+                new GetMethodReplacementProvider(methodReplacementProvider, method,
+                                                 getInstanceMethodReplacementProviderMethod);
 
             IInstructionEmitter getInterceptionDisabled = new GetInterceptionDisabled(parameters);
             ISurroundMethodBody surroundMethodBody = new SurroundMethodBody(parameters, "AroundMethodBodyProvider");
-            IInstructionEmitter getClassMethodReplacementProvider = new GetClassMethodReplacementProvider(parameters, module =>
-                module.Import(typeof(MethodBodyReplacementProviderRegistry).GetMethod("GetProvider")));
+            IInstructionEmitter getClassMethodReplacementProvider = new GetClassMethodReplacementProvider(parameters,
+                                                                                                          module =>
+                                                                                                          module.Import(
+                                                                                                              typeof (
+                                                                                                                  MethodBodyReplacementProviderRegistry
+                                                                                                                  ).
+                                                                                                                  GetMethod
+                                                                                                                  ("GetProvider")));
             IInstructionEmitter addMethodReplacement = new AddMethodReplacementImplementation(parameters);
 
-            var rewriter = new InterceptAndSurroundMethodBody(emitter, getInterceptionDisabled, surroundMethodBody, getMethodReplacementProvider, getClassMethodReplacementProvider, addMethodReplacement, parameters);
+            var rewriter = new InterceptAndSurroundMethodBody(emitter, getInterceptionDisabled, surroundMethodBody,
+                                                              getMethodReplacementProvider,
+                                                              getClassMethodReplacementProvider, addMethodReplacement,
+                                                              parameters);
 
             // Determine whether or not the method should be intercepted
             rewriter.Rewrite(method, IL, oldInstructions);
@@ -92,7 +101,7 @@ namespace LinFu.AOP.Cecil
 
         private void AddOriginalInstructions(CilWorker IL, IEnumerable<Instruction> oldInstructions)
         {
-            foreach (var instruction in oldInstructions)
+            foreach (Instruction instruction in oldInstructions)
             {
                 IL.Append(instruction);
             }
@@ -100,13 +109,17 @@ namespace LinFu.AOP.Cecil
 
         private bool IsExcluded(MethodDefinition method)
         {
-            var excludedTypes = new[] { typeof(IMethodReplacementHost), 
-                typeof(IModifiableType), typeof(IActivatorHost), typeof(IFieldInterceptionHost), typeof(IAroundInvokeHost) };
-            var excludedMethods = (from type in excludedTypes
-                                   from currentMethod in type.GetMethods()
-                                   select currentMethod.Name).ToList();
+            var excludedTypes = new[]
+                                    {
+                                        typeof (IMethodReplacementHost),
+                                        typeof (IModifiableType), typeof (IActivatorHost),
+                                        typeof (IFieldInterceptionHost), typeof (IAroundInvokeHost)
+                                    };
+            List<string> excludedMethods = (from type in excludedTypes
+                                            from currentMethod in type.GetMethods()
+                                            select currentMethod.Name).ToList();
 
-            var methodName = method.Name;
+            string methodName = method.Name;
             return excludedMethods.Contains(methodName);
         }
     }
