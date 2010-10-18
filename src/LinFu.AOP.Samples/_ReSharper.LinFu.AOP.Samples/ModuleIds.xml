@@ -1,0 +1,4 @@
+<Modules>
+  <Module PersistentId="47E8A072-1E89-4FD8-AEB0-85C105F7CC52" ModuleId="LinFu.AOP.MethodInterceptionSample" />
+  <Module PersistentId="40E585A8-2D84-45C9-8EE8-9600152D8D96" ModuleId="SampleLibrary" />
+</Modules>
