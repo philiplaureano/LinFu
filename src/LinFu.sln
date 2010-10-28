@@ -54,6 +54,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostWeaver", "PostWeaver\Po
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleFileWatcherLibrary", "SampleFileWatcherLibrary\SampleFileWatcherLibrary.csproj", "{C93694B2-A776-4D91-8C1A-2A73B2479133}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{3EA5B498-F052-42AB-99C2-81A62114D829}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AOP", "AOP", "{BE316EF4-1C55-4BAE-8ECD-BF4894148692}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AutomatedDebug|Any CPU = AutomatedDebug|Any CPU
@@ -178,6 +182,7 @@ Global
 		{70AB1ECE-216D-43C2-A4DE-52BE01B56D6A} = {F6C59327-B373-4938-988A-30FB3CF63785}
 		{D616982C-D439-4B5C-B1A8-79BD4E7044FB} = {F6C59327-B373-4938-988A-30FB3CF63785}
 		{020A9D4F-3C8C-48B5-830F-2EDAB07E0D97} = {DA34F583-028E-4038-A717-1D0DFC8DBCCC}
+		{BE316EF4-1C55-4BAE-8ECD-BF4894148692} = {3EA5B498-F052-42AB-99C2-81A62114D829}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		VisualSVNWorkingCopyRoot = ..

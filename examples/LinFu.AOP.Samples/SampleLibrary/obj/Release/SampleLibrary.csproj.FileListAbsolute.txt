@@ -1,0 +1,8 @@
+C:\Users\Phil\Desktop\Development\LinFu\src\LinFu.AOP.Samples\SampleLibrary\bin\Release\SampleLibrary.dll
+C:\Users\Phil\Desktop\Development\LinFu\src\LinFu.AOP.Samples\SampleLibrary\bin\Release\SampleLibrary.pdb
+C:\Users\Phil\Desktop\Development\LinFu\src\LinFu.AOP.Samples\SampleLibrary\bin\Release\LinFu.Core.dll
+C:\Users\Phil\Desktop\Development\LinFu\src\LinFu.AOP.Samples\SampleLibrary\bin\Release\LinFu.Core.pdb
+C:\Users\Phil\Desktop\Development\LinFu\src\LinFu.AOP.Samples\SampleLibrary\bin\Release\LinFu.Core.xml
+C:\Users\Phil\Desktop\Development\LinFu\src\LinFu.AOP.Samples\SampleLibrary\obj\Release\ResolveAssemblyReference.cache
+C:\Users\Phil\Desktop\Development\LinFu\src\LinFu.AOP.Samples\SampleLibrary\obj\Release\SampleLibrary.dll
+C:\Users\Phil\Desktop\Development\LinFu\src\LinFu.AOP.Samples\SampleLibrary\obj\Release\SampleLibrary.pdb

@@ -1,0 +1,1 @@
+C:\Users\Phil\Desktop\Development\LinFu\src\LinFu.AOP.Samples\LinFu.AOP.MethodInterceptionSample\obj\Release\ResolveAssemblyReference.cache
