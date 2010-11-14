@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Reflection;
+using LinFu.IoC.Configuration.Loaders;
+using LinFu.IoC.Interceptors;
 using LinFu.IoC.Interfaces;
 using LinFu.Reflection;
 
@@ -16,9 +18,28 @@ namespace LinFu.IoC.Configuration
         /// <summary>
         /// Initializes the loader using the default values.
         /// </summary>
-        public Loader() 
+        public Loader() : this(new ConfigureContainerLoader())
+        {            
+        }
+
+        /// <summary>
+        /// Initializes the loader using the default values.
+        /// </summary>
+        public Loader(IConfigureContainerLoader configureContainerLoader)
         {
-            Func<AssemblyContainerLoader> getContainerLoader = () => this.CreateDefaultContainerLoader();
+            if (configureContainerLoader == null) 
+                throw new ArgumentNullException("configureContainerLoader");
+
+            Func<AssemblyContainerLoader> getContainerLoader = () =>
+            {
+                var loader = new AssemblyContainerLoader();
+                var typeLoaders = loader.TypeLoaders;
+
+                configureContainerLoader.AddTypeLoaders(this, typeLoaders);
+
+                return loader;
+            };
+
             var containerLoader = getContainerLoader();
             Initialize(containerLoader);
         }
@@ -55,12 +76,12 @@ namespace LinFu.IoC.Configuration
         /// Initializes the loader with the default configuration.
         /// </summary>
         /// <param name="containerLoader">The container loader instance.</param>
-        private void Initialize(AssemblyContainerLoader containerLoader)
+        private void Initialize(IAssemblyTargetLoader<IServiceContainer, Assembly, Type> containerLoader)
         {
             _assemblyLoader = containerLoader.AssemblyLoader;
 
             // Load everything else into the container
-            Assembly hostAssembly = typeof(Loader).Assembly;
+            var hostAssembly = typeof(Loader).Assembly;
             QueuedActions.Add(container => container.LoadFrom(hostAssembly));
 
             // Make sure that the plugins are only added once

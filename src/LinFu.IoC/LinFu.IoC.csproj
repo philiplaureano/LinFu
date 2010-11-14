@@ -68,6 +68,7 @@
     <Compile Include="Configuration\Interfaces\INamedType.cs" />
     <Compile Include="Configuration\NamedType.cs" />
     <Compile Include="Configuration\Resolvers\ConstructorArgumentResolver.cs" />
+    <Compile Include="ConfigureContainerLoader.cs" />
     <Compile Include="ContainerExtensions.cs" />
     <Compile Include="Configuration\Extensions\FluentExtensions.cs" />
     <Compile Include="Configuration\Extensions\ResolutionExtensions.cs" />
@@ -138,6 +139,7 @@
     <Compile Include="FactoryStorage.cs" />
     <Compile Include="FactoryStorageExtensions.cs" />
     <Compile Include="Interceptors\LazyInterceptor.cs" />
+    <Compile Include="Interfaces\IConfigureContainerLoader.cs" />
     <Compile Include="Interfaces\ICreateInstance.cs" />
     <Compile Include="Interfaces\IFactoryStorage.cs" />
     <Compile Include="Interceptors\AroundInvokeAdapter.cs" />

@@ -33,30 +33,11 @@ namespace LinFu.IoC
         /// <param name="assemblyLoader">The custom <see cref="IAssemblyLoader"/> that will be used to load the target assemblies from disk.</param>
         /// <param name="directory">The target directory.</param>
         /// <param name="searchPattern">The search pattern that describes the list of files to be loaded.</param>
-        /// <param name="customLoader">The custom loader that will be used to load the container.</param>
-        public static void LoadFrom(this IServiceContainer container, IAssemblyLoader assemblyLoader, string directory,
-                                    string searchPattern, ILoader<IServiceContainer> customLoader)
-        {
-            // Load the target directory
-            customLoader.LoadDirectory(directory, searchPattern);
-
-            // Configure the container
-            customLoader.LoadInto(container);
-        }
-
-        /// <summary>
-        /// Loads a set of <paramref name="searchPattern">files</paramref> from the <paramref name="directory">target directory</paramref>
-        /// using a custom <see cref="IAssemblyLoader"/> instance.
-        /// </summary>
-        /// <param name="container">The container to be loaded.</param>
-        /// <param name="assemblyLoader">The custom <see cref="IAssemblyLoader"/> that will be used to load the target assemblies from disk.</param>
-        /// <param name="directory">The target directory.</param>
-        /// <param name="searchPattern">The search pattern that describes the list of files to be loaded.</param>
         public static void LoadFrom(this IServiceContainer container, IAssemblyLoader assemblyLoader, string directory,
                                     string searchPattern)
         {
-            var loader = new Loader {AssemblyLoader = assemblyLoader};
-            container.LoadFrom(assemblyLoader, directory, searchPattern, loader);
+            var loader = new Loader { AssemblyLoader = assemblyLoader };
+            container.LoadFrom(directory, searchPattern, loader);
         }
 
         /// <summary>
@@ -86,7 +67,6 @@ namespace LinFu.IoC
                                     string searchPattern)
         {
             var loader = new Loader();
-
             container.LoadFrom(directory, searchPattern, loader);
         }
 
@@ -138,18 +118,37 @@ namespace LinFu.IoC
         /// <param name="container">The target container to be configured.</param>
         /// <param name="assembly">The assembly to be loaded.</param>
         public static void LoadFrom(this IServiceContainer container, Assembly assembly)
+        {            
+            container.LoadFrom(assembly, new ConfigureContainerLoader());
+        }
+
+        /// <summary>
+        /// Loads an existing <paramref name="assembly"/> into the container.
+        /// </summary>
+        /// <param name="container">The target container to be configured.</param>
+        /// <param name="assembly">The assembly to be loaded.</param>
+        /// <param name="configureContainerLoader">The <see cref="IConfigureContainerLoader"/> instance that will customize the loader itself.</param>
+        public static void LoadFrom(this IServiceContainer container, Assembly assembly, IConfigureContainerLoader configureContainerLoader)
         {
             // Use the AssemblyTargetLoader<> class to pull
-            // the types out of an assembly
+            // the types out of an assembly            
+            var containerLoader = new AssemblyContainerLoader();
+            var typeLoaders = containerLoader.TypeLoaders;
+
             var loader = new Loader<IServiceContainer>();
-            AssemblyContainerLoader assemblyTargetLoader = loader.CreateDefaultContainerLoader();
-            assemblyTargetLoader.AssemblyActionLoader =
-                new AssemblyActionLoader<IServiceContainer>(() => assemblyTargetLoader.TypeLoaders);
+            configureContainerLoader.AddTypeLoaders(loader, typeLoaders);
+
+            var assemblyActionLoader = new AssemblyActionLoader<IServiceContainer>(() => containerLoader.TypeLoaders);
 
             // HACK: Return an existing assembly instead of reading
             // the assembly from disk
-            assemblyTargetLoader.AssemblyLoader = new InMemoryAssemblyLoader(assembly);
-            loader.FileLoaders.Add(assemblyTargetLoader);
+            var assemblyLoader = new InMemoryAssemblyLoader(assembly);
+            containerLoader.AssemblyLoader = assemblyLoader;
+
+            containerLoader.AssemblyActionLoader =
+                assemblyActionLoader;
+
+            loader.FileLoaders.Add(containerLoader);
 
             var actionList = new List<Action<IServiceContainer>>();
 
@@ -166,26 +165,7 @@ namespace LinFu.IoC
             }
 
             loader.LoadInto(container);
-        }
-
-        /// <summary>
-        /// Generates the default <see cref="AssemblyContainerLoader"/> for a <see cref="Loader"/> class instance.
-        /// </summary>
-        /// <param name="loader">The loader that will load the target container.</param>
-        /// <returns>A valid <see cref="AssemblyContainerLoader"/> instance.</returns>
-        internal static AssemblyContainerLoader CreateDefaultContainerLoader(this ILoader<IServiceContainer> loader)
-        {
-            var containerLoader = new AssemblyContainerLoader();
-            var typeLoaders = containerLoader.TypeLoaders;
-
-            typeLoaders.Add(new FactoryAttributeLoader());
-            typeLoaders.Add(new ImplementsAttributeLoader());
-            typeLoaders.Add(new PreProcessorLoader());
-            typeLoaders.Add(new PostProcessorLoader());
-            typeLoaders.Add(new InterceptorAttributeLoader(loader));
-
-            return containerLoader;
-        }
+        }        
 
         /// <summary>
         /// Sets the custom attribute type that will be used to mark properties
@@ -245,7 +225,7 @@ namespace LinFu.IoC
         public static void Initialize(this IServiceContainer container)
         {
             // Load the configuration assembly by default
-            container.LoadFrom(typeof (Loader).Assembly);
+            container.LoadFrom(typeof(Loader).Assembly);
         }
 
         /// <summary>
@@ -281,7 +261,7 @@ namespace LinFu.IoC
         /// <returns>A valid, non-null object reference.</returns>
         public static T AutoCreate<T>(this IServiceContainer container, params object[] additionalArguments)
         {
-            return (T) container.AutoCreate(typeof (T), additionalArguments);
+            return (T)container.AutoCreate(typeof(T), additionalArguments);
         }
 
         /// <summary>
@@ -379,7 +359,7 @@ namespace LinFu.IoC
         public static void AddDefaultServices(this IServiceContainer container)
         {
             // Initialize the services only once
-            if (container.Contains(typeof (IFactoryBuilder)))
+            if (container.Contains(typeof(IFactoryBuilder)))
                 return;
 
             container.AddService<IConstructorArgumentResolver>(new ConstructorArgumentResolver());
@@ -421,7 +401,7 @@ namespace LinFu.IoC
             }
 
             // Add the scope object by default
-            container.AddFactory(null, typeof (IScope), new FunctorFactory(f => new Scope()));
+            container.AddFactory(null, typeof(IScope), new FunctorFactory(f => new Scope()));
         }
 
 
@@ -436,8 +416,8 @@ namespace LinFu.IoC
         /// otherwise, it will just return a <c>null</c> value.</returns>
         public static T GetService<T>(this IServiceContainer container, params object[] additionalArguments)
         {
-            Type serviceType = typeof (T);
-            return (T) container.GetService(serviceType, additionalArguments);
+            Type serviceType = typeof(T);
+            return (T)container.GetService(serviceType, additionalArguments);
         }
 
         /// <summary>
@@ -467,7 +447,7 @@ namespace LinFu.IoC
         public static T GetService<T>(this IServiceContainer container, string serviceName,
                                       params object[] additionalArguments)
         {
-            return (T) container.GetService(serviceName, typeof (T), additionalArguments);
+            return (T)container.GetService(serviceName, typeof(T), additionalArguments);
         }
 
         /// <summary>
@@ -598,7 +578,7 @@ namespace LinFu.IoC
         public static void AddFactory<T>(this IServiceContainer container, string serviceName, IFactory<T> factory)
         {
             IFactory adapter = new FactoryAdapter<T>(factory);
-            container.AddFactory(serviceName, typeof (T), adapter);
+            container.AddFactory(serviceName, typeof(T), adapter);
         }
 
         /// <summary>
@@ -610,7 +590,7 @@ namespace LinFu.IoC
         public static void AddFactory<T>(this IServiceContainer container, IFactory<T> factory)
         {
             IFactory adapter = new FactoryAdapter<T>(factory);
-            container.AddFactory(typeof (T), adapter);
+            container.AddFactory(typeof(T), adapter);
         }
 
         /// <summary>
@@ -664,7 +644,7 @@ namespace LinFu.IoC
         public static void AddService<TResult>(this IServiceContainer container, string serviceName,
                                                Func<TResult> factoryMethod)
         {
-            container.AddService(serviceName, typeof (TResult), factoryMethod);
+            container.AddService(serviceName, typeof(TResult), factoryMethod);
         }
 
         /// <summary>
@@ -679,7 +659,7 @@ namespace LinFu.IoC
         public static void AddService<T1, TResult>(this IServiceContainer container, string serviceName,
                                                    Func<T1, TResult> factoryMethod)
         {
-            container.AddService(serviceName, typeof (TResult), factoryMethod);
+            container.AddService(serviceName, typeof(TResult), factoryMethod);
         }
 
         /// <summary>
@@ -716,7 +696,7 @@ namespace LinFu.IoC
         public static void AddService<T1, T2, TResult>(this IServiceContainer container, string serviceName,
                                                        Func<T1, T2, TResult> factoryMethod)
         {
-            container.AddService(serviceName, typeof (TResult), factoryMethod);
+            container.AddService(serviceName, typeof(TResult), factoryMethod);
         }
 
         /// <summary>
@@ -734,7 +714,7 @@ namespace LinFu.IoC
         public static void AddService<T1, T2, T3, T4, TResult>(this IServiceContainer container, string serviceName,
                                                                Func<T1, T2, T3, T4, TResult> factoryMethod)
         {
-            container.AddService(serviceName, typeof (TResult), factoryMethod);
+            container.AddService(serviceName, typeof(TResult), factoryMethod);
         }
 
         /// <summary>
@@ -751,7 +731,7 @@ namespace LinFu.IoC
         public static void AddService<T1, T2, T3, TResult>(this IServiceContainer container, string serviceName,
                                                            Func<T1, T2, T3, TResult> factoryMethod)
         {
-            container.AddService(serviceName, typeof (TResult), factoryMethod);
+            container.AddService(serviceName, typeof(TResult), factoryMethod);
         }
 
         /// <summary>
@@ -778,7 +758,7 @@ namespace LinFu.IoC
             if (lifecycleType == LifecycleType.OncePerRequest)
                 factory = new OncePerRequestFactory<T>(factoryMethod);
 
-            container.AddFactory(serviceName, typeof (T), factory);
+            container.AddFactory(serviceName, typeof(T), factory);
         }
 
         /// <summary>
@@ -803,7 +783,7 @@ namespace LinFu.IoC
         /// <param name="instance">The service instance itself.</param>
         public static void AddService<T>(this IServiceContainer container, T instance)
         {
-            container.AddFactory(typeof (T), new InstanceFactory(instance));
+            container.AddFactory(typeof(T), new InstanceFactory(instance));
         }
 
         /// <summary>
@@ -816,7 +796,7 @@ namespace LinFu.IoC
         /// <param name="instance">The service instance itself.</param>
         public static void AddService<T>(this IServiceContainer container, string serviceName, T instance)
         {
-            container.AddFactory(serviceName, typeof (T), new InstanceFactory(instance));
+            container.AddFactory(serviceName, typeof(T), new InstanceFactory(instance));
         }
 
         /// <summary>
@@ -831,10 +811,10 @@ namespace LinFu.IoC
                                                     params object[] additionalArguments)
         {
             IEnumerable<IServiceInfo> targetServices =
-                container.AvailableServices.Where(info => info.ServiceType == typeof (T));
+                container.AvailableServices.Where(info => info.ServiceType == typeof(T));
             foreach (IServiceInfo info in targetServices)
             {
-                yield return (T) container.GetService(info, additionalArguments);
+                yield return (T)container.GetService(info, additionalArguments);
             }
         }
 
@@ -878,7 +858,7 @@ namespace LinFu.IoC
         {
             // Convert the sample arguments into the parameter types
             IEnumerable<Type> parameterTypes = from arg in sampleArguments
-                                               let argType = arg != null ? arg.GetType() : typeof (object)
+                                               let argType = arg != null ? arg.GetType() : typeof(object)
                                                select argType;
 
             return container.Contains(serviceName, serviceType, parameterTypes);
@@ -894,6 +874,32 @@ namespace LinFu.IoC
         public static bool Contains(this IServiceContainer container, Type serviceType)
         {
             return container.Contains(serviceType, new Type[0]);
+        }
+
+        /// <summary>
+        /// Determines whether or not the container contains a service that matches
+        /// the given <paramref name="serviceType"/>.
+        /// </summary>
+        /// <typeparam name="T">The requested service type.</typeparam>
+        /// <param name="container">The target container.</param>
+        /// <param name="serviceName">The requested service name.</param>
+        /// <returns>Returns <c>true</c> if the requested services exist; otherwise, it will return <c>false</c>.</returns>
+        public static bool Contains<T>(this IServiceContainer container, string serviceName)
+        {
+            return container.Contains(serviceName, typeof(T));
+        }
+
+        /// <summary>
+        /// Determines whether or not the container contains a service that matches
+        /// the given <paramref name="serviceType"/>.
+        /// </summary>
+        /// <typeparam name="T">The requested service type.</typeparam>
+        /// <param name="container">The target container.</param>
+        /// <param name="serviceName">The requested service name.</param>
+        /// <returns>Returns <c>true</c> if the requested services exist; otherwise, it will return <c>false</c>.</returns>
+        public static bool Contains<T>(this IServiceContainer container)
+        {
+            return container.Contains(typeof(T));
         }
 
         /// <summary>
