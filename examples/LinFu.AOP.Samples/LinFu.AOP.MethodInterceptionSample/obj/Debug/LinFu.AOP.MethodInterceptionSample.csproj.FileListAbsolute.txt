@@ -28,3 +28,14 @@ C:\Users\Phil\Desktop\Development\LinFu\examples\LinFu.AOP.Samples\LinFu.AOP.Met
 C:\Users\Phil\Desktop\Development\LinFu\examples\LinFu.AOP.Samples\LinFu.AOP.MethodInterceptionSample\bin\Debug\SampleLibrary.pdb
 C:\Users\Phil\Desktop\Development\LinFu\examples\LinFu.AOP.Samples\LinFu.AOP.MethodInterceptionSample\obj\Debug\LinFu.AOP.MethodInterceptionSample.exe
 C:\Users\Phil\Desktop\Development\LinFu\examples\LinFu.AOP.Samples\LinFu.AOP.MethodInterceptionSample\obj\Debug\LinFu.AOP.MethodInterceptionSample.pdb
+C:\Development\LinFu\examples\LinFu.AOP.Samples\LinFu.AOP.MethodInterceptionSample\obj\Debug\LinFu.AOP.MethodInterceptionSample.exe
+C:\Development\LinFu\examples\LinFu.AOP.Samples\LinFu.AOP.MethodInterceptionSample\obj\Debug\LinFu.AOP.MethodInterceptionSample.pdb
+C:\Development\LinFu\examples\LinFu.AOP.Samples\LinFu.AOP.MethodInterceptionSample\obj\Debug\ResolveAssemblyReference.cache
+C:\Development\LinFu\examples\LinFu.AOP.Samples\LinFu.AOP.MethodInterceptionSample\bin\Debug\LinFu.AOP.MethodInterceptionSample.exe.config
+C:\Development\LinFu\examples\LinFu.AOP.Samples\LinFu.AOP.MethodInterceptionSample\bin\Debug\LinFu.AOP.MethodInterceptionSample.exe
+C:\Development\LinFu\examples\LinFu.AOP.Samples\LinFu.AOP.MethodInterceptionSample\bin\Debug\LinFu.AOP.MethodInterceptionSample.pdb
+C:\Development\LinFu\examples\LinFu.AOP.Samples\LinFu.AOP.MethodInterceptionSample\bin\Debug\LinFu.Core.dll
+C:\Development\LinFu\examples\LinFu.AOP.Samples\LinFu.AOP.MethodInterceptionSample\bin\Debug\SampleLibrary.dll
+C:\Development\LinFu\examples\LinFu.AOP.Samples\LinFu.AOP.MethodInterceptionSample\bin\Debug\SampleLibrary.pdb
+C:\Development\LinFu\examples\LinFu.AOP.Samples\LinFu.AOP.MethodInterceptionSample\bin\Debug\LinFu.Core.pdb
+C:\Development\LinFu\examples\LinFu.AOP.Samples\LinFu.AOP.MethodInterceptionSample\bin\Debug\LinFu.Core.xml

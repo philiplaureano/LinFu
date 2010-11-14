@@ -99,6 +99,9 @@ namespace LinFu.IoC.Configuration
 
             public bool Equals(HashableWeakReference x, HashableWeakReference y)
             {
+                if (x == null || y == null)
+                    return false;
+
                 return x.Target == y.Target;
             }
 

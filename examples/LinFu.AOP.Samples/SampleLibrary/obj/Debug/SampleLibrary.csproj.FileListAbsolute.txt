@@ -30,3 +30,11 @@ C:\Users\Phil\Desktop\Development\LinFu\examples\LinFu.AOP.Samples\SampleLibrary
 C:\Users\Phil\Desktop\Development\LinFu\examples\LinFu.AOP.Samples\SampleLibrary\obj\Debug\ResolveAssemblyReference.cache
 C:\Users\Phil\Desktop\Development\LinFu\examples\LinFu.AOP.Samples\SampleLibrary\obj\Debug\SampleLibrary.dll
 C:\Users\Phil\Desktop\Development\LinFu\examples\LinFu.AOP.Samples\SampleLibrary\obj\Debug\SampleLibrary.pdb
+C:\Development\LinFu\examples\LinFu.AOP.Samples\SampleLibrary\bin\Debug\SampleLibrary.dll
+C:\Development\LinFu\examples\LinFu.AOP.Samples\SampleLibrary\bin\Debug\SampleLibrary.pdb
+C:\Development\LinFu\examples\LinFu.AOP.Samples\SampleLibrary\bin\Debug\LinFu.Core.dll
+C:\Development\LinFu\examples\LinFu.AOP.Samples\SampleLibrary\bin\Debug\LinFu.Core.pdb
+C:\Development\LinFu\examples\LinFu.AOP.Samples\SampleLibrary\bin\Debug\LinFu.Core.xml
+C:\Development\LinFu\examples\LinFu.AOP.Samples\SampleLibrary\obj\Debug\ResolveAssemblyReference.cache
+C:\Development\LinFu\examples\LinFu.AOP.Samples\SampleLibrary\obj\Debug\SampleLibrary.dll
+C:\Development\LinFu\examples\LinFu.AOP.Samples\SampleLibrary\obj\Debug\SampleLibrary.pdb

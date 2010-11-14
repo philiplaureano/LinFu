@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinFu.AOP.MethodInterceptionSample", "LinFu.AOP.MethodInterceptionSample\LinFu.AOP.MethodInterceptionSample.csproj", "{47E8A072-1E89-4FD8-AEB0-85C105F7CC52}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleLibrary", "SampleLibrary\SampleLibrary.csproj", "{40E585A8-2D84-45C9-8EE8-9600152D8D96}"

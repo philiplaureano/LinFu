@@ -8,11 +8,9 @@
   </SettingsComponent>
   <RecentFiles>
     <RecentFiles>
-      <File id="47E8A072-1E89-4FD8-AEB0-85C105F7CC52/f:Program.cs" caret="714" fromTop="9" />
+      <File id="47E8A072-1E89-4FD8-AEB0-85C105F7CC52/f:Program.cs" caret="1548" fromTop="14" />
     </RecentFiles>
-    <RecentEdits>
-      <File id="47E8A072-1E89-4FD8-AEB0-85C105F7CC52/f:Program.cs" caret="541" fromTop="12" />
-    </RecentEdits>
+    <RecentEdits />
   </RecentFiles>
   <NAntValidationSettings>
     <NAntPath value="" />
