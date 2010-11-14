@@ -176,11 +176,13 @@ namespace LinFu.IoC
         internal static AssemblyContainerLoader CreateDefaultContainerLoader(this ILoader<IServiceContainer> loader)
         {
             var containerLoader = new AssemblyContainerLoader();
-            containerLoader.TypeLoaders.Add(new FactoryAttributeLoader());
-            containerLoader.TypeLoaders.Add(new ImplementsAttributeLoader());
-            containerLoader.TypeLoaders.Add(new PreProcessorLoader());
-            containerLoader.TypeLoaders.Add(new PostProcessorLoader());
-            containerLoader.TypeLoaders.Add(new InterceptorAttributeLoader(loader));
+            var typeLoaders = containerLoader.TypeLoaders;
+
+            typeLoaders.Add(new FactoryAttributeLoader());
+            typeLoaders.Add(new ImplementsAttributeLoader());
+            typeLoaders.Add(new PreProcessorLoader());
+            typeLoaders.Add(new PostProcessorLoader());
+            typeLoaders.Add(new InterceptorAttributeLoader(loader));
 
             return containerLoader;
         }

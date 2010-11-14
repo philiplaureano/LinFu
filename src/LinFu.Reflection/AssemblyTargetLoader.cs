@@ -14,8 +14,7 @@ namespace LinFu.Reflection
     /// <typeparam name="TTarget">The target type to configure.</typeparam>
     /// <typeparam name="TAssembly">The assembly type.</typeparam>
     /// <typeparam name="TType">The target type.</typeparam>
-    public class AssemblyTargetLoader<TTarget, TAssembly, TType> : IAssemblyTargetLoader<TTarget, TAssembly, TType>,
-                                                                   IActionLoader<TTarget, string>
+    public class AssemblyTargetLoader<TTarget, TAssembly, TType> : IAssemblyTargetLoader<TTarget, TAssembly, TType>
     {
         private readonly IList<IActionLoader<TTarget, TType>> _typeLoaders = new List<IActionLoader<TTarget, TType>>();
         private IActionLoader<IList<Action<TTarget>>, TAssembly> _assemblyActionLoader;
@@ -41,8 +40,6 @@ namespace LinFu.Reflection
             get { return _assemblyActionLoader; }
             set { _assemblyActionLoader = value; }
         }
-
-        #region IAssemblyTargetLoader<TTarget,TAssembly,TType> Members
 
         /// <summary>
         /// The <see cref="IAssemblyLoader"/> instance that will load
@@ -74,7 +71,11 @@ namespace LinFu.Reflection
         /// <returns>Returns <c>true</c> if the file can be loaded; otherwise, the result is <c>false</c>.</returns>
         public virtual bool CanLoad(string filename)
         {
-            string extension = Path.GetExtension(filename).ToLower();
+            string fileExtension = Path.GetExtension(filename);
+            if (fileExtension == null)
+                return false;
+
+            string extension = fileExtension.ToLower();
             return TypeLoaders.Count > 0 &&
                    (extension == ".dll" || extension == ".exe") &&
                    File.Exists(filename);
@@ -107,8 +108,6 @@ namespace LinFu.Reflection
 
             return results;
         }
-
-        #endregion
     }
 
     /// <summary>

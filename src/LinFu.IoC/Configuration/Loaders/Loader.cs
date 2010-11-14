@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using LinFu.IoC.Interfaces;
 using LinFu.Reflection;
 
@@ -10,17 +11,56 @@ namespace LinFu.IoC.Configuration
     /// </summary>
     public class Loader : Loader<IServiceContainer>
     {
-        private readonly AssemblyContainerLoader _containerLoader;
+        private IAssemblyLoader<Assembly> _assemblyLoader;
 
         /// <summary>
         /// Initializes the loader using the default values.
         /// </summary>
-        public Loader()
+        public Loader() 
         {
-            _containerLoader = this.CreateDefaultContainerLoader();
+            Func<AssemblyContainerLoader> getContainerLoader = () => this.CreateDefaultContainerLoader();
+            var containerLoader = getContainerLoader();
+            Initialize(containerLoader);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Loader"/> class.
+        /// </summary>
+        /// <param name="getContainerLoader">The factory method that will create the loader itself.</param>
+        public Loader(Func<AssemblyContainerLoader> getContainerLoader)
+        {
+            var containerLoader = getContainerLoader();
+            Initialize(containerLoader);
+        }
+        /// <summary>
+        /// Initializes the target with the default settings.
+        /// </summary>
+        /// <param name="assemblyLoader">The assembly loader that will load the assemblies into the loader itself.</param>
+        public Loader(IAssemblyLoader<Assembly> assemblyLoader)
+        {
+            _assemblyLoader = assemblyLoader;
+        }
+
+        /// <summary>
+        /// Gets or sets the value indicating the <see cref="IAssemblyLoader"/> instance
+        /// that will be used to load assemblies into memory.
+        /// </summary>
+        public IAssemblyLoader<Assembly> AssemblyLoader
+        {
+            get { return _assemblyLoader; }
+            set { _assemblyLoader = value; }
+        }
+
+        /// <summary>
+        /// Initializes the loader with the default configuration.
+        /// </summary>
+        /// <param name="containerLoader">The container loader instance.</param>
+        private void Initialize(AssemblyContainerLoader containerLoader)
+        {
+            _assemblyLoader = containerLoader.AssemblyLoader;
 
             // Load everything else into the container
-            Assembly hostAssembly = typeof (Loader).Assembly;
+            Assembly hostAssembly = typeof(Loader).Assembly;
             QueuedActions.Add(container => container.LoadFrom(hostAssembly));
 
             // Make sure that the plugins are only added once
@@ -38,17 +78,7 @@ namespace LinFu.IoC.Configuration
             if (!Plugins.HasElementWith(p => p is InitializerPlugin))
                 Plugins.Add(new InitializerPlugin());
 
-            FileLoaders.Add(_containerLoader);
-        }
-
-        /// <summary>
-        /// Gets or sets the value indicating the <see cref="IAssemblyLoader"/> instance
-        /// that will be used to load assemblies into memory.
-        /// </summary>
-        public IAssemblyLoader<Assembly> AssemblyLoader
-        {
-            get { return _containerLoader.AssemblyLoader; }
-            set { _containerLoader.AssemblyLoader = value; }
+            FileLoaders.Add(containerLoader);
         }
     }
 }

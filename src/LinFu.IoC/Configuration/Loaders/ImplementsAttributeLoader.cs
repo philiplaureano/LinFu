@@ -17,8 +17,6 @@ namespace LinFu.IoC.Configuration.Loaders
     /// <seealso cref="IFactory"/>
     public class ImplementsAttributeLoader : ITypeLoader
     {
-        #region ITypeLoader Members
-
         /// <summary>
         /// Converts a given <see cref="System.Type"/> into
         /// a set of <see cref="Action{IServiceContainer}"/> instances so that
@@ -95,8 +93,6 @@ namespace LinFu.IoC.Configuration.Loaders
                 return false;
             }
         }
-
-        #endregion
 
         /// <summary>
         /// Creates a factory instance that can create instaces of the given
