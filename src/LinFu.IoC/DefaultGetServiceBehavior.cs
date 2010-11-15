@@ -41,8 +41,6 @@ namespace LinFu.IoC
             _postProcessor = postProcessor;
         }
 
-        #region IGetService Members
-
         /// <summary>
         /// Instantiates the service described by the <paramref name="serviceRequest"/>.
         /// </summary>
@@ -80,7 +78,5 @@ namespace LinFu.IoC
 
             return result.ActualResult ?? result.OriginalResult;
         }
-
-        #endregion
     }
 }

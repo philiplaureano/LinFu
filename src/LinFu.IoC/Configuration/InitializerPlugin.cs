@@ -1,4 +1,5 @@
-﻿using LinFu.IoC.Interfaces;
+﻿using System.Linq;
+using LinFu.IoC.Interfaces;
 using LinFu.Reflection;
 
 namespace LinFu.IoC.Configuration
@@ -9,8 +10,6 @@ namespace LinFu.IoC.Configuration
     /// </summary>
     public class InitializerPlugin : ILoaderPlugin<IServiceContainer>
     {
-        #region ILoaderPlugin<IServiceContainer> Members
-
         /// <summary>
         /// This override does absolutely nothing.
         /// </summary>
@@ -27,9 +26,14 @@ namespace LinFu.IoC.Configuration
         /// <param name="target"></param>
         public void EndLoad(IServiceContainer target)
         {
+            var initializers = (from p in target.PostProcessors
+                                where p != null && p is Initializer
+                                select p).Count();
+
+            if (initializers > 0)
+                return;
+
             target.PostProcessors.Add(new Initializer());
         }
-
-        #endregion
     }
 }

@@ -84,15 +84,15 @@ namespace LinFu.IoC.Configuration
             var hostAssembly = typeof(Loader).Assembly;
             QueuedActions.Add(container => container.LoadFrom(hostAssembly));
 
-            // Make sure that the plugins are only added once
-            if (!Plugins.HasElementWith(p => p is AutoPropertyInjector))
-                Plugins.Add(new AutoPropertyInjector());
+            //// Make sure that the plugins are only added once
+            //if (!Plugins.HasElementWith(p => p is AutoPropertyInjector))
+            //    Plugins.Add(new AutoPropertyInjector());
 
-            if (!Plugins.HasElementWith(p => p is AutoMethodInjector))
-                Plugins.Add(new AutoMethodInjector());
+            //if (!Plugins.HasElementWith(p => p is AutoMethodInjector))
+            //    Plugins.Add(new AutoMethodInjector());
 
-            if (!Plugins.HasElementWith(p => p is AutoFieldInjector))
-                Plugins.Add(new AutoFieldInjector());
+            //if (!Plugins.HasElementWith(p => p is AutoFieldInjector))
+            //    Plugins.Add(new AutoFieldInjector());
 
             // Add the initializer to the end of
             // the instantiation pipeline

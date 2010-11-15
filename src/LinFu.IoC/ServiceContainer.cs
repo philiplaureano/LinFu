@@ -52,8 +52,6 @@ namespace LinFu.IoC
             get { return _factoryStorage; }
         }
 
-        #region IServiceContainer Members
-
         /// <summary>
         /// Gets or sets a <see cref="bool">System.Boolean</see> value
         /// that determines whether or not the container should throw
@@ -190,7 +188,5 @@ namespace LinFu.IoC
         {
             get { return FactoryStorage.AvailableFactories; }
         }
-
-        #endregion
     }
 }
