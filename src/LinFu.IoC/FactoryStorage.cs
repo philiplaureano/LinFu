@@ -121,9 +121,13 @@ namespace LinFu.IoC
             if (factory == null && base.ContainsFactory(defaultNamedServiceInfo))
                 factory = base.GetFactory(defaultNamedServiceInfo);
 
-            var defaultServiceInfo = new ServiceInfo(string.Empty, serviceType);
-            if (factory == null && base.ContainsFactory(defaultServiceInfo))
-                factory = base.GetFactory(defaultServiceInfo);
+            if (serviceType.IsGenericType)
+            {
+                var defaultServiceInfo = new ServiceInfo(string.Empty, serviceType);
+                if (factory == null && base.ContainsFactory(defaultServiceInfo))
+                    factory = base.GetFactory(defaultServiceInfo);    
+            }
+            
 
             return factory;
         }

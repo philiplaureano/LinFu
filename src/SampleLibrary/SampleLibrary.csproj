@@ -60,8 +60,10 @@
     <Compile Include="AOP\SampleServiceImplementation.cs" />
     <Compile Include="AOP\SampleStaticClassWithStaticMethod.cs" />
     <Compile Include="AOP\SampleTypeActivator.cs" />
+    <Compile Include="IOC\BugFixes\IMyService.cs" />
     <Compile Include="IOC\BugFixes\MyClass.cs" />
     <Compile Include="IOC\BugFixes\MyFactory.cs" />
+    <Compile Include="IOC\BugFixes\MyService.cs" />
     <Compile Include="IOC\ISampleInterceptedInterface.cs" />
     <Compile Include="IOC\ISampleServiceOfT.cs" />
     <Compile Include="IOC\ISampleServiceWithGenericMethods.cs" />
