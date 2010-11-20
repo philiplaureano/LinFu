@@ -1,6 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MainAssembly>$(MSBuildProjectDirectory)\..\build\LinFu.Core.dll</MainAssembly>
+    <ExcludeFile>$(MSBuildProjectDirectory)\..\src\ILMerge.ExcludeFile</ExcludeFile>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
   </PropertyGroup>
   <ItemGroup>
@@ -10,7 +11,7 @@
   </ItemGroup>
   <Target Name="Merge">
     <Message Text="-- Begin ILMerge --" />
-    <Exec Command="&quot;$(ProgramFiles)\Microsoft\Ilmerge\Ilmerge.exe&quot; /xmldocs /v2 /log /out:&quot;$(MainAssembly)&quot; @(ILMergeAssemblies->'&quot;%(FullPath)&quot;', ' ') /keyfile:&quot;$(MSBuildProjectDirectory)\..\LinFu.snk&quot;" />
+    <Exec Command="&quot;$(ProgramFiles)\Microsoft\Ilmerge\Ilmerge.exe&quot; /xmldocs /v2 /internalize:&quot;$(ExcludeFile)&quot; /log /out:&quot;$(MainAssembly)&quot; @(ILMergeAssemblies->'&quot;%(FullPath)&quot;', ' ') /keyfile:&quot;$(MSBuildProjectDirectory)\..\LinFu.snk&quot;" />
     <Message Text="-- End ILMerge   --" />
   </Target>
 </Project>
