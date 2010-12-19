@@ -23,10 +23,18 @@ namespace LinFu.IoC
         public void AddTypeLoaders(ILoader<IServiceContainer> targetLoader, IList<IActionLoader<IServiceContainer, Type>> typeLoaders)
         {
             typeLoaders.Add(new FactoryAttributeLoader());
-            typeLoaders.Add(new ImplementsAttributeLoader());
             typeLoaders.Add(new PreProcessorLoader());
-            typeLoaders.Add(new PostProcessorLoader());
+            typeLoaders.Add(new PostProcessorLoader());            
             typeLoaders.Add(new InterceptorAttributeLoader(targetLoader));
+            typeLoaders.Add(new ImplementsAttributeLoader());
+
+            // Load any additional service loaders
+            var serviceLoaders = new List<ServiceLoader>();
+            serviceLoaders.LoadFrom(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
+            foreach (var loader in serviceLoaders)
+            {
+                typeLoaders.Add(loader);
+            }
         }
     }
 }

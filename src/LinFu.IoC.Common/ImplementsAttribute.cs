@@ -1,7 +1,7 @@
 ﻿using System;
-
+using LinFu.IoC.Interfaces;
 namespace LinFu.IoC.Configuration
-{
+{    
     /// <summary>
     /// The attribute used to specify how a service should be implemented
     /// in addition to its instancing behavior.
@@ -38,7 +38,7 @@ namespace LinFu.IoC.Configuration
         {
             _serviceType = serviceType;
             _lifeCycleType = lifeCycleType;
-        }
+        }        
 
         /// <summary>
         /// The type of service that will be implemented.
@@ -55,6 +55,6 @@ namespace LinFu.IoC.Configuration
         public LifecycleType LifecycleType
         {
             get { return _lifeCycleType; }
-        }
+        }       
     }
 }

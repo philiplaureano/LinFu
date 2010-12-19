@@ -56,12 +56,14 @@
     <Compile Include="IContainer.cs" />
     <Compile Include="IFactory.cs" />
     <Compile Include="IFactoryRequest.cs" />
+    <Compile Include="IImplementationInfo.cs" />
     <Compile Include="IInitialize.cs" />
     <Compile Include="ImplementsAttribute.cs" />
     <Compile Include="IPostProcessor.cs" />
     <Compile Include="IPreprocessor.cs" />
     <Compile Include="IServiceContainer.cs" />
     <Compile Include="IServiceInfo.cs" />
+    <Compile Include="IServiceLocator.cs" />
     <Compile Include="IServiceRequest.cs" />
     <Compile Include="IServiceRequestResult.cs" />
     <Compile Include="LifecycleType.cs" />

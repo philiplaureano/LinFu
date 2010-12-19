@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace LinFu.Reflection
 {
@@ -20,12 +22,16 @@ namespace LinFu.Reflection
         /// <returns>A list of actions that load the target collection into memory.</returns>
         public IEnumerable<Action<ICollection<T>>> Load(Type input)
         {
-            var actionList = new List<Action<ICollection<T>>>();
+            var defaultConstructor = (from c in input.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic)
+                                     let parameterCount = c.GetParameters().Count()
+                                     where parameterCount == 0
+                                     select c).FirstOrDefault();
+
+            if (defaultConstructor == null)
+                yield break;
 
             var component = (T) Activator.CreateInstance(input);
-            actionList.Add(items => items.Add(component));
-
-            return actionList;
+            yield return items => items.Add(component);
         }
 
         /// <summary>

@@ -64,8 +64,10 @@
     <Compile Include="Configuration\BaseMethodBuilder.cs" />
     <Compile Include="Configuration\ConstructorInvoke.cs" />
     <Compile Include="Configuration\ConstructorMethodBuilder.cs" />
+    <Compile Include="Configuration\ImplementsAttributeImplementationInfoAdapter.cs" />
     <Compile Include="Configuration\Interfaces\IConstructorArgumentResolver.cs" />
     <Compile Include="Configuration\Interfaces\INamedType.cs" />
+    <Compile Include="Configuration\Loaders\ServiceLoader.cs" />
     <Compile Include="Configuration\NamedType.cs" />
     <Compile Include="Configuration\Resolvers\ConstructorArgumentResolver.cs" />
     <Compile Include="ConfigureContainerLoader.cs" />
@@ -86,10 +88,6 @@
     <Compile Include="Configuration\Injectors\AttributedFieldInjectionFilter.cs" />
     <Compile Include="Configuration\Injectors\AttributedMethodInjectionFilter.cs" />
     <Compile Include="Configuration\Injectors\AttributedPropertyInjectionFilter.cs" />
-    <Compile Include="Configuration\Injectors\AutoFieldInjector.cs" />
-    <Compile Include="Configuration\Injectors\AutoMemberInjector.cs" />
-    <Compile Include="Configuration\Injectors\AutoMethodInjector.cs" />
-    <Compile Include="Configuration\Injectors\AutoPropertyInjector.cs" />
     <Compile Include="Configuration\Injectors\BaseMemberInjectionFilter.cs" />
     <Compile Include="Configuration\Injectors\CustomFactoryInjector.cs" />
     <Compile Include="Configuration\Injectors\NullMemberInjectionFilter.cs" />
@@ -172,6 +170,7 @@
     <Compile Include="ServiceContainer.cs" />
     <Compile Include="NamedServiceNotFoundException.cs" />
     <Compile Include="ServiceInfo.cs" />
+    <Compile Include="ServiceLocator.cs" />
     <Compile Include="ServiceNotFoundException.cs" />
     <Compile Include="ServiceRequest.cs" />
     <Compile Include="ServiceRequestResult.cs" />
