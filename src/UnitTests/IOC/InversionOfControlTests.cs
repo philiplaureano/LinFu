@@ -11,6 +11,7 @@ using Moq;
 using NUnit.Framework;
 using SampleLibrary;
 using SampleLibrary.IOC;
+using SampleLibrary.IOC.BugFixes;
 
 namespace LinFu.UnitTests.IOC
 {
@@ -648,6 +649,19 @@ namespace LinFu.UnitTests.IOC
 
             object instance = container.GetService(typeof (ISampleGenericService<int>));
             Assert.IsNotNull(instance);
+        }
+
+        [Test]
+        [ExpectedException(typeof(NamedServiceNotFoundException))]
+        public void ShouldNotReturnNamedServicesForGetServiceCallsForAnonymousServices()
+        {
+            var container = new ServiceContainer();
+            var myService = new MyService();
+            container.AddService<IMyService>(myService);
+
+            Assert.IsNotNull(container.GetService<IMyService>());
+
+            Assert.IsNull(container.GetService<IMyService>("frobozz"));
         }
 
         [Test]
