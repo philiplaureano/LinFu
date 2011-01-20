@@ -14,7 +14,6 @@ namespace LinFu.IoC.Configuration
         private static readonly HashSet<HashableWeakReference> _instances =
             new HashSet<HashableWeakReference>(new HashableWeakReferenceComparer());
 
-
         private static int _initializeCallCount;
         private readonly Func<IServiceRequestResult, T> _getSource;
 
@@ -61,7 +60,7 @@ namespace LinFu.IoC.Configuration
                 return;
 
             if ((_initializeCallCount = ++_initializeCallCount % 100) == 0)
-                _instances.RemoveWhere(w => !w.IsAlive);
+                _instances.RemoveWhere(w => w != null && !w.IsAlive);
 
             // Make sure that the target is initialized only once
             var weakReference = new HashableWeakReference(target);
