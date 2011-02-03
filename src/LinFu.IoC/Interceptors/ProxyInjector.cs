@@ -8,7 +8,7 @@ namespace LinFu.IoC.Interceptors
     /// Represents a class that automatically injects a proxy instance
     /// instead of an actual service instance.
     /// </summary>
-    internal class ProxyInjector : IPostProcessor
+    public class ProxyInjector : IPostProcessor
     {
         private readonly Func<IServiceRequestResult, object> _createProxy;
         private readonly Func<IServiceRequestResult, bool> _filterPredicate;
@@ -19,7 +19,7 @@ namespace LinFu.IoC.Interceptors
         /// </summary>
         /// <param name="filterPredicate">The predicate that will determine which service requests will be proxied.</param>
         /// <param name="createProxy">The factory method that will generate the proxy instance itself.</param>
-        internal ProxyInjector(Func<IServiceRequestResult, bool> filterPredicate,
+        public ProxyInjector(Func<IServiceRequestResult, bool> filterPredicate,
                                Func<IServiceRequestResult, object> createProxy)
         {
             _filterPredicate = filterPredicate;
