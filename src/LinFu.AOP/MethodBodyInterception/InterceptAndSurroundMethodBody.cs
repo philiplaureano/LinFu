@@ -98,7 +98,7 @@ namespace LinFu.AOP.Cecil
             TypeReference voidType = module.Import(typeof (void));
             _surroundMethodBody.AddEpilog(worker);
 
-            if (returnType.GetType() != voidType.GetType())
+            if (returnType.FullName != voidType.FullName)
                 worker.Emit(OpCodes.Ldloc, _parameters.ReturnValue);
 
             worker.Emit(OpCodes.Ret);
