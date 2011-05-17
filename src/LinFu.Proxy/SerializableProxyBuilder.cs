@@ -37,7 +37,7 @@ namespace LinFu.Proxy
                 interfaces.Add(typeof (ISerializable));
 
             TypeReference serializableInterfaceType = module.ImportType<ISerializable>();
-            if (!targetType.Interfaces.Contains(serializableInterfaceType))
+            if (!targetType.Interfaces.Any(typeReference => typeReference.FullName == serializableInterfaceType.FullName))
                 targetType.Interfaces.Add(serializableInterfaceType);
 
             // Create the proxy type
@@ -57,7 +57,7 @@ namespace LinFu.Proxy
             PropertyDefinition interceptorGetterProperty = (from PropertyDefinition m in targetType.Properties
                                                             where
                                                                 m.Name == "Interceptor" &&
-                                                                m.PropertyType == interceptorType
+                                                                m.PropertyType.FullName == interceptorType.FullName
                                                             select m).First();
         }
 
@@ -80,7 +80,7 @@ namespace LinFu.Proxy
             MethodBody body = serializationCtor.Body;
             body.InitLocals = true;
 
-            CilWorker IL = serializationCtor.GetILGenerator();
+            ILProcessor IL = serializationCtor.GetILGenerator();
 
             IL.Emit(OpCodes.Ldtoken, interceptorInterfaceType);
             IL.Emit(OpCodes.Call, getTypeFromHandle);
@@ -116,7 +116,7 @@ namespace LinFu.Proxy
             body.Instructions.Clear();
             body.InitLocals = true;
 
-            CilWorker IL = getObjectDataMethod.GetILGenerator();
+            ILProcessor IL = getObjectDataMethod.GetILGenerator();
 
             TypeReference proxyInterfaceType = module.ImportType<IProxy>();
             MethodReference getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle",

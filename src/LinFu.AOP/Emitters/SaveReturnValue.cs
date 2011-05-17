@@ -29,8 +29,8 @@ namespace LinFu.AOP.Cecil
         /// <summary>
         /// Saves the return value from a given method call.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> pointing to the target method body.</param>
-        public void Emit(CilWorker IL)
+        /// <param name="IL">The <see cref="ILProcessor"/> pointing to the target method body.</param>
+        public void Emit(ILProcessor IL)
         {
             ModuleDefinition module = IL.GetModule();
             TypeReference voidType = module.ImportType(typeof (void));
@@ -39,7 +39,7 @@ namespace LinFu.AOP.Cecil
             if (_returnType is GenericParameter || returnTypeIsValueType)
                 IL.Create(OpCodes.Box, _returnType);
 
-            if (_returnType != voidType)
+            if (_returnType.FullName != voidType.FullName)
                 IL.Create(OpCodes.Stloc, _returnValue);
         }
 

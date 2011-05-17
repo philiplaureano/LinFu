@@ -15,12 +15,12 @@ namespace LinFu.AOP.Cecil
         #region IMethodRewriter Members
 
         /// <summary>
-        /// Rewrites a target method using the given CilWorker.
+        /// Rewrites a target method using the given ILProcessor.
         /// </summary>
         /// <param name="method">The target method.</param>
-        /// <param name="IL">The CilWorker that will be used to rewrite the target method.</param>
+        /// <param name="IL">The ILProcessor that will be used to rewrite the target method.</param>
         /// <param name="oldInstructions">The original instructions from the target method body.</param>
-        public void Rewrite(MethodDefinition method, CilWorker IL, IEnumerable<Instruction> oldInstructions)
+        public void Rewrite(MethodDefinition method, ILProcessor IL, IEnumerable<Instruction> oldInstructions)
         {
             TypeDefinition declaringType = method.DeclaringType;
             ModuleDefinition module = declaringType.Module;
@@ -93,7 +93,7 @@ namespace LinFu.AOP.Cecil
         /// </summary>
         /// <param name="oldInstruction">The instruction currently being evaluated.</param>
         /// <param name="hostMethod">The method that contains the target instruction.</param>
-        /// <param name="IL">The CilWorker for the target method body.</param>
-        protected abstract void Replace(Instruction oldInstruction, MethodDefinition hostMethod, CilWorker IL);
+        /// <param name="IL">The ILProcessor for the target method body.</param>
+        protected abstract void Replace(Instruction oldInstruction, MethodDefinition hostMethod, ILProcessor IL);
     }
 }

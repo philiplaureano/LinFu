@@ -19,7 +19,6 @@ namespace LinFu.AOP.Cecil
             nameDef.PublicKey = null;
             nameDef.PublicKeyToken = null;
             nameDef.HashAlgorithm = AssemblyHashAlgorithm.None;
-            nameDef.Flags = ~AssemblyFlags.PublicKey;
             nameDef.HasPublicKey = false;
         }
     }

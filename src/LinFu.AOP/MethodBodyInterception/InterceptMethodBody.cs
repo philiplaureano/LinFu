@@ -39,9 +39,9 @@ namespace LinFu.AOP.Cecil
         /// Rewrites the instructions in the target method body.
         /// </summary>
         /// <param name="method">The target method.</param>
-        /// <param name="IL">The <see cref="CilWorker"/> instance that represents the method body.</param>
+        /// <param name="IL">The <see cref="ILProcessor"/> instance that represents the method body.</param>
         /// <param name="oldInstructions">The IL instructions of the original method body.</param>
-        protected override void RewriteMethodBody(MethodDefinition method, CilWorker IL,
+        protected override void RewriteMethodBody(MethodDefinition method, ILProcessor IL,
                                                   IEnumerable<Instruction> oldInstructions)
         {
             if (IsExcluded(method))
@@ -99,7 +99,7 @@ namespace LinFu.AOP.Cecil
             rewriter.Rewrite(method, IL, oldInstructions);
         }
 
-        private void AddOriginalInstructions(CilWorker IL, IEnumerable<Instruction> oldInstructions)
+        private void AddOriginalInstructions(ILProcessor IL, IEnumerable<Instruction> oldInstructions)
         {
             foreach (Instruction instruction in oldInstructions)
             {

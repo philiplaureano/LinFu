@@ -79,8 +79,8 @@ namespace LinFu.AOP.Cecil
         /// <summary>
         /// Adds a prolog to the given method body.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> that points to the given method body.</param>
-        public void AddProlog(CilWorker IL)
+        /// <param name="IL">The <see cref="ILProcessor"/> that points to the given method body.</param>
+        public void AddProlog(ILProcessor IL)
         {
             MethodDefinition method = IL.GetMethod();
             _surroundingImplementation = method.AddLocal<IAroundInvoke>();
@@ -131,8 +131,8 @@ namespace LinFu.AOP.Cecil
         /// <summary>
         /// Adds an epilog to the given method body.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> that points to the given method body.</param>
-        public void AddEpilog(CilWorker IL)
+        /// <param name="IL">The <see cref="ILProcessor"/> that points to the given method body.</param>
+        public void AddEpilog(ILProcessor IL)
         {
             Instruction skipEpilog = IL.Create(OpCodes.Nop);
 

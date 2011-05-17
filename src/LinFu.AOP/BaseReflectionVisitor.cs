@@ -1,10 +1,11 @@
-﻿using Mono.Cecil;
+﻿using System.Collections.Generic;
+using Mono.Cecil;
 
 #pragma warning disable 1591
 
 namespace LinFu.AOP.Cecil
 {
-    public abstract class BaseReflectionVisitor : IReflectionVisitor, IReflectionStructureVisitor
+    public abstract class BaseReflectionVisitor
     {
         #region IReflectionStructureVisitor Members
 
@@ -51,7 +52,7 @@ namespace LinFu.AOP.Cecil
 
         #region IReflectionStructureVisitor Members
 
-        public virtual void VisitAssemblyNameReferenceCollection(AssemblyNameReferenceCollection names)
+        public virtual void VisitAssemblyNameReferenceCollection(IEnumerable<AssemblyNameReference> names)
         {
             foreach (AssemblyNameReference nameRef in names)
             {
@@ -59,7 +60,7 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        public virtual void VisitModuleDefinitionCollection(ModuleDefinitionCollection modules)
+        public virtual void VisitModuleDefinitionCollection(IEnumerable<ModuleDefinition> modules)
         {
             foreach (ModuleDefinition module in modules)
             {
@@ -67,7 +68,7 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        public virtual void VisitModuleReferenceCollection(ModuleReferenceCollection modules)
+        public virtual void VisitModuleReferenceCollection(IEnumerable<ModuleReference> modules)
         {
             foreach (ModuleReference module in modules)
             {
@@ -75,7 +76,7 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        public virtual void VisitResourceCollection(ResourceCollection resources)
+        public virtual void VisitResourceCollection(IEnumerable<Resource> resources)
         {
         }
 
@@ -89,7 +90,7 @@ namespace LinFu.AOP.Cecil
             VisitInterfaceCollection(type.Interfaces);
 
             // Visit the constructors
-            VisitConstructorCollection(type.Constructors);
+            //VisitConstructorCollection(type.Constructors);
 
             // Visit the fields
             VisitFieldDefinitionCollection(type.Fields);
@@ -110,7 +111,7 @@ namespace LinFu.AOP.Cecil
             VisitSecurityDeclarationCollection(type.SecurityDeclarations);
         }
 
-        public virtual void VisitConstructorCollection(ConstructorCollection ctors)
+        public virtual void VisitConstructorCollection(IEnumerable<MethodDefinition> ctors)
         {
             foreach (MethodDefinition ctor in ctors)
             {
@@ -118,7 +119,7 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        public virtual void VisitCustomAttributeCollection(CustomAttributeCollection customAttrs)
+        public virtual void VisitCustomAttributeCollection(IEnumerable<CustomAttribute> customAttrs)
         {
             foreach (CustomAttribute ca in customAttrs)
             {
@@ -126,7 +127,7 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        public virtual void VisitEventDefinitionCollection(EventDefinitionCollection events)
+        public virtual void VisitEventDefinitionCollection(IEnumerable<EventDefinition> events)
         {
             foreach (EventDefinition eventDef in events)
             {
@@ -134,7 +135,7 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        public virtual void VisitExternTypeCollection(ExternTypeCollection externs)
+        public virtual void VisitExternTypeCollection(IEnumerable<TypeReference> externs)
         {
             foreach (TypeReference type in externs)
             {
@@ -142,7 +143,7 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        public virtual void VisitFieldDefinitionCollection(FieldDefinitionCollection fields)
+        public virtual void VisitFieldDefinitionCollection(IEnumerable<FieldDefinition> fields)
         {
             foreach (FieldDefinition field in fields)
             {
@@ -150,7 +151,7 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        public virtual void VisitGenericParameterCollection(GenericParameterCollection genparams)
+        public virtual void VisitGenericParameterCollection(IEnumerable<GenericParameter> genparams)
         {
             foreach (GenericParameter param in genparams)
             {
@@ -158,7 +159,7 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        public virtual void VisitInterfaceCollection(InterfaceCollection interfaces)
+        public virtual void VisitInterfaceCollection(IEnumerable<TypeReference> interfaces)
         {
             foreach (TypeReference interfaceType in interfaces)
             {
@@ -166,7 +167,7 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        public virtual void VisitMemberReferenceCollection(MemberReferenceCollection members)
+        public virtual void VisitMemberReferenceCollection(IEnumerable<MemberReference> members)
         {
             foreach (MemberReference memberRef in members)
             {
@@ -189,7 +190,7 @@ namespace LinFu.AOP.Cecil
             VisitSecurityDeclarationCollection(method.SecurityDeclarations);
         }
 
-        public virtual void VisitMethodDefinitionCollection(MethodDefinitionCollection methods)
+        public virtual void VisitMethodDefinitionCollection(IEnumerable<MethodDefinition> methods)
         {
             foreach (MethodDefinition method in methods)
             {
@@ -197,7 +198,7 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        public virtual void VisitOverrideCollection(OverrideCollection overrides)
+        public virtual void VisitOverrideCollection(IEnumerable<MethodReference> overrides)
         {
             foreach (MethodReference method in overrides)
             {
@@ -205,7 +206,7 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        public virtual void VisitParameterDefinitionCollection(ParameterDefinitionCollection parameters)
+        public virtual void VisitParameterDefinitionCollection(IEnumerable<ParameterDefinition> parameters)
         {
             foreach (ParameterDefinition param in parameters)
             {
@@ -213,7 +214,7 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        public virtual void VisitPropertyDefinitionCollection(PropertyDefinitionCollection properties)
+        public virtual void VisitPropertyDefinitionCollection(IEnumerable<PropertyDefinition> properties)
         {
             foreach (PropertyDefinition property in properties)
             {
@@ -221,7 +222,7 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        public virtual void VisitSecurityDeclarationCollection(SecurityDeclarationCollection secDecls)
+        public virtual void VisitSecurityDeclarationCollection(IEnumerable<SecurityDeclaration> secDecls)
         {
             foreach (SecurityDeclaration securityDeclaration in secDecls)
             {
@@ -229,7 +230,7 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        public virtual void VisitTypeDefinitionCollection(TypeDefinitionCollection types)
+        public virtual void VisitTypeDefinitionCollection(IEnumerable<TypeDefinition> types)
         {
             foreach (TypeDefinition typeDef in types)
             {
@@ -237,7 +238,7 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        public virtual void VisitTypeReferenceCollection(TypeReferenceCollection refs)
+        public virtual void VisitTypeReferenceCollection(IEnumerable<TypeReference> refs)
         {
             foreach (TypeReference type in refs)
             {
@@ -284,7 +285,7 @@ namespace LinFu.AOP.Cecil
         {
         }
 
-        public virtual void VisitMarshalSpec(MarshalSpec marshalSpec)
+        public virtual void VisitMarshalSpec(MarshalInfo marshalInfo)
         {
         }
 
@@ -298,13 +299,13 @@ namespace LinFu.AOP.Cecil
             VisitResourceCollection(module.Resources);
             VisitAssemblyNameReferenceCollection(module.AssemblyReferences);
             VisitModuleReferenceCollection(module.ModuleReferences);
-            VisitMemberReferenceCollection(module.MemberReferences);
-            VisitTypeReferenceCollection(module.TypeReferences);
-            VisitExternTypeCollection(module.ExternTypes);
+            VisitMemberReferenceCollection(module.GetMemberReferences());
+            VisitTypeReferenceCollection(module.GetTypeReferences());
+            //VisitExternTypeCollection(module.ExternTypes);
             TerminateModuleDefinition(module);
         }
 
-        public virtual void VisitNestedTypeCollection(NestedTypeCollection nestedTypes)
+        public virtual void VisitNestedTypeCollection(IEnumerable<TypeDefinition> nestedTypes)
         {
             foreach (TypeDefinition nestedType in nestedTypes)
             {

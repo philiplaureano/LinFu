@@ -28,7 +28,7 @@ namespace LinFu.UnitTests.AOP
         [Test]
         public void ShouldInterceptObjectInstantiation()
         {
-            AssemblyDefinition assembly = AssemblyFactory.GetAssembly("SampleLibrary.dll");
+            AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly("SampleLibrary.dll");
 
             ModuleDefinition module = assembly.MainModule;
             string typeName = "SampleClassWithNewInstanceCall";

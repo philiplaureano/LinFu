@@ -54,16 +54,16 @@ namespace LinFu.AOP.Cecil
         #region IMethodBodyRewriter Members
 
         /// <summary>
-        /// Rewrites a target method using the given CilWorker.
+        /// Rewrites a target method using the given ILProcessor.
         /// </summary>
         /// <param name="method">The target method.</param>
-        /// <param name="IL">The CilWorker that will be used to rewrite the target method.</param>
+        /// <param name="IL">The ILProcessor that will be used to rewrite the target method.</param>
         /// <param name="oldInstructions">The original instructions from the target method body.</param>
-        public void Rewrite(MethodDefinition method, CilWorker IL,
+        public void Rewrite(MethodDefinition method, ILProcessor IL,
                             IEnumerable<Instruction> oldInstructions)
         {
             MethodDefinition targetMethod = _parameters.TargetMethod;
-            CilWorker worker = targetMethod.GetILGenerator();
+            ILProcessor worker = targetMethod.GetILGenerator();
             ModuleDefinition module = worker.GetModule();
 
 
@@ -91,14 +91,14 @@ namespace LinFu.AOP.Cecil
             _getClassMethodReplacementProvider.Emit(worker);
 
 
-            TypeReference returnType = targetMethod.ReturnType.ReturnType;
+            TypeReference returnType = targetMethod.ReturnType;
             _addMethodReplacement.Emit(worker);
 
             // Save the return value
             TypeReference voidType = module.Import(typeof (void));
             _surroundMethodBody.AddEpilog(worker);
 
-            if (returnType != voidType)
+            if (returnType.GetType() != voidType.GetType())
                 worker.Emit(OpCodes.Ldloc, _parameters.ReturnValue);
 
             worker.Emit(OpCodes.Ret);

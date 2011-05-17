@@ -80,7 +80,7 @@ namespace LinFu.AOP.Cecil
             VariableDefinition typeArguments = MethodDefinitionExtensions.AddLocal(targetMethod, typeof (Type[]));
             TypeReference systemType = ModuleDefinitionExtensions.ImportType(module, typeof (Type));
 
-            CilWorker IL = MethodDefinitionExtensions.GetILGenerator(targetMethod);
+            ILProcessor IL = MethodDefinitionExtensions.GetILGenerator(targetMethod);
 
             #region Initialize the InvocationInfo constructor arguments
 
@@ -152,7 +152,7 @@ namespace LinFu.AOP.Cecil
             // Save the return type
             MethodReference getTypeFromHandle = module.Import(_getTypeFromHandle);
 
-            TypeReference returnType = targetMethod.ReturnType.ReturnType;
+            TypeReference returnType = targetMethod.ReturnType;
             IL.Emit(OpCodes.Ldtoken, returnType);
             IL.Emit(OpCodes.Call, getTypeFromHandle);
 

@@ -38,7 +38,7 @@ namespace LinFu.UnitTests.AOP
         [Test]
         public void ShouldSetAndGetTheSameFieldValue()
         {
-            AssemblyDefinition myLibrary = AssemblyFactory.GetAssembly("SampleLibrary.dll");
+            AssemblyDefinition myLibrary = AssemblyDefinition.ReadAssembly("SampleLibrary.dll");
             ModuleDefinition module = myLibrary.MainModule;
 
             foreach (TypeDefinition type in myLibrary.MainModule.Types)

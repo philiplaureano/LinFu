@@ -34,8 +34,8 @@ namespace LinFu.AOP.Cecil
         /// <summary>
         /// Emits the instructions that obtain the <see cref="IMethodReplacementProvider"/> instance.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> instance.</param>
-        public void Emit(CilWorker IL)
+        /// <param name="IL">The <see cref="ILProcessor"/> instance.</param>
+        public void Emit(ILProcessor IL)
         {
             MethodDefinition method = _hostMethod;
             TypeDefinition declaringType = method.DeclaringType;

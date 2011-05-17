@@ -13,7 +13,7 @@ namespace LinFu.AOP.Cecil
     public class MethodBodyRewriterParameters : IMethodBodyRewriterParameters
     {
         private readonly VariableDefinition _aroundInvokeProvider;
-        private readonly CilWorker _cilWorker;
+        private readonly ILProcessor _cilWorker;
         private readonly VariableDefinition _classMethodReplacementProvider;
         private readonly Func<ModuleDefinition, MethodReference> _getMethodReplacementProviderMethod;
         private readonly VariableDefinition _interceptionDisabled;
@@ -26,7 +26,7 @@ namespace LinFu.AOP.Cecil
         /// <summary>
         /// Initializes a new instance of the <see cref="MethodBodyRewriterParameters"/> class.
         /// </summary>
-        /// <param name="IL">The CilWorker that is responsible for the current method body.</param>
+        /// <param name="IL">The ILProcessor that is responsible for the current method body.</param>
         /// <param name="oldInstructions">The value indicating the list of old instructions in the current method body.</param>
         /// <param name="interceptionDisabled">The value that determines whether or not interception is disabled.</param>
         /// <param name="invocationInfo">The local variable that will store the <see cref="IInvocationInfo"/> instance.</param>
@@ -36,7 +36,7 @@ namespace LinFu.AOP.Cecil
         /// <param name="classMethodReplacementProvider">The class-level<see cref="IMethodReplacementProvider"/> instance.</param>
         /// <param name="getMethodReplacementProviderMethod">The functor that resolves the GetMethodReplacementProvider method.</param>
         /// <param name="registryType">The interception registry type that will be responsible for handling class-level interception events.</param>
-        public MethodBodyRewriterParameters(CilWorker IL, IEnumerable<Instruction> oldInstructions,
+        public MethodBodyRewriterParameters(ILProcessor IL, IEnumerable<Instruction> oldInstructions,
                                             VariableDefinition interceptionDisabled,
                                             VariableDefinition invocationInfo,
                                             VariableDefinition returnValue,

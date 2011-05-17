@@ -40,7 +40,7 @@ namespace LinFu.AOP.Cecil
         /// Emits the instructions that obtain the current <see cref="IAroundInvoke"/> instance.
         /// </summary>
         /// <param name="IL"></param>
-        public void Emit(CilWorker IL)
+        public void Emit(ILProcessor IL)
         {
             ModuleDefinition module = IL.GetModule();
 

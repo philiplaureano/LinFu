@@ -68,7 +68,7 @@ namespace LinFu.AOP.Cecil
         public void Weave(MethodDefinition method)
         {
             MethodBody body = method.Body;
-            CilWorker IL = body.CilWorker;
+            ILProcessor IL = body.GetILProcessor();
 
             // Skip empty methods
             int instructionCount = body.Instructions.Count;
@@ -113,7 +113,7 @@ namespace LinFu.AOP.Cecil
         private void Rewrite(MethodDefinition method)
         {
             MethodBody body = method.Body;
-            CilWorker IL = body.CilWorker;
+            ILProcessor IL = body.GetILProcessor();
 
             IEnumerable<Instruction> oldInstructions = _instructionProvider.GetInstructions(method);
 

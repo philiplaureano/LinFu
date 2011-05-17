@@ -40,8 +40,8 @@ namespace LinFu.AOP.Cecil
         /// <summary>
         /// Emits the instructions that determine whether or not method interception is disabled.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> instance responsible for adding or removing instructions to the method body.</param>
-        public void Emit(CilWorker IL)
+        /// <param name="IL">The <see cref="ILProcessor"/> instance responsible for adding or removing instructions to the method body.</param>
+        public void Emit(ILProcessor IL)
         {
             ModuleDefinition module = IL.GetModule();
             TypeReference modifiableType = module.ImportType<IModifiableType>();

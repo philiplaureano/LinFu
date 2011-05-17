@@ -51,22 +51,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LinFu.Core, Version=2.3.0.19881, Culture=neutral, PublicKeyToken=a4c63a184389506f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\LinFu.Core.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BankAccount.cs" />
@@ -99,7 +84,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostWeaveTaskLocation>$(MSBuildProjectDirectory)\$(OutputPath)\..\..\..\lib\LinFu.Core.dll</PostWeaveTaskLocation>
+    <PostWeaveTaskLocation>$(MSBuildProjectDirectory)\$(OutputPath)\..\..\..\lib\LinFu.AOP.Tasks.dll</PostWeaveTaskLocation>
   </PropertyGroup>
   <UsingTask TaskName="PostWeaveTask" AssemblyFile="$(PostWeaveTaskLocation)" />
   <Target Name="AfterBuild">

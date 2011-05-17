@@ -26,7 +26,7 @@ namespace LinFu.UnitTests.AOP
         private void Test(string libraryFileName, string typeName, Func<MethodReference, bool> methodFilter,
                           Action<Type> testTargetType)
         {
-            AssemblyDefinition assembly = AssemblyFactory.GetAssembly(libraryFileName);
+            AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly(libraryFileName);
             ModuleDefinition module = assembly.MainModule;
 
             TypeDefinition targetType = (from TypeDefinition t in module.Types
