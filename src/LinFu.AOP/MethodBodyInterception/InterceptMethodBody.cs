@@ -66,8 +66,8 @@ namespace LinFu.AOP.Cecil
                                                               oldInstructions,
                                                               interceptionDisabled,
                                                               invocationInfo, returnValue,
-                                                              aroundInvokeProvider,
                                                               methodReplacementProvider,
+                                                              aroundInvokeProvider,
                                                               classMethodReplacementProvider,
                                                               getInstanceMethodReplacementProviderMethod,
                                                               typeof (AroundMethodBodyRegistry));

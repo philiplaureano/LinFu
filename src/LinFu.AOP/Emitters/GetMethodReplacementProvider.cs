@@ -24,6 +24,9 @@ namespace LinFu.AOP.Cecil
         public GetMethodReplacementProvider(VariableDefinition methodReplacementProvider, MethodDefinition hostMethod,
                                             Func<ModuleDefinition, MethodReference> resolveGetProviderMethod)
         {
+			if (methodReplacementProvider.VariableType.FullName != typeof(IMethodReplacementProvider).FullName) {
+				throw new InvalidProgramException();
+			}
             _methodReplacementProvider = methodReplacementProvider;
             _hostMethod = hostMethod;
             _resolveGetProviderMethod = resolveGetProviderMethod;

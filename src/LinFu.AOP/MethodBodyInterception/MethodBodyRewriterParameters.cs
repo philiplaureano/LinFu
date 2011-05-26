@@ -51,8 +51,17 @@ namespace LinFu.AOP.Cecil
             _interceptionDisabled = interceptionDisabled;
             _invocationInfo = invocationInfo;
             _returnValue = returnValue;
+
+			if (methodReplacementProvider.VariableType.FullName != typeof(IMethodReplacementProvider).FullName) {
+				throw new InvalidProgramException();
+			}
             _methodReplacementProvider = methodReplacementProvider;
+
+			if (aroundInvokeProvider.VariableType.FullName != typeof(IAroundInvokeProvider).FullName) {
+				throw new InvalidProgramException();
+			}
             _aroundInvokeProvider = aroundInvokeProvider;
+
             _classMethodReplacementProvider = classMethodReplacementProvider;
             _getMethodReplacementProviderMethod = getMethodReplacementProviderMethod;
             _registryType = registryType;
