@@ -55,6 +55,9 @@ namespace LinFu.IoC.Factories
 
             lock (_lock)
             {
+                if (_instances.ContainsKey(key))
+                    return _instances[key];
+
                 T result = _createInstance(request);
                 if (result != null)
                 {
