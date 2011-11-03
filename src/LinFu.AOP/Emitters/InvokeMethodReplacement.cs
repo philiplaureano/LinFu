@@ -40,12 +40,12 @@ namespace LinFu.AOP.Cecil
         /// <summary>
         /// Emits the instructions that call the method replacement instead of the original method body.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> that points to the current method body.</param>
-        public void Emit(CilWorker IL)
+        /// <param name="IL">The <see cref="ILProcessor"/> that points to the current method body.</param>
+        public void Emit(ILProcessor IL)
         {
             ModuleDefinition module = IL.GetModule();
             MethodDefinition method = IL.GetMethod();
-            TypeReference returnType = method.ReturnType.ReturnType;
+            TypeReference returnType = method.ReturnType;
             VariableDefinition methodReplacement = MethodDefinitionExtensions.AddLocal(method, typeof (IInterceptor));
 
             GetMethodReplacementInstance(method, IL, methodReplacement, _methodReplacementProvider, _invocationInfo);
@@ -66,7 +66,7 @@ namespace LinFu.AOP.Cecil
 
         #endregion
 
-        private static void InvokeInterceptor(ModuleDefinition module, CilWorker IL,
+        private static void InvokeInterceptor(ModuleDefinition module, ILProcessor IL,
                                               VariableDefinition methodReplacement, TypeReference returnType,
                                               VariableDefinition invocationInfo)
         {
@@ -78,7 +78,7 @@ namespace LinFu.AOP.Cecil
         }
 
         private static void GetMethodReplacementInstance(MethodDefinition method,
-                                                         CilWorker IL,
+                                                         ILProcessor IL,
                                                          VariableDefinition methodReplacement,
                                                          VariableDefinition methodReplacementProvider,
                                                          VariableDefinition invocationInfo)

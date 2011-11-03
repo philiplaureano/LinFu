@@ -25,7 +25,7 @@ namespace LinFu.Reflection.Emit
                                                  string typeName, string namespaceName, TypeAttributes attributes,
                                                  TypeReference baseType)
         {
-            var resultType = new TypeDefinition(typeName, namespaceName,
+            var resultType = new TypeDefinition(namespaceName, typeName,
                                                 attributes, baseType);
 
             mainModule.Types.Add(resultType);

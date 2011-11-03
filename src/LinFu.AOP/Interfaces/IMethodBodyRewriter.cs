@@ -10,11 +10,11 @@ namespace LinFu.AOP.Cecil.Interfaces
     public interface IMethodBodyRewriter
     {
         /// <summary>
-        /// Rewrites a target method using the given CilWorker.
+        /// Rewrites a target method using the given ILProcessor.
         /// </summary>
         /// <param name="method">The target method.</param>
-        /// <param name="IL">The CilWorker that will be used to rewrite the target method.</param>
+        /// <param name="IL">The ILProcessor that will be used to rewrite the target method.</param>
         /// <param name="oldInstructions">The original instructions from the target method body.</param>
-        void Rewrite(MethodDefinition method, CilWorker IL, IEnumerable<Instruction> oldInstructions);
+        void Rewrite(MethodDefinition method, ILProcessor IL, IEnumerable<Instruction> oldInstructions);
     }
 }

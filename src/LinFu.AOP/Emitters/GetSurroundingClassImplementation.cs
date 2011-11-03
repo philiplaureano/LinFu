@@ -36,8 +36,8 @@ namespace LinFu.AOP.Cecil
         /// <summary>
         /// Emits the instructions that obtain the <see cref="IAroundInvoke"/> instance.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> that points to the current method body.</param>
-        public void Emit(CilWorker IL)
+        /// <param name="IL">The <see cref="ILProcessor"/> that points to the current method body.</param>
+        public void Emit(ILProcessor IL)
         {
             MethodDefinition method = IL.GetMethod();
             TypeDefinition declaringType = method.DeclaringType;

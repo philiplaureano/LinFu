@@ -24,6 +24,9 @@ namespace LinFu.AOP.Cecil
         public GetMethodReplacementProvider(VariableDefinition methodReplacementProvider, MethodDefinition hostMethod,
                                             Func<ModuleDefinition, MethodReference> resolveGetProviderMethod)
         {
+			if (methodReplacementProvider.VariableType.FullName != typeof(IMethodReplacementProvider).FullName) {
+				throw new InvalidProgramException();
+			}
             _methodReplacementProvider = methodReplacementProvider;
             _hostMethod = hostMethod;
             _resolveGetProviderMethod = resolveGetProviderMethod;
@@ -34,8 +37,8 @@ namespace LinFu.AOP.Cecil
         /// <summary>
         /// Emits the instructions that obtain the <see cref="IMethodReplacementProvider"/> instance.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> instance.</param>
-        public void Emit(CilWorker IL)
+        /// <param name="IL">The <see cref="ILProcessor"/> instance.</param>
+        public void Emit(ILProcessor IL)
         {
             MethodDefinition method = _hostMethod;
             TypeDefinition declaringType = method.DeclaringType;

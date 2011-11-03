@@ -12,10 +12,10 @@ namespace LinFu.UnitTests.AOP
         public void ShouldBeAbleToDetermineIfMethodIsByRef()
         {
             string location = typeof (SampleClassWithByRefMethod).Assembly.Location;
-            AssemblyDefinition assembly = AssemblyFactory.GetAssembly(location);
+            AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly(location);
             ModuleDefinition module = assembly.MainModule;
 
-            TypeDefinition targetType = module.GetType("SampleClassWithByRefMethod");
+            TypeDefinition targetType = module.GetType("SampleLibrary.AOP.SampleClassWithByRefMethod");
             MethodDefinition byRefMethod = targetType.GetMethod("ByRefMethod");
             MethodDefinition regularMethod = targetType.GetMethod("NonByRefMethod");
 

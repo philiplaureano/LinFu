@@ -14,14 +14,14 @@ namespace LinFu.Reflection.Emit
     public static class MethodDefinitionExtensions
     {
         /// <summary>
-        /// Returns the <see cref="CilWorker"/> instance
+        /// Returns the <see cref="ILProcessor"/> instance
         /// associated with the body of the <paramref name="method">target method</paramref>.
         /// </summary>
         /// <param name="method">The target method to be modified.</param>
-        /// <returns>The <see cref="CilWorker"/> instance that points to the instructions of the method body.</returns>
-        public static CilWorker GetILGenerator(this MethodDefinition method)
+        /// <returns>The <see cref="ILProcessor"/> instance that points to the instructions of the method body.</returns>
+        public static ILProcessor GetILGenerator(this MethodDefinition method)
         {
-            return method.Body.CilWorker;
+            return method.Body.GetILProcessor();
         }
 
         /// <summary>
@@ -70,9 +70,8 @@ namespace LinFu.Reflection.Emit
             if (newLocal == null)
             {
                 MethodBody body = method.Body;
-                int index = body.Variables.Count;
 
-                newLocal = new VariableDefinition(variableName, index, method, localType);
+                newLocal = new VariableDefinition(variableName, localType);
 
                 body.Variables.Add(newLocal);
             }
@@ -123,7 +122,7 @@ namespace LinFu.Reflection.Emit
             else
                 actualReturnType = module.Import(returnType);
 
-            method.ReturnType.ReturnType = actualReturnType;
+            method.ReturnType = actualReturnType;
         }
 
 

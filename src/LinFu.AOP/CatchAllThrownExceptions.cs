@@ -42,7 +42,7 @@ namespace LinFu.AOP.Cecil
             _exceptionHandler = hostMethod.AddLocal<IExceptionHandler>();
             _exceptionInfo = hostMethod.AddLocal<IExceptionHandlerInfo>();
 
-            TypeReference returnType = hostMethod.ReturnType.ReturnType;
+            TypeReference returnType = hostMethod.ReturnType;
             if (returnType != _voidType)
                 _returnValue = hostMethod.AddLocal<object>();
         }
@@ -51,9 +51,9 @@ namespace LinFu.AOP.Cecil
         /// Rewrites the instructions in the target method body to support dynamic exception handling.
         /// </summary>
         /// <param name="targetMethod">The target method.</param>
-        /// <param name="IL">The <see cref="CilWorker"/> instance that represents the method body.</param>
+        /// <param name="IL">The <see cref="ILProcessor"/> instance that represents the method body.</param>
         /// <param name="oldInstructions">The IL instructions of the original method body.</param>
-        protected override void RewriteMethodBody(MethodDefinition targetMethod, CilWorker IL,
+        protected override void RewriteMethodBody(MethodDefinition targetMethod, ILProcessor IL,
                                                   IEnumerable<Instruction> oldInstructions)
         {
             Instruction endOfOriginalInstructionBlock = IL.Create(OpCodes.Nop);
@@ -61,10 +61,10 @@ namespace LinFu.AOP.Cecil
 
 
             Instruction endLabel = IL.Create(OpCodes.Nop);
-            Instruction tryStart = IL.Emit(OpCodes.Nop);
-            Instruction tryEnd = IL.Emit(OpCodes.Nop);
-            Instruction catchStart = IL.Emit(OpCodes.Nop);
-            Instruction catchEnd = IL.Emit(OpCodes.Nop);
+            Instruction tryStart = IL.Create(OpCodes.Nop);
+            Instruction tryEnd = IL.Create(OpCodes.Nop);
+            Instruction catchStart = IL.Create(OpCodes.Nop);
+            Instruction catchEnd = IL.Create(OpCodes.Nop);
 
             ModuleDefinition module = IL.GetModule();
             var handler = new ExceptionHandler(ExceptionHandlerType.Catch);
@@ -81,7 +81,7 @@ namespace LinFu.AOP.Cecil
 
             var emitter = new InvocationInfoEmitter(true);
 
-            TypeReference returnType = targetMethod.ReturnType.ReturnType;
+            TypeReference returnType = targetMethod.ReturnType;
 
             // try {
             IL.Append(tryStart);
@@ -174,7 +174,7 @@ namespace LinFu.AOP.Cecil
         /// <param name="emitter">The <see cref="IEmitInvocationInfo"/> instance that will emit the current method context.</param>
         private void SaveExceptionInfo(MethodDefinition targetMethod, IEmitInvocationInfo emitter)
         {
-            CilWorker IL = targetMethod.GetILGenerator();
+            ILProcessor IL = targetMethod.GetILGenerator();
             ModuleDefinition module = IL.GetModule();
 
             emitter.Emit(targetMethod, targetMethod, _invocationInfo);
@@ -187,7 +187,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Newobj, exceptionInfoConstructor);
             IL.Emit(OpCodes.Stloc, _exceptionInfo);
 
-            TypeReference returnType = targetMethod.ReturnType.ReturnType;
+            TypeReference returnType = targetMethod.ReturnType;
             if (returnType == _voidType || _returnValue == null)
                 return;
 

@@ -15,7 +15,7 @@ namespace LinFu.Reflection.Emit
         /// <returns></returns>
         public static bool IsByRef(this ParameterDefinition parameter)
         {
-            return parameter.ParameterType != null && parameter.ParameterType is ReferenceType;
+            return parameter.ParameterType != null && parameter.ParameterType.IsByReference;
         }
     }
 }

@@ -23,10 +23,11 @@ namespace LinFu.Reflection.Emit
             using (var stream = new MemoryStream())
             {
                 // Persist the assembly to the stream
-                AssemblyFactory.SaveAssembly(definition, stream);
+				definition.Write(stream);
                 byte[] buffer = stream.GetBuffer();
                 result = Assembly.Load(buffer);
             }
+        	definition.Write(@"D:\tools\LinFu\source\LinFu\build\Debug\UnitTests\new.dll");
 
             return result;
         }
@@ -38,7 +39,7 @@ namespace LinFu.Reflection.Emit
         /// <param name="filename">The output file name.</param>
         public static void Save(this AssemblyDefinition definition, string filename)
         {
-            AssemblyFactory.SaveAssembly(definition, filename);
+        	definition.Write(filename);
         }
 
         /// <summary>
@@ -48,7 +49,7 @@ namespace LinFu.Reflection.Emit
         /// <param name="outputStream">The destination file stream.</param>
         public static void Save(this AssemblyDefinition definition, Stream outputStream)
         {
-            AssemblyFactory.SaveAssembly(definition, outputStream);
+			definition.Write(outputStream);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
@@ -27,7 +28,7 @@ namespace LinFu.AOP.Cecil
                 return false;
 
             // Implement the host interface once and only once
-            if (item.Interfaces.Contains(_hostType))
+            if (item.Interfaces.Any(typeReference => typeReference.FullName == _hostType.FullName))
                 return false;
 
             if (_filter != null)
@@ -38,7 +39,7 @@ namespace LinFu.AOP.Cecil
 
         public virtual void Weave(TypeDefinition item)
         {
-            if (item.Interfaces.Contains(_hostType))
+            if (item.Interfaces.Any(typeReference => typeReference.FullName == _hostType.FullName))
                 return;
 
             item.Interfaces.Add(_hostType);

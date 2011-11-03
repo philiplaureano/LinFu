@@ -48,9 +48,9 @@ namespace LinFu.UnitTests.Reflection
         [Test]
         public void AssemblyDefinitionMustBeConvertibleToActualAssembly()
         {
-            AssemblyDefinition definition = AssemblyFactory.DefineAssembly("testAssembly", AssemblyKind.Dll);
+            ModuleDefinition definition = ModuleDefinition.CreateModule("testAssembly", ModuleKind.Dll);
 
-            Assembly assembly = definition.ToAssembly();
+        	Assembly assembly = definition.Assembly.ToAssembly();
             Assert.IsTrue(assembly != null);
         }
 
@@ -59,15 +59,17 @@ namespace LinFu.UnitTests.Reflection
         {
             string location = typeof (SampleHelloClass).Assembly.Location;
 
-            AssemblyDefinition sourceAssembly = AssemblyFactory.GetAssembly(location);
+            AssemblyDefinition sourceAssembly = AssemblyDefinition.ReadAssembly(location);
             Assert.IsNotNull(sourceAssembly);
 
-            AssemblyDefinition definition = AssemblyFactory.DefineAssembly("testAssembly", AssemblyKind.Dll);
-            ModuleDefinition targetModule = definition.MainModule;
+            ModuleDefinition targetModule = ModuleDefinition.CreateModule("testAssembly", ModuleKind.Dll);
+            AssemblyDefinition definition = targetModule.Assembly;
+
             foreach (TypeDefinition typeDef in sourceAssembly.MainModule.Types)
             {
                 // Copy the source type to the target assembly
-                targetModule.Inject(typeDef);
+            	throw new NotImplementedException();
+                //targetModule.Inject(typeDef);
             }
 
             // Convert the new assemblyDef into an actual assembly
@@ -96,7 +98,7 @@ namespace LinFu.UnitTests.Reflection
         {
             string location = typeof (SampleHelloClass).Assembly.Location;
 
-            AssemblyDefinition sourceAssembly = AssemblyFactory.GetAssembly(location);
+            AssemblyDefinition sourceAssembly = AssemblyDefinition.ReadAssembly(location);
 
 
             Assert.IsNotNull(sourceAssembly);

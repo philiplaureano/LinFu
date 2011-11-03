@@ -114,12 +114,12 @@ namespace LinFu.AOP.Cecil
         }
 
         protected override void Replace(Instruction oldInstruction, MethodDefinition hostMethod,
-                                        CilWorker IL)
+                                        ILProcessor IL)
         {
             var targetMethod = (MethodReference) oldInstruction.Operand;
 
             Instruction callOriginalMethod = IL.Create(OpCodes.Nop);
-            TypeReference returnType = targetMethod.ReturnType.ReturnType;
+            TypeReference returnType = targetMethod.ReturnType;
             Instruction endLabel = IL.Create(OpCodes.Nop);
             ModuleDefinition module = hostMethod.DeclaringType.Module;
 
@@ -151,7 +151,7 @@ namespace LinFu.AOP.Cecil
             surroundMethodBody.AddEpilog(IL);
         }
 
-        private void IgnoreLocal(CilWorker IL, VariableDefinition targetVariable, ModuleDefinition module)
+        private void IgnoreLocal(ILProcessor IL, VariableDefinition targetVariable, ModuleDefinition module)
         {
             IL.Emit(OpCodes.Ldloc, targetVariable);
 
@@ -159,10 +159,10 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Call, addInstance);
         }
 
-        private void Replace(CilWorker IL, Instruction oldInstruction, MethodReference targetMethod,
+        private void Replace(ILProcessor IL, Instruction oldInstruction, MethodReference targetMethod,
                              MethodDefinition hostMethod, Instruction endLabel, Instruction callOriginalMethod)
         {
-            TypeReference returnType = targetMethod.ReturnType.ReturnType;
+            TypeReference returnType = targetMethod.ReturnType;
             ModuleDefinition module = hostMethod.DeclaringType.Module;
             if (!hostMethod.IsStatic)
                 GetInstanceProvider(IL);
@@ -237,7 +237,7 @@ namespace LinFu.AOP.Cecil
             IL.Append(oldInstruction);
         }
 
-        private void GetInstanceProvider(CilWorker IL)
+        private void GetInstanceProvider(ILProcessor IL)
         {
             Instruction skipInstanceProvider = IL.Create(OpCodes.Nop);
 
@@ -255,7 +255,7 @@ namespace LinFu.AOP.Cecil
             IL.Append(skipInstanceProvider);
         }
 
-        private void ReconstructMethodArguments(CilWorker IL, MethodReference targetMethod)
+        private void ReconstructMethodArguments(ILProcessor IL, MethodReference targetMethod)
         {
             if (targetMethod.HasThis)
                 IL.Emit(OpCodes.Ldloc, _target);
@@ -269,7 +269,7 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        private void SaveInvocationInfo(CilWorker IL, MethodReference targetMethod, ModuleDefinition module,
+        private void SaveInvocationInfo(ILProcessor IL, MethodReference targetMethod, ModuleDefinition module,
                                         TypeReference returnType)
         {
             // If the target method is an instance method, then the remaining item on the stack
@@ -342,12 +342,12 @@ namespace LinFu.AOP.Cecil
             IgnoreLocal(IL, _invocationInfo, module);
         }
 
-        private void PushStackTrace(CilWorker IL, ModuleDefinition module)
+        private void PushStackTrace(ILProcessor IL, ModuleDefinition module)
         {
             IL.PushStackTrace(module);
         }
 
-        private void EmitInterceptorCall(CilWorker IL)
+        private void EmitInterceptorCall(ILProcessor IL)
         {
             // var result = replacement.Intercept(info);
             IL.Emit(OpCodes.Ldloc, _replacement);
@@ -355,7 +355,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Callvirt, _intercept);
         }
 
-        private void EmitCanReplace(CilWorker IL, IMethodSignature hostMethod, VariableDefinition provider)
+        private void EmitCanReplace(ILProcessor IL, IMethodSignature hostMethod, VariableDefinition provider)
         {
             Instruction skipGetProvider = IL.Create(OpCodes.Nop);
 
@@ -374,7 +374,7 @@ namespace LinFu.AOP.Cecil
             IL.Append(skipGetProvider);
         }
 
-        private void EmitGetMethodReplacement(CilWorker IL, IMethodSignature hostMethod, VariableDefinition provider)
+        private void EmitGetMethodReplacement(ILProcessor IL, IMethodSignature hostMethod, VariableDefinition provider)
         {
             // var replacement = MethodReplacementProvider.GetReplacement(info);
             IL.Emit(OpCodes.Ldloc, provider);

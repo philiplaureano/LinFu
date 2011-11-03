@@ -28,7 +28,7 @@ namespace LinFu.UnitTests.Tools
         public void Verify(AssemblyDefinition assembly)
         {
             // Save the assembly to the temporary file and verify it
-            AssemblyFactory.SaveAssembly(assembly, location);
+			assembly.Write(location);
             PEVerify(location);
         }
 

@@ -35,7 +35,7 @@ namespace LinFu.UnitTests.AOP
 
         private Type GetModifiedTargetType(Action<string, TypeDefinition> modify)
         {
-            AssemblyDefinition assembly = AssemblyFactory.GetAssembly("SampleLibrary.dll");
+            AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly("SampleLibrary.dll");
             ModuleDefinition module = assembly.MainModule;
 
             // Intercept all calls to the System.Console.WriteLine method from the DoSomething method

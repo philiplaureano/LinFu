@@ -33,11 +33,11 @@ namespace LinFu.AOP.Cecil
             _emitter.ImportReferences(module);
         }
 
-        protected override void Replace(Instruction currentInstruction, MethodDefinition method, CilWorker IL)
+        protected override void Replace(Instruction currentInstruction, MethodDefinition method, ILProcessor IL)
         {
             var constructor = (MethodReference) currentInstruction.Operand;
             TypeReference concreteType = constructor.DeclaringType;
-            ParameterDefinitionCollection parameters = constructor.Parameters;
+            var parameters = constructor.Parameters;
 
             if (!_emitter.ShouldIntercept(constructor, concreteType, method))
             {

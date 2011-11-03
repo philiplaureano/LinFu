@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
@@ -40,13 +41,12 @@ namespace LinFu.AOP.Cecil
 
         public void Weave(TypeDefinition type)
         {
-            // Implement IActivatorHost only once
-            if (type.Interfaces.Contains(_hostInterfaceType))
+            if (type.Interfaces.Any(typeReference => typeReference.FullName == _hostInterfaceType.FullName))
                 return;
 
             type.AddProperty("Activator", _activatorPropertyType);
 
-            if (!type.Interfaces.Contains(_hostInterfaceType))
+            if (!type.Interfaces.Any(typeReference => typeReference.FullName == _hostInterfaceType.FullName))
                 type.Interfaces.Add(_hostInterfaceType);
         }
 

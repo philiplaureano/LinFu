@@ -33,7 +33,7 @@ namespace LinFu.AOP.Cecil.Loaders
         public void LoadSymbols(AssemblyDefinition assembly)
         {
             ModuleDefinition mainModule = assembly.MainModule;
-            mainModule.LoadSymbols();
+//            mainModule.LoadSymbols();
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace LinFu.AOP.Cecil.Loaders
         public void SaveSymbols(AssemblyDefinition targetAssembly)
         {
             // Update the debug symbols
-            targetAssembly.MainModule.SaveSymbols();
+//            targetAssembly.MainModule.SaveSymbols();
         }
 
         #endregion

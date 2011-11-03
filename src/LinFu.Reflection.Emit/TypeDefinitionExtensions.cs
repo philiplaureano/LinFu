@@ -63,7 +63,7 @@ namespace LinFu.Reflection.Emit
                                                     MethodAttributes attributes, Type returnType, Type[] parameterTypes,
                                                     Type[] genericParameterTypes)
         {
-            var method = new MethodDefinition(methodName, attributes, null);
+            var method = new MethodDefinition(methodName, attributes, typeDef.Module.Import(typeof(void)));
 
             typeDef.Methods.Add(method);
 
@@ -121,18 +121,18 @@ namespace LinFu.Reflection.Emit
             // Define the default constructor
             var ctor = new MethodDefinition(".ctor", methodAttributes, voidType)
                            {
-                               CallingConvention = MethodCallingConvention.StdCall,
+                               //CallingConvention = MethodCallingConvention.StdCall,
                                ImplAttributes = (MethodImplAttributes.IL | MethodImplAttributes.Managed)
                            };
 
-            CilWorker IL = ctor.Body.CilWorker;
+            ILProcessor IL = ctor.Body.GetILProcessor();
 
             // Call the constructor for System.Object, and exit
             IL.Emit(OpCodes.Ldarg_0);
             IL.Emit(OpCodes.Call, baseConstructor);
             IL.Emit(OpCodes.Ret);
 
-            targetType.Constructors.Add(ctor);
+            targetType.Methods.Add(ctor);
 
             return ctor;
         }
@@ -163,7 +163,7 @@ namespace LinFu.Reflection.Emit
 
             string fieldName = string.Format("__{0}_backingField", propertyName);
             var actualField = new FieldDefinition(fieldName,
-                                                  propertyType, FieldAttributes.Private);
+                                                  FieldAttributes.Private, propertyType);
 
 
             typeDef.Fields.Add(actualField);
@@ -205,7 +205,7 @@ namespace LinFu.Reflection.Emit
                                        MethodDefinition getter, MethodDefinition setter)
         {
             var newProperty = new PropertyDefinition(propertyName,
-                                                     propertyType, PropertyAttributes.Unused)
+                                                     PropertyAttributes.Unused, propertyType)
                                   {
                                       GetMethod = getter,
                                       SetMethod = setter
@@ -273,7 +273,7 @@ namespace LinFu.Reflection.Emit
                                  ImplAttributes = (MethodImplAttributes.Managed | MethodImplAttributes.IL)
                              };
 
-            CilWorker IL = getter.GetILGenerator();
+            ILProcessor IL = getter.GetILGenerator();
             IL.Emit(OpCodes.Ldarg_0);
             IL.Emit(OpCodes.Ldfld, backingField);
             IL.Emit(OpCodes.Ret);
@@ -303,7 +303,7 @@ namespace LinFu.Reflection.Emit
 
             setter.Parameters.Add(new ParameterDefinition(propertyType));
 
-            CilWorker IL = setter.GetILGenerator();
+            ILProcessor IL = setter.GetILGenerator();
             IL.Emit(OpCodes.Ldarg_0);
             IL.Emit(OpCodes.Ldarg_1);
             IL.Emit(OpCodes.Stfld, backingField);

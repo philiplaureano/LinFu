@@ -13,17 +13,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// Enables exception interception on the given type.
         /// </summary>
         /// <param name="visitable">The target type.</param>
-        public static void InterceptAllExceptions(this IReflectionVisitable visitable)
-        {
-            Func<MethodReference, bool> filter = GetMethodFilter();
-            InterceptExceptions(visitable, filter);
-        }
-
-        /// <summary>
-        /// Enables exception interception on the given type.
-        /// </summary>
-        /// <param name="visitable">The target type.</param>
-        public static void InterceptAllExceptions(this IReflectionStructureVisitable visitable)
+        public static void InterceptAllExceptions(this object visitable)
         {
             Func<MethodReference, bool> filter = GetMethodFilter();
             InterceptExceptions(visitable, filter);
@@ -34,17 +24,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// </summary>
         /// <param name="visitable">The target type.</param>
         /// <param name="methodFilter">The <see cref="IMethodFilter"/> instance that will determine which methods should support exception interception.</param>
-        public static void InterceptExceptions(this IReflectionVisitable visitable, IMethodFilter methodFilter)
-        {
-            visitable.InterceptExceptions(methodFilter.ShouldWeave);
-        }
-
-        /// <summary>
-        /// Enables exception interception on the given type.
-        /// </summary>
-        /// <param name="visitable">The target type.</param>
-        /// <param name="methodFilter">The <see cref="IMethodFilter"/> instance that will determine which methods should support exception interception.</param>
-        public static void InterceptExceptions(this IReflectionStructureVisitable visitable, IMethodFilter methodFilter)
+        public static void InterceptExceptions(this object visitable, IMethodFilter methodFilter)
         {
             visitable.InterceptExceptions(methodFilter.ShouldWeave);
         }
@@ -54,22 +34,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// </summary>
         /// <param name="visitable">The target type.</param>
         /// <param name="methodFilter">The method filter functor that will determine which methods should support exception interception.</param>
-        public static void InterceptExceptions(this IReflectionStructureVisitable visitable,
-                                               Func<MethodReference, bool> methodFilter)
-        {
-            if (visitable == null)
-                throw new ArgumentNullException("visitable");
-
-            var catchAllThrownExceptions = new CatchAllThrownExceptions();
-            visitable.WeaveWith(catchAllThrownExceptions, methodFilter);
-        }
-
-        /// <summary>
-        /// Enables exception interception on the given type.
-        /// </summary>
-        /// <param name="visitable">The target type.</param>
-        /// <param name="methodFilter">The method filter functor that will determine which methods should support exception interception.</param>
-        public static void InterceptExceptions(this IReflectionVisitable visitable,
+        public static void InterceptExceptions(this object visitable,
                                                Func<MethodReference, bool> methodFilter)
         {
             if (visitable == null)

@@ -30,8 +30,8 @@ namespace LinFu.AOP.Cecil
         /// <summary>
         /// Emits the call to obtain the <see cref="IAroundInvokeProvider"/> instance.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> pointing to the target method body.</param>
-        public void Emit(CilWorker IL)
+        /// <param name="IL">The <see cref="ILProcessor"/> pointing to the target method body.</param>
+        public void Emit(ILProcessor IL)
         {
             MethodDefinition method = IL.GetMethod();
             ModuleDefinition module = IL.GetModule();

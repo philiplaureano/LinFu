@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
@@ -27,7 +28,7 @@ namespace LinFu.AOP.Cecil
             bool shouldWeave = base.ShouldWeave(item);
 
             // Make sure that the IModifiableType interface is only implemented once
-            shouldWeave &= !item.Interfaces.Contains(_modifiableInterfaceType);
+            shouldWeave &= !item.Interfaces.Any(typeReference => typeReference.FullName == _modifiableInterfaceType.FullName);
 
             bool isStaticClass = item.IsAbstract && item.IsSealed;
             shouldWeave &= !isStaticClass;
@@ -40,7 +41,7 @@ namespace LinFu.AOP.Cecil
             base.Weave(item);
 
             // Implement IModifiableType
-            if (item.Interfaces.Contains(_modifiableInterfaceType))
+            if (item.Interfaces.Any(typeReference => typeReference.FullName == _modifiableInterfaceType.FullName))
                 return;
 
             item.Interfaces.Add(_modifiableInterfaceType);

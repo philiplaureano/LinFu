@@ -1,4 +1,5 @@
-﻿using LinFu.AOP.Interfaces;
+﻿using System.Linq;
+using LinFu.AOP.Interfaces;
 using LinFu.IoC.Configuration;
 using LinFu.Proxy.Interfaces;
 using LinFu.Reflection.Emit;
@@ -29,7 +30,7 @@ namespace LinFu.Proxy
             TypeReference interceptorType = module.Import(typeof (IInterceptor));
 
             // Implement the IProxy interface only once
-            if (targetType.Interfaces.Contains(proxyInterfaceType))
+            if (targetType.Interfaces.Any(typeReference => typeReference.FullName == proxyInterfaceType.FullName))
                 return;
 
             targetType.Interfaces.Add(proxyInterfaceType);

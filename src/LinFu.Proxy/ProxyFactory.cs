@@ -138,8 +138,7 @@ namespace LinFu.Proxy
             #region Generate the assembly
 
             string assemblyName = "LinFu.Proxy";
-            AssemblyDefinition assembly = AssemblyFactory.DefineAssembly(assemblyName, AssemblyKind.Dll);
-            ModuleDefinition mainModule = assembly.MainModule;
+            ModuleDefinition mainModule = ModuleDefinition.CreateModule(assemblyName, ModuleKind.Dll);
             TypeReference importedBaseType = mainModule.Import(actualBaseType);
             TypeAttributes attributes = TypeAttributes.AutoClass | TypeAttributes.Class |
                                         TypeAttributes.Public | TypeAttributes.BeforeFieldInit;
@@ -176,11 +175,11 @@ namespace LinFu.Proxy
 
             // Verify the assembly, if possible
             if (Verifier != null)
-                Verifier.Verify(assembly);
+                Verifier.Verify(mainModule.Assembly);
 
             #region Compile the results
 
-            Assembly compiledAssembly = assembly.ToAssembly();
+            Assembly compiledAssembly = mainModule.Assembly.ToAssembly();
 
             IEnumerable<Type> types = null;
 

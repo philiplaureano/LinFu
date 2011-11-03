@@ -7,6 +7,7 @@ using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Mono.Collections.Generic;
 
 namespace LinFu.AOP.Cecil
 {
@@ -84,10 +85,10 @@ namespace LinFu.AOP.Cecil
             _createInstance = module.Import(createInstanceMethod);
         }
 
-        public void EmitNewObject(MethodDefinition hostMethod, CilWorker IL, MethodReference targetConstructor,
+        public void EmitNewObject(MethodDefinition hostMethod, ILProcessor IL, MethodReference targetConstructor,
                                   TypeReference concreteType)
         {
-            ParameterDefinitionCollection parameters = targetConstructor.Parameters;
+            var parameters = targetConstructor.Parameters;
             Instruction skipInterception = IL.Create(OpCodes.Nop);
 
             SaveConstructorArguments(IL, parameters);
@@ -146,7 +147,7 @@ namespace LinFu.AOP.Cecil
 
         #endregion
 
-        private void EmitCreateInstance(CilWorker IL)
+        private void EmitCreateInstance(ILProcessor IL)
         {
             // T instance = this.Activator.CreateInstance(context);
             IL.Emit(OpCodes.Ldloc, _currentActivator);
@@ -154,7 +155,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Callvirt, _createInstance);
         }
 
-        private void EmitCreateMethodActivationContext(MethodDefinition method, CilWorker IL, TypeReference concreteType)
+        private void EmitCreateMethodActivationContext(MethodDefinition method, ILProcessor IL, TypeReference concreteType)
         {
             // TODO: Add static method support
             Instruction pushThis = method.IsStatic ? IL.Create(OpCodes.Ldnull) : IL.Create(OpCodes.Ldarg_0);
@@ -179,7 +180,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Stloc, _methodContext);
         }
 
-        private void SaveConstructorArguments(CilWorker IL, ParameterDefinitionCollection parameters)
+        private void SaveConstructorArguments(ILProcessor IL, Collection<ParameterDefinition> parameters)
         {
             int parameterCount = parameters.Count;
 
@@ -201,7 +202,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Callvirt, _reverseMethod);
         }
 
-        private void SaveConstructorArgument(CilWorker IL, ParameterDefinition param)
+        private void SaveConstructorArgument(ILProcessor IL, ParameterDefinition param)
         {
             // Box the type if necessary
             TypeReference parameterType = param.ParameterType;
@@ -217,7 +218,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Callvirt, _addMethod);
         }
 
-        private void EmitGetActivator(MethodDefinition method, CilWorker IL, Instruction skipInterception)
+        private void EmitGetActivator(MethodDefinition method, ILProcessor IL, Instruction skipInterception)
         {
             IL.Emit(OpCodes.Ldloc, _methodContext);
             IL.Emit(OpCodes.Call, _getStaticActivator);
