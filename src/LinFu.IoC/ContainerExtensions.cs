@@ -24,6 +24,7 @@ namespace LinFu.IoC
     {
         private static readonly TypeCounter _counter = new TypeCounter();
         private static readonly Stack<Type> _requests = new Stack<Type>();
+        private static readonly object syncLock = new object();
 
         /// <summary>
         /// Loads a set of <paramref name="searchPattern">files</paramref> from the <paramref name="directory">target directory</paramref>
@@ -55,7 +56,7 @@ namespace LinFu.IoC
         public static void LoadFrom(this IServiceContainer container, IAssemblyLoader assemblyLoader, string directory,
                                     string searchPattern)
         {
-            var loader = new Loader {AssemblyLoader = assemblyLoader};
+            var loader = new Loader { AssemblyLoader = assemblyLoader };
             container.LoadFrom(assemblyLoader, directory, searchPattern, loader);
         }
 
@@ -243,7 +244,7 @@ namespace LinFu.IoC
         public static void Initialize(this IServiceContainer container)
         {
             // Load the configuration assembly by default
-            container.LoadFrom(typeof (Loader).Assembly);
+            container.LoadFrom(typeof(Loader).Assembly);
         }
 
         /// <summary>
@@ -279,7 +280,7 @@ namespace LinFu.IoC
         /// <returns>A valid, non-null object reference.</returns>
         public static T AutoCreate<T>(this IServiceContainer container, params object[] additionalArguments)
         {
-            return (T) container.AutoCreate(typeof (T), additionalArguments);
+            return (T)container.AutoCreate(typeof(T), additionalArguments);
         }
 
         /// <summary>
@@ -326,17 +327,35 @@ namespace LinFu.IoC
                                                   params object[] additionalArguments)
         {
             IServiceContainer currentContainer = container ?? new ServiceContainer();
-
-            // Keep track of the number of pending type requests
-            _counter.Increment(concreteType);
-
-            // Keep track of the sequence
-            // of requests on the stack
-            lock (_requests)
-            {
-                _requests.Push(concreteType);
+            object result;
+            try
+            {                                
+                // Keep track of the sequence
+                // of requests on the stack
+                lock (syncLock)
+                {
+                    // Keep track of the number of pending type requests
+                    _counter.Increment(concreteType);
+                    _requests.Push(concreteType);
+                }
+                                
+                result = AutoCreateInternal(container, concreteType, additionalArguments, currentContainer);
             }
+            finally
+            {
+                lock (syncLock)
+                {
+                    _requests.Pop();
+                    _counter.Decrement(concreteType);
+                }                
+            }                       
+            
+            return result;
+        }
 
+        private static object AutoCreateInternal(IServiceContainer container, Type concreteType, object[] additionalArguments,
+                                                 IServiceContainer currentContainer)
+        {
             // This is the maximum number of requests per thread per item
             const int maxRequests = 10;
 
@@ -359,14 +378,6 @@ namespace LinFu.IoC
             var activator = container.GetService<IActivator<IContainerActivationContext>>();
             var context = new ContainerActivationContext(concreteType, currentContainer, additionalArguments);
             object result = activator.CreateInstance(context);
-
-            lock (_requests)
-            {
-                _requests.Pop();
-            }
-
-            _counter.Decrement(concreteType);
-
             return result;
         }
 
@@ -377,7 +388,7 @@ namespace LinFu.IoC
         public static void AddDefaultServices(this IServiceContainer container)
         {
             // Initialize the services only once
-            if (container.Contains(typeof (IFactoryBuilder)))
+            if (container.Contains(typeof(IFactoryBuilder)))
                 return;
 
             container.AddService<IConstructorArgumentResolver>(new ConstructorArgumentResolver());
@@ -419,7 +430,7 @@ namespace LinFu.IoC
             }
 
             // Add the scope object by default
-            container.AddFactory(null, typeof (IScope), new FunctorFactory(f => new Scope()));
+            container.AddFactory(null, typeof(IScope), new FunctorFactory(f => new Scope()));
         }
 
 
@@ -434,8 +445,8 @@ namespace LinFu.IoC
         /// otherwise, it will just return a <c>null</c> value.</returns>
         public static T GetService<T>(this IServiceContainer container, params object[] additionalArguments)
         {
-            Type serviceType = typeof (T);
-            return (T) container.GetService(serviceType, additionalArguments);
+            Type serviceType = typeof(T);
+            return (T)container.GetService(serviceType, additionalArguments);
         }
 
         /// <summary>
@@ -465,7 +476,7 @@ namespace LinFu.IoC
         public static T GetService<T>(this IServiceContainer container, string serviceName,
                                       params object[] additionalArguments)
         {
-            return (T) container.GetService(serviceName, typeof (T), additionalArguments);
+            return (T)container.GetService(serviceName, typeof(T), additionalArguments);
         }
 
         /// <summary>
@@ -596,7 +607,7 @@ namespace LinFu.IoC
         public static void AddFactory<T>(this IServiceContainer container, string serviceName, IFactory<T> factory)
         {
             IFactory adapter = new FactoryAdapter<T>(factory);
-            container.AddFactory(serviceName, typeof (T), adapter);
+            container.AddFactory(serviceName, typeof(T), adapter);
         }
 
         /// <summary>
@@ -608,7 +619,7 @@ namespace LinFu.IoC
         public static void AddFactory<T>(this IServiceContainer container, IFactory<T> factory)
         {
             IFactory adapter = new FactoryAdapter<T>(factory);
-            container.AddFactory(typeof (T), adapter);
+            container.AddFactory(typeof(T), adapter);
         }
 
         /// <summary>
@@ -662,7 +673,7 @@ namespace LinFu.IoC
         public static void AddService<TResult>(this IServiceContainer container, string serviceName,
                                                Func<TResult> factoryMethod)
         {
-            container.AddService(serviceName, typeof (TResult), factoryMethod);
+            container.AddService(serviceName, typeof(TResult), factoryMethod);
         }
 
         /// <summary>
@@ -677,7 +688,7 @@ namespace LinFu.IoC
         public static void AddService<T1, TResult>(this IServiceContainer container, string serviceName,
                                                    Func<T1, TResult> factoryMethod)
         {
-            container.AddService(serviceName, typeof (TResult), factoryMethod);
+            container.AddService(serviceName, typeof(TResult), factoryMethod);
         }
 
         /// <summary>
@@ -714,7 +725,7 @@ namespace LinFu.IoC
         public static void AddService<T1, T2, TResult>(this IServiceContainer container, string serviceName,
                                                        Func<T1, T2, TResult> factoryMethod)
         {
-            container.AddService(serviceName, typeof (TResult), factoryMethod);
+            container.AddService(serviceName, typeof(TResult), factoryMethod);
         }
 
         /// <summary>
@@ -732,7 +743,7 @@ namespace LinFu.IoC
         public static void AddService<T1, T2, T3, T4, TResult>(this IServiceContainer container, string serviceName,
                                                                Func<T1, T2, T3, T4, TResult> factoryMethod)
         {
-            container.AddService(serviceName, typeof (TResult), factoryMethod);
+            container.AddService(serviceName, typeof(TResult), factoryMethod);
         }
 
         /// <summary>
@@ -749,7 +760,7 @@ namespace LinFu.IoC
         public static void AddService<T1, T2, T3, TResult>(this IServiceContainer container, string serviceName,
                                                            Func<T1, T2, T3, TResult> factoryMethod)
         {
-            container.AddService(serviceName, typeof (TResult), factoryMethod);
+            container.AddService(serviceName, typeof(TResult), factoryMethod);
         }
 
         /// <summary>
@@ -776,7 +787,7 @@ namespace LinFu.IoC
             if (lifecycleType == LifecycleType.OncePerRequest)
                 factory = new OncePerRequestFactory<T>(factoryMethod);
 
-            container.AddFactory(serviceName, typeof (T), factory);
+            container.AddFactory(serviceName, typeof(T), factory);
         }
 
         /// <summary>
@@ -801,7 +812,7 @@ namespace LinFu.IoC
         /// <param name="instance">The service instance itself.</param>
         public static void AddService<T>(this IServiceContainer container, T instance)
         {
-            container.AddFactory(typeof (T), new InstanceFactory(instance));
+            container.AddFactory(typeof(T), new InstanceFactory(instance));
         }
 
         /// <summary>
@@ -814,7 +825,7 @@ namespace LinFu.IoC
         /// <param name="instance">The service instance itself.</param>
         public static void AddService<T>(this IServiceContainer container, string serviceName, T instance)
         {
-            container.AddFactory(serviceName, typeof (T), new InstanceFactory(instance));
+            container.AddFactory(serviceName, typeof(T), new InstanceFactory(instance));
         }
 
         /// <summary>
@@ -829,10 +840,10 @@ namespace LinFu.IoC
                                                     params object[] additionalArguments)
         {
             IEnumerable<IServiceInfo> targetServices =
-                container.AvailableServices.Where(info => info.ServiceType == typeof (T));
+                container.AvailableServices.Where(info => info.ServiceType == typeof(T));
             foreach (IServiceInfo info in targetServices)
             {
-                yield return (T) container.GetService(info, additionalArguments);
+                yield return (T)container.GetService(info, additionalArguments);
             }
         }
 
@@ -876,7 +887,7 @@ namespace LinFu.IoC
         {
             // Convert the sample arguments into the parameter types
             IEnumerable<Type> parameterTypes = from arg in sampleArguments
-                                               let argType = arg != null ? arg.GetType() : typeof (object)
+                                               let argType = arg != null ? arg.GetType() : typeof(object)
                                                select argType;
 
             return container.Contains(serviceName, serviceType, parameterTypes);
