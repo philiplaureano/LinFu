@@ -10,6 +10,7 @@ namespace LinFu.AOP.Cecil
     public static class IgnoredInstancesRegistry
     {
         private static readonly HashSet<int> _instances;
+        private static readonly object _lock = new object();
 
         static IgnoredInstancesRegistry()
         {
@@ -40,8 +41,11 @@ namespace LinFu.AOP.Cecil
             if (target == null)
                 throw new ArgumentNullException("target");
 
-            int hash = target.GetHashCode();
-            _instances.Add(hash);
+            lock (_lock)
+            {
+                int hash = target.GetHashCode();
+                _instances.Add(hash);
+            }
         }
     }
 }

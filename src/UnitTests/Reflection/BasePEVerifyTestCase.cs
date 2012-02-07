@@ -32,8 +32,7 @@ namespace LinFu.UnitTests.Reflection
 
         [SetUp]
         public void Init()
-        {
-            OnInit();
+        {OnInit();
         }
 
         [TearDown]
