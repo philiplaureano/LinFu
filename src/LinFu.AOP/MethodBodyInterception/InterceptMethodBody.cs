@@ -60,17 +60,17 @@ namespace LinFu.AOP.Cecil
             VariableDefinition classMethodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
 
             Func<ModuleDefinition, MethodReference> getInstanceMethodReplacementProviderMethod =
-                module => module.Import(typeof (IMethodReplacementHost).GetMethod("get_MethodBodyReplacementProvider"));
+                module => module.Import(typeof(IMethodReplacementHost).GetMethod("get_MethodBodyReplacementProvider"));
 
             var parameters = new MethodBodyRewriterParameters(IL,
                                                               oldInstructions,
                                                               interceptionDisabled,
                                                               invocationInfo, returnValue,
-                                                              aroundInvokeProvider,
                                                               methodReplacementProvider,
+                                                              aroundInvokeProvider,
                                                               classMethodReplacementProvider,
                                                               getInstanceMethodReplacementProviderMethod,
-                                                              typeof (AroundMethodBodyRegistry));
+                                                              typeof(AroundMethodBodyRegistry));
 
             var emitter = new InvocationInfoEmitter(true);
 
@@ -83,7 +83,7 @@ namespace LinFu.AOP.Cecil
             IInstructionEmitter getClassMethodReplacementProvider = new GetClassMethodReplacementProvider(parameters,
                                                                                                           module =>
                                                                                                           module.Import(
-                                                                                                              typeof (
+                                                                                                              typeof(
                                                                                                                   MethodBodyReplacementProviderRegistry
                                                                                                                   ).
                                                                                                                   GetMethod

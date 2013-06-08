@@ -78,6 +78,7 @@ namespace LinFu.AOP.Cecil
             _emitter.Emit(targetMethod, interceptedMethod, _parameters.InvocationInfo);
 
             Instruction skipGetReplacementProvider = IL.Create(OpCodes.Nop);
+
             // var provider = this.MethodReplacementProvider;
             IL.Emit(OpCodes.Ldloc, _interceptionDisabled);
             IL.Emit(OpCodes.Brtrue, skipGetReplacementProvider);
@@ -98,8 +99,8 @@ namespace LinFu.AOP.Cecil
             TypeReference voidType = module.Import(typeof (void));
             _surroundMethodBody.AddEpilog(worker);
 
-            if (returnType != voidType)
-                worker.Emit(OpCodes.Ldloc, _parameters.ReturnValue);
+            //if (returnType != voidType)
+            //    worker.Emit(OpCodes.Ldloc, _parameters.ReturnValue);
 
             worker.Emit(OpCodes.Ret);
         }

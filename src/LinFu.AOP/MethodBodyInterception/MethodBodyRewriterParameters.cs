@@ -46,6 +46,12 @@ namespace LinFu.AOP.Cecil
                                             Func<ModuleDefinition, MethodReference> getMethodReplacementProviderMethod,
                                             Type registryType)
         {
+            if (methodReplacementProvider.VariableType.FullName != typeof(IMethodReplacementProvider).FullName)
+                throw new ArgumentException("methodReplacementProvider");
+
+            if (aroundInvokeProvider.VariableType.FullName != typeof(IAroundInvokeProvider).FullName)
+                throw new ArgumentException("aroundInvokeProvider");
+
             _cilWorker = IL;
             _oldInstructions = oldInstructions;
             _interceptionDisabled = interceptionDisabled;
