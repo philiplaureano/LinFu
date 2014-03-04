@@ -13,7 +13,7 @@ namespace LinFu.IoC.Factories
         private static readonly Dictionary<object, T> _instances = new Dictionary<object, T>();
         private readonly Func<IFactoryRequest, T> _createInstance;
 
-        private readonly object _lock = new object();
+        private static readonly object _lock = new object();
 
         /// <summary>
         /// Initializes the factory class using the <paramref name="createInstance"/>
