@@ -95,7 +95,7 @@ namespace LinFu.IoC
 
         public override int GetHashCode()
         {
-            int hash = 0;
+            var hash = 0;
 
             // Hash the service name
             if (!string.IsNullOrEmpty(_serviceName))
@@ -105,7 +105,7 @@ namespace LinFu.IoC
             hash ^= _serviceType.GetHashCode();
 
             // Hash the arguments
-            foreach (Type argType in _arguments)
+            foreach (var argType in _arguments)
             {
                 if (argType == null)
                     continue;
@@ -114,7 +114,7 @@ namespace LinFu.IoC
             }
 
             // Hash the number of arguments
-            int argCount = _arguments == null ? 0 : _arguments.Count();
+            var argCount = _arguments == null ? 0 : _arguments.Count();
             if (argCount > 0)
                 hash ^= argCount.GetHashCode();
 

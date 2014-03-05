@@ -43,14 +43,14 @@ namespace LinFu.AOP.Cecil
         /// <param name="IL">The <see cref="CilWorker"/> that points to the current method body.</param>
         public void Emit(CilWorker IL)
         {
-            ModuleDefinition module = IL.GetModule();
-            MethodDefinition method = IL.GetMethod();
-            TypeReference returnType = method.ReturnType.ReturnType;
-            VariableDefinition methodReplacement = MethodDefinitionExtensions.AddLocal(method, typeof (IInterceptor));
+            var module = IL.GetModule();
+            var method = IL.GetMethod();
+            var returnType = method.ReturnType.ReturnType;
+            var methodReplacement = MethodDefinitionExtensions.AddLocal(method, typeof (IInterceptor));
 
             GetMethodReplacementInstance(method, IL, methodReplacement, _methodReplacementProvider, _invocationInfo);
 
-            Instruction skipGetClassMethodReplacement = IL.Create(OpCodes.Nop);
+            var skipGetClassMethodReplacement = IL.Create(OpCodes.Nop);
             IL.Emit(OpCodes.Ldloc, methodReplacement);
             IL.Emit(OpCodes.Brtrue, skipGetClassMethodReplacement);
 
@@ -70,7 +70,7 @@ namespace LinFu.AOP.Cecil
                                               VariableDefinition methodReplacement, TypeReference returnType,
                                               VariableDefinition invocationInfo)
         {
-            MethodReference interceptMethod = module.ImportMethod<IInterceptor>("Intercept");
+            var interceptMethod = module.ImportMethod<IInterceptor>("Intercept");
             IL.Emit(OpCodes.Ldloc, methodReplacement);
             IL.Emit(OpCodes.Ldloc, invocationInfo);
             IL.Emit(OpCodes.Callvirt, interceptMethod);
@@ -83,14 +83,14 @@ namespace LinFu.AOP.Cecil
                                                          VariableDefinition methodReplacementProvider,
                                                          VariableDefinition invocationInfo)
         {
-            TypeDefinition declaringType = method.DeclaringType;
-            ModuleDefinition module = declaringType.Module;
-            Instruction pushInstance = method.HasThis ? IL.Create(OpCodes.Ldarg_0) : IL.Create(OpCodes.Ldnull);
+            var declaringType = method.DeclaringType;
+            var module = declaringType.Module;
+            var pushInstance = method.HasThis ? IL.Create(OpCodes.Ldarg_0) : IL.Create(OpCodes.Ldnull);
 
-            MethodReference getReplacement = module.ImportMethod<IMethodReplacementProvider>("GetMethodReplacement");
+            var getReplacement = module.ImportMethod<IMethodReplacementProvider>("GetMethodReplacement");
             IL.Emit(OpCodes.Ldloc, methodReplacementProvider);
 
-            Instruction skipGetMethodReplacement = IL.Create(OpCodes.Nop);
+            var skipGetMethodReplacement = IL.Create(OpCodes.Nop);
             IL.Emit(OpCodes.Brfalse, skipGetMethodReplacement);
             IL.Emit(OpCodes.Ldloc, methodReplacementProvider);
 

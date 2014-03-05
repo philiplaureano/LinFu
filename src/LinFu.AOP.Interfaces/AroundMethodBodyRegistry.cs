@@ -19,7 +19,7 @@ namespace LinFu.AOP.Interfaces
         /// <returns>An <see cref="IAroundInvoke"/> instance that will be used to wrap a method call or method body.</returns>
         public static IAroundInvoke GetSurroundingImplementation(IInvocationInfo context)
         {
-            List<IAroundInvoke> resultList = (from p in _providers
+            var resultList = (from p in _providers
                                               where p != null
                                               let aroundInvoke = p.GetSurroundingImplementation(context)
                                               where aroundInvoke != null

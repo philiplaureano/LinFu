@@ -19,8 +19,8 @@ namespace LinFu.UnitTests.Proxy
         [Test, Ignore]
         public void ShouldBeAbleToSerializeInvocationInfo()
         {
-            int target = 42;
-            MethodInfo targetMethod = typeof (object).GetMethod("ToString");
+            var target = 42;
+            var targetMethod = typeof (object).GetMethod("ToString");
             var stackTrace = new StackTrace();
             var parameterTypes = new[] {typeof (int)};
             var typeArguments = new[] {typeof (string)};
@@ -54,17 +54,17 @@ namespace LinFu.UnitTests.Proxy
             interceptor.Identifier = Guid.NewGuid();
 
             var proxy = factory.CreateProxy<ISampleService>(interceptor);
-            Type proxyType = proxy.GetType();
+            var proxyType = proxy.GetType();
 
-            string proxyAssembly = proxyType.Assembly.Location;
+            var proxyAssembly = proxyType.Assembly.Location;
 
             // The proxy type should have a default constructor
             // and a serialization constructor
-            BindingFlags constructorFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-            ConstructorInfo[] constructors = proxyType.GetConstructors(constructorFlags);
+            var constructorFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+            var constructors = proxyType.GetConstructors(constructorFlags);
             Assert.IsTrue(constructors.Length == 2);
 
-            ConstructorInfo serializationConstructor = proxyType.GetConstructor(constructorFlags, null,
+            var serializationConstructor = proxyType.GetConstructor(constructorFlags, null,
                                                                                 new[]
                                                                                     {
                                                                                         typeof (SerializationInfo),

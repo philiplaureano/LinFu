@@ -39,11 +39,11 @@ namespace LinFu.AOP.Cecil
         /// <param name="IL">The <see cref="CilWorker"/> that points to the current method body.</param>
         public void Emit(CilWorker IL)
         {
-            MethodDefinition method = IL.GetMethod();
-            TypeDefinition declaringType = method.DeclaringType;
-            ModuleDefinition module = declaringType.Module;
+            var method = IL.GetMethod();
+            var declaringType = method.DeclaringType;
+            var module = declaringType.Module;
 
-            MethodReference getSurroundingImplementation = module.Import(_getSurroundingImplementationMethod);
+            var getSurroundingImplementation = module.Import(_getSurroundingImplementationMethod);
             IL.Emit(OpCodes.Ldloc, _invocationInfo);
             IL.Emit(OpCodes.Call, getSurroundingImplementation);
             IL.Emit(OpCodes.Stloc, _surroundingClassImplementation);

@@ -36,7 +36,7 @@ namespace LinFu.Proxy
             if (!interfaces.Contains(typeof (ISerializable)))
                 interfaces.Add(typeof (ISerializable));
 
-            TypeReference serializableInterfaceType = module.ImportType<ISerializable>();
+            var serializableInterfaceType = module.ImportType<ISerializable>();
             if (!targetType.Interfaces.Contains(serializableInterfaceType))
                 targetType.Interfaces.Add(serializableInterfaceType);
 
@@ -46,15 +46,15 @@ namespace LinFu.Proxy
             // Add the Serializable attribute
             targetType.IsSerializable = true;
 
-            MethodReference serializableCtor = module.ImportConstructor<SerializableAttribute>();
+            var serializableCtor = module.ImportConstructor<SerializableAttribute>();
             var serializableAttribute = new CustomAttribute(serializableCtor);
             targetType.CustomAttributes.Add(serializableAttribute);
 
             ImplementGetObjectData(originalBaseType, baseInterfaces, module, targetType);
             DefineSerializationConstructor(module, targetType);
 
-            TypeReference interceptorType = module.ImportType<IInterceptor>();
-            PropertyDefinition interceptorGetterProperty = (from PropertyDefinition m in targetType.Properties
+            var interceptorType = module.ImportType<IInterceptor>();
+            var interceptorGetterProperty = (from PropertyDefinition m in targetType.Properties
                                                             where
                                                                 m.Name == "Interceptor" &&
                                                                 m.PropertyType == interceptorType
@@ -63,35 +63,35 @@ namespace LinFu.Proxy
 
         private static void DefineSerializationConstructor(ModuleDefinition module, TypeDefinition targetType)
         {
-            MethodReference getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle",
+            var getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle",
                                                                           BindingFlags.Public | BindingFlags.Static);
 
             var parameterTypes = new[] {typeof (SerializationInfo), typeof (StreamingContext)};
 
             // Define the constructor signature
-            MethodDefinition serializationCtor = targetType.AddDefaultConstructor();
+            var serializationCtor = targetType.AddDefaultConstructor();
             serializationCtor.AddParameters(parameterTypes);
 
             serializationCtor.Attributes = MethodAttributes.HideBySig | MethodAttributes.SpecialName |
                                            MethodAttributes.RTSpecialName | MethodAttributes.Public;
-            TypeReference interceptorInterfaceType = module.ImportType<IInterceptor>();
-            VariableDefinition interceptorTypeVariable = serializationCtor.AddLocal<Type>();
+            var interceptorInterfaceType = module.ImportType<IInterceptor>();
+            var interceptorTypeVariable = serializationCtor.AddLocal<Type>();
 
-            MethodBody body = serializationCtor.Body;
+            var body = serializationCtor.Body;
             body.InitLocals = true;
 
-            CilWorker IL = serializationCtor.GetILGenerator();
+            var IL = serializationCtor.GetILGenerator();
 
             IL.Emit(OpCodes.Ldtoken, interceptorInterfaceType);
             IL.Emit(OpCodes.Call, getTypeFromHandle);
             IL.Emit(OpCodes.Stloc, interceptorTypeVariable);
 
-            MethodReference defaultConstructor = module.ImportConstructor<object>();
+            var defaultConstructor = module.ImportConstructor<object>();
             IL.Emit(OpCodes.Ldarg_0);
             IL.Emit(OpCodes.Call, defaultConstructor);
 
             // __interceptor = (IInterceptor)info.GetValue("__interceptor", typeof(IInterceptor));
-            MethodReference getValue = module.ImportMethod<SerializationInfo>("GetValue");
+            var getValue = module.ImportMethod<SerializationInfo>("GetValue");
             IL.Emit(OpCodes.Ldarg_0);
             IL.Emit(OpCodes.Ldarg_1);
             IL.Emit(OpCodes.Ldstr, "__interceptor");
@@ -99,7 +99,7 @@ namespace LinFu.Proxy
             IL.Emit(OpCodes.Callvirt, getValue);
             IL.Emit(OpCodes.Castclass, interceptorInterfaceType);
 
-            MethodReference setInterceptor = module.ImportMethod<IProxy>("set_Interceptor");
+            var setInterceptor = module.ImportMethod<IProxy>("set_Interceptor");
             IL.Emit(OpCodes.Callvirt, setInterceptor);
             ;
             IL.Emit(OpCodes.Ret);
@@ -108,23 +108,23 @@ namespace LinFu.Proxy
         private static void ImplementGetObjectData(Type originalBaseType, IEnumerable<Type> baseInterfaces,
                                                    ModuleDefinition module, TypeDefinition targetType)
         {
-            MethodDefinition getObjectDataMethod = (from MethodDefinition m in targetType.Methods
+            var getObjectDataMethod = (from MethodDefinition m in targetType.Methods
                                                     where m.Name.Contains("ISerializable.GetObjectData")
                                                     select m).First();
 
-            MethodBody body = getObjectDataMethod.Body;
+            var body = getObjectDataMethod.Body;
             body.Instructions.Clear();
             body.InitLocals = true;
 
-            CilWorker IL = getObjectDataMethod.GetILGenerator();
+            var IL = getObjectDataMethod.GetILGenerator();
 
-            TypeReference proxyInterfaceType = module.ImportType<IProxy>();
-            MethodReference getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle",
+            var proxyInterfaceType = module.ImportType<IProxy>();
+            var getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle",
                                                                           BindingFlags.Public | BindingFlags.Static);
-            TypeReference proxyObjectRefType = module.ImportType<ProxyObjectReference>();
-            MethodReference setType = module.ImportMethod<SerializationInfo>("SetType",
+            var proxyObjectRefType = module.ImportType<ProxyObjectReference>();
+            var setType = module.ImportMethod<SerializationInfo>("SetType",
                                                                              BindingFlags.Public | BindingFlags.Instance);
-            MethodReference getInterceptor = module.ImportMethod<IProxy>("get_Interceptor");
+            var getInterceptor = module.ImportMethod<IProxy>("get_Interceptor");
 
             IL.Emit(OpCodes.Ldarg_1);
             IL.Emit(OpCodes.Ldtoken, proxyObjectRefType);
@@ -132,12 +132,12 @@ namespace LinFu.Proxy
             IL.Emit(OpCodes.Callvirt, setType);
 
             // info.AddValue("__interceptor", __interceptor);
-            MethodInfo addValueMethod = typeof (SerializationInfo).GetMethod("AddValue",
+            var addValueMethod = typeof (SerializationInfo).GetMethod("AddValue",
                                                                              BindingFlags.Public | BindingFlags.Instance,
                                                                              null,
                                                                              new[] {typeof (string), typeof (object)},
                                                                              null);
-            MethodReference addValue = module.Import(addValueMethod);
+            var addValue = module.Import(addValueMethod);
 
             IL.Emit(OpCodes.Ldarg_1);
             IL.Emit(OpCodes.Ldstr, "__interceptor");
@@ -151,18 +151,18 @@ namespace LinFu.Proxy
             IL.Emit(OpCodes.Ldstr, originalBaseType.AssemblyQualifiedName);
             IL.Emit(OpCodes.Callvirt, addValue);
 
-            int baseInterfaceCount = baseInterfaces.Count();
+            var baseInterfaceCount = baseInterfaces.Count();
 
             // Save the number of base interfaces
-            TypeReference integerType = module.ImportType<Int32>();
+            var integerType = module.ImportType<Int32>();
             IL.Emit(OpCodes.Ldarg_1);
             IL.Emit(OpCodes.Ldstr, "__baseInterfaceCount");
             IL.Emit(OpCodes.Ldc_I4, baseInterfaceCount);
             IL.Emit(OpCodes.Box, integerType);
             IL.Emit(OpCodes.Callvirt, addValue);
 
-            int index = 0;
-            foreach (Type baseInterface in baseInterfaces)
+            var index = 0;
+            foreach (var baseInterface in baseInterfaces)
             {
                 IL.Emit(OpCodes.Ldarg_1);
                 IL.Emit(OpCodes.Ldstr, string.Format("__baseInterface{0}", index++));

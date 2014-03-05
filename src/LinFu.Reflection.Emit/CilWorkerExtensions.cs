@@ -45,7 +45,7 @@ namespace LinFu.Reflection.Emit
         /// <param name="targetVariable">The target variable that will be checked for null at runtime.</param>
         public static void EmitWriteLineIfNull(this CilWorker IL, string text, VariableDefinition targetVariable)
         {
-            Instruction skipWrite = IL.Create(OpCodes.Nop);
+            var skipWrite = IL.Create(OpCodes.Nop);
             IL.Emit(OpCodes.Ldloc, targetVariable);
             IL.Emit(OpCodes.Brtrue, skipWrite);
             IL.EmitWriteLine(text);
@@ -59,12 +59,12 @@ namespace LinFu.Reflection.Emit
         /// <param name="text">The text that will be written to the console.</param>
         public static void EmitWriteLine(this CilWorker IL, string text)
         {
-            MethodBody body = IL.GetBody();
-            MethodDefinition method = body.Method;
-            TypeDefinition declaringType = method.DeclaringType;
-            ModuleDefinition module = declaringType.Module;
+            var body = IL.GetBody();
+            var method = body.Method;
+            var declaringType = method.DeclaringType;
+            var module = declaringType.Module;
 
-            MethodInfo writeLineMethod = typeof (Console).GetMethod("WriteLine",
+            var writeLineMethod = typeof (Console).GetMethod("WriteLine",
                                                                     BindingFlags.Public | BindingFlags.Static, null,
                                                                     new[] {typeof (string)}, null);
             IL.Emit(OpCodes.Ldstr, text);
@@ -79,11 +79,11 @@ namespace LinFu.Reflection.Emit
         /// <param name="module">The module that contains the host method.</param>
         public static void PushMethod(this CilWorker IL, MethodReference method, ModuleDefinition module)
         {
-            MethodReference getMethodFromHandle = module.ImportMethod<MethodBase>("GetMethodFromHandle",
+            var getMethodFromHandle = module.ImportMethod<MethodBase>("GetMethodFromHandle",
                                                                                   typeof (RuntimeMethodHandle),
                                                                                   typeof (RuntimeTypeHandle));
 
-            TypeReference declaringType = method.DeclaringType;
+            var declaringType = method.DeclaringType;
 
             // Instantiate the generic type before determining
             // the current method
@@ -111,7 +111,7 @@ namespace LinFu.Reflection.Emit
         /// <returns>The declaring type.</returns>
         public static TypeReference GetDeclaringType(this MethodReference method)
         {
-            TypeReference declaringType = method.DeclaringType;
+            var declaringType = method.DeclaringType;
             return GetDeclaringType(declaringType);
         }
 
@@ -123,11 +123,11 @@ namespace LinFu.Reflection.Emit
         /// <param name="module">The module that contains the host method.</param>
         public static void PushType(this CilWorker IL, TypeReference type, ModuleDefinition module)
         {
-            MethodReference getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle",
+            var getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle",
                                                                           typeof (RuntimeTypeHandle));
 
             // Instantiate the generic type before pushing it onto the stack
-            TypeReference declaringType = GetDeclaringType(type);
+            var declaringType = GetDeclaringType(type);
 
             IL.Emit(OpCodes.Ldtoken, declaringType);
             IL.Emit(OpCodes.Call, getTypeFromHandle);
@@ -141,11 +141,11 @@ namespace LinFu.Reflection.Emit
         /// <param name="module">The module that contains the target field.</param>
         public static void PushField(this CilWorker IL, FieldReference field, ModuleDefinition module)
         {
-            MethodReference getFieldFromHandle = module.ImportMethod<FieldInfo>("GetFieldFromHandle",
+            var getFieldFromHandle = module.ImportMethod<FieldInfo>("GetFieldFromHandle",
                                                                                 typeof (RuntimeFieldHandle),
                                                                                 typeof (RuntimeTypeHandle));
 
-            TypeReference declaringType = GetDeclaringType(field.DeclaringType);
+            var declaringType = GetDeclaringType(field.DeclaringType);
 
             IL.Emit(OpCodes.Ldtoken, field);
             IL.Emit(OpCodes.Ldtoken, declaringType);
@@ -162,8 +162,8 @@ namespace LinFu.Reflection.Emit
         public static void PushArguments(this CilWorker IL, IMethodSignature method, ModuleDefinition module,
                                          VariableDefinition arguments)
         {
-            TypeReference objectType = module.ImportType(typeof (object));
-            int parameterCount = method.Parameters.Count;
+            var objectType = module.ImportType(typeof (object));
+            var parameterCount = method.Parameters.Count;
             IL.Emit(OpCodes.Ldc_I4, parameterCount);
             IL.Emit(OpCodes.Newarr, objectType);
             IL.Emit(OpCodes.Stloc, arguments);
@@ -171,7 +171,7 @@ namespace LinFu.Reflection.Emit
             if (parameterCount == 0)
                 return;
 
-            int index = 0;
+            var index = 0;
             foreach (ParameterDefinition param in method.Parameters)
             {
                 IL.PushParameter(index++, arguments, param);
@@ -186,11 +186,11 @@ namespace LinFu.Reflection.Emit
         /// <param name="module">The module that contains the host method.</param>
         public static void PushStackTrace(this CilWorker IL, ModuleDefinition module)
         {
-            ConstructorInfo stackTraceConstructor =
+            var stackTraceConstructor =
                 typeof (StackTrace).GetConstructor(new[] {typeof (int), typeof (bool)});
-            MethodReference stackTraceCtor = module.Import(stackTraceConstructor);
+            var stackTraceCtor = module.Import(stackTraceConstructor);
 
-            OpCode addDebugSymbols = OpCodes.Ldc_I4_0;
+            var addDebugSymbols = OpCodes.Ldc_I4_0;
             IL.Emit(OpCodes.Ldc_I4_1);
             IL.Emit(addDebugSymbols);
             IL.Emit(OpCodes.Newobj, stackTraceCtor);
@@ -206,14 +206,14 @@ namespace LinFu.Reflection.Emit
         public static void PushGenericArguments(this CilWorker IL, IGenericParameterProvider method,
                                                 ModuleDefinition module, VariableDefinition typeArguments)
         {
-            MethodReference getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle",
+            var getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle",
                                                                           BindingFlags.Public | BindingFlags.Static);
-            int genericParameterCount = method.GenericParameters.Count;
+            var genericParameterCount = method.GenericParameters.Count;
 
-            GenericParameterCollection genericParameters = method.GenericParameters;
-            for (int index = 0; index < genericParameterCount; index++)
+            var genericParameters = method.GenericParameters;
+            for (var index = 0; index < genericParameterCount; index++)
             {
-                GenericParameter current = genericParameters[index];
+                var current = genericParameters[index];
 
                 IL.Emit(OpCodes.Ldloc, typeArguments);
                 IL.Emit(OpCodes.Ldc_I4, index);
@@ -236,12 +236,12 @@ namespace LinFu.Reflection.Emit
         public static void SaveParameterTypes(this CilWorker IL, MethodReference method, ModuleDefinition module,
                                               VariableDefinition parameterTypes)
         {
-            MethodReference getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle",
+            var getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle",
                                                                           BindingFlags.Public | BindingFlags.Static);
-            int parameterCount = method.Parameters.Count;
-            for (int index = 0; index < parameterCount; index++)
+            var parameterCount = method.Parameters.Count;
+            for (var index = 0; index < parameterCount; index++)
             {
-                ParameterDefinition current = method.Parameters[index];
+                var current = method.Parameters[index];
                 IL.Emit(OpCodes.Ldloc, parameterTypes);
                 IL.Emit(OpCodes.Ldc_I4, index);
                 IL.Emit(OpCodes.Ldtoken, current.ParameterType);
@@ -259,7 +259,7 @@ namespace LinFu.Reflection.Emit
         /// <param name="returnType">The method return type itself.</param>
         public static void PackageReturnValue(this CilWorker IL, ModuleDefinition module, TypeReference returnType)
         {
-            TypeReference voidType = module.ImportType(typeof (void));
+            var voidType = module.ImportType(typeof (void));
             if (returnType == voidType)
             {
                 IL.Emit(OpCodes.Pop);
@@ -276,8 +276,8 @@ namespace LinFu.Reflection.Emit
         /// <param name="currentType">The type of data being stored.</param>
         public static void Stind(this CilWorker IL, TypeReference currentType)
         {
-            string typeName = currentType.Name;
-            OpCode opCode = OpCodes.Nop;
+            var typeName = currentType.Name;
+            var opCode = OpCodes.Nop;
             if (!currentType.IsValueType && !typeName.EndsWith("&"))
                 opCode = OpCodes.Stind_Ref;
 
@@ -297,7 +297,7 @@ namespace LinFu.Reflection.Emit
         private static void PushParameter(this CilWorker IL, int index, VariableDefinition arguments,
                                           ParameterDefinition param)
         {
-            TypeReference parameterType = param.ParameterType;
+            var parameterType = param.ParameterType;
             IL.Emit(OpCodes.Ldloc, arguments);
             IL.Emit(OpCodes.Ldc_I4, index);
 
@@ -324,8 +324,8 @@ namespace LinFu.Reflection.Emit
         /// <returns>A method definition.</returns>
         public static MethodDefinition GetMethod(this CilWorker IL)
         {
-            MethodBody body = IL.GetBody();
-            MethodDefinition targetMethod = body.Method;
+            var body = IL.GetBody();
+            var targetMethod = body.Method;
 
             return targetMethod;
         }
@@ -337,7 +337,7 @@ namespace LinFu.Reflection.Emit
         /// <returns>The host module.</returns>
         public static ModuleDefinition GetModule(this CilWorker IL)
         {
-            MethodDefinition method = IL.GetMethod();
+            var method = IL.GetMethod();
             TypeDefinition declaringType = method.DeclaringType;
             return declaringType.Module;
         }

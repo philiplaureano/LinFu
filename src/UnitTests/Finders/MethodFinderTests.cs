@@ -18,10 +18,10 @@ namespace LinFu.UnitTests.Finders
             container.LoadFromBaseDirectory("*.dll");
 
             var context = new MethodFinderContext(new[] {typeof (object)}, new object[0], typeof (void));
-            MethodInfo[] methods =
+            var methods =
                 typeof (SampleClassWithGenericMethod).GetMethods(BindingFlags.Public | BindingFlags.Instance);
             var finder = container.GetService<IMethodFinder<MethodInfo>>();
-            MethodInfo result = finder.GetBestMatch(methods, context);
+            var result = finder.GetBestMatch(methods, context);
 
             Assert.IsTrue(result.IsGenericMethod);
             Assert.IsTrue(result.GetGenericArguments().Count() == 1);

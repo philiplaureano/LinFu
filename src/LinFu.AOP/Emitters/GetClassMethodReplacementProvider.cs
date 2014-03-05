@@ -52,12 +52,12 @@ namespace LinFu.AOP.Cecil
         /// <param name="IL">The <see cref="CilWorker"/> instance that points to the instructions in the method body.</param>
         public void Emit(CilWorker IL)
         {
-            ModuleDefinition module = IL.GetModule();
-            MethodDefinition method = IL.GetMethod();
+            var module = IL.GetModule();
+            var method = IL.GetMethod();
 
-            MethodReference getProvider = _resolveGetProviderMethod(module);
+            var getProvider = _resolveGetProviderMethod(module);
 
-            OpCode pushThis = method.HasThis ? OpCodes.Ldarg_0 : OpCodes.Ldnull;
+            var pushThis = method.HasThis ? OpCodes.Ldarg_0 : OpCodes.Ldnull;
             IL.Emit(pushThis);
 
             IL.Emit(OpCodes.Ldloc, _invocationInfo);

@@ -55,7 +55,7 @@ namespace LinFu.Proxy
                 if (interfaceList.Count != targetList.Count)
                     return false;
 
-                foreach (Type current in targetList)
+                foreach (var current in targetList)
                 {
                     if (!interfaceList.Contains(current))
                         return false;
@@ -72,9 +72,9 @@ namespace LinFu.Proxy
 
                 // HACK: Calculate the hash code
                 // by XORing all the types together
-                Type baseType = obj.BaseType;
-                int result = baseType.GetHashCode();
-                foreach (Type type in types)
+                var baseType = obj.BaseType;
+                var result = baseType.GetHashCode();
+                foreach (var type in types)
                 {
                     result ^= type.GetHashCode();
                 }

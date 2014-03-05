@@ -33,7 +33,7 @@ namespace LinFu.AOP.Cecil
         public void Emit(CilWorker IL)
         {
             var originalInstructions = new List<Instruction>(_oldInstructions);
-            Instruction lastInstruction = originalInstructions.LastOrDefault();
+            var lastInstruction = originalInstructions.LastOrDefault();
 
             if (lastInstruction != null && lastInstruction.OpCode == OpCodes.Ret)
             {
@@ -44,7 +44,7 @@ namespace LinFu.AOP.Cecil
                 lastInstruction.Operand = _endLabel;
             }
 
-            foreach (Instruction instruction in (IEnumerable<Instruction>) originalInstructions)
+            foreach (var instruction in (IEnumerable<Instruction>) originalInstructions)
             {
                 if (instruction.OpCode != OpCodes.Ret || instruction == lastInstruction)
                     continue;
@@ -59,7 +59,7 @@ namespace LinFu.AOP.Cecil
             }
 
             // Emit the original instructions
-            foreach (Instruction instruction in originalInstructions)
+            foreach (var instruction in originalInstructions)
             {
                 IL.Append(instruction);
             }

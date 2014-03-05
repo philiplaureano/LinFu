@@ -132,7 +132,7 @@ namespace LinFu.Finders
         public static IList<IFuzzyItem<TItem>> AsFuzzyList<TItem>(this IEnumerable<TItem> items)
         {
             var result = new List<IFuzzyItem<TItem>>();
-            foreach (TItem item in items)
+            foreach (var item in items)
             {
                 result.Add(item);
             }

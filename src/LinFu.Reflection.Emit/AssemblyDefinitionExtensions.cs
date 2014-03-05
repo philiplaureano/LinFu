@@ -24,7 +24,7 @@ namespace LinFu.Reflection.Emit
             {
                 // Persist the assembly to the stream
                 AssemblyFactory.SaveAssembly(definition, stream);
-                byte[] buffer = stream.GetBuffer();
+                var buffer = stream.GetBuffer();
                 result = Assembly.Load(buffer);
             }
 

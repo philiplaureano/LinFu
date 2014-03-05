@@ -25,7 +25,7 @@ namespace LinFu.IoC.Configuration.Resolvers
         public object[] GetConstructorArguments(ConstructorInfo constructor, IServiceContainer container,
                                                 object[] additionalArguments)
         {
-            IEnumerable<INamedType> parameterTypes = GetMissingParameterTypes(constructor, additionalArguments);
+            var parameterTypes = GetMissingParameterTypes(constructor, additionalArguments);
 
             // Generate the arguments for the target constructor
             return _argumentResolver.ResolveFrom(parameterTypes, container,
@@ -57,28 +57,28 @@ namespace LinFu.IoC.Configuration.Resolvers
         private static IEnumerable<INamedType> GetMissingParameterTypes(ConstructorInfo constructor,
                                                                         IEnumerable<object> additionalArguments)
         {
-            IEnumerable<ParameterInfo> parameters = from p in constructor.GetParameters()
+            var parameters = from p in constructor.GetParameters()
                                                     select p;
 
             // Determine which parameters need to 
             // be supplied by the container
             var parameterTypes = new List<INamedType>();
-            int argumentCount = additionalArguments.Count();
+            var argumentCount = additionalArguments.Count();
             if (additionalArguments != null && argumentCount > 0)
             {
                 // Supply parameter values for the
                 // parameters that weren't supplied by the
                 // additionalArguments
-                int parameterCount = parameters.Count();
-                int maxIndex = parameterCount - argumentCount;
-                IEnumerable<INamedType> targetParameters = from param in parameters.Where(p => p.Position < maxIndex)
+                var parameterCount = parameters.Count();
+                var maxIndex = parameterCount - argumentCount;
+                var targetParameters = from param in parameters.Where(p => p.Position < maxIndex)
                                                            select new NamedType(param) as INamedType;
 
                 parameterTypes.AddRange(targetParameters);
                 return parameterTypes;
             }
 
-            IEnumerable<INamedType> results = from param in parameters
+            var results = from param in parameters
                                               select new NamedType(param) as INamedType;
 
             parameterTypes.AddRange(results);

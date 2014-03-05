@@ -73,19 +73,19 @@ namespace LinFu.AOP.Cecil
         public void Emit(MethodDefinition targetMethod, MethodReference interceptedMethod,
                          VariableDefinition invocationInfo)
         {
-            ModuleDefinition module = targetMethod.DeclaringType.Module;
-            VariableDefinition currentMethod = MethodDefinitionExtensions.AddLocal(targetMethod, typeof (MethodBase));
-            VariableDefinition parameterTypes = MethodDefinitionExtensions.AddLocal(targetMethod, typeof (Type[]));
-            VariableDefinition arguments = MethodDefinitionExtensions.AddLocal(targetMethod, typeof (object[]));
-            VariableDefinition typeArguments = MethodDefinitionExtensions.AddLocal(targetMethod, typeof (Type[]));
-            TypeReference systemType = ModuleDefinitionExtensions.ImportType(module, typeof (Type));
+            var module = targetMethod.DeclaringType.Module;
+            var currentMethod = MethodDefinitionExtensions.AddLocal(targetMethod, typeof (MethodBase));
+            var parameterTypes = MethodDefinitionExtensions.AddLocal(targetMethod, typeof (Type[]));
+            var arguments = MethodDefinitionExtensions.AddLocal(targetMethod, typeof (object[]));
+            var typeArguments = MethodDefinitionExtensions.AddLocal(targetMethod, typeof (Type[]));
+            var systemType = module.ImportType(typeof (Type));
 
-            CilWorker IL = MethodDefinitionExtensions.GetILGenerator(targetMethod);
+            var IL = targetMethod.GetILGenerator();
 
             #region Initialize the InvocationInfo constructor arguments
 
             // Type[] typeArguments = new Type[genericTypeCount];
-            int genericParameterCount = targetMethod.GenericParameters.Count;
+            var genericParameterCount = targetMethod.GenericParameters.Count;
             IL.Emit(OpCodes.Ldc_I4, genericParameterCount);
             IL.Emit(OpCodes.Newarr, systemType);
             IL.Emit(OpCodes.Stloc, typeArguments);
@@ -114,20 +114,20 @@ namespace LinFu.AOP.Cecil
             // proper type arguments
             if (targetMethod.GenericParameters.Count > 0)
             {
-                TypeReference methodInfoType = module.Import(typeof (MethodInfo));
+                var methodInfoType = module.Import(typeof (MethodInfo));
                 IL.Emit(OpCodes.Isinst, methodInfoType);
 
-                MethodReference getIsGenericMethodDef = module.ImportMethod<MethodInfo>("get_IsGenericMethodDefinition");
+                var getIsGenericMethodDef = module.ImportMethod<MethodInfo>("get_IsGenericMethodDefinition");
                 IL.Emit(OpCodes.Dup);
                 IL.Emit(OpCodes.Callvirt, getIsGenericMethodDef);
 
                 // Determine if the current method is a generic method
                 // definition
-                Instruction skipMakeGenericMethod = IL.Create(OpCodes.Nop);
+                var skipMakeGenericMethod = IL.Create(OpCodes.Nop);
                 IL.Emit(OpCodes.Brfalse, skipMakeGenericMethod);
 
                 // Instantiate the specific generic method instance
-                MethodReference makeGenericMethod = module.ImportMethod<MethodInfo>("MakeGenericMethod", typeof (Type[]));
+                var makeGenericMethod = module.ImportMethod<MethodInfo>("MakeGenericMethod", typeof (Type[]));
                 IL.Emit(OpCodes.Ldloc, typeArguments);
                 IL.Emit(OpCodes.Callvirt, makeGenericMethod);
                 IL.Append(skipMakeGenericMethod);
@@ -150,9 +150,9 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Ldloc, typeArguments);
 
             // Save the return type
-            MethodReference getTypeFromHandle = module.Import(_getTypeFromHandle);
+            var getTypeFromHandle = module.Import(_getTypeFromHandle);
 
-            TypeReference returnType = targetMethod.ReturnType.ReturnType;
+            var returnType = targetMethod.ReturnType.ReturnType;
             IL.Emit(OpCodes.Ldtoken, returnType);
             IL.Emit(OpCodes.Call, getTypeFromHandle);
 
@@ -162,12 +162,12 @@ namespace LinFu.AOP.Cecil
             #endregion
 
             // InvocationInfo info = new InvocationInfo(...);
-            MethodReference infoConstructor = module.Import(_invocationInfoConstructor);
+            var infoConstructor = module.Import(_invocationInfoConstructor);
             IL.Emit(OpCodes.Newobj, infoConstructor);
             IL.Emit(OpCodes.Stloc, invocationInfo);
             IL.Emit(OpCodes.Ldloc, invocationInfo);
 
-            MethodReference addInstance = module.Import(typeof (IgnoredInstancesRegistry).GetMethod("AddInstance"));
+            var addInstance = module.Import(typeof (IgnoredInstancesRegistry).GetMethod("AddInstance"));
             IL.Emit(OpCodes.Call, addInstance);
         }
 

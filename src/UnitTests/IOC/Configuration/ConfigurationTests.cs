@@ -22,21 +22,21 @@ namespace LinFu.UnitTests.IOC.Configuration
             IAssemblyLoader loader = new AssemblyLoader();
 
             // The loader should return a valid assembly
-            Assembly result = loader.Load(typeof (SampleClass).Assembly.Location);
+            var result = loader.Load(typeof (SampleClass).Assembly.Location);
             Assert.IsNotNull(result);
         }
 
         [Test]
         public void ClassMarkedWithPostProcessorAttributeMustBeInjectedIntoContainer()
         {
-            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
             var loader = new Loader();
             loader.LoadDirectory(baseDirectory, "*.dll");
             var container = new ServiceContainer();
 
             loader.LoadInto(container);
 
-            IEnumerable<IPostProcessor> matches = from p in container.PostProcessors
+            var matches = from p in container.PostProcessors
                                                   where p != null &&
                                                         p.GetType() == typeof (SamplePostProcessor)
                                                   select p;
@@ -47,14 +47,14 @@ namespace LinFu.UnitTests.IOC.Configuration
         [Test]
         public void ClassMarkedWithPreprocessorAttributeMustBeInjectedIntoContainer()
         {
-            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
             var loader = new Loader();
             loader.LoadDirectory(baseDirectory, "*.dll");
             var container = new ServiceContainer();
 
             loader.LoadInto(container);
 
-            IEnumerable<IPreProcessor> matches = from p in container.PreProcessors
+            var matches = from p in container.PreProcessors
                                                  where p != null &&
                                                        p.GetType() == typeof (SamplePreprocessor)
                                                  select p;
@@ -65,7 +65,7 @@ namespace LinFu.UnitTests.IOC.Configuration
         [Test]
         public void CreatedServicesMustBeAbleToInitializeThemselves()
         {
-            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
             var loader = new Loader();
             loader.LoadDirectory(baseDirectory, "*.dll");
 
@@ -110,8 +110,8 @@ namespace LinFu.UnitTests.IOC.Configuration
             Action<ILoader<IServiceContainer>> customAction =
                 targetLoader =>
                     {
-                        IInitialize initializer = mockInitializer.Object;
-                        IServiceContainer container = mockContainer.Object;
+                        var initializer = mockInitializer.Object;
+                        var container = mockContainer.Object;
 
                         // The test will only succeed if
                         // the following line of code
@@ -137,14 +137,14 @@ namespace LinFu.UnitTests.IOC.Configuration
                                  DirectoryLister = mockListing.Object
                              };
 
-            string filename = "input.dll";
+            var filename = "input.dll";
             mockListing.Expect(listing => listing.GetFiles(It.IsAny<string>(), filename))
                 .Returns(new[] {filename});
 
             loader.FileLoaders.Add(mockLoader.Object);
             // The container should call the load method
             // with the given filename
-            string path = string.Empty;
+            var path = string.Empty;
 
             var emptyActions = new Action<IServiceContainer>[] {};
             mockLoader.Expect(l => l.CanLoad(filename)).Returns(true);
@@ -212,10 +212,10 @@ namespace LinFu.UnitTests.IOC.Configuration
         [Test]
         public void TypeExtractorMustListTypesFromGivenAssembly()
         {
-            Assembly targetAssembly = typeof (SampleClass).Assembly;
+            var targetAssembly = typeof (SampleClass).Assembly;
 
             ITypeExtractor extractor = new TypeExtractor();
-            IEnumerable<Type> results = extractor.GetTypes(targetAssembly);
+            var results = extractor.GetTypes(targetAssembly);
             Assert.IsNotNull(results);
             Assert.IsTrue(results.Count() > 0);
         }

@@ -91,7 +91,7 @@ namespace LinFu.IoC
         internal static Func<IFactoryRequest, TService> CreateAdapter<TService>(
             this Func<IFactoryRequest, TService> func)
         {
-            Func<IFactoryRequest, TService> adapter = func;
+            var adapter = func;
 
             return adapter;
         }

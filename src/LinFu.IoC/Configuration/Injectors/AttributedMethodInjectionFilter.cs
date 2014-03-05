@@ -44,7 +44,7 @@ namespace LinFu.IoC.Configuration
         protected override IEnumerable<MethodInfo> GetMembers(Type targetType,
                                                               IServiceContainer container)
         {
-            IEnumerable<MethodInfo> results =
+            var results =
                 from method in targetType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
                 let attributes = _attributeType != null
                                      ? method.GetCustomAttributes(_attributeType, false)

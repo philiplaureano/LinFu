@@ -17,7 +17,7 @@ namespace LinFu.IoC.Interceptors
 
         static InvocationInfoInterceptor()
         {
-            PropertyInfo targetProperty = typeof (IInvocationInfo).GetProperty("Target");
+            var targetProperty = typeof (IInvocationInfo).GetProperty("Target");
             _targetMethod = targetProperty.GetGetMethod();
         }
 
@@ -36,13 +36,13 @@ namespace LinFu.IoC.Interceptors
 
         public override object Intercept(IInvocationInfo info)
         {
-            MethodBase targetMethod = info.TargetMethod;
+            var targetMethod = info.TargetMethod;
 
             // Intercept calls made only to the IInvocationInfo interface
             if (targetMethod.DeclaringType != typeof (IInvocationInfo) || targetMethod.Name != "get_Target")
                 return base.Intercept(info);
 
-            object target = _getActualTarget();
+            var target = _getActualTarget();
 
             // Replace the proxy with the actual target           
             return target;

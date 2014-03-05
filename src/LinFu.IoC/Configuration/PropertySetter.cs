@@ -16,7 +16,7 @@ namespace LinFu.IoC.Configuration
         private static readonly Dictionary<PropertyInfo, Action<object, object>> _setters =
             new Dictionary<PropertyInfo, Action<object, object>>();
 
-        private static readonly Type[] _parameterTypes = new[] {typeof (object), typeof (object)};
+        private static readonly Type[] _parameterTypes = {typeof (object), typeof (object)};
 
         #region IPropertySetter Members
 
@@ -61,7 +61,7 @@ namespace LinFu.IoC.Configuration
         /// <returns>A property setter.</returns>
         private static Action<object, object> GenerateSetter(PropertyInfo targetProperty)
         {
-            MethodInfo setterMethod = targetProperty.GetSetMethod();
+            var setterMethod = targetProperty.GetSetMethod();
 
             if (setterMethod == null)
                 throw new ArgumentException(string.Format("The property '{0}' is missing a setter method!",
@@ -79,7 +79,7 @@ namespace LinFu.IoC.Configuration
                 return (target, value) => setterMethod.Invoke(target, new[] {value});
 
             var dynamicMethod = new DynamicMethod(string.Empty, typeof (void), _parameterTypes);
-            ILGenerator IL = dynamicMethod.GetILGenerator();
+            var IL = dynamicMethod.GetILGenerator();
 
             // Push the target instance onto the stack
             IL.Emit(OpCodes.Ldarg_0);
@@ -95,7 +95,7 @@ namespace LinFu.IoC.Configuration
             IL.Emit(OpCodes.Isinst, targetProperty.PropertyType);
 
             // Call the setter
-            OpCode callInstruction = setterMethod.IsVirtual ? OpCodes.Callvirt : OpCodes.Call;
+            var callInstruction = setterMethod.IsVirtual ? OpCodes.Callvirt : OpCodes.Call;
             IL.Emit(callInstruction, setterMethod);
             IL.Emit(OpCodes.Ret);
 

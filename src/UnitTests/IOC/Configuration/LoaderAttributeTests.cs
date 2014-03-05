@@ -28,13 +28,13 @@ namespace LinFu.UnitTests.IOC.Configuration
                                                       It.Is<IFactory>(
                                                           f => f != null && f is TFactory || f is FunctorFactory)));
 
-            IEnumerable<Action<IServiceContainer>> factoryActions = loader.Load(implementingType);
+            var factoryActions = loader.Load(implementingType);
             Assert.IsNotNull(factoryActions, "The result cannot be null");
             Assert.IsTrue(factoryActions.Count() == 1, "There must be at least at least one result");
 
             // There must be at least one factory from
             // the result list
-            Action<IServiceContainer> firstResult = factoryActions.FirstOrDefault();
+            var firstResult = factoryActions.FirstOrDefault();
             Assert.IsNotNull(firstResult);
 
 
@@ -47,12 +47,12 @@ namespace LinFu.UnitTests.IOC.Configuration
         public void FactoryAttributeLoaderMustInjectOpenGenericServiceTypeIntoContainer()
         {
             var mockContainer = new Mock<IServiceContainer>();
-            Type serviceType = typeof (ISampleGenericService<>);
+            var serviceType = typeof (ISampleGenericService<>);
             var mockPostProcessors = new Mock<IList<IPostProcessor>>();
             var mockPreProcessors = new Mock<IList<IPreProcessor>>();
 
             ITypeLoader loader = new FactoryAttributeLoader();
-            IEnumerable<Action<IServiceContainer>> actions = loader.Load(typeof (SampleOpenGenericFactory));
+            var actions = loader.Load(typeof (SampleOpenGenericFactory));
 
 
             // The loader should load the mock container
@@ -94,10 +94,10 @@ namespace LinFu.UnitTests.IOC.Configuration
         public void FactoryAttributeLoaderMustInjectStronglyTypedFactoryIntoContainer()
         {
             var container = new ServiceContainer();
-            Type serviceType = typeof (ISampleService);
+            var serviceType = typeof (ISampleService);
 
             ITypeLoader loader = new FactoryAttributeLoader();
-            IEnumerable<Action<IServiceContainer>> actions = loader.Load(typeof (SampleStronglyTypedFactory));
+            var actions = loader.Load(typeof (SampleStronglyTypedFactory));
 
             // The factory loader should return a set of actions
             // that will inject that custom factory into the container
@@ -115,7 +115,7 @@ namespace LinFu.UnitTests.IOC.Configuration
         {
             var mockContainer = new Mock<IServiceContainer>();
             var mockPreProcessors = new Mock<IList<IPreProcessor>>();
-            Type serviceType = typeof (ISampleService);
+            var serviceType = typeof (ISampleService);
             string serviceName = null;
 
             // The container should add the expected
@@ -132,7 +132,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             mockPreProcessors.Expect(p => p.Add(It.IsAny<IPreProcessor>()));
 
             ITypeLoader loader = new FactoryAttributeLoader();
-            IEnumerable<Action<IServiceContainer>> actions = loader.Load(typeof (SampleFactory));
+            var actions = loader.Load(typeof (SampleFactory));
 
             // The factory loader should return a set of actions
             // that will inject that custom factory into the container
@@ -148,9 +148,9 @@ namespace LinFu.UnitTests.IOC.Configuration
         [Test]
         public void LoaderMustLoadSingletonTypesAndThoseTypesMustBeTheSameInstance()
         {
-            string location = typeof (SamplePostProcessor).Assembly.Location ?? string.Empty;
+            var location = typeof (SamplePostProcessor).Assembly.Location ?? string.Empty;
             var loader = new Loader();
-            string directory = Path.GetDirectoryName(location);
+            var directory = Path.GetDirectoryName(location);
 
             // Load the default plugins first
             loader.LoadDirectory(AppDomain.CurrentDomain.BaseDirectory, "LinFu*.dll");
@@ -158,7 +158,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             // Load the sample library
             loader.LoadDirectory(directory, Path.GetFileName(location));
 
-            string filename = Path.Combine(directory, location);
+            var filename = Path.Combine(directory, location);
             Assert.IsTrue(File.Exists(filename));
 
             var container = new ServiceContainer();
@@ -176,9 +176,9 @@ namespace LinFu.UnitTests.IOC.Configuration
         [Test]
         public void LoaderMustLoadTheCorrectOncePerRequestTypes()
         {
-            string location = typeof (SamplePostProcessor).Assembly.Location ?? string.Empty;
+            var location = typeof (SamplePostProcessor).Assembly.Location ?? string.Empty;
             var loader = new Loader();
-            string directory = Path.GetDirectoryName(location);
+            var directory = Path.GetDirectoryName(location);
 
             // Load the default plugins first
             loader.LoadDirectory(AppDomain.CurrentDomain.BaseDirectory, "LinFu*.dll");
@@ -186,7 +186,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             // Load the sample library
             loader.LoadDirectory(directory, Path.GetFileName(location));
 
-            string filename = Path.Combine(directory, location);
+            var filename = Path.Combine(directory, location);
             Assert.IsTrue(File.Exists(filename));
 
             var container = new ServiceContainer();
@@ -205,9 +205,9 @@ namespace LinFu.UnitTests.IOC.Configuration
         [Test]
         public void LoaderMustLoadTheCorrectSingletonTypes()
         {
-            string location = typeof (SamplePostProcessor).Assembly.Location ?? string.Empty;
+            var location = typeof (SamplePostProcessor).Assembly.Location ?? string.Empty;
             var loader = new Loader();
-            string directory = Path.GetDirectoryName(location);
+            var directory = Path.GetDirectoryName(location);
 
             // Load the default plugins first
             loader.LoadDirectory(AppDomain.CurrentDomain.BaseDirectory, "LinFu*.dll");
@@ -215,7 +215,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             // Load the sample library
             loader.LoadDirectory(directory, Path.GetFileName(location));
 
-            string filename = Path.Combine(directory, location);
+            var filename = Path.Combine(directory, location);
             Assert.IsTrue(File.Exists(filename));
 
             var container = new ServiceContainer();
@@ -234,8 +234,8 @@ namespace LinFu.UnitTests.IOC.Configuration
         [Test]
         public void NamedOncePerRequestFactoryMustBeCreatedFromTypeWithImplementsAttribute()
         {
-            Type implementingType = typeof (NamedOncePerRequestSampleService);
-            Type serviceType = typeof (ISampleService);
+            var implementingType = typeof (NamedOncePerRequestSampleService);
+            var serviceType = typeof (ISampleService);
             var converter = new ImplementsAttributeLoader();
 
             TestFactoryConverterWith<OncePerRequestFactory<ISampleService>>("MyService",
@@ -263,8 +263,8 @@ namespace LinFu.UnitTests.IOC.Configuration
         [Test]
         public void OncePerRequestFactoryMustBeCreatedFromTypeWithImplementsAttribute()
         {
-            Type implementingType = typeof (OncePerRequestSampleService);
-            Type serviceType = typeof (ISampleService);
+            var implementingType = typeof (OncePerRequestSampleService);
+            var serviceType = typeof (ISampleService);
             var converter = new ImplementsAttributeLoader();
 
             TestFactoryConverterWith<OncePerRequestFactory<ISampleService>>(null,
@@ -296,7 +296,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             container.AddFactory("MyService", typeof (ISampleGenericService<>), mockFactory.Object);
 
             var result = container.GetService<ISampleGenericService<int>>("MyService");
-            bool areSame = ReferenceEquals(serviceInstance, result);
+            var areSame = ReferenceEquals(serviceInstance, result);
 
             Assert.AreSame(serviceInstance, result);
 

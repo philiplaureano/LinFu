@@ -38,7 +38,7 @@ namespace LinFu.IoC.Configuration
             var originalResult = result.OriginalResult as IInitialize<T>;
             var actualResult = result.ActualResult as IInitialize<T>;
 
-            T source = _getSource(result);
+            var source = _getSource(result);
 
             // Initialize the original result, if possible
             Initialize(originalResult, source);

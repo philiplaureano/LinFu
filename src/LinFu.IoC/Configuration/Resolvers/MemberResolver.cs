@@ -48,19 +48,19 @@ namespace LinFu.IoC.Configuration
         public TMember ResolveFrom(Type concreteType, IServiceContainer container,
                                    IMethodFinderContext finderContext)
         {
-            IEnumerable<TMember> constructors = GetMembers(concreteType);
+            var constructors = GetMembers(concreteType);
             if (constructors == null)
                 return null;
 
-            IMethodFinder<TMember> resolver = GetMethodFinder(container);
-            TMember bestMatch = resolver.GetBestMatch(constructors, finderContext);
+            var resolver = GetMethodFinder(container);
+            var bestMatch = resolver.GetBestMatch(constructors, finderContext);
 
             // If all else fails, find the
             // default constructor and use it as the
             // best match by default
             if (bestMatch == null)
             {
-                TMember defaultResult = GetDefaultResult(concreteType);
+                var defaultResult = GetDefaultResult(concreteType);
 
                 bestMatch = defaultResult;
             }

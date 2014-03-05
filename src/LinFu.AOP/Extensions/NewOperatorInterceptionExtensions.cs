@@ -15,7 +15,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="target">The assembly to be modified.</param>
         public static void InterceptAllNewInstances(this IReflectionStructureVisitable target)
         {
-            Func<TypeReference, bool> typeFilter = GetTypeFilter();
+            var typeFilter = GetTypeFilter();
             target.InterceptNewInstances(typeFilter);
         }
 
@@ -25,7 +25,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="target">The assembly to be modified.</param>
         public static void InterceptAllNewInstances(this IReflectionVisitable target)
         {
-            Func<TypeReference, bool> typeFilter = GetTypeFilter();
+            var typeFilter = GetTypeFilter();
             target.InterceptNewInstances(typeFilter);
         }
 
@@ -233,10 +233,10 @@ namespace LinFu.AOP.Cecil.Extensions
         {
             return type =>
                        {
-                           bool result = !type.IsValueType;
+                           var result = !type.IsValueType;
 
-                           ModuleDefinition module = type.Module;
-                           string moduleName = module.Name;
+                           var module = type.Module;
+                           var moduleName = module.Name;
 
                            if (moduleName.StartsWith("LinFu.AOP"))
                                return false;

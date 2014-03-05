@@ -21,19 +21,19 @@ namespace PostWeaver
                 return;
             }
 
-            string inputFile = args[0];
+            var inputFile = args[0];
             if (!File.Exists(inputFile))
                 throw new FileNotFoundException(inputFile);
 
-            string targetFile = inputFile;
-            AssemblyDefinition assembly = AssemblyFactory.GetAssembly(targetFile);
-            string targetDirectory = Path.GetDirectoryName(targetFile);
+            var targetFile = inputFile;
+            var assembly = AssemblyFactory.GetAssembly(targetFile);
+            var targetDirectory = Path.GetDirectoryName(targetFile);
 
-            string filenameWithoutExtension = Path.GetFileNameWithoutExtension(targetFile);
-            string pdbFileName = string.Format("{0}.pdb", filenameWithoutExtension);
-            bool pdbExists = File.Exists(pdbFileName);
+            var filenameWithoutExtension = Path.GetFileNameWithoutExtension(targetFile);
+            var pdbFileName = string.Format("{0}.pdb", filenameWithoutExtension);
+            var pdbExists = File.Exists(pdbFileName);
 
-            ModuleDefinition module = assembly.MainModule;
+            var module = assembly.MainModule;
 
             if (pdbExists)
                 module.LoadSymbols();

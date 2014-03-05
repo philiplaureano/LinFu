@@ -13,7 +13,7 @@ namespace LinFu.AOP.Interfaces
 
         public void Increment(IInvocationInfo context)
         {
-            int threadId = Thread.CurrentThread.ManagedThreadId;
+            var threadId = Thread.CurrentThread.ManagedThreadId;
             lock (_counts)
             {
                 if (!_counts.ContainsKey(threadId))
@@ -25,7 +25,7 @@ namespace LinFu.AOP.Interfaces
 
         public void Decrement(IInvocationInfo context)
         {
-            int threadId = Thread.CurrentThread.ManagedThreadId;
+            var threadId = Thread.CurrentThread.ManagedThreadId;
             if (!_counts.ContainsKey(threadId))
                 return;
 
@@ -38,7 +38,7 @@ namespace LinFu.AOP.Interfaces
 
         public int GetPendingCalls(IInvocationInfo context)
         {
-            int threadId = Thread.CurrentThread.ManagedThreadId;
+            var threadId = Thread.CurrentThread.ManagedThreadId;
             if (!_counts.ContainsKey(threadId))
                 return 0;
 

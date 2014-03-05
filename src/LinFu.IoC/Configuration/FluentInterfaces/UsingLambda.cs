@@ -39,7 +39,7 @@ namespace LinFu.IoC.Configuration
             // Let the container decide which constructor should be used at runtime
             Func<IFactoryRequest, TService> factoryMethod = request =>
                                                                 {
-                                                                    IServiceContainer container = request.Container;
+                                                                    var container = request.Container;
                                                                     return
                                                                         (TService)
                                                                         container.AutoCreate(typeof (TConcrete),
@@ -69,7 +69,7 @@ namespace LinFu.IoC.Configuration
         public IGenerateFactory<TService> Using(Func<IServiceContainer, object[], TService> factoryMethod)
         {
             Func<IFactoryRequest, TService> adapter =
-                (request) => factoryMethod(request.Container, request.Arguments);
+                request => factoryMethod(request.Container, request.Arguments);
 
             var context = new InjectionContext<TService>
                               {

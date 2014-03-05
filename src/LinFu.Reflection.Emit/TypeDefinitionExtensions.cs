@@ -68,7 +68,7 @@ namespace LinFu.Reflection.Emit
             typeDef.Methods.Add(method);
 
             //Match the generic parameter types
-            foreach (Type genericParameterType in genericParameterTypes)
+            foreach (var genericParameterType in genericParameterTypes)
             {
                 method.AddGenericParameter(genericParameterType);
             }
@@ -89,7 +89,7 @@ namespace LinFu.Reflection.Emit
         /// <returns>The default constructor.</returns>
         public static MethodDefinition AddDefaultConstructor(this TypeDefinition targetType)
         {
-            Type parentType = typeof (object);
+            var parentType = typeof (object);
 
             return AddDefaultConstructor(targetType, parentType);
         }
@@ -102,21 +102,21 @@ namespace LinFu.Reflection.Emit
         /// <returns>The default constructor.</returns>
         public static MethodDefinition AddDefaultConstructor(this TypeDefinition targetType, Type parentType)
         {
-            ModuleDefinition module = targetType.Module;
-            TypeReference voidType = module.Import(typeof (void));
-            MethodAttributes methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig
+            var module = targetType.Module;
+            var voidType = module.Import(typeof (void));
+            var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig
                                                 | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName;
 
 
-            BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-            ConstructorInfo objectConstructor = parentType.GetConstructor(flags, null, new Type[0], null);
+            var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+            var objectConstructor = parentType.GetConstructor(flags, null, new Type[0], null);
 
             // Revert to the System.Object constructor
             // if the parent type does not have a default constructor
             if (objectConstructor == null)
                 objectConstructor = typeof (object).GetConstructor(new Type[0]);
 
-            MethodReference baseConstructor = module.Import(objectConstructor);
+            var baseConstructor = module.Import(objectConstructor);
 
             // Define the default constructor
             var ctor = new MethodDefinition(".ctor", methodAttributes, voidType)
@@ -125,7 +125,7 @@ namespace LinFu.Reflection.Emit
                                ImplAttributes = (MethodImplAttributes.IL | MethodImplAttributes.Managed)
                            };
 
-            CilWorker IL = ctor.Body.CilWorker;
+            var IL = ctor.Body.CilWorker;
 
             // Call the constructor for System.Object, and exit
             IL.Emit(OpCodes.Ldarg_0);
@@ -145,8 +145,8 @@ namespace LinFu.Reflection.Emit
         /// <param name="propertyType">The <see cref="System.Type"/> instance that describes the property type.</param>
         public static void AddProperty(this TypeDefinition typeDef, string propertyName, Type propertyType)
         {
-            ModuleDefinition module = typeDef.Module;
-            TypeReference typeRef = module.Import(propertyType);
+            var module = typeDef.Module;
+            var typeRef = module.Import(propertyType);
             typeDef.AddProperty(propertyName, typeRef);
         }
 
@@ -161,7 +161,7 @@ namespace LinFu.Reflection.Emit
         {
             #region Add the backing field
 
-            string fieldName = string.Format("__{0}_backingField", propertyName);
+            var fieldName = string.Format("__{0}_backingField", propertyName);
             var actualField = new FieldDefinition(fieldName,
                                                   propertyType, FieldAttributes.Private);
 
@@ -174,20 +174,20 @@ namespace LinFu.Reflection.Emit
             if (typeDef.GenericParameters.Count > 0)
                 backingField = GetBackingField(fieldName, typeDef, propertyType);
 
-            string getterName = string.Format("get_{0}", propertyName);
-            string setterName = string.Format("set_{0}", propertyName);
+            var getterName = string.Format("get_{0}", propertyName);
+            var setterName = string.Format("set_{0}", propertyName);
 
 
             const MethodAttributes attributes = MethodAttributes.Public | MethodAttributes.HideBySig |
                                                 MethodAttributes.SpecialName | MethodAttributes.NewSlot |
                                                 MethodAttributes.Virtual;
 
-            ModuleDefinition module = typeDef.Module;
-            TypeReference voidType = module.Import(typeof (void));
+            var module = typeDef.Module;
+            var voidType = module.Import(typeof (void));
 
             // Implement the getter and the setter
-            MethodDefinition getter = AddPropertyGetter(propertyType, getterName, attributes, backingField);
-            MethodDefinition setter = AddPropertySetter(propertyType, attributes, backingField, setterName, voidType);
+            var getter = AddPropertyGetter(propertyType, getterName, attributes, backingField);
+            var setter = AddPropertySetter(propertyType, attributes, backingField, setterName, voidType);
 
             typeDef.AddProperty(propertyName, propertyType, getter, setter);
         }
@@ -224,7 +224,7 @@ namespace LinFu.Reflection.Emit
         /// <returns>A method that matches the given <paramref name="methodName"/>. If the method is not found, then it will return a <c>null</c> value. </returns>
         public static MethodDefinition GetMethod(this TypeDefinition typeDef, string methodName)
         {
-            IEnumerable<MethodDefinition> result = from MethodDefinition m in typeDef.Methods
+            var result = from MethodDefinition m in typeDef.Methods
                                                    where m.Name == methodName
                                                    select m;
 
@@ -273,7 +273,7 @@ namespace LinFu.Reflection.Emit
                                  ImplAttributes = (MethodImplAttributes.Managed | MethodImplAttributes.IL)
                              };
 
-            CilWorker IL = getter.GetILGenerator();
+            var IL = getter.GetILGenerator();
             IL.Emit(OpCodes.Ldarg_0);
             IL.Emit(OpCodes.Ldfld, backingField);
             IL.Emit(OpCodes.Ret);
@@ -303,7 +303,7 @@ namespace LinFu.Reflection.Emit
 
             setter.Parameters.Add(new ParameterDefinition(propertyType));
 
-            CilWorker IL = setter.GetILGenerator();
+            var IL = setter.GetILGenerator();
             IL.Emit(OpCodes.Ldarg_0);
             IL.Emit(OpCodes.Ldarg_1);
             IL.Emit(OpCodes.Stfld, backingField);

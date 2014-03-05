@@ -13,7 +13,7 @@ namespace LinFu.AOP.Cecil
         /// <param name="sourceAssembly"></param>
         public static void RemoveStrongName(this AssemblyDefinition sourceAssembly)
         {
-            AssemblyNameDefinition nameDef = sourceAssembly.Name;
+            var nameDef = sourceAssembly.Name;
 
             // Remove the strong name
             nameDef.PublicKey = null;

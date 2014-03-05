@@ -24,12 +24,12 @@ namespace LinFu.AOP.Cecil
 
         public override bool ShouldWeave(TypeDefinition item)
         {
-            bool shouldWeave = base.ShouldWeave(item);
+            var shouldWeave = base.ShouldWeave(item);
 
             // Make sure that the IModifiableType interface is only implemented once
             shouldWeave &= !item.Interfaces.Contains(_modifiableInterfaceType);
 
-            bool isStaticClass = item.IsAbstract && item.IsSealed;
+            var isStaticClass = item.IsAbstract && item.IsSealed;
             shouldWeave &= !isStaticClass;
 
             return shouldWeave;

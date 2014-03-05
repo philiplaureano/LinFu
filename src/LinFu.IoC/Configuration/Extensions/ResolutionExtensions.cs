@@ -36,14 +36,14 @@ namespace LinFu.IoC.Configuration
         public static Func<IServiceContainer, bool> ExistsAsEnumerableSetOfServices(this Type parameterType)
         {
             // The type must be derived from IEnumerable<T>            
-            Type enumerableDefinition = typeof (IEnumerable<>);
+            var enumerableDefinition = typeof (IEnumerable<>);
 
             if (!parameterType.IsGenericType || parameterType.GetGenericTypeDefinition() != enumerableDefinition)
                 return container => false;
 
             // Determine the individual service type
-            Type elementType = parameterType.GetGenericArguments()[0];
-            Type enumerableType = typeof (IEnumerable<>).MakeGenericType(elementType);
+            var elementType = parameterType.GetGenericArguments()[0];
+            var enumerableType = typeof (IEnumerable<>).MakeGenericType(elementType);
 
             // If this type isn't an IEnumerable<T> type, there's no point in testing
             // if it is a list of services that exists in the container
@@ -57,7 +57,7 @@ namespace LinFu.IoC.Configuration
             // Check for any named services that can be included in the service list
             Func<IServiceContainer, bool> hasNamedService = container =>
                                                                 {
-                                                                    int matches =
+                                                                    var matches =
                                                                         (from info in container.AvailableServices
                                                                          where info.ServiceType == elementType
                                                                          select info).Count();
@@ -81,7 +81,7 @@ namespace LinFu.IoC.Configuration
             if (!parameterType.IsArray)
                 return container => false;
 
-            Type elementType = parameterType.GetElementType();
+            var elementType = parameterType.GetElementType();
             // A single service instance implies that a list of services can be created
             // from the current container
             Func<IServiceContainer, bool> hasService = container => container.Contains(elementType);
@@ -89,7 +89,7 @@ namespace LinFu.IoC.Configuration
             // Check for any named services that can be included in the service list
             Func<IServiceContainer, bool> hasNamedService = container =>
                                                                 {
-                                                                    int matches =
+                                                                    var matches =
                                                                         (from info in container.AvailableServices
                                                                          where info.ServiceType == elementType
                                                                          select info).Count();
@@ -127,7 +127,7 @@ namespace LinFu.IoC.Configuration
         public static object[] ResolveFrom(this IArgumentResolver resolver, MethodBase method,
                                            IServiceContainer container, params object[] additionalArguments)
         {
-            IEnumerable<INamedType> parameterTypes = from p in method.GetParameters()
+            var parameterTypes = from p in method.GetParameters()
                                                      select new NamedType(p) as INamedType;
 
             return resolver.ResolveFrom(parameterTypes, container, additionalArguments);
@@ -143,12 +143,12 @@ namespace LinFu.IoC.Configuration
         /// <returns>An array of items that match the <paramref name="targetElementType"/>.</returns>
         public static object Cast(this IEnumerable items, Type targetElementType)
         {
-            MethodInfo castMethodDefinition = typeof (ResolutionExtensions).GetMethod("Cast",
+            var castMethodDefinition = typeof (ResolutionExtensions).GetMethod("Cast",
                                                                                       BindingFlags.NonPublic |
                                                                                       BindingFlags.Static);
-            MethodInfo castMethod = castMethodDefinition.MakeGenericMethod(targetElementType);
+            var castMethod = castMethodDefinition.MakeGenericMethod(targetElementType);
 
-            IEnumerable enumerable = items;
+            var enumerable = items;
             var arguments = new object[] {enumerable};
             return castMethod.Invoke(null, arguments);
         }
@@ -162,7 +162,7 @@ namespace LinFu.IoC.Configuration
         private static T[] Cast<T>(IEnumerable items)
         {
             var results = new List<T>();
-            foreach (object item in items)
+            foreach (var item in items)
             {
                 var currentItem = (T) item;
                 results.Add(currentItem);

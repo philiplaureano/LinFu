@@ -37,8 +37,8 @@ namespace LinFu.IoC.Interceptors
             if (!_filterPredicate(result))
                 return;
 
-            IServiceContainer container = result.Container;
-            bool hasProxyFactory = container.Contains(typeof (IProxyFactory));
+            var container = result.Container;
+            var hasProxyFactory = container.Contains(typeof (IProxyFactory));
 
             // Inject proxies only if a
             // proxy factory instance is available
@@ -46,7 +46,7 @@ namespace LinFu.IoC.Interceptors
                 return;
 
             // Sealed types cannot be intercepted
-            Type serviceType = result.ServiceType;
+            var serviceType = result.ServiceType;
             if (result.ActualResult != null && serviceType.IsSealed)
                 return;
 

@@ -22,7 +22,7 @@ namespace LinFu.AOP.Interfaces
                 throw new ArgumentNullException("context");
 
             // Use the static activator by default
-            ITypeActivator currentActivator = _activator;
+            var currentActivator = _activator;
 
             // Use the activator attached to the target if it exists
             var host = context.Target as IActivatorHost;

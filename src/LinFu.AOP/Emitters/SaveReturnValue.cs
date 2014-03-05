@@ -32,9 +32,9 @@ namespace LinFu.AOP.Cecil
         /// <param name="IL">The <see cref="CilWorker"/> pointing to the target method body.</param>
         public void Emit(CilWorker IL)
         {
-            ModuleDefinition module = IL.GetModule();
-            TypeReference voidType = module.ImportType(typeof (void));
-            bool returnTypeIsValueType = _returnType != voidType && _returnType.IsValueType;
+            var module = IL.GetModule();
+            var voidType = module.ImportType(typeof (void));
+            var returnTypeIsValueType = _returnType != voidType && _returnType.IsValueType;
 
             if (_returnType is GenericParameter || returnTypeIsValueType)
                 IL.Create(OpCodes.Box, _returnType);

@@ -21,11 +21,11 @@ namespace LinFu.Proxy
         /// <param name="interfaceList">The list of interfaces already being implemented. </param>
         public void GetInterfaces(Type currentType, HashSet<Type> interfaceList)
         {
-            Type[] interfaces = currentType.GetInterfaces();
+            var interfaces = currentType.GetInterfaces();
             if (interfaces == null || interfaces.Length == 0)
                 return;
 
-            foreach (Type current in interfaces)
+            foreach (var current in interfaces)
             {
                 if (interfaceList.Contains(current))
                     continue;

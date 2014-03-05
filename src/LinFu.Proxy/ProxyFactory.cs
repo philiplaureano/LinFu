@@ -92,7 +92,7 @@ namespace LinFu.Proxy
         public Type CreateProxyType(Type baseType, IEnumerable<Type> baseInterfaces)
         {
             // Reuse the cached results, if possible
-            Type[] originalInterfaces = baseInterfaces.ToArray();
+            var originalInterfaces = baseInterfaces.ToArray();
             if (Cache != null && Cache.Contains(baseType, originalInterfaces))
                 return Cache.Get(baseType, originalInterfaces);
 
@@ -100,7 +100,7 @@ namespace LinFu.Proxy
                 throw new ArgumentException("The proxy factory can only generate proxies from public base classes.",
                                             "baseType");
 
-            bool hasNonPublicInterfaces = (from t in baseInterfaces
+            var hasNonPublicInterfaces = (from t in baseInterfaces
                                            where t.IsNotPublic
                                            select t).Count() > 0;
 
@@ -110,7 +110,7 @@ namespace LinFu.Proxy
 
             #region Determine which interfaces need to be implemented
 
-            Type actualBaseType = baseType.IsInterface ? typeof (object) : baseType;
+            var actualBaseType = baseType.IsInterface ? typeof (object) : baseType;
             var interfaces = new HashSet<Type>(baseInterfaces);
             // Move the base type into the list of interfaces
             // if the user mistakenly entered
@@ -125,9 +125,9 @@ namespace LinFu.Proxy
                 // Get the interfaces for the base type
                 InterfaceExtractor.GetInterfaces(actualBaseType, interfaces);
 
-                Type[] targetList = interfaces.ToArray();
+                var targetList = interfaces.ToArray();
                 // Extract the inherited interfaces
-                foreach (Type type in targetList)
+                foreach (var type in targetList)
                 {
                     InterfaceExtractor.GetInterfaces(type, interfaces);
                 }
@@ -137,21 +137,21 @@ namespace LinFu.Proxy
 
             #region Generate the assembly
 
-            string assemblyName = "LinFu.Proxy";
-            AssemblyDefinition assembly = AssemblyFactory.DefineAssembly(assemblyName, AssemblyKind.Dll);
-            ModuleDefinition mainModule = assembly.MainModule;
-            TypeReference importedBaseType = mainModule.Import(actualBaseType);
-            TypeAttributes attributes = TypeAttributes.AutoClass | TypeAttributes.Class |
+            var assemblyName = "LinFu.Proxy";
+            var assembly = AssemblyFactory.DefineAssembly(assemblyName, AssemblyKind.Dll);
+            var mainModule = assembly.MainModule;
+            var importedBaseType = mainModule.Import(actualBaseType);
+            var attributes = TypeAttributes.AutoClass | TypeAttributes.Class |
                                         TypeAttributes.Public | TypeAttributes.BeforeFieldInit;
 
             #endregion
 
             #region Initialize the proxy type
 
-            string guid = Guid.NewGuid().ToString().Replace("-", "");
-            string typeName = string.Format("{0}Proxy-{1}", baseType.Name, guid);
-            string namespaceName = "LinFu.Proxy";
-            TypeDefinition proxyType = mainModule.DefineClass(typeName, namespaceName,
+            var guid = Guid.NewGuid().ToString().Replace("-", "");
+            var typeName = string.Format("{0}Proxy-{1}", baseType.Name, guid);
+            var namespaceName = "LinFu.Proxy";
+            var proxyType = mainModule.DefineClass(typeName, namespaceName,
                                                               attributes, importedBaseType);
 
             proxyType.AddDefaultConstructor();
@@ -162,12 +162,12 @@ namespace LinFu.Proxy
                 throw new NullReferenceException("The 'ProxyBuilder' property cannot be null");
 
             // Add the list of interfaces to the target type
-            foreach (Type interfaceType in interfaces)
+            foreach (var interfaceType in interfaces)
             {
                 if (!interfaceType.IsInterface)
                     continue;
 
-                TypeReference currentType = mainModule.Import(interfaceType);
+                var currentType = mainModule.Import(interfaceType);
                 proxyType.Interfaces.Add(currentType);
             }
 
@@ -180,7 +180,7 @@ namespace LinFu.Proxy
 
             #region Compile the results
 
-            Assembly compiledAssembly = assembly.ToAssembly();
+            var compiledAssembly = assembly.ToAssembly();
 
             IEnumerable<Type> types = null;
 
@@ -193,7 +193,7 @@ namespace LinFu.Proxy
                 types = ex.Types;
             }
 
-            Type result = (from t in types
+            var result = (from t in types
                            where t != null && t.IsClass
                            select t).FirstOrDefault();
 

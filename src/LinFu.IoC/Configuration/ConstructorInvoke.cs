@@ -21,7 +21,7 @@ namespace LinFu.IoC.Configuration
         /// <returns>The method return value.</returns>
         public object Invoke(object target, ConstructorInfo targetMethod, params object[] arguments)
         {
-            Type declaringType = targetMethod.DeclaringType;
+            var declaringType = targetMethod.DeclaringType;
             return Activator.CreateInstance(declaringType, arguments);
         }
 

@@ -19,7 +19,7 @@ namespace LinFu.Reflection
         /// <returns>Returns <c>true</c> if at least one match is found; otherwise, it will return <c>false</c>.</returns>
         public static bool HasElementWith<T>(this IEnumerable<T> items, Func<T, bool> predicate)
         {
-            IEnumerable<T> matches = from item in items
+            var matches = from item in items
                                      where predicate(item)
                                      select item;
 

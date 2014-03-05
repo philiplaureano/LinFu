@@ -74,7 +74,7 @@ namespace LinFu.Reflection
         /// <returns>Returns <c>true</c> if the file can be loaded; otherwise, the result is <c>false</c>.</returns>
         public virtual bool CanLoad(string filename)
         {
-            string extension = Path.GetExtension(filename).ToLower();
+            var extension = Path.GetExtension(filename).ToLower();
             return TypeLoaders.Count > 0 &&
                    (extension == ".dll" || extension == ".exe") &&
                    File.Exists(filename);
@@ -90,7 +90,7 @@ namespace LinFu.Reflection
         /// <returns>A set of <see cref="Action{IServiceContainer}"/> instances to apply to a target type.</returns>
         public virtual IEnumerable<Action<TTarget>> Load(string filename)
         {
-            TAssembly assembly = default(TAssembly);
+            var assembly = default(TAssembly);
 
             if (AssemblyLoader == null)
                 throw new ArgumentException("The assembly loader cannot be null");
@@ -99,7 +99,7 @@ namespace LinFu.Reflection
             assembly = AssemblyLoader.Load(filename);
 
             var results = new List<Action<TTarget>>();
-            IEnumerable<Action<IList<Action<TTarget>>>> listActions = AssemblyActionLoader.Load(assembly);
+            var listActions = AssemblyActionLoader.Load(assembly);
             foreach (var action in listActions)
             {
                 action(results);

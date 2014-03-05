@@ -124,9 +124,9 @@ namespace LinFu.Reflection
         public void LoadDirectory(string directory, string filespec)
         {
             // Determine which files currently exist
-            IEnumerable<string> files = DirectoryLister.GetFiles(directory, filespec);
+            var files = DirectoryLister.GetFiles(directory, filespec);
 
-            foreach (string currentFile in files)
+            foreach (var currentFile in files)
             {
                 // Make sure the file is loaded only once
                 if (_loadedFiles.Contains(currentFile))
@@ -138,7 +138,7 @@ namespace LinFu.Reflection
                 {
                     // Immediately execute any custom loader actions
                     // embedded in the file itself
-                    IEnumerable<Action<ILoader<TTarget>>> customActions = _pluginLoader.Load(currentFile);
+                    var customActions = _pluginLoader.Load(currentFile);
                     foreach (var customAction in customActions)
                     {
                         customAction(this);
@@ -235,7 +235,7 @@ namespace LinFu.Reflection
                                                      LoadInto(target);
                                                  };
 
-            string fullPath = Path.GetFullPath(directory);
+            var fullPath = Path.GetFullPath(directory);
             var watcher = new FileSystemWatcher(fullPath, fileSpec);
             watcher.Created += handler;
             watcher.Changed += handler;
@@ -268,7 +268,7 @@ namespace LinFu.Reflection
                 if (loader == null || !loader.CanLoad(currentFile))
                     continue;
 
-                IEnumerable<Action<TTarget>> actions = loader.Load(currentFile);
+                var actions = loader.Load(currentFile);
                 if (actions.Count() == 0)
                     continue;
 

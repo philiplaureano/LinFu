@@ -63,7 +63,7 @@ namespace LinFu.UnitTests.IOC
             Assert.IsTrue(container.Contains(serviceName, typeof (ISampleService)));
 
             // Create the other instance from another thread
-            IAsyncResult asyncResult = createService.BeginInvoke(null, null);
+            var asyncResult = createService.BeginInvoke(null, null);
 
             // Two instances created within the same thread must be
             // the same

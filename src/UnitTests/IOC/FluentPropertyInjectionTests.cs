@@ -13,7 +13,7 @@ namespace LinFu.UnitTests.IOC
         {
             var mockTarget = new Mock<IInjectionTarget>();
             mockTarget.Expect(t => t.SetValue(123));
-            IInjectionTarget target = mockTarget.Object;
+            var target = mockTarget.Object;
 
             var container = new ServiceContainer();
             container.AddService(serviceName, target);
@@ -42,7 +42,7 @@ namespace LinFu.UnitTests.IOC
         [Test]
         public void NamedPropertyMustBeInjectedIntoInjectionTarget()
         {
-            string serviceName = "MyService";
+            var serviceName = "MyService";
 
             TestPropertyInjection(serviceName);
         }

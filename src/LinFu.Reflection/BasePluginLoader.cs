@@ -25,11 +25,11 @@ namespace LinFu.Reflection
         {
             try
             {
-                IEnumerable<TAttribute> attributes = inputType.GetCustomAttributes(typeof (TAttribute), true)
+                var attributes = inputType.GetCustomAttributes(typeof (TAttribute), true)
                     .Cast<TAttribute>();
 
                 // The type must have a default constructor
-                ConstructorInfo defaultConstructor = inputType.GetConstructor(new Type[0]);
+                var defaultConstructor = inputType.GetConstructor(new Type[0]);
                 if (defaultConstructor == null)
                     return false;
 

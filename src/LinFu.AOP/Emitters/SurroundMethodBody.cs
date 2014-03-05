@@ -82,14 +82,14 @@ namespace LinFu.AOP.Cecil
         /// <param name="IL">The <see cref="CilWorker"/> that points to the given method body.</param>
         public void AddProlog(CilWorker IL)
         {
-            MethodDefinition method = IL.GetMethod();
+            var method = IL.GetMethod();
             _surroundingImplementation = method.AddLocal<IAroundInvoke>();
             _surroundingClassImplementation = method.AddLocal<IAroundInvoke>();
 
-            Instruction skipProlog = IL.Create(OpCodes.Nop);
-            TypeDefinition declaringType = method.DeclaringType;
-            ModuleDefinition module = declaringType.Module;
-            TypeReference modifiableType = module.ImportType<IModifiableType>();
+            var skipProlog = IL.Create(OpCodes.Nop);
+            var declaringType = method.DeclaringType;
+            var module = declaringType.Module;
+            var modifiableType = module.ImportType<IModifiableType>();
 
             if (method.HasThis)
             {
@@ -110,7 +110,7 @@ namespace LinFu.AOP.Cecil
             getAroundInvokeProvider.Emit(IL);
 
             // if (aroundInvokeProvider != null ) {
-            Instruction skipGetSurroundingImplementation = IL.Create(OpCodes.Nop);
+            var skipGetSurroundingImplementation = IL.Create(OpCodes.Nop);
             var getSurroundingImplementationInstance = new GetSurroundingImplementationInstance(_aroundInvokeProvider,
                                                                                                 _invocationInfo,
                                                                                                 _surroundingImplementation,
@@ -134,7 +134,7 @@ namespace LinFu.AOP.Cecil
         /// <param name="IL">The <see cref="CilWorker"/> that points to the given method body.</param>
         public void AddEpilog(CilWorker IL)
         {
-            Instruction skipEpilog = IL.Create(OpCodes.Nop);
+            var skipEpilog = IL.Create(OpCodes.Nop);
 
             // if (!IsInterceptionDisabled && surroundingImplementation != null) {
             IL.Emit(OpCodes.Ldloc, _interceptionDisabled);

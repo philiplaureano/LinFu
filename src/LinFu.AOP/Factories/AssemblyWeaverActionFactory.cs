@@ -24,7 +24,7 @@ namespace LinFu.AOP.Cecil.Factories
         /// <returns>An action delegate that will apply a specific method weaver to all the types in the given assembly.</returns>
         public object CreateInstance(IFactoryRequest request)
         {
-            IServiceContainer container = request.Container;
+            var container = request.Container;
             Action<string, AssemblyDefinition> result =
                 (weaverName, assembly) =>
                     {
@@ -32,7 +32,7 @@ namespace LinFu.AOP.Cecil.Factories
                         var weaveWith =
                             (Action<string, TypeDefinition>)
                             container.GetService("TypeWeaver", typeof (Action<string, TypeDefinition>));
-                        ModuleDefinition mainModule = assembly.MainModule;
+                        var mainModule = assembly.MainModule;
 
                         foreach (TypeDefinition type in mainModule.Types)
                         {

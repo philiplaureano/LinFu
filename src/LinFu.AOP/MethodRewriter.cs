@@ -22,8 +22,8 @@ namespace LinFu.AOP.Cecil
         /// <param name="oldInstructions">The original instructions from the target method body.</param>
         public void Rewrite(MethodDefinition method, CilWorker IL, IEnumerable<Instruction> oldInstructions)
         {
-            TypeDefinition declaringType = method.DeclaringType;
-            ModuleDefinition module = declaringType.Module;
+            var declaringType = method.DeclaringType;
+            var module = declaringType.Module;
 
             // Interfaces and Enums cannot be modified
             if (declaringType.IsInterface || declaringType.IsEnum)
@@ -40,7 +40,7 @@ namespace LinFu.AOP.Cecil
             }
 
             var newInstructions = new Queue<Instruction>();
-            foreach (Instruction instruction in oldInstructions)
+            foreach (var instruction in oldInstructions)
             {
                 // Intercept only the load field and the load static field instruction
                 if (!ShouldReplace(instruction, method))

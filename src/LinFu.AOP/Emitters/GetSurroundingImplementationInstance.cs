@@ -42,13 +42,13 @@ namespace LinFu.AOP.Cecil
         /// <param name="IL"></param>
         public void Emit(CilWorker IL)
         {
-            ModuleDefinition module = IL.GetModule();
+            var module = IL.GetModule();
 
             IL.Emit(OpCodes.Ldloc, _aroundInvokeProvider);
             IL.Emit(OpCodes.Brfalse, _skipGetSurroundingImplementation);
 
             // var surroundingImplementation = this.GetSurroundingImplementation(this, invocationInfo);
-            MethodReference getSurroundingImplementation =
+            var getSurroundingImplementation =
                 module.ImportMethod<IAroundInvokeProvider>("GetSurroundingImplementation");
             IL.Emit(OpCodes.Ldloc, _aroundInvokeProvider);
             IL.Emit(OpCodes.Ldloc, _invocationInfo);

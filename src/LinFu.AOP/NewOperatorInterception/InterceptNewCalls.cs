@@ -36,8 +36,8 @@ namespace LinFu.AOP.Cecil
         protected override void Replace(Instruction currentInstruction, MethodDefinition method, CilWorker IL)
         {
             var constructor = (MethodReference) currentInstruction.Operand;
-            TypeReference concreteType = constructor.DeclaringType;
-            ParameterDefinitionCollection parameters = constructor.Parameters;
+            var concreteType = constructor.DeclaringType;
+            var parameters = constructor.Parameters;
 
             if (!_emitter.ShouldIntercept(constructor, concreteType, method))
             {

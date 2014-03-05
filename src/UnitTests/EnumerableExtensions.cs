@@ -6,7 +6,7 @@ namespace LinFu.UnitTests
     {
         public static bool AreEqualTo<T>(this IEnumerable<T> expectedArray, IEnumerable<T> actualArray)
         {
-            bool areEqual = true;
+            var areEqual = true;
 
             var expectedItems = new Queue<T>(expectedArray);
             var actualItems = new Queue<T>(actualArray);
@@ -16,8 +16,8 @@ namespace LinFu.UnitTests
 
             while (expectedItems.Count > 0)
             {
-                T expectedItem = expectedItems.Dequeue();
-                T actualItem = actualItems.Dequeue();
+                var expectedItem = expectedItems.Dequeue();
+                var actualItem = actualItems.Dequeue();
 
                 if (Equals(expectedItem, actualItem))
                     continue;

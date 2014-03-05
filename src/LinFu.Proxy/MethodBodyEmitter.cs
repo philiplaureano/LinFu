@@ -58,7 +58,7 @@ namespace LinFu.Proxy
         /// <param name="targetMethod">The target method that will contain the new method body.</param>
         public void Emit(MethodInfo originalMethod, MethodDefinition targetMethod)
         {
-            VariableDefinition invocationInfo = targetMethod.AddLocal<IInvocationInfo>();
+            var invocationInfo = targetMethod.AddLocal<IInvocationInfo>();
             invocationInfo.Name = "___invocationInfo___";
 
             // Emit the code to generate the IInvocationInfo instance
@@ -66,22 +66,22 @@ namespace LinFu.Proxy
             if (InvocationInfoEmitter != null)
                 InvocationInfoEmitter.Emit(originalMethod, targetMethod, invocationInfo);
 
-            TypeDefinition declaringType = targetMethod.DeclaringType;
-            ModuleDefinition module = declaringType.Module;
-            TypeReference proxyType = module.ImportType<IProxy>();
-            MethodReference getInterceptorMethod = module.ImportMethod("get_Interceptor", typeof (IProxy));
-            VariableDefinition interceptor = targetMethod.AddLocal<IInterceptor>();
-            VariableDefinition arguments = targetMethod.AddLocal<object[]>();
+            var declaringType = targetMethod.DeclaringType;
+            var module = declaringType.Module;
+            var proxyType = module.ImportType<IProxy>();
+            var getInterceptorMethod = module.ImportMethod("get_Interceptor", typeof (IProxy));
+            var interceptor = targetMethod.AddLocal<IInterceptor>();
+            var arguments = targetMethod.AddLocal<object[]>();
 
             // if (!(this is IProxy))
-            CilWorker IL = targetMethod.GetILGenerator();
+            var IL = targetMethod.GetILGenerator();
             IL.Emit(OpCodes.Ldarg_0);
             IL.Emit(OpCodes.Isinst, proxyType);
 
-            Instruction noImplementationFound = IL.Create(OpCodes.Nop);
+            var noImplementationFound = IL.Create(OpCodes.Nop);
             IL.Emit(OpCodes.Brfalse, noImplementationFound);
 
-            Instruction endLabel = IL.Create(OpCodes.Nop);
+            var endLabel = IL.Create(OpCodes.Nop);
             EmitGetInterceptorInstruction(IL, proxyType, getInterceptorMethod);
             IL.Emit(OpCodes.Stloc, interceptor);
 
@@ -92,18 +92,18 @@ namespace LinFu.Proxy
 
 
             // var returnValue = interceptor.Intercept(info);
-            TypeReference voidType = module.ImportType(typeof (void));
-            MethodReference interceptMethod = module.ImportMethod<IInterceptor>("Intercept", typeof (IInvocationInfo));
+            var voidType = module.ImportType(typeof (void));
+            var interceptMethod = module.ImportMethod<IInterceptor>("Intercept", typeof (IInvocationInfo));
             IL.Emit(OpCodes.Ldloc, interceptor);
             IL.Emit(OpCodes.Ldloc, invocationInfo);
             IL.Emit(OpCodes.Callvirt, interceptMethod);
 
             // Save the ref arguments
-            IEnumerable<ParameterDefinition> parameters = from ParameterDefinition param in targetMethod.Parameters
+            var parameters = from ParameterDefinition param in targetMethod.Parameters
                                                           select param;
 
             // Determine the return type
-            TypeReference returnType = targetMethod.ReturnType != null
+            var returnType = targetMethod.ReturnType != null
                                            ? targetMethod.ReturnType.ReturnType
                                            : voidType;
 
@@ -145,12 +145,12 @@ namespace LinFu.Proxy
         /// <param name="IL">The <see cref="CilWorker"/> responsible for emitting the method body.</param>
         protected virtual void ImplementNotFound(CilWorker IL)
         {
-            MethodBody body = IL.GetBody();
-            TypeDefinition declaringType = body.Method.DeclaringType;
-            ModuleDefinition module = declaringType.Module;
+            var body = IL.GetBody();
+            var declaringType = body.Method.DeclaringType;
+            var module = declaringType.Module;
 
             // throw new NotImplementedException();
-            MethodReference notImplementedConstructor = module.ImportConstructor<NotImplementedException>();
+            var notImplementedConstructor = module.ImportConstructor<NotImplementedException>();
             IL.Emit(OpCodes.Newobj, notImplementedConstructor);
             IL.Emit(OpCodes.Throw);
         }
@@ -167,20 +167,20 @@ namespace LinFu.Proxy
         private static void SaveRefArguments(CilWorker IL, IEnumerable<ParameterDefinition> parameters,
                                              VariableDefinition invocationInfo, VariableDefinition arguments)
         {
-            MethodBody body = IL.GetBody();
-            MethodDefinition targetMethod = body.Method;
-            TypeDefinition declaringType = targetMethod.DeclaringType;
-            ModuleDefinition module = declaringType.Module;
+            var body = IL.GetBody();
+            var targetMethod = body.Method;
+            var declaringType = targetMethod.DeclaringType;
+            var module = declaringType.Module;
 
             // Save the arguments returned from the handler method
-            MethodReference getArguments = module.ImportMethod<IInvocationInfo>("get_Arguments");
+            var getArguments = module.ImportMethod<IInvocationInfo>("get_Arguments");
 
             IL.Emit(OpCodes.Ldloc, invocationInfo);
             IL.Emit(OpCodes.Callvirt, getArguments);
             IL.Emit(OpCodes.Stloc, arguments);
 
-            int index = 0;
-            foreach (ParameterDefinition param in parameters)
+            var index = 0;
+            foreach (var param in parameters)
             {
                 if (!param.IsByRef())
                 {
@@ -200,7 +200,7 @@ namespace LinFu.Proxy
                 if (referenceType == null)
                     continue;
 
-                TypeReference actualParameterType = referenceType.ElementType;
+                var actualParameterType = referenceType.ElementType;
                 IL.Emit(OpCodes.Unbox_Any, actualParameterType);
                 IL.Stind(param.ParameterType);
             }

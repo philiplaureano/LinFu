@@ -38,7 +38,7 @@ namespace LinFu.IoC
         public static IFactory GetFactory(this IFactoryStorage storage, string serviceName, Type serviceType,
                                           IEnumerable<object> additionalParameters)
         {
-            IEnumerable<Type> additionalParameterTypes = from arg in additionalParameters
+            var additionalParameterTypes = from arg in additionalParameters
                                                          let argType = arg != null ? arg.GetType() : typeof (object)
                                                          select argType;
 

@@ -28,13 +28,13 @@ namespace LinFu.IoC.Configuration.Loaders
             try
             {
                 // The type must have a default constructor
-                ConstructorInfo defaultConstructor = inputType.GetConstructor(new Type[0]);
+                var defaultConstructor = inputType.GetConstructor(new Type[0]);
                 if (defaultConstructor == null)
                     return false;
 
                 // It must have the PreprocessorAttribute defined
-                object[] attributes = inputType.GetCustomAttributes(typeof (PreprocessorAttribute), true);
-                IEnumerable<PreprocessorAttribute> attributeList = attributes.Cast<PreprocessorAttribute>();
+                var attributes = inputType.GetCustomAttributes(typeof (PreprocessorAttribute), true);
+                var attributeList = attributes.Cast<PreprocessorAttribute>();
 
                 if (attributeList.Count() == 0)
                     return false;

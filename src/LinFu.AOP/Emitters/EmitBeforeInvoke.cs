@@ -43,9 +43,9 @@ namespace LinFu.AOP.Cecil
         /// <param name="IL">The <see cref="CilWorker"/> that points to the current method body.</param>
         public void Emit(CilWorker IL)
         {
-            MethodDefinition targetMethod = IL.GetMethod();
-            TypeDefinition declaringType = targetMethod.DeclaringType;
-            ModuleDefinition module = declaringType.Module;
+            var targetMethod = IL.GetMethod();
+            var declaringType = targetMethod.DeclaringType;
+            var module = declaringType.Module;
 
             var getSurroundingClassImplementation = new GetSurroundingClassImplementation(_invocationInfo,
                                                                                           _surroundingClassImplementation,
@@ -56,12 +56,12 @@ namespace LinFu.AOP.Cecil
             getSurroundingClassImplementation.Emit(IL);
 
             // classAroundInvoke.BeforeInvoke(info);
-            Instruction skipInvoke = IL.Create(OpCodes.Nop);
+            var skipInvoke = IL.Create(OpCodes.Nop);
 
             IL.Emit(OpCodes.Ldloc, _surroundingClassImplementation);
             IL.Emit(OpCodes.Brfalse, skipInvoke);
 
-            MethodReference beforeInvoke = module.ImportMethod<IBeforeInvoke>("BeforeInvoke");
+            var beforeInvoke = module.ImportMethod<IBeforeInvoke>("BeforeInvoke");
 
             // surroundingImplementation.BeforeInvoke(invocationInfo);
             IL.Emit(OpCodes.Ldloc, _surroundingClassImplementation);
@@ -74,11 +74,11 @@ namespace LinFu.AOP.Cecil
             if (!targetMethod.HasThis)
                 return;
 
-            Instruction skipInvoke1 = IL.Create(OpCodes.Nop);
+            var skipInvoke1 = IL.Create(OpCodes.Nop);
             IL.Emit(OpCodes.Ldloc, _surroundingImplementation);
             IL.Emit(OpCodes.Brfalse, skipInvoke1);
 
-            MethodReference beforeInvoke1 = module.ImportMethod<IBeforeInvoke>("BeforeInvoke");
+            var beforeInvoke1 = module.ImportMethod<IBeforeInvoke>("BeforeInvoke");
 
             // surroundingImplementation.BeforeInvoke(invocationInfo);
             IL.Emit(OpCodes.Ldloc, _surroundingImplementation);

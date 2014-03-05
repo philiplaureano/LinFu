@@ -27,7 +27,7 @@ namespace LinFu.AOP.Cecil
             if (target == null)
                 throw new ArgumentNullException("target");
 
-            int hash = target.GetHashCode();
+            var hash = target.GetHashCode();
 
             return _instances.Contains(hash);
         }
@@ -43,7 +43,7 @@ namespace LinFu.AOP.Cecil
 
             lock (_lock)
             {
-                int hash = target.GetHashCode();
+                var hash = target.GetHashCode();
                 _instances.Add(hash);
             }
         }

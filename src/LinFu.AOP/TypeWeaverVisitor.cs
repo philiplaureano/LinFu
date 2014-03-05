@@ -34,7 +34,7 @@ namespace LinFu.AOP.Cecil
             if (!_weaver.ShouldWeave(type))
                 return;
 
-            ModuleDefinition module = type.Module;
+            var module = type.Module;
             if (!_visitedModules.Contains(module))
             {
                 _weaver.ImportReferences(module);

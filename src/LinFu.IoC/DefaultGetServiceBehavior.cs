@@ -62,7 +62,7 @@ namespace LinFu.IoC
                                          Container = _container
                                      };
 
-            object instance = _creator.CreateFrom(factoryRequest, serviceRequest.ActualFactory);
+            var instance = _creator.CreateFrom(factoryRequest, serviceRequest.ActualFactory);
 
             // Postprocess the results
             var result = new ServiceRequestResult

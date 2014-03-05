@@ -28,13 +28,13 @@ namespace LinFu.IoC.Configuration.Loaders
             try
             {
                 // The type must have a default constructor
-                ConstructorInfo defaultConstructor = inputType.GetConstructor(new Type[0]);
+                var defaultConstructor = inputType.GetConstructor(new Type[0]);
                 if (defaultConstructor == null)
                     return false;
 
                 // It must have the PostProcessorAttribute defined
-                object[] attributes = inputType.GetCustomAttributes(typeof (PostProcessorAttribute), true);
-                IEnumerable<PostProcessorAttribute> attributeList = attributes.Cast<PostProcessorAttribute>();
+                var attributes = inputType.GetCustomAttributes(typeof (PostProcessorAttribute), true);
+                var attributeList = attributes.Cast<PostProcessorAttribute>();
 
                 if (attributeList.Count() == 0)
                     return false;

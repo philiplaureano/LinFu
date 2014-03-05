@@ -32,18 +32,18 @@ namespace LinFu.IoC.Configuration.Loaders
         {
             // Extract the Implements attribute from the source type
             ICustomAttributeProvider provider = sourceType;
-            object[] attributes = provider.GetCustomAttributes(typeof (ImplementsAttribute), false);
-            List<ImplementsAttribute> attributeList = attributes.Cast<ImplementsAttribute>().ToList();
+            var attributes = provider.GetCustomAttributes(typeof (ImplementsAttribute), false);
+            var attributeList = attributes.Cast<ImplementsAttribute>().ToList();
 
             var results = new List<Action<IServiceContainer>>();
             IFactory singletonFactory = null;
-            foreach (ImplementsAttribute attribute in attributeList)
+            foreach (var attribute in attributeList)
             {
-                string serviceName = attribute.ServiceName;
-                Type serviceType = attribute.ServiceType;
-                LifecycleType lifeCycle = attribute.LifecycleType;
+                var serviceName = attribute.ServiceName;
+                var serviceType = attribute.ServiceType;
+                var lifeCycle = attribute.LifecycleType;
 
-                IFactory currentFactory = CreateFactory(serviceType, sourceType, lifeCycle);
+                var currentFactory = CreateFactory(serviceType, sourceType, lifeCycle);
                 if (currentFactory == null)
                     continue;
 
@@ -114,25 +114,25 @@ namespace LinFu.IoC.Configuration.Loaders
             Func<IFactoryRequest, object> factoryMethod =
                 request =>
                     {
-                        IServiceContainer currentContainer = request.Container;
-                        object[] arguments = request.Arguments;
+                        var currentContainer = request.Container;
+                        var arguments = request.Arguments;
                         var builder = currentContainer.GetService<IFactoryBuilder>();
 
                         // HACK: If the service type is a type definition and
                         // the implementing type is a type definition,
                         // assume that the service type has the same number of
                         // generic arguments as the implementing type
-                        Type actualServiceType = serviceType;
-                        Type actualImplementingType = implementingType;
+                        var actualServiceType = serviceType;
+                        var actualImplementingType = implementingType;
                         if (serviceType.IsGenericTypeDefinition && implementingType.IsGenericTypeDefinition &&
                             serviceType.GetGenericArguments().Count() == implementingType.GetGenericArguments().Count())
                         {
-                            Type[] typeArguments = request.ServiceType.GetGenericArguments();
+                            var typeArguments = request.ServiceType.GetGenericArguments();
                             actualServiceType = serviceType.MakeGenericType(typeArguments);
                             actualImplementingType = implementingType.MakeGenericType(typeArguments);
                         }
 
-                        IFactory actualFactory = builder.CreateFactory(actualServiceType, actualImplementingType,
+                        var actualFactory = builder.CreateFactory(actualServiceType, actualImplementingType,
                                                                        lifecycle);
 
                         var factoryRequest = new FactoryRequest

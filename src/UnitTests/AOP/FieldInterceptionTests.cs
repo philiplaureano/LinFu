@@ -38,8 +38,8 @@ namespace LinFu.UnitTests.AOP
         [Test]
         public void ShouldSetAndGetTheSameFieldValue()
         {
-            AssemblyDefinition myLibrary = AssemblyFactory.GetAssembly("SampleLibrary.dll");
-            ModuleDefinition module = myLibrary.MainModule;
+            var myLibrary = AssemblyFactory.GetAssembly("SampleLibrary.dll");
+            var module = myLibrary.MainModule;
 
             foreach (TypeDefinition type in myLibrary.MainModule.Types)
             {
@@ -49,12 +49,12 @@ namespace LinFu.UnitTests.AOP
                 type.InterceptAllFields();
             }
 
-            Assembly loadedAssembly = myLibrary.ToAssembly();
-            Type targetType = (from t in loadedAssembly.GetTypes()
+            var loadedAssembly = myLibrary.ToAssembly();
+            var targetType = (from t in loadedAssembly.GetTypes()
                                where t.Name.Contains("SampleClassWithReadOnlyField")
                                select t).First();
 
-            object instance = Activator.CreateInstance(targetType);
+            var instance = Activator.CreateInstance(targetType);
             Assert.IsNotNull(instance);
 
             var host = (IFieldInterceptionHost) instance;
@@ -62,10 +62,10 @@ namespace LinFu.UnitTests.AOP
 
             host.FieldInterceptor = new FieldInterceptorImpl();
 
-            PropertyInfo targetProperty = targetType.GetProperty("Value");
+            var targetProperty = targetType.GetProperty("Value");
             targetProperty.SetValue(instance, "OtherValue", null);
 
-            object actualValue = targetProperty.GetValue(instance, null);
+            var actualValue = targetProperty.GetValue(instance, null);
 
             Assert.AreEqual("freeze!", actualValue);
         }

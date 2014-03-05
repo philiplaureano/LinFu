@@ -12,9 +12,9 @@ namespace LinFu.UnitTests.AOP
         [Test]
         public void ShouldCallTypeThatImplementsBootstrapInterface()
         {
-            BootStrapRegistry registry = BootStrapRegistry.Instance;
-            IEnumerable<IBootStrappedComponent> bootStrappedComponents = registry.GetComponents();
-            IBootStrappedComponent targetComponent = (from c in bootStrappedComponents
+            var registry = BootStrapRegistry.Instance;
+            var bootStrappedComponents = registry.GetComponents();
+            var targetComponent = (from c in bootStrappedComponents
                                                       let type = c.GetType()
                                                       where type == typeof (SampleBootstrapComponent)
                                                       select c).First();

@@ -42,7 +42,7 @@ namespace LinFu.AOP.Cecil
             _exceptionHandler = hostMethod.AddLocal<IExceptionHandler>();
             _exceptionInfo = hostMethod.AddLocal<IExceptionHandlerInfo>();
 
-            TypeReference returnType = hostMethod.ReturnType.ReturnType;
+            var returnType = hostMethod.ReturnType.ReturnType;
             if (returnType != _voidType)
                 _returnValue = hostMethod.AddLocal<object>();
         }
@@ -56,19 +56,19 @@ namespace LinFu.AOP.Cecil
         protected override void RewriteMethodBody(MethodDefinition targetMethod, CilWorker IL,
                                                   IEnumerable<Instruction> oldInstructions)
         {
-            Instruction endOfOriginalInstructionBlock = IL.Create(OpCodes.Nop);
+            var endOfOriginalInstructionBlock = IL.Create(OpCodes.Nop);
             var addOriginalInstructions = new AddOriginalInstructions(oldInstructions, endOfOriginalInstructionBlock);
 
 
-            Instruction endLabel = IL.Create(OpCodes.Nop);
-            Instruction tryStart = IL.Emit(OpCodes.Nop);
-            Instruction tryEnd = IL.Emit(OpCodes.Nop);
-            Instruction catchStart = IL.Emit(OpCodes.Nop);
-            Instruction catchEnd = IL.Emit(OpCodes.Nop);
+            var endLabel = IL.Create(OpCodes.Nop);
+            var tryStart = IL.Emit(OpCodes.Nop);
+            var tryEnd = IL.Emit(OpCodes.Nop);
+            var catchStart = IL.Emit(OpCodes.Nop);
+            var catchEnd = IL.Emit(OpCodes.Nop);
 
-            ModuleDefinition module = IL.GetModule();
+            var module = IL.GetModule();
             var handler = new ExceptionHandler(ExceptionHandlerType.Catch);
-            MethodBody body = targetMethod.Body;
+            var body = targetMethod.Body;
             body.ExceptionHandlers.Add(handler);
 
             handler.CatchType = module.ImportType<Exception>();
@@ -81,7 +81,7 @@ namespace LinFu.AOP.Cecil
 
             var emitter = new InvocationInfoEmitter(true);
 
-            TypeReference returnType = targetMethod.ReturnType.ReturnType;
+            var returnType = targetMethod.ReturnType.ReturnType;
 
             // try {
             IL.Append(tryStart);
@@ -104,34 +104,34 @@ namespace LinFu.AOP.Cecil
             SaveExceptionInfo(targetMethod, emitter);
             IL.Emit(OpCodes.Ldloc, _exceptionInfo);
 
-            MethodInfo getHandlerMethodInfo = typeof (ExceptionHandlerRegistry).GetMethod("GetHandler");
-            MethodReference getHandlerMethod = module.Import(getHandlerMethodInfo);
+            var getHandlerMethodInfo = typeof (ExceptionHandlerRegistry).GetMethod("GetHandler");
+            var getHandlerMethod = module.Import(getHandlerMethodInfo);
             IL.Emit(OpCodes.Call, getHandlerMethod);
             IL.Emit(OpCodes.Stloc, _exceptionHandler);
 
             // if (exceptionHandler == null) 
             //      throw;
-            Instruction doRethrow = IL.Create(OpCodes.Nop);
+            var doRethrow = IL.Create(OpCodes.Nop);
             IL.Emit(OpCodes.Ldloc, _exceptionHandler);
             IL.Emit(OpCodes.Brfalse, doRethrow);
 
 
             // if (handler.CanCatch(exceptionInfo)) {
-            Instruction leaveBlock = IL.Create(OpCodes.Nop);
-            MethodReference canCatch = module.ImportMethod<IExceptionHandler>("CanCatch");
+            var leaveBlock = IL.Create(OpCodes.Nop);
+            var canCatch = module.ImportMethod<IExceptionHandler>("CanCatch");
             IL.Emit(OpCodes.Ldloc, _exceptionHandler);
             IL.Emit(OpCodes.Ldloc, _exceptionInfo);
             IL.Emit(OpCodes.Callvirt, canCatch);
             IL.Emit(OpCodes.Brfalse, doRethrow);
 
-            MethodReference catchMethod = module.ImportMethod<IExceptionHandler>("Catch");
+            var catchMethod = module.ImportMethod<IExceptionHandler>("Catch");
             IL.Emit(OpCodes.Ldloc, _exceptionHandler);
             IL.Emit(OpCodes.Ldloc, _exceptionInfo);
             IL.Emit(OpCodes.Callvirt, catchMethod);
             // }
 
 
-            MethodReference getShouldSkipRethrow = module.ImportMethod<IExceptionHandlerInfo>("get_ShouldSkipRethrow");
+            var getShouldSkipRethrow = module.ImportMethod<IExceptionHandlerInfo>("get_ShouldSkipRethrow");
             IL.Emit(OpCodes.Ldloc, _exceptionInfo);
             IL.Emit(OpCodes.Callvirt, getShouldSkipRethrow);
             IL.Emit(OpCodes.Brfalse, doRethrow);
@@ -150,8 +150,8 @@ namespace LinFu.AOP.Cecil
 
             if (returnType != _voidType && _returnValue != null)
             {
-                Instruction returnOriginalValue = IL.Create(OpCodes.Nop);
-                MethodReference getReturnValue = module.ImportMethod<IExceptionHandlerInfo>("get_ReturnValue");
+                var returnOriginalValue = IL.Create(OpCodes.Nop);
+                var getReturnValue = module.ImportMethod<IExceptionHandlerInfo>("get_ReturnValue");
 
                 IL.Emit(OpCodes.Ldloc, _exceptionInfo);
                 IL.Emit(OpCodes.Brfalse, returnOriginalValue);
@@ -174,25 +174,25 @@ namespace LinFu.AOP.Cecil
         /// <param name="emitter">The <see cref="IEmitInvocationInfo"/> instance that will emit the current method context.</param>
         private void SaveExceptionInfo(MethodDefinition targetMethod, IEmitInvocationInfo emitter)
         {
-            CilWorker IL = targetMethod.GetILGenerator();
-            ModuleDefinition module = IL.GetModule();
+            var IL = targetMethod.GetILGenerator();
+            var module = IL.GetModule();
 
             emitter.Emit(targetMethod, targetMethod, _invocationInfo);
             IL.Emit(OpCodes.Ldloc, _exception);
             IL.Emit(OpCodes.Ldloc, _invocationInfo);
 
-            MethodReference exceptionInfoConstructor = module.ImportConstructor<ExceptionHandlerInfo>(
+            var exceptionInfoConstructor = module.ImportConstructor<ExceptionHandlerInfo>(
                 typeof (Exception),
                 typeof (IInvocationInfo));
             IL.Emit(OpCodes.Newobj, exceptionInfoConstructor);
             IL.Emit(OpCodes.Stloc, _exceptionInfo);
 
-            TypeReference returnType = targetMethod.ReturnType.ReturnType;
+            var returnType = targetMethod.ReturnType.ReturnType;
             if (returnType == _voidType || _returnValue == null)
                 return;
 
             // exceptionInfo.ReturnValue = returnValue;
-            MethodReference setReturnValue = module.ImportMethod<IExceptionHandlerInfo>("set_ReturnValue");
+            var setReturnValue = module.ImportMethod<IExceptionHandlerInfo>("set_ReturnValue");
             IL.Emit(OpCodes.Ldloc, _exceptionInfo);
             IL.Emit(OpCodes.Ldloc, _returnValue);
             IL.Emit(OpCodes.Callvirt, setReturnValue);

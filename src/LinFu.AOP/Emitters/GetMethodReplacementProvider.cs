@@ -40,9 +40,9 @@ namespace LinFu.AOP.Cecil
         /// <param name="IL">The <see cref="CilWorker"/> instance.</param>
         public void Emit(CilWorker IL)
         {
-            MethodDefinition method = _hostMethod;
-            TypeDefinition declaringType = method.DeclaringType;
-            ModuleDefinition module = declaringType.Module;
+            var method = _hostMethod;
+            var declaringType = method.DeclaringType;
+            var module = declaringType.Module;
 
             if (!method.HasThis)
             {
@@ -51,7 +51,7 @@ namespace LinFu.AOP.Cecil
                 return;
             }
 
-            MethodReference getProvider = _resolveGetProviderMethod(module);
+            var getProvider = _resolveGetProviderMethod(module);
             IL.Emit(OpCodes.Ldarg_0);
             IL.Emit(OpCodes.Callvirt, getProvider);
             IL.Emit(OpCodes.Stloc, _methodReplacementProvider);

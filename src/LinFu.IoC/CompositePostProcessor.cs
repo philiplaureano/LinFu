@@ -33,8 +33,8 @@ namespace LinFu.IoC
             // Let each postprocessor inspect 
             // the results and/or modify the 
             // returned object instance
-            IPostProcessor[] postprocessors = _postProcessors.ToArray();
-            foreach (IPostProcessor postProcessor in postprocessors)
+            var postprocessors = _postProcessors.ToArray();
+            foreach (var postProcessor in postprocessors)
             {
                 if (postProcessor == null)
                     continue;

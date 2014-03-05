@@ -28,22 +28,22 @@ namespace LinFu.AOP.Cecil.Factories
         /// <returns>A delegate that can emit the necessary <see cref="IInvocationInfo"/> context that will allow other developers to infer information about the method currently being executed.</returns>
         public object CreateInstance(IFactoryRequest request)
         {
-            IServiceContainer container = request.Container;
+            var container = request.Container;
             Action<MethodDefinition> result =
                 method =>
                     {
-                        MethodBody body = method.Body;
+                        var body = method.Body;
 
                         // Add the IInvocationInfo 
                         // instance only once
-                        bool localAlreadyExists = (from VariableDefinition local in body.Variables
+                        var localAlreadyExists = (from VariableDefinition local in body.Variables
                                                    where local.Name == "___invocationInfo___"
                                                    select local).Count() > 0;
 
                         if (localAlreadyExists)
                             return;
 
-                        VariableDefinition variable = method.AddLocal<IInvocationInfo>();
+                        var variable = method.AddLocal<IInvocationInfo>();
                         variable.Name = "___invocationInfo___";
 
                         var emitInfo = (IEmitInvocationInfo) container.GetService(typeof (IEmitInvocationInfo));

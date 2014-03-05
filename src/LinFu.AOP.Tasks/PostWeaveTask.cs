@@ -66,22 +66,22 @@ namespace LinFu.AOP.Tasks
         {
             // The output file name will be the same as the target
             // file by default 
-            string outputFile = OutputFile;
+            var outputFile = OutputFile;
             if (string.IsNullOrEmpty(outputFile))
                 outputFile = TargetFile;
 
-            bool result = true;
+            var result = true;
             try
             {
                 Log.LogMessage("PostWeaving Assembly '{0}' -> '{1}'", TargetFile, outputFile);
 
-                AssemblyDefinition assembly = AssemblyFactory.GetAssembly(TargetFile);
+                var assembly = AssemblyFactory.GetAssembly(TargetFile);
 
-                string filenameWithoutExtension = Path.GetFileNameWithoutExtension(TargetFile);
-                string pdbFileName = string.Format("{0}.pdb", filenameWithoutExtension);
-                bool pdbExists = File.Exists(pdbFileName);
+                var filenameWithoutExtension = Path.GetFileNameWithoutExtension(TargetFile);
+                var pdbFileName = string.Format("{0}.pdb", filenameWithoutExtension);
+                var pdbExists = File.Exists(pdbFileName);
 
-                ModuleDefinition module = assembly.MainModule;
+                var module = assembly.MainModule;
 
                 if (pdbExists)
                     module.LoadSymbols();

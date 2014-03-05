@@ -62,22 +62,22 @@ namespace LinFu.AOP.Cecil
         public void Rewrite(MethodDefinition method, CilWorker IL,
                             IEnumerable<Instruction> oldInstructions)
         {
-            MethodDefinition targetMethod = _parameters.TargetMethod;
-            CilWorker worker = targetMethod.GetILGenerator();
-            ModuleDefinition module = worker.GetModule();
+            var targetMethod = _parameters.TargetMethod;
+            var worker = targetMethod.GetILGenerator();
+            var module = worker.GetModule();
 
 
             _getInterceptionDisabled.Emit(worker);
 
             // Construct the InvocationInfo instance
-            Instruction skipInvocationInfo = worker.Create(OpCodes.Nop);
+            var skipInvocationInfo = worker.Create(OpCodes.Nop);
             worker.Emit(OpCodes.Ldloc, _parameters.InterceptionDisabled);
             worker.Emit(OpCodes.Brtrue, skipInvocationInfo);
 
-            MethodDefinition interceptedMethod = targetMethod;
+            var interceptedMethod = targetMethod;
             _emitter.Emit(targetMethod, interceptedMethod, _parameters.InvocationInfo);
 
-            Instruction skipGetReplacementProvider = IL.Create(OpCodes.Nop);
+            var skipGetReplacementProvider = IL.Create(OpCodes.Nop);
 
             // var provider = this.MethodReplacementProvider;
             IL.Emit(OpCodes.Ldloc, _interceptionDisabled);
@@ -92,11 +92,11 @@ namespace LinFu.AOP.Cecil
             _getClassMethodReplacementProvider.Emit(worker);
 
 
-            TypeReference returnType = targetMethod.ReturnType.ReturnType;
+            var returnType = targetMethod.ReturnType.ReturnType;
             _addMethodReplacement.Emit(worker);
 
             // Save the return value
-            TypeReference voidType = module.Import(typeof (void));
+            var voidType = module.Import(typeof (void));
             _surroundMethodBody.AddEpilog(worker);
 
             //if (returnType != voidType)

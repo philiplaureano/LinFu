@@ -24,7 +24,7 @@ namespace LinFu.AOP.Cecil.Factories
         /// <returns>The <see cref="Action{T1, T2}"/> instance that will weave the target type.</returns>
         public object CreateInstance(IFactoryRequest request)
         {
-            IServiceContainer container = request.Container;
+            var container = request.Container;
             Action<string, TypeDefinition> result =
                 (weaverName, type) =>
                     {
@@ -37,7 +37,7 @@ namespace LinFu.AOP.Cecil.Factories
                         var typeWeaver =
                             (ITypeWeaver) container.GetService("AutoMethodWeaver", typeof (ITypeWeaver), methodWeaver);
 
-                        ModuleDefinition module = type.Module;
+                        var module = type.Module;
                         if (!typeWeaver.ShouldWeave(type))
                             return;
 

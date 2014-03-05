@@ -28,8 +28,8 @@ namespace LinFu.IoC.Configuration
                 return;
 
             // Determine the property value
-            object[] results = resolver.ResolveFrom(new[] {new NamedType(property),}, container);
-            object propertyValue = results.FirstOrDefault();
+            var results = resolver.ResolveFrom(new[] {new NamedType(property)}, container);
+            var propertyValue = results.FirstOrDefault();
 
             if (propertyValue == null)
                 return;

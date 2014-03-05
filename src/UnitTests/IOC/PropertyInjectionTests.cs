@@ -94,15 +94,15 @@ namespace LinFu.UnitTests.IOC
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.Property);
 
-            int serviceCount = result.Property.Count();
+            var serviceCount = result.Property.Count();
             Assert.IsTrue(serviceCount > 0);
         }
 
         [Test]
         public void ShouldDetermineWhichPropertiesShouldBeInjected()
         {
-            Type targetType = typeof (SampleClassWithInjectionProperties);
-            PropertyInfo targetProperty = targetType.GetProperty("SomeProperty");
+            var targetType = typeof (SampleClassWithInjectionProperties);
+            var targetProperty = targetType.GetProperty("SomeProperty");
             Assert.IsNotNull(targetProperty);
 
             // Load the property injection filter by default
@@ -114,18 +114,18 @@ namespace LinFu.UnitTests.IOC
             Assert.IsNotNull(filter);
 
             // The filter should return the targetProperty
-            IEnumerable<PropertyInfo> properties = filter.GetInjectableMembers(targetType);
+            var properties = filter.GetInjectableMembers(targetType);
             Assert.IsTrue(properties.Count() > 0);
 
-            PropertyInfo result = properties.First();
+            var result = properties.First();
             Assert.AreEqual(targetProperty, result);
         }
 
         [Test]
         public void ShouldSetPropertyValue()
         {
-            Type targetType = typeof (SampleClassWithInjectionProperties);
-            PropertyInfo targetProperty = targetType.GetProperty("SomeProperty");
+            var targetType = typeof (SampleClassWithInjectionProperties);
+            var targetProperty = targetType.GetProperty("SomeProperty");
             Assert.IsNotNull(targetProperty);
 
             // Configure the target

@@ -51,7 +51,7 @@ namespace LinFu.IoC.Configuration
                 // The property must have a getter and the current type
                 // must exist as either a service list or exist as an 
                 // existing service inside the current container
-                IEnumerable<TMember> members = from item in GetMembers(targetType, _container)
+                var members = from item in GetMembers(targetType, _container)
                                                select item;
 
                 lock (_itemCache)

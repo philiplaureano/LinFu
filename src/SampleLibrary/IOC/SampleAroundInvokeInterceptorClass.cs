@@ -26,7 +26,7 @@ namespace SampleLibrary.IOC
 
         public void Initialize(IServiceContainer source)
         {
-            string typeName = GetType().Name;
+            var typeName = GetType().Name;
             source.AddService<ITargetHolder>(typeName, this);
         }
 

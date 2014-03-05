@@ -25,10 +25,10 @@ namespace LinFu.IoC.Configuration
                                        IArgumentResolver resolver, IServiceContainer container,
                                        object[] additionalArguments)
         {
-            IEnumerable<INamedType> parameterTypes = from p in method.GetParameters()
+            var parameterTypes = from p in method.GetParameters()
                                                      select new NamedType(p) as INamedType;
 
-            object[] arguments = resolver.ResolveFrom(parameterTypes, container, additionalArguments);
+            var arguments = resolver.ResolveFrom(parameterTypes, container, additionalArguments);
 
             // Invoke the target method
             method.Invoke(target, arguments);

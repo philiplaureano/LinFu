@@ -41,7 +41,7 @@ namespace LinFu.AOP.Cecil
         /// <param name="IL">The <see cref="CilWorker"/> that points to the current method body.</param>
         public void Emit(CilWorker IL)
         {
-            ModuleDefinition module = IL.GetModule();
+            var module = IL.GetModule();
 
             // instanceAroundInvoke.AfterInvoke(info, returnValue);
             Emit(IL, module, _surroundingImplementation, _invocationInfo, _returnValue);
@@ -57,9 +57,9 @@ namespace LinFu.AOP.Cecil
                                  VariableDefinition invocationInfo,
                                  VariableDefinition returnValue)
         {
-            Instruction skipInvoke = IL.Create(OpCodes.Nop);
+            var skipInvoke = IL.Create(OpCodes.Nop);
 
-            Instruction skipPrint = IL.Create(OpCodes.Nop);
+            var skipPrint = IL.Create(OpCodes.Nop);
             IL.Emit(OpCodes.Ldloc, surroundingImplementation);
             IL.Emit(OpCodes.Brtrue, skipPrint);
 
@@ -67,7 +67,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Ldloc, surroundingImplementation);
             IL.Emit(OpCodes.Brfalse, skipInvoke);
 
-            MethodReference aroundInvoke = module.ImportMethod<IAfterInvoke>("AfterInvoke");
+            var aroundInvoke = module.ImportMethod<IAfterInvoke>("AfterInvoke");
             IL.Emit(OpCodes.Ldloc, surroundingImplementation);
             IL.Emit(OpCodes.Ldloc, invocationInfo);
             IL.Emit(OpCodes.Ldloc, returnValue);

@@ -51,9 +51,9 @@ namespace LinFu.IoC.Interceptors
         /// method is <see cref="void"/>, then the return value will be ignored.</returns>
         public virtual object Intercept(IInvocationInfo info)
         {
-            object target = GetTarget(info);
-            MethodBase method = info.TargetMethod;
-            object[] arguments = info.Arguments;
+            var target = GetTarget(info);
+            var method = info.TargetMethod;
+            var arguments = info.Arguments;
 
             return _methodInvoke.Invoke(target, (MethodInfo) method, arguments);
         }

@@ -115,8 +115,8 @@ namespace LinFu.AOP.Cecil
         protected override void Replace(Instruction oldInstruction, MethodDefinition hostMethod, CilWorker IL)
         {
             var targetField = (FieldReference) oldInstruction.Operand;
-            TypeReference fieldType = targetField.FieldType;
-            bool isSetter = oldInstruction.OpCode == OpCodes.Stsfld || oldInstruction.OpCode == OpCodes.Stfld;
+            var fieldType = targetField.FieldType;
+            var isSetter = oldInstruction.OpCode == OpCodes.Stsfld || oldInstruction.OpCode == OpCodes.Stfld;
 
             if (isSetter)
             {
@@ -134,7 +134,7 @@ namespace LinFu.AOP.Cecil
                 IL.Emit((OpCodes.Ldnull));
 
             // Push the current method
-            ModuleDefinition module = hostMethod.DeclaringType.Module;
+            var module = hostMethod.DeclaringType.Module;
 
             // Push the current method onto the stack
             IL.PushMethod(hostMethod, module);
@@ -149,7 +149,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Newobj, _fieldContextCtor);
             IL.Emit(OpCodes.Stloc, _fieldContext);
 
-            Instruction skipInterception = IL.Create(OpCodes.Nop);
+            var skipInterception = IL.Create(OpCodes.Nop);
             // Obtain an interceptor instance
             if (hostMethod.IsStatic)
             {
@@ -178,9 +178,9 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Callvirt, _canIntercept);
             IL.Emit(OpCodes.Brfalse, skipInterception);
 
-            bool isGetter = oldInstruction.OpCode == OpCodes.Ldsfld || oldInstruction.OpCode == OpCodes.Ldfld;
+            var isGetter = oldInstruction.OpCode == OpCodes.Ldsfld || oldInstruction.OpCode == OpCodes.Ldfld;
 
-            Instruction endLabel = IL.Create(OpCodes.Nop);
+            var endLabel = IL.Create(OpCodes.Nop);
 
             //Call the interceptor instead of the getter or setter
             if (isGetter)

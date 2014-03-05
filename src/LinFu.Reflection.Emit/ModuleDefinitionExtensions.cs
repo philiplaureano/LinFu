@@ -149,7 +149,7 @@ namespace LinFu.Reflection.Emit
         /// <returns>A type that matches the given type name. If the type cannot be found, then this method will return <c>null</c>.</returns>
         public static TypeDefinition GetType(this ModuleDefinition module, string typeName)
         {
-            TypeDefinition result = (from TypeDefinition t in module.Types
+            var result = (from TypeDefinition t in module.Types
                                      where t.Name == typeName
                                      select t).FirstOrDefault();
 

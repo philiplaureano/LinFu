@@ -34,15 +34,15 @@ namespace LinFu.AOP.Cecil.Loaders
             if (AssemblyLoader == null)
                 throw new NullReferenceException("The AssemblyLoader property cannot be null");
 
-            string pdbFile = string.Format("{0}.pdb", Path.GetFileNameWithoutExtension(assemblyFile));
+            var pdbFile = string.Format("{0}.pdb", Path.GetFileNameWithoutExtension(assemblyFile));
 
             // Check to see if the symbols file is available
-            bool hasSymbols = File.Exists(pdbFile);
-            bool pdbFileExists = File.Exists(pdbFile);
+            var hasSymbols = File.Exists(pdbFile);
+            var pdbFileExists = File.Exists(pdbFile);
             Assembly result = null;
 
-            string pdbTempFileName = Path.GetTempFileName();
-            string assemblyBackupFile = Path.GetTempFileName();
+            var pdbTempFileName = Path.GetTempFileName();
+            var assemblyBackupFile = Path.GetTempFileName();
 
             try
             {

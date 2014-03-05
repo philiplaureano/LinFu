@@ -33,12 +33,12 @@ namespace LinFu.AOP.Cecil
         /// <param name="IL">The <see cref="CilWorker"/> pointing to the target method body.</param>
         public void Emit(CilWorker IL)
         {
-            MethodDefinition method = IL.GetMethod();
-            ModuleDefinition module = IL.GetModule();
+            var method = IL.GetMethod();
+            var module = IL.GetModule();
 
             // var aroundInvokeProvider = this.AroundInvokeProvider;
-            string propertyName = string.Format("get_{0}", _providerName);
-            MethodReference getAroundInvokeProvider = module.ImportMethod<IAroundInvokeHost>(propertyName);
+            var propertyName = string.Format("get_{0}", _providerName);
+            var getAroundInvokeProvider = module.ImportMethod<IAroundInvokeHost>(propertyName);
 
             if (!method.HasThis)
             {

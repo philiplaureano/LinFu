@@ -62,9 +62,9 @@ namespace LinFu.UnitTests.Proxy
 
         private void LoadAssemblyUsing(Type embeddedType)
         {
-            string location = embeddedType.Assembly.Location;
-            string directory = Path.GetDirectoryName(location);
-            string assemblyFilename = Path.GetFileName(location);
+            var location = embeddedType.Assembly.Location;
+            var directory = Path.GetDirectoryName(location);
+            var assemblyFilename = Path.GetFileName(location);
 
             container.LoadFrom(directory, assemblyFilename);
         }
@@ -86,10 +86,10 @@ namespace LinFu.UnitTests.Proxy
             var factory = container.GetService<IProxyFactory>();
             var proxy = factory.CreateProxy<object>(interceptor, interfaces);
 
-            Type proxyType = proxy.GetType();
+            var proxyType = proxy.GetType();
 
             // The proxy must implement all of the given interfaces
-            foreach (Type currentType in interfaces)
+            foreach (var currentType in interfaces)
             {
                 Assert.IsTrue(currentType.IsAssignableFrom(proxyType));
             }
@@ -99,15 +99,15 @@ namespace LinFu.UnitTests.Proxy
         public void ShouldCacheProxyTypes()
         {
             var factory = new ProxyFactory();
-            Type baseType = typeof (ISampleService);
+            var baseType = typeof (ISampleService);
 
-            Type proxyType = factory.CreateProxyType(baseType, new Type[0]);
-            int runCount = 10;
+            var proxyType = factory.CreateProxyType(baseType, new Type[0]);
+            var runCount = 10;
 
             // All subsequent results must return the same proxy type
-            for (int i = 0; i < runCount; i++)
+            for (var i = 0; i < runCount; i++)
             {
-                Type currentType = factory.CreateProxyType(baseType, new Type[0]);
+                var currentType = factory.CreateProxyType(baseType, new Type[0]);
                 Assert.AreEqual(proxyType, currentType);
                 Assert.AreSame(proxyType, currentType);
             }
@@ -135,7 +135,7 @@ namespace LinFu.UnitTests.Proxy
             // Assign the ref/out value for the int argument
             Func<IInvocationInfo, object> implementation = info =>
                                                                {
-                                                                   string methodName = info.TargetMethod.Name;
+                                                                   var methodName = info.TargetMethod.Name;
 
                                                                    if (methodName == "DoSomething")
                                                                        info.Arguments[0] = 54321;
@@ -161,13 +161,13 @@ namespace LinFu.UnitTests.Proxy
         public void ShouldHaveDefaultConstructor()
         {
             var factory = container.GetService<IProxyFactory>();
-            Type proxyType = factory.CreateProxyType(typeof (object), new Type[0]);
+            var proxyType = factory.CreateProxyType(typeof (object), new Type[0]);
             Assert.IsNotNull(proxyType);
 
-            ConstructorInfo constructor = proxyType.GetConstructor(new Type[0]);
+            var constructor = proxyType.GetConstructor(new Type[0]);
             Assert.IsTrue(constructor != null);
 
-            object instance = constructor.Invoke(new object[0]);
+            var instance = constructor.Invoke(new object[0]);
             Assert.IsNotNull(instance);
         }
 
@@ -183,9 +183,9 @@ namespace LinFu.UnitTests.Proxy
         public void ShouldHaveSerializableAttribute()
         {
             var factory = new ProxyFactory();
-            Type proxyType = factory.CreateProxyType(typeof (ISampleService), new Type[0]);
+            var proxyType = factory.CreateProxyType(typeof (ISampleService), new Type[0]);
 
-            object[] customAttributes = proxyType.GetCustomAttributes(typeof (SerializableAttribute), false);
+            var customAttributes = proxyType.GetCustomAttributes(typeof (SerializableAttribute), false);
             Assert.IsTrue(customAttributes != null && customAttributes.Count() > 0);
         }
 
@@ -198,12 +198,12 @@ namespace LinFu.UnitTests.Proxy
             var interceptor = new MockInterceptor(info => { throw new NotImplementedException(); });
             var factory = container.GetService<IProxyFactory>();
 
-            object proxy = factory.CreateProxy(typeof (object), interceptor, interfaces.ToArray());
-            Type proxyType = proxy.GetType();
+            var proxy = factory.CreateProxy(typeof (object), interceptor, interfaces.ToArray());
+            var proxyType = proxy.GetType();
 
             // Make sure that the generated proxy implements
             // all of the given interfaces
-            foreach (Type currentType in interfaces)
+            foreach (var currentType in interfaces)
             {
                 Assert.IsTrue(currentType.IsAssignableFrom(proxyType));
             }
@@ -213,9 +213,9 @@ namespace LinFu.UnitTests.Proxy
         public void ShouldImplementIProxy()
         {
             var factory = container.GetService<IProxyFactory>();
-            Type proxyType = factory.CreateProxyType(typeof (object), new[] {typeof (ISampleService)});
+            var proxyType = factory.CreateProxyType(typeof (object), new[] {typeof (ISampleService)});
 
-            object instance = Activator.CreateInstance(proxyType);
+            var instance = Activator.CreateInstance(proxyType);
             Assert.IsTrue(instance is IProxy);
             Assert.IsTrue(instance is ISampleService);
         }
@@ -223,7 +223,7 @@ namespace LinFu.UnitTests.Proxy
         [Test]
         public void ShouldReportTypeArgumentsUsedInGenericMethodCall()
         {
-            Type genericParameterType = typeof (int);
+            var genericParameterType = typeof (int);
             var proxy = CreateProxy<ClassWithGenericMethod>(info =>
                                                                 {
                                                                     // The generic parameter type must match the given parameter type
@@ -243,7 +243,7 @@ namespace LinFu.UnitTests.Proxy
             // The dummy list will be altered if the method body is called
             Func<IInvocationInfo, object> methodBody = info =>
                                                            {
-                                                               Type[] typeArguments = info.TypeArguments;
+                                                               var typeArguments = info.TypeArguments;
 
                                                                // Match the type arguments
 
@@ -262,7 +262,7 @@ namespace LinFu.UnitTests.Proxy
         [Test]
         public void ShouldSupportMethodCallsWithGenericParametersFromGenericMethodTypeArguments()
         {
-            Type genericParameterType = typeof (int);
+            var genericParameterType = typeof (int);
             var proxy = CreateProxy<ClassWithParametersFromGenericMethodTypeArguments>(info =>
                                                                                            {
                                                                                                // Match the type argument
@@ -340,7 +340,7 @@ namespace LinFu.UnitTests.Proxy
             // The dummy list will be altered if the method body is called
             Func<IInvocationInfo, object> methodBody = info =>
                                                            {
-                                                               Type[] typeArguments = info.TypeArguments;
+                                                               var typeArguments = info.TypeArguments;
 
                                                                // Match the type arguments
                                                                Assert.AreEqual(typeArguments[0], typeof (int));
@@ -366,7 +366,7 @@ namespace LinFu.UnitTests.Proxy
                         return 54321;
                     });
 
-            int result = proxy.DoSomething();
+            var result = proxy.DoSomething();
 
             Assert.AreEqual(54321, result);
         }
@@ -379,7 +379,7 @@ namespace LinFu.UnitTests.Proxy
             // The dummy list will be altered if the method body is called
             Func<IInvocationInfo, object> methodBody = info =>
                                                            {
-                                                               Type[] typeArguments = info.TypeArguments;
+                                                               var typeArguments = info.TypeArguments;
 
                                                                // Match the type arguments
 
@@ -403,7 +403,7 @@ namespace LinFu.UnitTests.Proxy
             // The dummy list will be altered if the method body is called
             Func<IInvocationInfo, object> methodBody = info =>
                                                            {
-                                                               Type[] typeArguments = info.TypeArguments;
+                                                               var typeArguments = info.TypeArguments;
 
                                                                // Match the type arguments
 
@@ -454,7 +454,7 @@ namespace LinFu.UnitTests.Proxy
             var interceptor = new MockInterceptor(implementation);
             var proxy = factory.CreateProxy<ClassWithVirtualByRefMethod>(interceptor);
 
-            int value = 0;
+            var value = 0;
             proxy.ByRefMethod(ref value);
 
             // The two given arguments should match
@@ -470,7 +470,7 @@ namespace LinFu.UnitTests.Proxy
             // The dummy list will be altered if the method body is called
             Func<IInvocationInfo, object> methodBody = info =>
                                                            {
-                                                               Type[] typeArguments = info.TypeArguments;
+                                                               var typeArguments = info.TypeArguments;
 
                                                                // Match the type arguments
 

@@ -28,7 +28,7 @@ namespace LinFu.IoC
         /// <param name="request">The parameter that describes the context of the service request.</param>
         public void Preprocess(IServiceRequest request)
         {
-            foreach (IPreProcessor preprocessor in _preProcessors)
+            foreach (var preprocessor in _preProcessors)
             {
                 preprocessor.Preprocess(request);
             }

@@ -58,25 +58,25 @@ namespace LinFu.Proxy
         {
             #region Match the method signature
 
-            ModuleDefinition module = targetType.Module;
-            string methodName = method.Name;
+            var module = targetType.Module;
+            var methodName = method.Name;
 
             // If the method is a member defined on an interface type,
             // we need to rename the method to avoid
             // any naming conflicts in the type itself
             if (method.DeclaringType.IsInterface)
             {
-                string parentName = method.DeclaringType.FullName;
+                var parentName = method.DeclaringType.FullName;
 
                 // Rename the parent type to its fully qualified name
                 // if it is a generic type
                 methodName = string.Format("{0}.{1}", parentName, methodName);
             }
 
-            MethodAttributes baseAttributes = MethodAttributes.Virtual |
+            var baseAttributes = MethodAttributes.Virtual |
                                               MethodAttributes.HideBySig;
 
-            MethodAttributes attributes = default(MethodAttributes);
+            var attributes = default(MethodAttributes);
 
             #region Match the visibility of the target method
 
@@ -92,16 +92,16 @@ namespace LinFu.Proxy
             #endregion
 
             // Build the list of parameter types
-            Type[] parameterTypes = (from param in method.GetParameters()
+            var parameterTypes = (from param in method.GetParameters()
                                      let type = param.ParameterType
                                      let importedType = type
                                      select importedType).ToArray();
 
 
             //Build the list of generic parameter types
-            Type[] genericParameterTypes = method.GetGenericArguments();
+            var genericParameterTypes = method.GetGenericArguments();
 
-            MethodDefinition newMethod = targetType.DefineMethod(methodName, attributes,
+            var newMethod = targetType.DefineMethod(methodName, attributes,
                                                                  method.ReturnType, parameterTypes,
                                                                  genericParameterTypes);
 
@@ -110,12 +110,12 @@ namespace LinFu.Proxy
             newMethod.HasThis = true;
 
             // Match the generic type arguments
-            Type[] typeArguments = method.GetGenericArguments();
+            var typeArguments = method.GetGenericArguments();
 
             if (typeArguments != null || typeArguments.Length > 0)
                 MatchGenericArguments(newMethod, typeArguments);
 
-            MethodReference originalMethodRef = module.Import(method);
+            var originalMethodRef = module.Import(method);
             newMethod.Overrides.Add(originalMethodRef);
 
             #endregion
@@ -136,7 +136,7 @@ namespace LinFu.Proxy
         /// <param name="typeArguments">The array of <see cref="Type"/> objects that describe the generic parameters for the current method.</param>
         private static void MatchGenericArguments(MethodDefinition newMethod, ICollection<Type> typeArguments)
         {
-            foreach (Type argument in typeArguments)
+            foreach (var argument in typeArguments)
             {
                 newMethod.AddGenericParameter(argument);
             }

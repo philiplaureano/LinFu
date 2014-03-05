@@ -68,18 +68,18 @@ namespace LinFu.Finders
         public void Test(ICriteria<T> criteria)
         {
             // Determine the weight multiplier of this test
-            int weight = criteria.Weight;
+            var weight = criteria.Weight;
 
             // Ignore any further criteria tests
             // if this item fails
             if (_failed)
                 return;
 
-            Func<T, bool> predicate = criteria.Predicate;
+            var predicate = criteria.Predicate;
             if (predicate == null)
                 return;
 
-            bool result = predicate(_item);
+            var result = predicate(_item);
 
             // If the critical test fails, all matches will be reset
             // to zero and no further matches will be counted

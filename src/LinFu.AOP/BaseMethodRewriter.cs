@@ -25,12 +25,12 @@ namespace LinFu.AOP.Cecil
             if (!ShouldRewrite(method))
                 return;
 
-            TypeDefinition declaringType = method.DeclaringType;
+            var declaringType = method.DeclaringType;
 
-            MethodBody body = IL.GetBody();
+            var body = IL.GetBody();
             body.InitLocals = true;
 
-            ModuleDefinition module = declaringType.Module;
+            var module = declaringType.Module;
 
             // Interfaces and Enums cannot be modified
             if (declaringType.IsInterface || declaringType.IsEnum)

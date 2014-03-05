@@ -15,7 +15,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="targetType">The type that will be modified.</param>        
         public static void InterceptAllFields(this IReflectionStructureVisitable targetType)
         {
-            Func<MethodReference, bool> methodFilter = GetMethodFilter();
+            var methodFilter = GetMethodFilter();
             targetType.InterceptFields(methodFilter, f => true);
         }
 
@@ -25,8 +25,8 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="targetType">The type that will be modified.</param>        
         public static void InterceptAllInstanceFields(this IReflectionStructureVisitable targetType)
         {
-            Func<MethodReference, bool> methodFilter = GetMethodFilter();
-            Func<FieldReference, bool> fieldFilter = GetFieldFilter(f => !f.IsStatic);
+            var methodFilter = GetMethodFilter();
+            var fieldFilter = GetFieldFilter(f => !f.IsStatic);
 
             targetType.InterceptFields(methodFilter, fieldFilter);
         }
@@ -37,8 +37,8 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="targetType">The type that will be modified.</param>     
         public static void InterceptAllStaticFields(this IReflectionStructureVisitable targetType)
         {
-            Func<MethodReference, bool> methodFilter = GetMethodFilter();
-            Func<FieldReference, bool> fieldFilter = GetFieldFilter(f => f.IsStatic);
+            var methodFilter = GetMethodFilter();
+            var fieldFilter = GetFieldFilter(f => f.IsStatic);
 
             targetType.InterceptFields(methodFilter, fieldFilter);
         }
@@ -49,7 +49,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="targetType">The type that will be modified.</param>        
         public static void InterceptAllFields(this IReflectionVisitable targetType)
         {
-            Func<MethodReference, bool> methodFilter = GetMethodFilter();
+            var methodFilter = GetMethodFilter();
             targetType.InterceptFields(methodFilter, f => true);
         }
 
@@ -59,8 +59,8 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="targetType">The type that will be modified.</param>        
         public static void InterceptAllInstanceFields(this IReflectionVisitable targetType)
         {
-            Func<MethodReference, bool> methodFilter = GetMethodFilter();
-            Func<FieldReference, bool> fieldFilter = GetFieldFilter(f => !f.IsStatic);
+            var methodFilter = GetMethodFilter();
+            var fieldFilter = GetFieldFilter(f => !f.IsStatic);
 
             targetType.InterceptFields(methodFilter, fieldFilter);
         }
@@ -71,8 +71,8 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="targetType">The type that will be modified.</param>     
         public static void InterceptAllStaticFields(this IReflectionVisitable targetType)
         {
-            Func<MethodReference, bool> methodFilter = GetMethodFilter();
-            Func<FieldReference, bool> fieldFilter = GetFieldFilter(actualField => actualField.IsStatic);
+            var methodFilter = GetMethodFilter();
+            var fieldFilter = GetFieldFilter(actualField => actualField.IsStatic);
 
             targetType.InterceptFields(methodFilter, fieldFilter);
         }
@@ -136,11 +136,11 @@ namespace LinFu.AOP.Cecil.Extensions
         {
             return field =>
                        {
-                           FieldDefinition actualField = field.Resolve();
-                           TypeReference fieldType = actualField.FieldType;
-                           ModuleDefinition module = fieldType.Module;
+                           var actualField = field.Resolve();
+                           var fieldType = actualField.FieldType;
+                           var module = fieldType.Module;
 
-                           string moduleName = module != null ? module.Name : string.Empty;
+                           var moduleName = module != null ? module.Name : string.Empty;
                            if (moduleName.StartsWith("LinFu.AOP"))
                                return false;
 

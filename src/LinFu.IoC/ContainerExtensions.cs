@@ -143,7 +143,7 @@ namespace LinFu.IoC
             // Use the AssemblyTargetLoader<> class to pull
             // the types out of an assembly
             var loader = new Loader<IServiceContainer>();
-            AssemblyContainerLoader assemblyTargetLoader = loader.CreateDefaultContainerLoader();
+            var assemblyTargetLoader = loader.CreateDefaultContainerLoader();
             assemblyTargetLoader.AssemblyActionLoader =
                 new AssemblyActionLoader<IServiceContainer>(() => assemblyTargetLoader.TypeLoaders);
 
@@ -157,7 +157,7 @@ namespace LinFu.IoC
             // Manually load the assembly into memory
             foreach (var fileLoader in loader.FileLoaders)
             {
-                IEnumerable<Action<IServiceContainer>> actions = fileLoader.Load(string.Empty);
+                var actions = fileLoader.Load(string.Empty);
                 actionList.AddRange(actions);
             }
 
@@ -260,7 +260,7 @@ namespace LinFu.IoC
                                         params object[] additionalArguments)
         {
             // Generate the target service
-            object instance = container.AutoCreateInternal(concreteType, additionalArguments);
+            var instance = container.AutoCreateInternal(concreteType, additionalArguments);
 
             if (instance == null)
                 return null;
@@ -326,7 +326,7 @@ namespace LinFu.IoC
         internal static object AutoCreateInternal(this IServiceContainer container, Type concreteType,
                                                   params object[] additionalArguments)
         {
-            IServiceContainer currentContainer = container ?? new ServiceContainer();
+            var currentContainer = container ?? new ServiceContainer();
             object result;
             try
             {                                
@@ -367,7 +367,7 @@ namespace LinFu.IoC
                 {
                     while (_requests.Count > 0)
                     {
-                        Type currentType = _requests.Pop();
+                        var currentType = _requests.Pop();
                         list.AddLast(currentType);
                     }
                 }
@@ -445,7 +445,7 @@ namespace LinFu.IoC
         /// otherwise, it will just return a <c>null</c> value.</returns>
         public static T GetService<T>(this IServiceContainer container, params object[] additionalArguments)
         {
-            Type serviceType = typeof(T);
+            var serviceType = typeof(T);
             return (T)container.GetService(serviceType, additionalArguments);
         }
 
@@ -545,7 +545,7 @@ namespace LinFu.IoC
             if (serviceInstance == null)
                 throw new ArgumentNullException("serviceInstance");
 
-            Type instanceType = serviceInstance.GetType();
+            var instanceType = serviceInstance.GetType();
             if (!serviceType.IsAssignableFrom(instanceType))
                 throw new ArgumentException(
                     string.Format("The given service instance type '{0}' is not compatible with service type {1}",
@@ -582,12 +582,12 @@ namespace LinFu.IoC
                                       Type serviceType, Type implementingType, LifecycleType lifecycle)
         {
             var factoryBuilder = container.GetService<IFactoryBuilder>();
-            IFactory factoryInstance = factoryBuilder.CreateFactory(serviceType, implementingType, lifecycle);
+            var factoryInstance = factoryBuilder.CreateFactory(serviceType, implementingType, lifecycle);
 
             // Use the standard factory method for non-generic and closed generic types
             if (!serviceType.ContainsGenericParameters && !serviceType.IsAssignableFrom(implementingType))
             {
-                string message = string.Format("The implementing type '{0}' must be derived from '{1}'",
+                var message = string.Format("The implementing type '{0}' must be derived from '{1}'",
                                                implementingType.AssemblyQualifiedName, serviceType.AssemblyQualifiedName);
 
                 throw new ArgumentException(message);
@@ -704,7 +704,7 @@ namespace LinFu.IoC
         {
             //// Register the functor that will generate the service instance
             //container.AddService<Func<T1, TResult>>(serviceName, factoryMethod);
-            IEnumerable<Type> parameterTypes = from p in factoryMethod.Method.GetParameters()
+            var parameterTypes = from p in factoryMethod.Method.GetParameters()
                                                where p != null
                                                select p.ParameterType;
 
@@ -839,9 +839,9 @@ namespace LinFu.IoC
         public static IEnumerable<T> GetServices<T>(this IServiceContainer container,
                                                     params object[] additionalArguments)
         {
-            IEnumerable<IServiceInfo> targetServices =
+            var targetServices =
                 container.AvailableServices.Where(info => info.ServiceType == typeof(T));
-            foreach (IServiceInfo info in targetServices)
+            foreach (var info in targetServices)
             {
                 yield return (T)container.GetService(info, additionalArguments);
             }
@@ -860,7 +860,7 @@ namespace LinFu.IoC
         {
             // Create the services that match
             // the given description
-            IEnumerable<IServiceInstance> results = from info in container.AvailableServices
+            var results = from info in container.AvailableServices
                                                     where condition(info) && !info.ServiceType.IsGenericTypeDefinition
                                                     select
                                                         new ServiceInstance
@@ -886,7 +886,7 @@ namespace LinFu.IoC
                                     Type serviceType, params object[] sampleArguments)
         {
             // Convert the sample arguments into the parameter types
-            IEnumerable<Type> parameterTypes = from arg in sampleArguments
+            var parameterTypes = from arg in sampleArguments
                                                let argType = arg != null ? arg.GetType() : typeof(object)
                                                select argType;
 
@@ -928,7 +928,7 @@ namespace LinFu.IoC
         public static bool Contains(this IServiceContainer container,
                                     Func<IServiceInfo, bool> condition)
         {
-            int matches = (from info in container.AvailableServices
+            var matches = (from info in container.AvailableServices
                            where condition(info)
                            select info).Count();
 

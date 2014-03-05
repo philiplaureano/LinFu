@@ -53,19 +53,19 @@ namespace LinFu.IoC.Configuration.Resolvers
         private static void CheckParameters(IFuzzyItem<TMethod> fuzzyItem,
                                             IServiceContainer container, int maxIndex)
         {
-            TMethod constructor = fuzzyItem.Item;
-            int currentIndex = 0;
-            foreach (ParameterInfo param in constructor.GetParameters())
+            var constructor = fuzzyItem.Item;
+            var currentIndex = 0;
+            foreach (var param in constructor.GetParameters())
             {
                 if (currentIndex == maxIndex)
                     break;
 
-                Type parameterType = param.ParameterType;
+                var parameterType = param.ParameterType;
                 var criteria = new Criteria<TMethod> {Type = CriteriaType.Critical, Weight = 1};
 
                 // The type must either be an existing service
                 // or a list of services that can be created from the container
-                Func<IServiceContainer, bool> predicate = parameterType.MustExistInContainer()
+                var predicate = parameterType.MustExistInContainer()
                     .Or(parameterType.ExistsAsServiceArray())
                     .Or(parameterType.ExistsAsEnumerableSetOfServices());
 
@@ -83,12 +83,12 @@ namespace LinFu.IoC.Configuration.Resolvers
         /// <param name="finderContext">The <see cref="IMethodFinderContext"/> that describes the target method.</param>        
         protected override void Rank(IList<IFuzzyItem<TMethod>> methods, IMethodFinderContext finderContext)
         {
-            IEnumerable<object> additionalArguments = finderContext.Arguments ?? new object[0];
-            List<Type> argumentTypes = (from argument in additionalArguments
+            var additionalArguments = finderContext.Arguments ?? new object[0];
+            var argumentTypes = (from argument in additionalArguments
                                         let argumentType = argument == null ? typeof (object) : argument.GetType()
                                         select argumentType).ToList();
 
-            int argumentCount = argumentTypes.Count;
+            var argumentCount = argumentTypes.Count;
             foreach (var fuzzyItem in methods)
             {
                 if (fuzzyItem.Confidence < 0)
@@ -99,10 +99,10 @@ namespace LinFu.IoC.Configuration.Resolvers
                 // in the container and eliminate the
                 // constructor as a candidate match if
                 // that parameter type cannot be found
-                TMethod constructor = fuzzyItem.Item;
-                ParameterInfo[] parameters = constructor.GetParameters();
-                int parameterCount = parameters.Length;
-                int maxRelativeIndex = parameterCount - argumentCount;
+                var constructor = fuzzyItem.Item;
+                var parameters = constructor.GetParameters();
+                var parameterCount = parameters.Length;
+                var maxRelativeIndex = parameterCount - argumentCount;
 
                 CheckParameters(fuzzyItem, Container, maxRelativeIndex);
             }

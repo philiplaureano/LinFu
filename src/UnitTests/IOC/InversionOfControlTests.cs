@@ -62,7 +62,7 @@ namespace LinFu.UnitTests.IOC
         {
             var container = new ServiceContainer();
             var factory = new SampleOpenGenericFactory();
-            string serviceName = "MyService";
+            var serviceName = "MyService";
 
             container.AddFactory(serviceName, typeof (ISampleGenericService<>), factory);
 
@@ -101,7 +101,7 @@ namespace LinFu.UnitTests.IOC
             container.LoadFrom(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
 
             var mock = new Mock<ISampleInterceptedInterface>();
-            ISampleInterceptedInterface mockInstance = mock.Object;
+            var mockInstance = mock.Object;
             container.AddService(mockInstance);
 
             // The container must automatically load the interceptor
@@ -120,7 +120,7 @@ namespace LinFu.UnitTests.IOC
             container.LoadFrom(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
 
             var mock = new Mock<ISampleWrappedInterface>();
-            ISampleWrappedInterface mockInstance = mock.Object;
+            var mockInstance = mock.Object;
             container.AddService(mockInstance);
 
             // The container must automatically load the IAroundInvoke
@@ -137,7 +137,7 @@ namespace LinFu.UnitTests.IOC
         {
             var container = new ServiceContainer();
             var mockService = new Mock<ISampleService>();
-            ISampleService surrogate = mockService.Object;
+            var surrogate = mockService.Object;
             container.Inject<ISampleService>().Using((f, arguments) => surrogate).OncePerRequest();
 
             var result = container.GetService<ISampleService>();
@@ -148,8 +148,8 @@ namespace LinFu.UnitTests.IOC
         [Test]
         public void ContainerMustAllowUntypedOpenGenericTypeRegistration()
         {
-            Type serviceType = typeof (ISampleGenericService<>);
-            Type implementingType = typeof (SampleGenericImplementation<>);
+            var serviceType = typeof (ISampleGenericService<>);
+            var implementingType = typeof (SampleGenericImplementation<>);
 
             var container = new ServiceContainer();
             container.AddService(serviceType, implementingType);
@@ -186,18 +186,18 @@ namespace LinFu.UnitTests.IOC
             var container = new ServiceContainer();
 
             // Add a bunch of dummy services
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
-                string serviceName = string.Format("Service{0}", i + 1);
+                var serviceName = string.Format("Service{0}", i + 1);
                 container.AddService(serviceName, mockSampleService.Object);
             }
 
-            IEnumerable<ISampleService> services = container.GetServices<ISampleService>();
+            var services = container.GetServices<ISampleService>();
             Assert.IsTrue(services.Count() == 10);
 
             // The resulting set of services
             // must match the given service instance
-            foreach (ISampleService service in services)
+            foreach (var service in services)
             {
                 Assert.AreSame(mockSampleService.Object, service);
             }
@@ -208,7 +208,7 @@ namespace LinFu.UnitTests.IOC
         public void ContainerMustBeAbleToSuppressNamedServiceNotFoundErrors()
         {
             var container = new ServiceContainer();
-            object instance = container.GetService("MyService", typeof (ISerializable));
+            var instance = container.GetService("MyService", typeof (ISerializable));
             Assert.IsNull(instance, "The container is supposed to return a null instance");
         }
 
@@ -218,7 +218,7 @@ namespace LinFu.UnitTests.IOC
             var container = new ServiceContainer();
             container.SuppressErrors = true;
 
-            object instance = container.GetService(typeof (ISerializable));
+            var instance = container.GetService(typeof (ISerializable));
             Assert.IsNull(instance, "The container is supposed to return a null instance");
         }
 
@@ -265,17 +265,17 @@ namespace LinFu.UnitTests.IOC
         public void ContainerMustGetMultipleServicesOfTheSameTypeInOneCall()
         {
             var container = new ServiceContainer();
-            int mockServiceCount = 10;
+            var mockServiceCount = 10;
 
             // Add a set of dummy services
-            for (int i = 0; i < mockServiceCount; i++)
+            for (var i = 0; i < mockServiceCount; i++)
             {
                 var mockService = new Mock<ISampleService>();
                 container.AddService(string.Format("Service{0}", i + 1), mockService.Object);
             }
 
-            IEnumerable<ISampleService> instances = container.GetServices<ISampleService>();
-            foreach (ISampleService serviceInstance in instances)
+            var instances = container.GetServices<ISampleService>();
+            foreach (var serviceInstance in instances)
             {
                 Assert.IsInstanceOfType(typeof (ISampleService), serviceInstance);
                 Assert.IsNotNull(serviceInstance);
@@ -308,7 +308,7 @@ namespace LinFu.UnitTests.IOC
             var container = new ServiceContainer();
 
             // Give it a random service interface type
-            Type serviceType = typeof (IDisposable);
+            var serviceType = typeof (IDisposable);
 
             // Manually add the factory instance
             container.AddFactory(serviceType, mockFactory.Object);
@@ -324,7 +324,7 @@ namespace LinFu.UnitTests.IOC
 
             // Randomly assign an interface type
             // NOTE: The actual interface type doesn't matter
-            Type serviceType = typeof (ISerializable);
+            var serviceType = typeof (ISerializable);
 
             container.AddFactory("MyService", serviceType, mockFactory.Object);
             Assert.IsTrue(container.Contains("MyService", serviceType),
@@ -353,7 +353,7 @@ namespace LinFu.UnitTests.IOC
 
             Assert.IsNotNull(instance);
 
-            IFactory<ISampleService> factory = instance.Factory;
+            var factory = instance.Factory;
             factory.CreateInstance(null);
 
             mockFactory.VerifyAll();
@@ -365,12 +365,12 @@ namespace LinFu.UnitTests.IOC
             var container = new ServiceContainer();
             container.AddService<ISampleService>("MyService", new SampleClass());
 
-            IEnumerable<IServiceInfo> availableServices = container.AvailableServices;
+            var availableServices = container.AvailableServices;
             Assert.IsTrue(availableServices.Count() > 0);
 
             // There should be a matching service type
             // at this point
-            IEnumerable<IServiceInfo> matches = from s in availableServices
+            var matches = from s in availableServices
                                                 where
                                                     s.ServiceType == typeof (ISampleService) &&
                                                     s.ServiceName == "MyService"
@@ -385,12 +385,12 @@ namespace LinFu.UnitTests.IOC
             var container = new ServiceContainer();
             container.AddService<ISampleService>(new SampleClass());
 
-            IEnumerable<IServiceInfo> availableServices = container.AvailableServices;
+            var availableServices = container.AvailableServices;
             Assert.IsTrue(availableServices.Count() > 0);
 
             // There should be a matching service type
             // at this point
-            IEnumerable<IServiceInfo> matches = from s in availableServices
+            var matches = from s in availableServices
                                                 where s.ServiceType == typeof (ISampleService)
                                                 select s;
 
@@ -404,7 +404,7 @@ namespace LinFu.UnitTests.IOC
             var container = new ServiceContainer();
             container.LoadFrom(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
 
-            string serviceName = "NonSpecificGenericService";
+            var serviceName = "NonSpecificGenericService";
 
             // The container must be able to create any type that derives from ISampleService<T>
             // despite whether or not the specific generic service type is explicitly registered as a service
@@ -435,7 +435,7 @@ namespace LinFu.UnitTests.IOC
             var container = new ServiceContainer();
             container.LoadFrom(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
 
-            string serviceName = "SpecificGenericService";
+            var serviceName = "SpecificGenericService";
 
             // The container must be able to create both registered service types
             Assert.IsTrue(container.Contains(serviceName, typeof (ISampleGenericService<int>)));
@@ -452,7 +452,7 @@ namespace LinFu.UnitTests.IOC
             var mockFactory = new Mock<IFactory>();
             var container = new ServiceContainer();
 
-            Type serviceType = typeof (ISerializable);
+            var serviceType = typeof (ISerializable);
             var instance = new object();
 
             container.AddFactory(serviceType, mockFactory.Object);
@@ -463,7 +463,7 @@ namespace LinFu.UnitTests.IOC
                                                                         && request.Container == container))).Returns(
                                                                             instance);
 
-            object result = container.GetService(serviceType);
+            var result = container.GetService(serviceType);
             Assert.IsNotNull(result, "The container failed to return the given service instance");
             Assert.AreSame(instance, result, "The service instance returned does not match the given instance");
 
@@ -528,7 +528,7 @@ namespace LinFu.UnitTests.IOC
         public void ContainerMustThrowErrorIfServiceNotFound()
         {
             var container = new ServiceContainer();
-            object instance = container.GetService(typeof (ISerializable));
+            var instance = container.GetService(typeof (ISerializable));
             Assert.IsNull(instance, "The container is supposed to return a null instance");
         }
 
@@ -540,7 +540,7 @@ namespace LinFu.UnitTests.IOC
 
             var container = new ServiceContainer();
 
-            Type serviceType = typeof (ISerializable);
+            var serviceType = typeof (ISerializable);
 
             // Add the service using a null name;
             // the container should register this factory
@@ -562,7 +562,7 @@ namespace LinFu.UnitTests.IOC
             var mockService = new Mock<ISerializable>();
             var container = new ServiceContainer();
 
-            Type serviceType = typeof (ISerializable);
+            var serviceType = typeof (ISerializable);
 
             // Use unnamed AddFactory method
             container.AddFactory(serviceType, mockFactory.Object);
@@ -582,13 +582,13 @@ namespace LinFu.UnitTests.IOC
             var container = new ServiceContainer();
 
 
-            Type serviceType = typeof (ISerializable);
+            var serviceType = typeof (ISerializable);
             mockFactory.Expect(
                 f => f.CreateInstance(It.Is<IFactoryRequest>(request => request.ServiceType == serviceType)))
                 .Returns(mockService.Object);
             container.AddFactory(serviceType, mockFactory.Object);
 
-            object result = container.GetService(null, serviceType);
+            var result = container.GetService(null, serviceType);
 
             Assert.AreSame(mockService.Object, result);
         }
@@ -647,7 +647,7 @@ namespace LinFu.UnitTests.IOC
             container.AddService(typeof (ISampleGenericService<>),
                                  typeof (SampleGenericClassWithOpenGenericImplementation<>));
 
-            object instance = container.GetService(typeof (ISampleGenericService<int>));
+            var instance = container.GetService(typeof (ISampleGenericService<int>));
             Assert.IsNotNull(instance);
         }
 

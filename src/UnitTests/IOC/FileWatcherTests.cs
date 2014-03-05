@@ -13,10 +13,10 @@ namespace LinFu.UnitTests.IOC
         [Test]
         public void ShouldLoadAssemblyIntoLoaderAtRuntime()
         {
-            string path = Path.Combine(@"..\..\..\SampleFileWatcherLibrary\bin\Debug",
+            var path = Path.Combine(@"..\..\..\SampleFileWatcherLibrary\bin\Debug",
                                        AppDomain.CurrentDomain.BaseDirectory);
-            string targetFile = "SampleFileWatcherLibrary.dll";
-            string sourceFileName = Path.Combine(path, targetFile);
+            var targetFile = "SampleFileWatcherLibrary.dll";
+            var sourceFileName = Path.Combine(path, targetFile);
 
             var container = new ServiceContainer();
             container.AutoLoadFrom(AppDomain.CurrentDomain.BaseDirectory, "dummy.dll");
@@ -27,7 +27,7 @@ namespace LinFu.UnitTests.IOC
 
             // Copy the assembly to the target directory
             // and watch for changes
-            string targetFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dummy.dll");
+            var targetFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dummy.dll");
             File.Copy(sourceFileName, targetFileName, true);
 
             // Give the watcher thread enough time to load the assembly into memory
@@ -37,7 +37,7 @@ namespace LinFu.UnitTests.IOC
             var instance = container.GetService<ISampleService>();
             Assert.IsNotNull(instance);
 
-            string typeName = instance.GetType().Name;
+            var typeName = instance.GetType().Name;
             Assert.AreEqual("SampleFileWatcherServiceClassAddedAtRuntime", typeName);
         }
     }

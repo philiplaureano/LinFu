@@ -75,7 +75,7 @@ namespace LinFu.Reflection
 
             // Pass the loaded types to
             // the type loaders for processing
-            foreach (TType type in types)
+            foreach (var type in types)
             {
                 // Skip any invalid types
                 if (type == null)
@@ -93,13 +93,13 @@ namespace LinFu.Reflection
         /// <param name="results">The list that will hold the actions which will configure the container.</param>
         private void LoadResultsFromType(TType type, ICollection<Action<TTarget>> results)
         {
-            IList<IActionLoader<TTarget, TType>> typeLoaders = _getTypeLoaders();
+            var typeLoaders = _getTypeLoaders();
             foreach (var typeLoader in typeLoaders)
             {
                 if (typeLoader == null || !typeLoader.CanLoad(type))
                     continue;
 
-                IEnumerable<Action<TTarget>> actions = typeLoader.Load(type);
+                var actions = typeLoader.Load(type);
                 if (actions.Count() == 0)
                     continue;
 

@@ -20,7 +20,7 @@ namespace LinFu.AOP.Cecil
                                                   IEnumerable<Instruction> oldInstructions)
         {
             var newInstructions = new Queue<Instruction>();
-            foreach (Instruction instruction in oldInstructions)
+            foreach (var instruction in oldInstructions)
             {
                 if (!ShouldReplace(instruction, method))
                 {

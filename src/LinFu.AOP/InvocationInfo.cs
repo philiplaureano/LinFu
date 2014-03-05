@@ -56,7 +56,7 @@ namespace LinFu.AOP.Cecil
         {
             get
             {
-                StackFrame frame = _stackTrace.GetFrame(0);
+                var frame = _stackTrace.GetFrame(0);
 
                 return frame.GetMethod();
             }
@@ -144,14 +144,14 @@ namespace LinFu.AOP.Cecil
         public override string ToString()
         {
             var writer = new StringWriter();
-            MethodBase targetMethod = TargetMethod;
+            var targetMethod = TargetMethod;
 
             writer.Write("{0}.{1}(", targetMethod.DeclaringType, targetMethod.Name);
 
             var arguments = new Queue<object>(Arguments);
             while (arguments.Count > 0)
             {
-                object argument = arguments.Dequeue();
+                var argument = arguments.Dequeue();
 
                 if (argument is string)
                     argument = string.Format("\"{0}\"", argument);

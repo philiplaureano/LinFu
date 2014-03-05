@@ -23,8 +23,8 @@ namespace LinFu.AOP.Cecil.Extensions
         public static void Emit(this IEmitInvocationInfo emitter, MethodInfo method, MethodDefinition targetMethod,
                                 VariableDefinition invocationInfo)
         {
-            ModuleDefinition module = targetMethod.DeclaringType.Module;
-            MethodReference interceptedMethod = module.Import(method);
+            var module = targetMethod.DeclaringType.Module;
+            var interceptedMethod = module.Import(method);
             emitter.Emit(targetMethod, interceptedMethod, invocationInfo);
         }
 
@@ -38,9 +38,9 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <returns>The return value of the method call.</returns>
         public static object Proceed(this IInvocationInfo info)
         {
-            MethodBase targetMethod = info.TargetMethod;
-            object target = info.Target;
-            object[] arguments = info.Arguments;
+            var targetMethod = info.TargetMethod;
+            var target = info.Target;
+            var arguments = info.Arguments;
 
             return targetMethod.Invoke(target, arguments);
         }
@@ -56,8 +56,8 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <returns>The return value of the method call.</returns>
         public static object Proceed(this IInvocationInfo info, object target)
         {
-            MethodBase targetMethod = info.TargetMethod;
-            object[] arguments = info.Arguments;
+            var targetMethod = info.TargetMethod;
+            var arguments = info.Arguments;
 
             return targetMethod.Invoke(target, arguments);
         }
@@ -75,7 +75,7 @@ namespace LinFu.AOP.Cecil.Extensions
         public static object Proceed(this IInvocationInfo info, object target,
                                      params object[] arguments)
         {
-            MethodBase targetMethod = info.TargetMethod;
+            var targetMethod = info.TargetMethod;
             return targetMethod.Invoke(target, arguments);
         }
     }

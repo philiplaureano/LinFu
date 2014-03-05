@@ -62,7 +62,7 @@ namespace LinFu.IoC.Configuration
         /// <param name="context">The context that will be associated with the target container.</param>
         private static void AddPostProcessor(ActionContext<TService> context)
         {
-            IServiceContainer targetContainer = context.Container;
+            var targetContainer = context.Container;
             var postProcessor = new ActionPostProcessor<TService>(context);
             targetContainer.PostProcessors.Add(postProcessor);
         }

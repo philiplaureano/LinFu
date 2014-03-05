@@ -50,9 +50,9 @@ namespace LinFu.IoC.Factories
         /// <returns>A a service instance as thread-wide singleton.</returns>
         public override T CreateInstance(IFactoryRequest request)
         {
-            int threadId = Thread.CurrentThread.ManagedThreadId;
+            var threadId = Thread.CurrentThread.ManagedThreadId;
 
-            T result = default(T);
+            var result = default(T);
             lock (_storage)
             {
                 // Create the service instance only once

@@ -44,10 +44,10 @@ namespace LinFu.IoC.Configuration
         {
             get
             {
-                string messageFormat = "Recursive Dependency Detected: {0}";
+                var messageFormat = "Recursive Dependency Detected: {0}";
                 var builder = new StringBuilder();
 
-                LinkedListNode<Type> currentNode = _typeChain.First;
+                var currentNode = _typeChain.First;
                 while (currentNode != null)
                 {
                     builder.AppendFormat("{0}", currentNode.Value.AssemblyQualifiedName);

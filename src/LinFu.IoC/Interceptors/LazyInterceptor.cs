@@ -43,9 +43,9 @@ namespace LinFu.IoC.Interceptors
         /// <returns>The return value of the target method.</returns>
         public override object Intercept(IInvocationInfo info)
         {
-            T target = _getInstance();
-            object[] arguments = info.Arguments;
-            MethodBase method = info.TargetMethod;
+            var target = _getInstance();
+            var arguments = info.Arguments;
+            var method = info.TargetMethod;
 
             object result = null;
             try

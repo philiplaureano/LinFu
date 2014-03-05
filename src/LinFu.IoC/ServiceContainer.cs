@@ -140,7 +140,7 @@ namespace LinFu.IoC
                 factory = FactoryStorage.GetFactory(serviceName, serviceType, additionalArguments);
 
             var serviceRequest = new ServiceRequest(serviceName, serviceType, additionalArguments, factory, this);
-            object instance = _getServiceBehavior.GetService(serviceRequest);
+            var instance = _getServiceBehavior.GetService(serviceRequest);
 
             if (SuppressErrors == false && instance == null && serviceName == null)
                 throw new ServiceNotFoundException(serviceType);

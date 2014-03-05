@@ -36,8 +36,8 @@ namespace LinFu.IoC.Configuration
                 return;
 
             var service = (TService) result.ActualResult;
-            IServiceContainer container = result.Container;
-            Action<IServiceContainer, TService> action = _context.Action;
+            var container = result.Container;
+            var action = _context.Action;
 
             // Execute the action associated with the
             // context

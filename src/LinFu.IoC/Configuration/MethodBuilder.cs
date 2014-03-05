@@ -31,13 +31,13 @@ namespace LinFu.IoC.Configuration
         /// <param name="targetMethod">The target method that will be invoked.</param>
         protected override void PushMethodArguments(ILGenerator IL, MethodBase targetMethod)
         {
-            Type[] parameterTypes = (from p in targetMethod.GetParameters()
+            var parameterTypes = (from p in targetMethod.GetParameters()
                                      select p.ParameterType).ToArray();
 
-            int offset = targetMethod.IsStatic ? 0 : 1;
+            var offset = targetMethod.IsStatic ? 0 : 1;
             // Push the method arguments onto the stack
-            int parameterCount = parameterTypes.Length;
-            for (int index = 0; index < parameterCount; index++)
+            var parameterCount = parameterTypes.Length;
+            for (var index = 0; index < parameterCount; index++)
             {
                 IL.Emit(OpCodes.Ldarg, index + offset);
             }
@@ -79,7 +79,7 @@ namespace LinFu.IoC.Configuration
         /// <param name="method">The method that will be invoked.</param>
         protected override void EmitCall(ILGenerator IL, MethodInfo method)
         {
-            OpCode callInstruction = method.IsVirtual ? OpCodes.Callvirt : OpCodes.Call;
+            var callInstruction = method.IsVirtual ? OpCodes.Callvirt : OpCodes.Call;
             IL.Emit(callInstruction, method);
         }
     }

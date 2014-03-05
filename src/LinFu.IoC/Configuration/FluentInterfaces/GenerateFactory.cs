@@ -65,10 +65,10 @@ namespace LinFu.IoC.Configuration
         private void AddFactory(Func<Func<IFactoryRequest, TService>,
                                     IFactory<TService>> createFactory)
         {
-            IServiceContainer container = _context.Container;
-            Func<IFactoryRequest, TService> adapter = _context.FactoryMethod.CreateAdapter();
-            IFactory<TService> factory = createFactory(adapter);
-            string serviceName = _context.ServiceName;
+            var container = _context.Container;
+            var adapter = _context.FactoryMethod.CreateAdapter();
+            var factory = createFactory(adapter);
+            var serviceName = _context.ServiceName;
 
             container.AddFactory(serviceName, factory);
         }

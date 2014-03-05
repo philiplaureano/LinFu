@@ -15,7 +15,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="visitable">The target type.</param>
         public static void InterceptAllExceptions(this IReflectionVisitable visitable)
         {
-            Func<MethodReference, bool> filter = GetMethodFilter();
+            var filter = GetMethodFilter();
             InterceptExceptions(visitable, filter);
         }
 
@@ -25,7 +25,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="visitable">The target type.</param>
         public static void InterceptAllExceptions(this IReflectionStructureVisitable visitable)
         {
-            Func<MethodReference, bool> filter = GetMethodFilter();
+            var filter = GetMethodFilter();
             InterceptExceptions(visitable, filter);
         }
 
@@ -83,7 +83,7 @@ namespace LinFu.AOP.Cecil.Extensions
         {
             return method =>
                        {
-                           MethodDefinition actualMethod = method.Resolve();
+                           var actualMethod = method.Resolve();
                            return actualMethod.HasBody;
                        };
         }

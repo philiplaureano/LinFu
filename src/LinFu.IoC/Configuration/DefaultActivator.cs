@@ -23,9 +23,9 @@ namespace LinFu.IoC.Configuration
         /// <returns>A valid object instance.</returns>
         public object CreateInstance(IContainerActivationContext context)
         {
-            IServiceContainer container = context.Container;
-            object[] additionalArguments = context.AdditionalArguments;
-            Type concreteType = context.TargetType;
+            var container = context.Container;
+            var additionalArguments = context.AdditionalArguments;
+            var concreteType = context.TargetType;
 
             // Add the required services if necessary
             container.AddDefaultServices();
@@ -35,13 +35,13 @@ namespace LinFu.IoC.Configuration
             // Determine which constructor
             // contains the most resolvable
             // parameters            
-            ConstructorInfo constructor = _resolver.ResolveFrom(concreteType, container, finderContext);
+            var constructor = _resolver.ResolveFrom(concreteType, container, finderContext);
 
             // TODO: Allow users to insert their own custom constructor resolution routines here
-            object[] arguments = _argumentResolver.GetConstructorArguments(constructor, container, additionalArguments);
+            var arguments = _argumentResolver.GetConstructorArguments(constructor, container, additionalArguments);
 
             // Instantiate the object
-            object result = _constructorInvoke.Invoke(null, constructor, arguments);
+            var result = _constructorInvoke.Invoke(null, constructor, arguments);
 
             return result;
         }

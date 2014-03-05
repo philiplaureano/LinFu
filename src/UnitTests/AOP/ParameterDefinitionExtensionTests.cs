@@ -11,13 +11,13 @@ namespace LinFu.UnitTests.AOP
         [Test]
         public void ShouldBeAbleToDetermineIfMethodIsByRef()
         {
-            string location = typeof (SampleClassWithByRefMethod).Assembly.Location;
-            AssemblyDefinition assembly = AssemblyFactory.GetAssembly(location);
-            ModuleDefinition module = assembly.MainModule;
+            var location = typeof (SampleClassWithByRefMethod).Assembly.Location;
+            var assembly = AssemblyFactory.GetAssembly(location);
+            var module = assembly.MainModule;
 
-            TypeDefinition targetType = module.GetType("SampleClassWithByRefMethod");
-            MethodDefinition byRefMethod = targetType.GetMethod("ByRefMethod");
-            MethodDefinition regularMethod = targetType.GetMethod("NonByRefMethod");
+            var targetType = module.GetType("SampleClassWithByRefMethod");
+            var byRefMethod = targetType.GetMethod("ByRefMethod");
+            var regularMethod = targetType.GetMethod("NonByRefMethod");
 
             Assert.IsNotNull(assembly);
             Assert.IsNotNull(targetType);
@@ -25,7 +25,7 @@ namespace LinFu.UnitTests.AOP
             Assert.IsNotNull(regularMethod);
 
             // Test the byref parameter
-            ParameterDefinition parameter = byRefMethod.Parameters[0];
+            var parameter = byRefMethod.Parameters[0];
             Assert.IsTrue(parameter.IsByRef());
 
             // Test the non-byref parameter

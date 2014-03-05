@@ -45,7 +45,7 @@ namespace LinFu.Proxy.Interfaces
         public static object CreateProxy(this IProxyFactory factory, Type instanceType,
                                          IInterceptor interceptor, params Type[] baseInterfaces)
         {
-            Type proxyType = factory.CreateProxyType(instanceType, baseInterfaces);
+            var proxyType = factory.CreateProxyType(instanceType, baseInterfaces);
             var proxyInstance = (IProxy) Activator.CreateInstance(proxyType);
 
             proxyInstance.Interceptor = interceptor;
@@ -107,8 +107,8 @@ namespace LinFu.Proxy.Interfaces
                                        Func<string, Type[], object[], object> proxyImplementation,
                                        params Type[] baseInterfaces)
         {
-            Type targetType = typeof (T);
-            object result = CreateProxy(proxyFactory, targetType, proxyImplementation, baseInterfaces);
+            var targetType = typeof (T);
+            var result = CreateProxy(proxyFactory, targetType, proxyImplementation, baseInterfaces);
 
             return (T) result;
         }
@@ -133,10 +133,10 @@ namespace LinFu.Proxy.Interfaces
         {
             Func<IInvocationInfo, object> doIntercept = info =>
                                                             {
-                                                                MethodBase targetMethod = info.TargetMethod;
-                                                                string methodName = targetMethod.Name;
-                                                                object[] arguments = info.Arguments;
-                                                                Type[] typeArguments = info.TypeArguments;
+                                                                var targetMethod = info.TargetMethod;
+                                                                var methodName = targetMethod.Name;
+                                                                var arguments = info.Arguments;
+                                                                var typeArguments = info.TypeArguments;
 
                                                                 return proxyImplementation(methodName, typeArguments,
                                                                                            arguments);

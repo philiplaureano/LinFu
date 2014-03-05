@@ -36,7 +36,7 @@ namespace LinFu.IoC.Configuration.Injectors
             if (request.ActualFactory != null)
                 return;
 
-            Type serviceType = request.ServiceType;
+            var serviceType = request.ServiceType;
 
             // Skip any service requests for types that are generic type definitions
             if (serviceType.IsGenericTypeDefinition)

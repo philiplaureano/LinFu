@@ -65,8 +65,8 @@ namespace LinFu.UnitTests.IOC.Factories
         {
             var factory = new OncePerRequestFactory<ISerializable>(createInstance);
 
-            ISerializable first = factory.CreateInstance(null);
-            ISerializable second = factory.CreateInstance(null);
+            var first = factory.CreateInstance(null);
+            var second = factory.CreateInstance(null);
 
             // Both instances must be unique
             Assert.AreNotSame(first, second);
@@ -79,8 +79,8 @@ namespace LinFu.UnitTests.IOC.Factories
         {
             IFactory<ISerializable> localFactory = new OncePerThreadFactory<ISerializable>(createInstance);
 
-            ISerializable first = localFactory.CreateInstance(null);
-            ISerializable second = localFactory.CreateInstance(null);
+            var first = localFactory.CreateInstance(null);
+            var second = localFactory.CreateInstance(null);
 
             // The two instances should be the same
             // since they were created from the same thread
@@ -96,8 +96,8 @@ namespace LinFu.UnitTests.IOC.Factories
 
             Action<IFactory<ISerializable>> doCreate = factory =>
                                                            {
-                                                               ISerializable instance = factory.CreateInstance(null);
-                                                               ISerializable otherInstance = factory.CreateInstance(null);
+                                                               var instance = factory.CreateInstance(null);
+                                                               var otherInstance = factory.CreateInstance(null);
 
                                                                // The two instances 
                                                                // within the same thread must match
@@ -110,8 +110,8 @@ namespace LinFu.UnitTests.IOC.Factories
 
 
             // Create the instance in another thread
-            IAsyncResult asyncResult = doCreate.BeginInvoke(localFactory, null, null);
-            ISerializable localInstance = localFactory.CreateInstance(null);
+            var asyncResult = doCreate.BeginInvoke(localFactory, null, null);
+            var localInstance = localFactory.CreateInstance(null);
 
             // Wait for the previous thread
             // to finish executing
@@ -120,7 +120,7 @@ namespace LinFu.UnitTests.IOC.Factories
             Assert.IsTrue(resultList.Count > 0);
 
             // Collect the results from the other thread
-            ISerializable instanceFromOtherThread = resultList[0];
+            var instanceFromOtherThread = resultList[0];
 
             Assert.IsNotNull(localInstance);
             Assert.IsNotNull(instanceFromOtherThread);
@@ -135,7 +135,7 @@ namespace LinFu.UnitTests.IOC.Factories
             container.LoadFrom(typeof (MyClass<>).Assembly);
 
             // Get ServiceNotFoundException here instead of a service instance.
-            string serviceName = "frobozz";
+            var serviceName = "frobozz";
             var service = container.GetService<MyClass<string>>(serviceName);
 
             Console.WriteLine("foo");
@@ -180,8 +180,8 @@ namespace LinFu.UnitTests.IOC.Factories
                                   ServiceType = typeof (ISerializable)
                               };
 
-            ISerializable first = factory.CreateInstance(request);
-            ISerializable second = factory.CreateInstance(request);
+            var first = factory.CreateInstance(request);
+            var second = factory.CreateInstance(request);
 
             // Both instances must be the same
             Assert.AreSame(first, second);

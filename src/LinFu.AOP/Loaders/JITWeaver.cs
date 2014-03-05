@@ -60,16 +60,16 @@ namespace LinFu.AOP.Cecil.Loaders
         /// <returns>A valid assembly.</returns>
         public override Assembly Load(string assemblyFile)
         {
-            AssemblyDefinition targetAssembly = AssemblyFactory.GetAssembly(assemblyFile);
+            var targetAssembly = AssemblyFactory.GetAssembly(assemblyFile);
 
             // Strongly-named assemblies cannot be modified
             if (targetAssembly.Name.HasPublicKey)
                 return base.Load(assemblyFile);
 
-            string assemblyFileName = Path.GetFileNameWithoutExtension(assemblyFile);
+            var assemblyFileName = Path.GetFileNameWithoutExtension(assemblyFile);
 
-            string pdbFile = string.Format("{0}.pdb", assemblyFileName);
-            bool hasSymbols = File.Exists(pdbFile);
+            var pdbFile = string.Format("{0}.pdb", assemblyFileName);
+            var hasSymbols = File.Exists(pdbFile);
 
             if (PdbLoader != null && hasSymbols)
                 PdbLoader.LoadSymbols(targetAssembly);
@@ -96,7 +96,7 @@ namespace LinFu.AOP.Cecil.Loaders
             if (PdbLoader == null || !hasSymbols)
                 return targetAssembly.ToAssembly();
 
-            byte[] pdbBytes = File.ReadAllBytes(pdbFile);
+            var pdbBytes = File.ReadAllBytes(pdbFile);
 
             return PdbLoader.LoadAssembly(memoryStream.ToArray(), pdbBytes);
         }

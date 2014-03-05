@@ -43,7 +43,7 @@ namespace LinFu.UnitTests.Reflection
             lock (_disposalList)
             {
                 // Delete the files tagged for removal
-                foreach (string file in _disposalList)
+                foreach (var file in _disposalList)
                 {
                     if (!File.Exists(file))
                         continue;
@@ -80,7 +80,7 @@ namespace LinFu.UnitTests.Reflection
                                };
 
             var process = new Process();
-            string peVerifyLocation = string.Empty;
+            var peVerifyLocation = string.Empty;
 
 
             peVerifyLocation = GetPEVerifyLocation(pathKeys, peVerifyLocation);
@@ -99,10 +99,10 @@ namespace LinFu.UnitTests.Reflection
             process.StartInfo.CreateNoWindow = true;
             process.Start();
 
-            string processOutput = process.StandardOutput.ReadToEnd();
+            var processOutput = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
 
-            string result = string.Format("PEVerify Exit Code: {0}", process.ExitCode);
+            var result = string.Format("PEVerify Exit Code: {0}", process.ExitCode);
 
             Console.WriteLine(GetType().FullName + ": " + result);
 
@@ -115,9 +115,9 @@ namespace LinFu.UnitTests.Reflection
 
         private static string GetPEVerifyLocation(IEnumerable<string> pathKeys, string peVerifyLocation)
         {
-            foreach (string key in pathKeys)
+            foreach (var key in pathKeys)
             {
-                string directory = ConfigurationManager.AppSettings[key];
+                var directory = ConfigurationManager.AppSettings[key];
 
                 if (string.IsNullOrEmpty(directory))
                     continue;

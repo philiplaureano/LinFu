@@ -19,13 +19,13 @@ namespace LinFu.IoC.Configuration
         {
             get
             {
-                int threadId = Thread.CurrentThread.ManagedThreadId;
+                var threadId = Thread.CurrentThread.ManagedThreadId;
 
                 if (!_counts.ContainsKey(threadId))
                     return new Type[0];
 
                 var results = new List<Type>();
-                foreach (Type type in _counts[threadId].Keys)
+                foreach (var type in _counts[threadId].Keys)
                 {
                     results.Add(type);
                 }
@@ -40,7 +40,7 @@ namespace LinFu.IoC.Configuration
         /// <param name="type">The type being counted.</param>
         public void Increment(Type type)
         {
-            int threadId = Thread.CurrentThread.ManagedThreadId;
+            var threadId = Thread.CurrentThread.ManagedThreadId;
 
             // Create a new counter, if necessary
             if (!_counts.ContainsKey(threadId))
@@ -51,7 +51,7 @@ namespace LinFu.IoC.Configuration
                 }
             }
 
-            Dictionary<Type, int> currentCounts = _counts[threadId];
+            var currentCounts = _counts[threadId];
             if (!currentCounts.ContainsKey(type))
             {
                 lock (currentCounts)
@@ -73,12 +73,12 @@ namespace LinFu.IoC.Configuration
         /// <returns>The number of occurrences for the given type.</returns>
         public int CountOf(Type type)
         {
-            int threadId = Thread.CurrentThread.ManagedThreadId;
+            var threadId = Thread.CurrentThread.ManagedThreadId;
 
             if (!_counts.ContainsKey(threadId))
                 return 0;
 
-            Dictionary<Type, int> currentCounts = _counts[threadId];
+            var currentCounts = _counts[threadId];
             return currentCounts[type];
         }
 
@@ -88,11 +88,11 @@ namespace LinFu.IoC.Configuration
         /// <param name="type">The type being counted.</param>
         public void Decrement(Type type)
         {
-            int currentCount = CountOf(type);
+            var currentCount = CountOf(type);
             if (currentCount > 0)
                 currentCount--;
 
-            int threadId = Thread.CurrentThread.ManagedThreadId;
+            var threadId = Thread.CurrentThread.ManagedThreadId;
 
             // Create a new counter, if necessary
             if (!_counts.ContainsKey(threadId))
@@ -104,7 +104,7 @@ namespace LinFu.IoC.Configuration
             }
 
             // Split the counts by thread
-            Dictionary<Type, int> currentCounts = _counts[threadId];
+            var currentCounts = _counts[threadId];
             lock (currentCounts)
             {
                 currentCounts[type] = currentCount;

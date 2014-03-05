@@ -68,7 +68,7 @@ namespace LinFu.IoC.Configuration
             if (!_cache.ContainsKey(targetMethod))
                 GenerateTargetMethod(targetMethod);
 
-            MethodBase factoryMethod = _cache[targetMethod];
+            var factoryMethod = _cache[targetMethod];
 
             try
             {
@@ -95,7 +95,7 @@ namespace LinFu.IoC.Configuration
         protected virtual object DoInvoke(object target, TMethod originalMethod, MethodBase targetMethod,
                                           object[] arguments)
         {
-            object result = targetMethod.Invoke(target, arguments);
+            var result = targetMethod.Invoke(target, arguments);
 
             return result;
         }

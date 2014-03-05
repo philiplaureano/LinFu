@@ -13,7 +13,7 @@ namespace LinFu.AOP.Interfaces
                 throw new ArgumentNullException("aroundInvokeList");
 
             // Filter out the null values
-            foreach (IAroundInvoke current in aroundInvokeList)
+            foreach (var current in aroundInvokeList)
             {
                 if (current == null)
                     continue;
@@ -26,7 +26,7 @@ namespace LinFu.AOP.Interfaces
 
         public void AfterInvoke(IInvocationInfo context, object returnValue)
         {
-            foreach (IAroundInvoke invoke in _aroundInvokeList)
+            foreach (var invoke in _aroundInvokeList)
             {
                 invoke.AfterInvoke(context, returnValue);
             }
@@ -34,7 +34,7 @@ namespace LinFu.AOP.Interfaces
 
         public void BeforeInvoke(IInvocationInfo context)
         {
-            foreach (IAroundInvoke invoke in _aroundInvokeList)
+            foreach (var invoke in _aroundInvokeList)
             {
                 invoke.BeforeInvoke(context);
             }

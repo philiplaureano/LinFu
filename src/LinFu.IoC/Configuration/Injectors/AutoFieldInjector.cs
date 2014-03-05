@@ -23,13 +23,13 @@ namespace LinFu.IoC.Configuration
         {
             // Get the field value from the container
             var fieldType = new NamedType(member.FieldType);
-            object[] fieldValues = argumentResolver.ResolveFrom(new[] {fieldType}, container);
+            var fieldValues = argumentResolver.ResolveFrom(new[] {fieldType}, container);
 
             if (fieldValues == null || fieldValues.Length == 0)
                 return;
 
             // Cast the field value to the target type
-            object value = fieldValues[0];
+            var value = fieldValues[0];
             member.SetValue(target, value);
         }
     }

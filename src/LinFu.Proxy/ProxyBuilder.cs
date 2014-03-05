@@ -93,7 +93,7 @@ namespace LinFu.Proxy
 
             // Generate a proxy method for each
             // target method
-            foreach (MethodInfo method in targetMethods)
+            foreach (var method in targetMethods)
             {
                 ProxyMethodBuilder.CreateMethod(targetType, method);
             }

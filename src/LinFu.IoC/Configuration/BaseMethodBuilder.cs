@@ -23,17 +23,17 @@ namespace LinFu.IoC.Configuration
         /// <returns>A method based on the old method.</returns>
         public MethodBase CreateMethod(TMethod existingMethod)
         {
-            Type returnType = GetReturnType(existingMethod);
-            Type[] parameterTypes = (from p in existingMethod.GetParameters()
+            var returnType = GetReturnType(existingMethod);
+            var parameterTypes = (from p in existingMethod.GetParameters()
                                      select p.ParameterType).ToArray();
 
             // Determine the method signature
-            IList<Type> parameterList = GetParameterList(existingMethod, parameterTypes);
+            var parameterList = GetParameterList(existingMethod, parameterTypes);
 
-            Type declaringType = existingMethod.DeclaringType;
-            Module module = declaringType.Module;
+            var declaringType = existingMethod.DeclaringType;
+            var module = declaringType.Module;
             var dynamicMethod = new DynamicMethod(string.Empty, returnType, parameterList.ToArray(), module);
-            ILGenerator IL = dynamicMethod.GetILGenerator();
+            var IL = dynamicMethod.GetILGenerator();
 
             // Push the target instance, if necessary
             PushInstance(IL, existingMethod);
@@ -59,12 +59,12 @@ namespace LinFu.IoC.Configuration
         /// <param name="targetMethod">The target method that will be invoked.</param>
         protected virtual void PushMethodArguments(ILGenerator IL, MethodBase targetMethod)
         {
-            Type[] parameterTypes = (from p in targetMethod.GetParameters()
+            var parameterTypes = (from p in targetMethod.GetParameters()
                                      select p.ParameterType).ToArray();
 
             // Push the method arguments onto the stack
-            int parameterCount = parameterTypes.Length;
-            for (int index = 0; index < parameterCount; index++)
+            var parameterCount = parameterTypes.Length;
+            for (var index = 0; index < parameterCount; index++)
             {
                 IL.Emit(OpCodes.Ldarg, index);
             }

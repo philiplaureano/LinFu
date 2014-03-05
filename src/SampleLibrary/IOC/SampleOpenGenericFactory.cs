@@ -11,9 +11,9 @@ namespace SampleLibrary
 
         public object CreateInstance(IFactoryRequest request)
         {
-            Type serviceType = request.ServiceType;
-            Type typeArgument = serviceType.GetGenericArguments()[0];
-            Type resultType = typeof (SampleGenericImplementation<>).MakeGenericType(typeArgument);
+            var serviceType = request.ServiceType;
+            var typeArgument = serviceType.GetGenericArguments()[0];
+            var resultType = typeof (SampleGenericImplementation<>).MakeGenericType(typeArgument);
 
             return Activator.CreateInstance(resultType);
         }

@@ -17,7 +17,7 @@ namespace LinFu.UnitTests.Tools
 
         internal PEVerifier(string filename)
         {
-            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
             location = Path.Combine(baseDirectory, filename);
 
             _filename = filename;
@@ -57,7 +57,7 @@ namespace LinFu.UnitTests.Tools
                                };
 
             var process = new Process();
-            string peVerifyLocation = string.Empty;
+            var peVerifyLocation = string.Empty;
 
 
             peVerifyLocation = GetPEVerifyLocation(pathKeys, peVerifyLocation);
@@ -77,10 +77,10 @@ namespace LinFu.UnitTests.Tools
             process.StartInfo.CreateNoWindow = true;
             process.Start();
 
-            string processOutput = process.StandardOutput.ReadToEnd();
+            var processOutput = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
 
-            string result = string.Format("PEVerify Exit Code: {0}", process.ExitCode);
+            var result = string.Format("PEVerify Exit Code: {0}", process.ExitCode);
 
             Console.WriteLine(GetType().FullName + ": " + result);
 
@@ -94,9 +94,9 @@ namespace LinFu.UnitTests.Tools
 
         private static string GetPEVerifyLocation(IEnumerable<string> pathKeys, string peVerifyLocation)
         {
-            foreach (string key in pathKeys)
+            foreach (var key in pathKeys)
             {
-                string directory = ConfigurationManager.AppSettings[key];
+                var directory = ConfigurationManager.AppSettings[key];
 
                 if (string.IsNullOrEmpty(directory))
                     continue;

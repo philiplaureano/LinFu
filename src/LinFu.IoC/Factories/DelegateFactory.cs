@@ -37,10 +37,10 @@ namespace LinFu.IoC.Factories
             object result = null;
             try
             {
-                object target = _targetDelegate.Target;
-                MethodInfo method = _targetDelegate.Method;
-                int argCount = request.Arguments.Length;
-                int methodArgCount = method.GetParameters().Count();
+                var target = _targetDelegate.Target;
+                var method = _targetDelegate.Method;
+                var argCount = request.Arguments.Length;
+                var methodArgCount = method.GetParameters().Count();
 
                 if (argCount != methodArgCount)
                     throw new ArgumentException("Parameter Count Mismatch");

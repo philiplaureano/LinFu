@@ -43,9 +43,9 @@ namespace LinFu.AOP.Cecil
         /// <param name="IL">The <see cref="CilWorker"/> instance responsible for adding or removing instructions to the method body.</param>
         public void Emit(CilWorker IL)
         {
-            ModuleDefinition module = IL.GetModule();
-            TypeReference modifiableType = module.ImportType<IModifiableType>();
-            MethodReference getInterceptionDisabledMethod =
+            var module = IL.GetModule();
+            var modifiableType = module.ImportType<IModifiableType>();
+            var getInterceptionDisabledMethod =
                 module.ImportMethod<IModifiableType>("get_IsInterceptionDisabled");
             if (!_hostMethod.HasThis)
             {
@@ -54,7 +54,7 @@ namespace LinFu.AOP.Cecil
                 return;
             }
 
-            Instruction skipLabel = IL.Create(OpCodes.Nop);
+            var skipLabel = IL.Create(OpCodes.Nop);
 
             // var interceptionDisabled = this.IsInterceptionDisabled;
             IL.Emit(OpCodes.Ldarg_0);

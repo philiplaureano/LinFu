@@ -15,7 +15,7 @@ namespace LinFu.UnitTests.Reflection
             var mock = new Mock<ISampleServiceWithGenericMethods>();
             mock.Expect(m => m.SomeMethod<object, object, object, object>());
 
-            ISampleServiceWithGenericMethods targetInstance = mock.Object;
+            var targetInstance = mock.Object;
             targetInstance.Invoke<object, object, object, object>("SomeMethod");
 
             mock.VerifyAll();
@@ -27,7 +27,7 @@ namespace LinFu.UnitTests.Reflection
             var mock = new Mock<ISampleServiceWithGenericMethods>();
             mock.Expect(m => m.SomeMethod<object, object, object>());
 
-            ISampleServiceWithGenericMethods targetInstance = mock.Object;
+            var targetInstance = mock.Object;
             targetInstance.Invoke<object, object, object>("SomeMethod");
 
             mock.VerifyAll();
@@ -39,7 +39,7 @@ namespace LinFu.UnitTests.Reflection
             var mock = new Mock<ISampleServiceWithGenericMethods>();
             mock.Expect(m => m.SomeMethod<object, object>());
 
-            ISampleServiceWithGenericMethods targetInstance = mock.Object;
+            var targetInstance = mock.Object;
             targetInstance.Invoke<object, object>("SomeMethod");
 
             mock.VerifyAll();
@@ -51,7 +51,7 @@ namespace LinFu.UnitTests.Reflection
             var mock = new Mock<ISampleService>();
             mock.Expect(m => m.DoSomething());
 
-            ISampleService targetInstance = mock.Object;
+            var targetInstance = mock.Object;
             targetInstance.Invoke("DoSomething", new object[0]);
 
             mock.VerifyAll();
@@ -63,7 +63,7 @@ namespace LinFu.UnitTests.Reflection
             var mock = new Mock<ISampleServiceWithGenericMethods>();
             mock.Expect(m => m.SomeMethod<object>());
 
-            ISampleServiceWithGenericMethods targetInstance = mock.Object;
+            var targetInstance = mock.Object;
             targetInstance.Invoke<object>("SomeMethod");
 
             mock.VerifyAll();

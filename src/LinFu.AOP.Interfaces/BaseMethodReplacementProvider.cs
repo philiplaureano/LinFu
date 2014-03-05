@@ -11,9 +11,6 @@ namespace LinFu.AOP.Interfaces
     public abstract class BaseMethodReplacementProvider : IMethodReplacementProvider, IAroundInvoke
     {
         private ICallCounter _counter = new MultiThreadedCallCounter();
-        protected BaseMethodReplacementProvider()
-        {
-        }
 
         /// <summary>
         /// Determines whether or not the current method implementation can be replaced.
@@ -23,7 +20,7 @@ namespace LinFu.AOP.Interfaces
         /// <returns><c>true</c> if the method can be intercepted; otherwise, it will return <c>false</c>.</returns>
         public bool CanReplace(object host, IInvocationInfo context)
         {
-            int pendingCalls = _counter.GetPendingCalls(context);
+            var pendingCalls = _counter.GetPendingCalls(context);
 
             if (pendingCalls > 0)
                 return false;
@@ -39,7 +36,7 @@ namespace LinFu.AOP.Interfaces
         /// <returns>The interceptor that will intercept the method call itself.</returns>
         public IInterceptor GetMethodReplacement(object host, IInvocationInfo context)
         {
-            int pendingCalls = _counter.GetPendingCalls(context);
+            var pendingCalls = _counter.GetPendingCalls(context);
 
             if (pendingCalls > 0)
                 return null;

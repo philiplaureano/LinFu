@@ -28,7 +28,7 @@ namespace LinFu.IoC.Interceptors
         {
             // Instead of using the proxy as the target,
             // modify the InvocationInfo to show the actual target
-            Type proxyType = _proxyFactory.CreateProxyType(typeof (IInvocationInfo), new Type[0]);
+            var proxyType = _proxyFactory.CreateProxyType(typeof (IInvocationInfo), new Type[0]);
             var infoProxy = Activator.CreateInstance(proxyType) as IProxy;
 
             if (infoProxy == null)

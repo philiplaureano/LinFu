@@ -24,7 +24,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="target">The target object.</param>
         public static void InterceptAllMethodCalls(this IReflectionVisitable target)
         {
-            Func<MethodReference, bool> hostMethodFilter = GetHostMethodFilter();
+            var hostMethodFilter = GetHostMethodFilter();
             Func<MethodReference, bool> methodCallFilter = m => true;
 
             InterceptMethodCalls(target, GetDefaultTypeFilter(), hostMethodFilter, methodCallFilter);
@@ -38,7 +38,7 @@ namespace LinFu.AOP.Cecil.Extensions
         public static void InterceptMethodCalls(this IReflectionStructureVisitable target,
                                                 Func<TypeReference, bool> typeFilter)
         {
-            Func<MethodReference, bool> hostMethodFilter = GetHostMethodFilter();
+            var hostMethodFilter = GetHostMethodFilter();
             Func<MethodReference, bool> methodCallFilter = m => true;
 
             InterceptMethodCalls(target, typeFilter, hostMethodFilter, methodCallFilter);
@@ -51,7 +51,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="typeFilter">The type filter that determines the types that will be modified.</param>
         public static void InterceptMethodCalls(this IReflectionVisitable target, Func<TypeReference, bool> typeFilter)
         {
-            Func<MethodReference, bool> hostMethodFilter = GetHostMethodFilter();
+            var hostMethodFilter = GetHostMethodFilter();
             Func<MethodReference, bool> methodCallFilter = m => true;
 
             InterceptMethodCalls(target, typeFilter, hostMethodFilter, methodCallFilter);
@@ -123,7 +123,7 @@ namespace LinFu.AOP.Cecil.Extensions
         {
             return type =>
                        {
-                           TypeDefinition actualType1 = type.Resolve();
+                           var actualType1 = type.Resolve();
                            return !actualType1.IsValueType && !actualType1.IsInterface;
                        };
         }
@@ -132,7 +132,7 @@ namespace LinFu.AOP.Cecil.Extensions
         {
             return method =>
                        {
-                           MethodDefinition actualMethod = method.Resolve();
+                           var actualMethod = method.Resolve();
                            return actualMethod.HasBody;
                        };
         }

@@ -67,11 +67,11 @@ namespace LinFu.AOP.Cecil
         /// <param name="method">The target method.</param>
         public void Weave(MethodDefinition method)
         {
-            MethodBody body = method.Body;
-            CilWorker IL = body.CilWorker;
+            var body = method.Body;
+            var IL = body.CilWorker;
 
             // Skip empty methods
-            int instructionCount = body.Instructions.Count;
+            var instructionCount = body.Instructions.Count;
             if (instructionCount == 0)
                 return;
 
@@ -112,10 +112,10 @@ namespace LinFu.AOP.Cecil
         /// <param name="method">The method that needs to be modified.</param>
         private void Rewrite(MethodDefinition method)
         {
-            MethodBody body = method.Body;
-            CilWorker IL = body.CilWorker;
+            var body = method.Body;
+            var IL = body.CilWorker;
 
-            IEnumerable<Instruction> oldInstructions = _instructionProvider.GetInstructions(method);
+            var oldInstructions = _instructionProvider.GetInstructions(method);
 
             body.Instructions.Clear();
 

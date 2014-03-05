@@ -98,12 +98,12 @@ namespace LinFu.IoC.Configuration
 
             if (result.ServiceType.IsGenericType)
             {
-                Type baseDefinition = result.ServiceType.GetGenericTypeDefinition();
+                var baseDefinition = result.ServiceType.GetGenericTypeDefinition();
                 if (baseDefinition == typeof (IMemberInjectionFilter<>))
                     return;
             }
 
-            IServiceContainer container = result.Container;
+            var container = result.Container;
 
             if (!container.Contains(typeof (IMemberInjectionFilter<TMember>)))
                 return;
@@ -113,7 +113,7 @@ namespace LinFu.IoC.Configuration
                 return;
 
             // Determine which members can be injected
-            Type targetType = result.ActualResult.GetType();
+            var targetType = result.ActualResult.GetType();
 
             // Use the base class if the
             // target type is a proxy type
@@ -122,7 +122,7 @@ namespace LinFu.IoC.Configuration
                 targetType = targetType.BaseType;
             }
 
-            List<TMember> members = filter.GetInjectableMembers(targetType).ToList();
+            var members = filter.GetInjectableMembers(targetType).ToList();
             if (members.Count == 0)
                 return;
 
@@ -133,8 +133,8 @@ namespace LinFu.IoC.Configuration
             if (resolver == null)
                 return;
 
-            object target = result.ActualResult;
-            foreach (TMember member in members)
+            var target = result.ActualResult;
+            foreach (var member in members)
             {
                 Inject(target, member, resolver, container, result.AdditionalArguments);
             }

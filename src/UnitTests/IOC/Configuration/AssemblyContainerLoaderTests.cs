@@ -47,7 +47,7 @@ namespace LinFu.UnitTests.IOC.Configuration
 
             // The container loader should use the assembly loader
             // to load the assembly
-            string filename = "input.dll";
+            var filename = "input.dll";
 
             _mockAssemblyLoader.Expect(loader => loader.Load(filename)).Returns(typeof (SampleClass).Assembly);
 
@@ -59,9 +59,9 @@ namespace LinFu.UnitTests.IOC.Configuration
         public void AssemblyContainerLoaderShouldCallTypeExtractor()
         {
             var containerLoader = new AssemblyContainerLoader();
-            string filename = "input.dll";
+            var filename = "input.dll";
 
-            Assembly targetAssembly = typeof (SampleClass).Assembly;
+            var targetAssembly = typeof (SampleClass).Assembly;
 
             // Make sure that it calls the assembly loader
             _mockAssemblyLoader.Expect(loader => loader.Load(filename)).Returns(targetAssembly);
@@ -84,9 +84,9 @@ namespace LinFu.UnitTests.IOC.Configuration
         {
             // HACK: The Cut&Paste is ugly, but it works
             var containerLoader = new AssemblyContainerLoader();
-            string filename = "input.dll";
+            var filename = "input.dll";
 
-            Assembly targetAssembly = typeof (SampleClass).Assembly;
+            var targetAssembly = typeof (SampleClass).Assembly;
 
             // Make sure that it calls the assembly loader
             _mockAssemblyLoader.Expect(loader => loader.Load(filename)).Returns(targetAssembly);
@@ -121,11 +121,11 @@ namespace LinFu.UnitTests.IOC.Configuration
             containerLoader.TypeLoaders.Add(mockTypeLoader.Object);
 
             // This should return true
-            string validFile = typeof (AssemblyContainerLoaderTests).Assembly.Location;
+            var validFile = typeof (AssemblyContainerLoaderTests).Assembly.Location;
             Assert.IsTrue(containerLoader.CanLoad(validFile));
 
             // This should return false;
-            string invalidFile = "input.txt";
+            var invalidFile = "input.txt";
             Assert.IsFalse(containerLoader.CanLoad(invalidFile));
         }
     }

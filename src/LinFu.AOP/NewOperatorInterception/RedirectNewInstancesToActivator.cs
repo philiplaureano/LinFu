@@ -79,7 +79,7 @@ namespace LinFu.AOP.Cecil
             _canActivate = module.ImportMethod<ITypeActivator>("CanActivate");
             _getItem = module.ImportMethod<List<object>>("get_Item", new[] {typeof (int)});
 
-            MethodInfo createInstanceMethod = typeof (IActivator<ITypeActivationContext>).GetMethod("CreateInstance");
+            var createInstanceMethod = typeof (IActivator<ITypeActivationContext>).GetMethod("CreateInstance");
 
             _createInstance = module.Import(createInstanceMethod);
         }
@@ -87,8 +87,8 @@ namespace LinFu.AOP.Cecil
         public void EmitNewObject(MethodDefinition hostMethod, CilWorker IL, MethodReference targetConstructor,
                                   TypeReference concreteType)
         {
-            ParameterDefinitionCollection parameters = targetConstructor.Parameters;
-            Instruction skipInterception = IL.Create(OpCodes.Nop);
+            var parameters = targetConstructor.Parameters;
+            var skipInterception = IL.Create(OpCodes.Nop);
 
             SaveConstructorArguments(IL, parameters);
             EmitCreateMethodActivationContext(hostMethod, IL, concreteType);
@@ -112,17 +112,17 @@ namespace LinFu.AOP.Cecil
             EmitCreateInstance(IL);
 
             // }
-            Instruction endCreate = IL.Create(OpCodes.Nop);
+            var endCreate = IL.Create(OpCodes.Nop);
             IL.Emit(OpCodes.Br, endCreate);
             // else {
             IL.Append(skipInterception);
 
             // Restore the arguments that were popped off the stack
             // by the list of constructor arguments
-            int parameterCount = parameters.Count;
-            for (int index = 0; index < parameterCount; index++)
+            var parameterCount = parameters.Count;
+            for (var index = 0; index < parameterCount; index++)
             {
-                ParameterDefinition currentParameter = parameters[index];
+                var currentParameter = parameters[index];
 
                 IL.Emit(OpCodes.Ldloc, _constructorArguments);
                 IL.Emit(OpCodes.Ldc_I4, index);
@@ -157,12 +157,12 @@ namespace LinFu.AOP.Cecil
         private void EmitCreateMethodActivationContext(MethodDefinition method, CilWorker IL, TypeReference concreteType)
         {
             // TODO: Add static method support
-            Instruction pushThis = method.IsStatic ? IL.Create(OpCodes.Ldnull) : IL.Create(OpCodes.Ldarg_0);
+            var pushThis = method.IsStatic ? IL.Create(OpCodes.Ldnull) : IL.Create(OpCodes.Ldarg_0);
 
             // Push the 'this' pointer onto the stack
             IL.Append(pushThis);
 
-            ModuleDefinition module = method.DeclaringType.Module;
+            var module = method.DeclaringType.Module;
 
             // Push the current method onto the stack
             IL.PushMethod(method, module);
@@ -181,15 +181,15 @@ namespace LinFu.AOP.Cecil
 
         private void SaveConstructorArguments(CilWorker IL, ParameterDefinitionCollection parameters)
         {
-            int parameterCount = parameters.Count;
+            var parameterCount = parameters.Count;
 
             IL.Emit(OpCodes.Newobj, _objectListCtor);
             IL.Emit(OpCodes.Stloc, _constructorArguments);
 
-            int index = parameterCount - 1;
+            var index = parameterCount - 1;
             while (index >= 0)
             {
-                ParameterDefinition param = parameters[index];
+                var param = parameters[index];
 
                 SaveConstructorArgument(IL, param);
 
@@ -204,7 +204,7 @@ namespace LinFu.AOP.Cecil
         private void SaveConstructorArgument(CilWorker IL, ParameterDefinition param)
         {
             // Box the type if necessary
-            TypeReference parameterType = param.ParameterType;
+            var parameterType = param.ParameterType;
             if (parameterType.IsValueType || parameterType is GenericParameter)
                 IL.Emit(OpCodes.Box, parameterType);
 

@@ -32,7 +32,7 @@ namespace LinFu.AOP.Cecil.Loaders
         /// <param name="assembly">The assembly that contains the symbols to be loaded.</param>
         public void LoadSymbols(AssemblyDefinition assembly)
         {
-            ModuleDefinition mainModule = assembly.MainModule;
+            var mainModule = assembly.MainModule;
             mainModule.LoadSymbols();
         }
 

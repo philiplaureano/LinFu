@@ -23,7 +23,7 @@ namespace LinFu.IoC.Configuration
         /// <returns>A list of <see cref="PropertyInfo"/> objects that pass the filter description.</returns>
         protected override IEnumerable<PropertyInfo> GetMembers(Type targetType, IServiceContainer container)
         {
-            IEnumerable<PropertyInfo> results =
+            var results =
                 from p in targetType.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
                 let propertyType = p.PropertyType
                 let isServiceArray = propertyType.ExistsAsServiceArray()

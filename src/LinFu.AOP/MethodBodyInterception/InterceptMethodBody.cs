@@ -50,14 +50,14 @@ namespace LinFu.AOP.Cecil
                 return;
             }
 
-            VariableDefinition interceptionDisabled = method.AddLocal<bool>();
-            VariableDefinition invocationInfo = method.AddLocal<IInvocationInfo>();
-            VariableDefinition aroundInvokeProvider = method.AddLocal<IAroundInvokeProvider>();
-            VariableDefinition methodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
+            var interceptionDisabled = method.AddLocal<bool>();
+            var invocationInfo = method.AddLocal<IInvocationInfo>();
+            var aroundInvokeProvider = method.AddLocal<IAroundInvokeProvider>();
+            var methodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
 
 
-            VariableDefinition returnValue = method.AddLocal<object>();
-            VariableDefinition classMethodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
+            var returnValue = method.AddLocal<object>();
+            var classMethodReplacementProvider = method.AddLocal<IMethodReplacementProvider>();
 
             Func<ModuleDefinition, MethodReference> getInstanceMethodReplacementProviderMethod =
                 module => module.Import(typeof(IMethodReplacementHost).GetMethod("get_MethodBodyReplacementProvider"));
@@ -101,7 +101,7 @@ namespace LinFu.AOP.Cecil
 
         private void AddOriginalInstructions(CilWorker IL, IEnumerable<Instruction> oldInstructions)
         {
-            foreach (Instruction instruction in oldInstructions)
+            foreach (var instruction in oldInstructions)
             {
                 IL.Append(instruction);
             }
@@ -115,11 +115,11 @@ namespace LinFu.AOP.Cecil
                                         typeof (IModifiableType), typeof (IActivatorHost),
                                         typeof (IFieldInterceptionHost), typeof (IAroundInvokeHost)
                                     };
-            List<string> excludedMethods = (from type in excludedTypes
+            var excludedMethods = (from type in excludedTypes
                                             from currentMethod in type.GetMethods()
                                             select currentMethod.Name).ToList();
 
-            string methodName = method.Name;
+            var methodName = method.Name;
             return excludedMethods.Contains(methodName);
         }
     }

@@ -35,18 +35,18 @@ namespace LinFu.UnitTests.AOP
 
         private Type GetModifiedTargetType(Action<string, TypeDefinition> modify)
         {
-            AssemblyDefinition assembly = AssemblyFactory.GetAssembly("SampleLibrary.dll");
-            ModuleDefinition module = assembly.MainModule;
+            var assembly = AssemblyFactory.GetAssembly("SampleLibrary.dll");
+            var module = assembly.MainModule;
 
             // Intercept all calls to the System.Console.WriteLine method from the DoSomething method
-            string typeName = "SampleClassWithThirdPartyMethodCall";
-            TypeDefinition targetType = (from TypeDefinition t in module.Types
+            var typeName = "SampleClassWithThirdPartyMethodCall";
+            var targetType = (from TypeDefinition t in module.Types
                                          where t.Name == typeName
                                          select t).First();
 
             modify(typeName, targetType);
 
-            Assembly modifiedAssembly = assembly.ToAssembly();
+            var modifiedAssembly = assembly.ToAssembly();
             return (from t in modifiedAssembly.GetTypes()
                     where t.Name == typeName
                     select t).First();
@@ -63,14 +63,14 @@ namespace LinFu.UnitTests.AOP
         [Test]
         public void ShouldCallInstanceAroundInvokeProvider()
         {
-            Type modifiedTargetType = GetModifiedTargetType();
-            object instance = Activator.CreateInstance(modifiedTargetType);
+            var modifiedTargetType = GetModifiedTargetType();
+            var instance = Activator.CreateInstance(modifiedTargetType);
             var aroundInvoke = new SampleAroundInvoke();
             var provider = new SampleAroundInvokeProvider(aroundInvoke);
 
             var modified = (IModifiableType) instance;
             modified.AroundMethodCallProvider = provider;
-            MethodInfo targetMethod = modifiedTargetType.GetMethod("DoSomething");
+            var targetMethod = modifiedTargetType.GetMethod("DoSomething");
 
             targetMethod.Invoke(instance, null);
 
@@ -81,14 +81,14 @@ namespace LinFu.UnitTests.AOP
         [Test]
         public void ShouldCallStaticAroundInvokeProvider()
         {
-            Type modifiedTargetType = GetModifiedTargetType();
-            object instance = Activator.CreateInstance(modifiedTargetType);
+            var modifiedTargetType = GetModifiedTargetType();
+            var instance = Activator.CreateInstance(modifiedTargetType);
             var aroundInvoke = new SampleAroundInvoke();
             var provider = new SampleAroundInvokeProvider(aroundInvoke);
 
             AroundInvokeMethodCallRegistry.AddProvider(provider);
 
-            MethodInfo targetMethod = modifiedTargetType.GetMethod("DoSomething");
+            var targetMethod = modifiedTargetType.GetMethod("DoSomething");
 
             targetMethod.Invoke(instance, null);
 
@@ -99,9 +99,9 @@ namespace LinFu.UnitTests.AOP
         [Test]
         public void ShouldImplementIMethodReplacementHostOnTargetType()
         {
-            Type modifiedTargetType = GetModifiedTargetType();
+            var modifiedTargetType = GetModifiedTargetType();
 
-            object instance = Activator.CreateInstance(modifiedTargetType);
+            var instance = Activator.CreateInstance(modifiedTargetType);
             Assert.IsNotNull(instance);
             Assert.IsTrue(instance is IMethodReplacementHost);
 
@@ -111,14 +111,14 @@ namespace LinFu.UnitTests.AOP
 
             host.MethodCallReplacementProvider = new SampleMethodReplacementProvider(interceptor);
 
-            MethodInfo targetMethod = modifiedTargetType.GetMethod("DoSomething");
+            var targetMethod = modifiedTargetType.GetMethod("DoSomething");
             try
             {
                 targetMethod.Invoke(instance, null);
             }
             catch (TargetInvocationException ex)
             {
-                Exception innerException = ex.InnerException;
+                var innerException = ex.InnerException;
                 Console.WriteLine(ex.ToString());
                 throw innerException;
             }
@@ -129,13 +129,13 @@ namespace LinFu.UnitTests.AOP
         [Test]
         public void ShouldNotInterceptConstructorsWhenIntereptingAllMethodCalls()
         {
-            Type modifiedTargetType = GetModifiedTargetType((name, type) => type.InterceptAllMethodCalls());
-            object instance = Activator.CreateInstance(modifiedTargetType);
+            var modifiedTargetType = GetModifiedTargetType((name, type) => type.InterceptAllMethodCalls());
+            var instance = Activator.CreateInstance(modifiedTargetType);
             var aroundInvoke = new SampleAroundInvoke();
             var provider = new SampleAroundInvokeProvider(aroundInvoke);
 
             AroundInvokeMethodCallRegistry.AddProvider(provider);
-            MethodInfo targetMethod = modifiedTargetType.GetMethod("DoSomething");
+            var targetMethod = modifiedTargetType.GetMethod("DoSomething");
             targetMethod.Invoke(instance, null);
 
             Assert.IsTrue(aroundInvoke.BeforeInvokeWasCalled);

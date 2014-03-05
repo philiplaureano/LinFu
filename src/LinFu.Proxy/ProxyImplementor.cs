@@ -25,8 +25,8 @@ namespace LinFu.Proxy
         /// <param name="targetType">The type that will implement the <see cref="IProxy"/> interface.</param>
         public void Construct(ModuleDefinition module, TypeDefinition targetType)
         {
-            TypeReference proxyInterfaceType = module.Import(typeof (IProxy));
-            TypeReference interceptorType = module.Import(typeof (IInterceptor));
+            var proxyInterfaceType = module.Import(typeof (IProxy));
+            var interceptorType = module.Import(typeof (IInterceptor));
 
             // Implement the IProxy interface only once
             if (targetType.Interfaces.Contains(proxyInterfaceType))

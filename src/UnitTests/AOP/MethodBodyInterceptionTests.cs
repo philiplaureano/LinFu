@@ -16,8 +16,8 @@ namespace LinFu.UnitTests.AOP
     {
         private void Test(Action<object> testInstance)
         {
-            string libraryFileName = "SampleLibrary.dll";
-            string typeName = "SampleClassWithNonVirtualMethod";
+            var libraryFileName = "SampleLibrary.dll";
+            var typeName = "SampleClassWithNonVirtualMethod";
             Func<MethodReference, bool> methodFilter = m => m.Name == "DoSomething";
 
             Test(libraryFileName, typeName, methodFilter, type => Test(type, testInstance));
@@ -26,10 +26,10 @@ namespace LinFu.UnitTests.AOP
         private void Test(string libraryFileName, string typeName, Func<MethodReference, bool> methodFilter,
                           Action<Type> testTargetType)
         {
-            AssemblyDefinition assembly = AssemblyFactory.GetAssembly(libraryFileName);
-            ModuleDefinition module = assembly.MainModule;
+            var assembly = AssemblyFactory.GetAssembly(libraryFileName);
+            var module = assembly.MainModule;
 
-            TypeDefinition targetType = (from TypeDefinition t in module.Types
+            var targetType = (from TypeDefinition t in module.Types
                                          where t.Name == typeName
                                          select t).First();
 
@@ -37,20 +37,20 @@ namespace LinFu.UnitTests.AOP
 
             ModifyType(targetType, methodFilter);
 
-            Type modifiedTargetType = CreateModifiedType(assembly, typeName);
+            var modifiedTargetType = CreateModifiedType(assembly, typeName);
 
             testTargetType(modifiedTargetType);
         }
 
         private void Test(Type modifiedTargetType, Action<object> testInstance)
         {
-            object instance = Activator.CreateInstance(modifiedTargetType);
+            var instance = Activator.CreateInstance(modifiedTargetType);
             testInstance(instance);
         }
 
         private Type CreateModifiedType(AssemblyDefinition assembly, string typeName)
         {
-            Assembly modifiedAssembly = assembly.ToAssembly();
+            var modifiedAssembly = assembly.ToAssembly();
 
             return (from t in modifiedAssembly.GetTypes()
                     where t.Name == typeName
@@ -65,7 +65,7 @@ namespace LinFu.UnitTests.AOP
         [Test]
         public void ShouldImplementIModifiableTypeOnModifiedSampleClass()
         {
-            Action<object> condition = (instance) =>
+            Action<object> condition = instance =>
                                            {
                                                Assert.IsNotNull(instance);
                                                Assert.IsTrue(instance is IModifiableType);
@@ -85,7 +85,7 @@ namespace LinFu.UnitTests.AOP
             AroundMethodBodyRegistry.AddProvider(provider);
             Action<Type> doTest = type =>
                                       {
-                                          MethodInfo doSomethingMethod = type.GetMethod("DoSomething");
+                                          var doSomethingMethod = type.GetMethod("DoSomething");
                                           Assert.IsNotNull(doSomethingMethod);
 
                                           doSomethingMethod.Invoke(null, new object[0]);
@@ -101,7 +101,7 @@ namespace LinFu.UnitTests.AOP
         {
             var aroundInvoke = new SampleAroundInvoke();
             var provider = new SampleAroundInvokeProvider(aroundInvoke);
-            Action<object> condition = (instance) =>
+            Action<object> condition = instance =>
                                            {
                                                Assert.IsNotNull(instance);
 
@@ -123,7 +123,7 @@ namespace LinFu.UnitTests.AOP
             var aroundInvoke = new SampleAroundInvoke();
             var provider = new SampleAroundInvokeProvider(aroundInvoke);
 
-            Action<object> condition = (instance) =>
+            Action<object> condition = instance =>
                                            {
                                                Assert.IsNotNull(instance);
 
@@ -147,7 +147,7 @@ namespace LinFu.UnitTests.AOP
             MethodBodyReplacementProviderRegistry.SetProvider(provider);
             Action<Type> doTest = type =>
                                       {
-                                          MethodInfo doSomethingMethod = type.GetMethod("DoSomething");
+                                          var doSomethingMethod = type.GetMethod("DoSomething");
                                           Assert.IsNotNull(doSomethingMethod);
 
                                           doSomethingMethod.Invoke(null, new object[0]);
@@ -163,7 +163,7 @@ namespace LinFu.UnitTests.AOP
             var sampleInterceptor = new SampleInterceptor();
             var sampleProvider = new SampleMethodReplacementProvider(sampleInterceptor);
 
-            Action<object> condition = (instance) =>
+            Action<object> condition = instance =>
                                            {
                                                Assert.IsNotNull(instance);
                                                Assert.IsTrue(instance is IModifiableType);
@@ -190,7 +190,7 @@ namespace LinFu.UnitTests.AOP
             AroundMethodBodyRegistry.AddProvider(provider);
             Action<Type> doTest = type =>
                                       {
-                                          MethodInfo doSomethingMethod = type.GetMethod("DoSomething");
+                                          var doSomethingMethod = type.GetMethod("DoSomething");
                                           Assert.IsNotNull(doSomethingMethod);
                                           Assert.IsFalse(type.GetInterfaces().Contains(typeof (IModifiableType)));
                                       };
@@ -203,7 +203,7 @@ namespace LinFu.UnitTests.AOP
         {
             var aroundInvoke = new SampleAroundInvoke();
             var provider = new SampleAroundInvokeProvider(aroundInvoke);
-            Action<object> condition = (instance) =>
+            Action<object> condition = instance =>
                                            {
                                                Assert.IsNotNull(instance);
 
@@ -226,7 +226,7 @@ namespace LinFu.UnitTests.AOP
             var aroundInvoke = new SampleAroundInvoke();
             var provider = new SampleAroundInvokeProvider(aroundInvoke);
 
-            Action<object> condition = (instance) =>
+            Action<object> condition = instance =>
                                            {
                                                Assert.IsNotNull(instance);
 
@@ -250,7 +250,7 @@ namespace LinFu.UnitTests.AOP
             var sampleProvider = new SampleMethodReplacementProvider(sampleInterceptor);
             MethodBodyReplacementProviderRegistry.SetProvider(sampleProvider);
 
-            Action<object> condition = (instance) =>
+            Action<object> condition = instance =>
                                            {
                                                Assert.IsNotNull(instance);
 
@@ -271,7 +271,7 @@ namespace LinFu.UnitTests.AOP
             var sampleInterceptor = new SampleInterceptor();
             var sampleProvider = new SampleMethodReplacementProvider(sampleInterceptor);
 
-            Action<object> condition = (instance) =>
+            Action<object> condition = instance =>
                                            {
                                                Assert.IsNotNull(instance);
                                                Assert.IsTrue(instance is IModifiableType);

@@ -83,7 +83,7 @@ namespace LinFu.IoC
                     "The scope object can only be disposed from within the thread that created it.");
 
             // Dispose all child objects
-            foreach (WeakReference item in _disposables)
+            foreach (var item in _disposables)
             {
                 if (item == null)
                     continue;

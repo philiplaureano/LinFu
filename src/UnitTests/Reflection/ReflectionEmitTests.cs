@@ -48,22 +48,22 @@ namespace LinFu.UnitTests.Reflection
         [Test]
         public void AssemblyDefinitionMustBeConvertibleToActualAssembly()
         {
-            AssemblyDefinition definition = AssemblyFactory.DefineAssembly("testAssembly", AssemblyKind.Dll);
+            var definition = AssemblyFactory.DefineAssembly("testAssembly", AssemblyKind.Dll);
 
-            Assembly assembly = definition.ToAssembly();
+            var assembly = definition.ToAssembly();
             Assert.IsTrue(assembly != null);
         }
 
         [Test]
         public void CecilShouldExtractSampleClassFromSignedAssembly()
         {
-            string location = typeof (SampleHelloClass).Assembly.Location;
+            var location = typeof (SampleHelloClass).Assembly.Location;
 
-            AssemblyDefinition sourceAssembly = AssemblyFactory.GetAssembly(location);
+            var sourceAssembly = AssemblyFactory.GetAssembly(location);
             Assert.IsNotNull(sourceAssembly);
 
-            AssemblyDefinition definition = AssemblyFactory.DefineAssembly("testAssembly", AssemblyKind.Dll);
-            ModuleDefinition targetModule = definition.MainModule;
+            var definition = AssemblyFactory.DefineAssembly("testAssembly", AssemblyKind.Dll);
+            var targetModule = definition.MainModule;
             foreach (TypeDefinition typeDef in sourceAssembly.MainModule.Types)
             {
                 // Copy the source type to the target assembly
@@ -71,21 +71,21 @@ namespace LinFu.UnitTests.Reflection
             }
 
             // Convert the new assemblyDef into an actual assembly
-            Assembly assembly = definition.ToAssembly();
+            var assembly = definition.ToAssembly();
             Assert.IsNotNull(assembly);
 
-            Type[] types = assembly.GetTypes();
+            var types = assembly.GetTypes();
             Assert.IsTrue(types.Length > 0);
 
             // The imported type must match the original type
-            Type firstType = types.FirstOrDefault();
+            var firstType = types.FirstOrDefault();
             Assert.IsNotNull(firstType);
             Assert.AreEqual(firstType.Name, typeof (SampleHelloClass).Name);
 
-            object instance = Activator.CreateInstance(firstType);
+            var instance = Activator.CreateInstance(firstType);
             Assert.IsNotNull(instance);
 
-            MethodInfo speakMethod = firstType.GetMethod("Speak");
+            var speakMethod = firstType.GetMethod("Speak");
             Assert.IsNotNull(speakMethod);
 
             speakMethod.Invoke(instance, new object[] {});
@@ -94,38 +94,37 @@ namespace LinFu.UnitTests.Reflection
         [Test]
         public void CecilShouldRemoveStrongNameFromAssembly()
         {
-            string location = typeof (SampleHelloClass).Assembly.Location;
+            var location = typeof (SampleHelloClass).Assembly.Location;
 
-            AssemblyDefinition sourceAssembly = AssemblyFactory.GetAssembly(location);
+            var sourceAssembly = AssemblyFactory.GetAssembly(location);
 
 
             Assert.IsNotNull(sourceAssembly);
             sourceAssembly.RemoveStrongName();
 
-            Assembly assembly = sourceAssembly.ToAssembly();
+            var assembly = sourceAssembly.ToAssembly();
             Assert.IsNotNull(assembly);
 
-            AssemblyName assemblyName = assembly.GetName();
+            var assemblyName = assembly.GetName();
 
             // The public key should be empty
-            byte[] bytes = assemblyName.GetPublicKey();
+            var bytes = assemblyName.GetPublicKey();
             Assert.IsTrue(bytes.Length == 0);
-            return;
         }
 
         [Test]
         public void MethodInvokerShouldProperlyHandleReturnValues()
         {
-            MethodInfo targetMethod = typeof (object).GetMethod("GetHashCode");
+            var targetMethod = typeof (object).GetMethod("GetHashCode");
             var instance = new object();
 
-            int hash = instance.GetHashCode();
+            var hash = instance.GetHashCode();
             container.AddDefaultServices();
 
             var invoker = container.GetService<IMethodInvoke<MethodInfo>>();
             Assert.IsNotNull(invoker);
 
-            object result = invoker.Invoke(instance, targetMethod, new object[] {});
+            var result = invoker.Invoke(instance, targetMethod, new object[] {});
             Assert.AreEqual(result, hash);
         }
     }

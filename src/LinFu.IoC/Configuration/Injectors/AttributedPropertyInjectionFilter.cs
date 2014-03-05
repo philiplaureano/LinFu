@@ -48,7 +48,7 @@ namespace LinFu.IoC.Configuration
                                                             IEnumerable<PropertyInfo> properties)
         {
             // The property must have the custom attribute defined 
-            IEnumerable<PropertyInfo> results = from p in properties
+            var results = from p in properties
                                                 let propertyType = p.PropertyType
                                                 let attributes = p.GetCustomAttributes(_attributeType, false)
                                                 where attributes != null && attributes.Length > 0
@@ -69,7 +69,7 @@ namespace LinFu.IoC.Configuration
             IEnumerable<PropertyInfo> results;
             try
             {
-                IEnumerable<PropertyInfo> items =
+                var items =
                     from p in targetType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                     let propertyType = p == null ? typeof (void) : p.PropertyType
                     let isServiceArray = propertyType != null ? propertyType.ExistsAsServiceArray() : ioc => false

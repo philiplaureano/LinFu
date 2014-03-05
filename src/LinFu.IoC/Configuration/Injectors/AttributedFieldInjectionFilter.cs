@@ -47,7 +47,7 @@ namespace LinFu.IoC.Configuration
         protected override IEnumerable<FieldInfo> GetMembers(Type targetType, IServiceContainer container)
         {
             // The field type must exist in the container and must be marked as public
-            IEnumerable<FieldInfo> results =
+            var results =
                 from field in targetType.GetFields(BindingFlags.Public | BindingFlags.Instance)
                 let fieldType = field.FieldType
                 let attributes = field.GetCustomAttributes(_attributeType, false)

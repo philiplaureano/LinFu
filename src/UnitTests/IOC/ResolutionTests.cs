@@ -22,16 +22,16 @@ namespace LinFu.UnitTests.IOC
             var container = new ServiceContainer();
 
             // Add a bunch of dummy services
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
-                string serviceName = string.Format("Service{0}", i + 1);
+                var serviceName = string.Format("Service{0}", i + 1);
                 container.AddService(serviceName, mockSampleService.Object);
             }
 
-            IEnumerable<ISampleService> services = container.GetServices<ISampleService>();
+            var services = container.GetServices<ISampleService>();
             Assert.IsTrue(services.Count() == 10);
 
-            foreach (ISampleService service in services)
+            foreach (var service in services)
             {
                 Assert.AreSame(mockSampleService.Object, service);
             }
@@ -42,7 +42,7 @@ namespace LinFu.UnitTests.IOC
         [Test]
         public void ShouldAutoCreateClassWithServiceArrayAsConstructorArgument()
         {
-            ServiceContainer container = GetContainerWithMockSampleServices();
+            var container = GetContainerWithMockSampleServices();
             var result = container.AutoCreate(typeof(SampleClassWithServiceArrayAsConstructorArgument))
                          as SampleClassWithServiceArrayAsConstructorArgument;
 
@@ -53,7 +53,7 @@ namespace LinFu.UnitTests.IOC
         [Test]
         public void ShouldAutoCreateClassWithServiceEnumerableAsConstructorArgument()
         {
-            ServiceContainer container = GetContainerWithMockSampleServices();
+            var container = GetContainerWithMockSampleServices();
             var result = container.AutoCreate(typeof(SampleClassWithServiceEnumerableAsConstructorArgument))
                          as SampleClassWithServiceEnumerableAsConstructorArgument;
 
@@ -65,7 +65,7 @@ namespace LinFu.UnitTests.IOC
         [Test]
         public void ShouldBeAbleToAutoCreateClassUsingGenericAutoCreateCall()
         {
-            ServiceContainer container = GetContainerWithMockSampleServices();
+            var container = GetContainerWithMockSampleServices();
             var result = container.AutoCreate<SampleClassWithServiceArrayAsConstructorArgument>();
 
             Assert.IsNotNull(result);
@@ -94,7 +94,7 @@ namespace LinFu.UnitTests.IOC
         [Test]
         public void ShouldConstructParametersFromContainer()
         {
-            ConstructorInfo targetConstructor = typeof(SampleClassWithMultipleConstructors).GetConstructor(new[]
+            var targetConstructor = typeof(SampleClassWithMultipleConstructors).GetConstructor(new[]
                                                                                                                 {
                                                                                                                     typeof
                                                                                                                         (
@@ -114,7 +114,7 @@ namespace LinFu.UnitTests.IOC
             container.AddService<IArgumentResolver>(new ArgumentResolver());
 
             // Generate the arguments using the target constructor
-            object[] arguments = targetConstructor.ResolveArgumentsFrom(container);
+            var arguments = targetConstructor.ResolveArgumentsFrom(container);
             Assert.AreSame(arguments[0], mockSampleService.Object);
             Assert.AreSame(arguments[1], mockSampleService.Object);
         }
@@ -129,24 +129,24 @@ namespace LinFu.UnitTests.IOC
 
             container.AddService(mockSampleService.Object);
 
-            ConstructorInfo constructor = typeof(SampleClassWithSingleArgumentConstructor)
+            var constructor = typeof(SampleClassWithSingleArgumentConstructor)
                 .GetConstructor(new[] { typeof(ISampleService) });
 
-            ParameterInfo[] parameters = constructor.GetParameters();
-            ParameterInfo firstParameter = parameters.First();
+            var parameters = constructor.GetParameters();
+            var firstParameter = parameters.First();
 
             Assert.IsNotNull(firstParameter);
 
-            Func<IServiceContainer, bool> mustExist = firstParameter.ParameterType.MustExistInContainer();
+            var mustExist = firstParameter.ParameterType.MustExistInContainer();
             Assert.IsTrue(mustExist(container));
         }
 
         [Test]
         public void ShouldConvertTypeIntoPredicateThatChecksIfTypeExistsInContainerAsEnumerableSetOfServices()
         {
-            ServiceContainer container = GetContainerWithMockSampleServices();
+            var container = GetContainerWithMockSampleServices();
 
-            Func<IServiceContainer, bool> predicate = typeof(IEnumerable<ISampleService>)
+            var predicate = typeof(IEnumerable<ISampleService>)
                 .ExistsAsEnumerableSetOfServices();
 
             Assert.IsTrue(predicate(container));
@@ -155,9 +155,9 @@ namespace LinFu.UnitTests.IOC
         [Test]
         public void ShouldConvertTypeIntoPredicateThatChecksIfTypeExistsInContainerAsServiceArray()
         {
-            ServiceContainer container = GetContainerWithMockSampleServices();
+            var container = GetContainerWithMockSampleServices();
 
-            Func<IServiceContainer, bool> predicate = typeof(ISampleService[])
+            var predicate = typeof(ISampleService[])
                 .ExistsAsServiceArray();
 
             Assert.IsTrue(predicate(container));
@@ -209,7 +209,7 @@ namespace LinFu.UnitTests.IOC
 
             container.AddService(typeof(SampleClassWithNonServiceArgument), typeof(SampleClassWithNonServiceArgument));
 
-            string text = "Hello, World!";
+            var text = "Hello, World!";
             string serviceName = null;
             var result = container.GetService<SampleClassWithNonServiceArgument>(serviceName, text);
 
@@ -220,7 +220,7 @@ namespace LinFu.UnitTests.IOC
         [Test]
         public void ShouldInstantiateClassWithServiceArrayAsConstructorArgument()
         {
-            ServiceContainer container = GetContainerWithMockSampleServices();
+            var container = GetContainerWithMockSampleServices();
             container.AddService(typeof(SampleClassWithServiceArrayAsConstructorArgument),
                                  typeof(SampleClassWithServiceArrayAsConstructorArgument));
 
@@ -237,7 +237,7 @@ namespace LinFu.UnitTests.IOC
         [Test]
         public void ShouldInstantiateClassWithServiceEnumerableAsConstructorArgument()
         {
-            ServiceContainer container = GetContainerWithMockSampleServices();
+            var container = GetContainerWithMockSampleServices();
             container.AddService(typeof(SampleClassWithServiceEnumerableAsConstructorArgument),
                                  typeof(SampleClassWithServiceEnumerableAsConstructorArgument));
 
@@ -255,7 +255,7 @@ namespace LinFu.UnitTests.IOC
         [Test]
         public void ShouldInstantiateObjectWithConstructorAndArguments()
         {
-            ConstructorInfo targetConstructor = typeof(SampleClassWithMultipleConstructors).GetConstructor(new[]
+            var targetConstructor = typeof(SampleClassWithMultipleConstructors).GetConstructor(new[]
                                                                                                                 {
                                                                                                                     typeof
                                                                                                                         (
@@ -277,7 +277,7 @@ namespace LinFu.UnitTests.IOC
             container.AddDefaultServices();
 
             var constructorInvoke = container.GetService<IMethodInvoke<ConstructorInfo>>();
-            object result = constructorInvoke.Invoke(null, targetConstructor, arguments);
+            var result = constructorInvoke.Invoke(null, targetConstructor, arguments);
 
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(typeof(SampleClassWithMultipleConstructors), result);
@@ -324,13 +324,13 @@ namespace LinFu.UnitTests.IOC
 
             // The resolver should return the constructor
             // with the following signature: Constructor(ISampleService, int)
-            ConstructorInfo expectedConstructor =
+            var expectedConstructor =
                 typeof(SampleClassWithAdditionalArgument).GetConstructor(new[] { typeof(ISampleService), typeof(int) });
             Assert.IsNotNull(expectedConstructor);
 
 
             var context = new MethodFinderContext(42);
-            ConstructorInfo result = resolver.ResolveFrom(typeof(SampleClassWithAdditionalArgument), container, context);
+            var result = resolver.ResolveFrom(typeof(SampleClassWithAdditionalArgument), container, context);
             Assert.AreSame(expectedConstructor, result);
         }
         
@@ -347,7 +347,7 @@ namespace LinFu.UnitTests.IOC
             Assert.IsNotNull(resolver);
 
             // The resolver should return the constructor with two ISampleService parameters
-            ConstructorInfo expectedConstructor =
+            var expectedConstructor =
                 typeof(SampleClassWithMultipleConstructors).GetConstructor(new[]
                                                                                 {
                                                                                     typeof (ISampleService),
@@ -356,7 +356,7 @@ namespace LinFu.UnitTests.IOC
             Assert.IsNotNull(expectedConstructor);
 
             var finderContext = new MethodFinderContext(new Type[0], new object[0], null);
-            ConstructorInfo result = resolver.ResolveFrom(typeof(SampleClassWithMultipleConstructors), container,
+            var result = resolver.ResolveFrom(typeof(SampleClassWithMultipleConstructors), container,
                                                           finderContext);
             Assert.AreSame(expectedConstructor, result);
         }

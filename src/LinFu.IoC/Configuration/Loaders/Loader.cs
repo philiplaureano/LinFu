@@ -20,7 +20,7 @@ namespace LinFu.IoC.Configuration
             _containerLoader = this.CreateDefaultContainerLoader();
 
             // Load everything else into the container
-            Assembly hostAssembly = typeof (Loader).Assembly;
+            var hostAssembly = typeof (Loader).Assembly;
             QueuedActions.Add(container => container.LoadFrom(hostAssembly));
 
             // Make sure that the plugins are only added once

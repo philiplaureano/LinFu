@@ -13,7 +13,7 @@ namespace LinFu.UnitTests.Proxy
         [Test]
         public void InterfaceExtractorShouldReturnTheCorrectResults()
         {
-            Type baseType = typeof (SampleClass);
+            var baseType = typeof (SampleClass);
             var extractor = new InterfaceExtractor();
             var interfaces = new HashSet<Type>();
 
@@ -23,7 +23,7 @@ namespace LinFu.UnitTests.Proxy
             Assert.IsTrue(interfaces.Contains(typeof (ISampleGenericService<int>)));
 
             // The result list must only contain interface types
-            IEnumerable<Type> nonInterfaceTypes = from t in interfaces
+            var nonInterfaceTypes = from t in interfaces
                                                   where !t.IsInterface
                                                   select t;
 

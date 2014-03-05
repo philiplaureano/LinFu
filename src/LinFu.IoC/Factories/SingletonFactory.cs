@@ -58,7 +58,7 @@ namespace LinFu.IoC.Factories
                 if (_instances.ContainsKey(key))
                     return _instances[key];
 
-                T result = _createInstance(request);
+                var result = _createInstance(request);
                 if (result != null)
                 {
                     _instances[key] = result;

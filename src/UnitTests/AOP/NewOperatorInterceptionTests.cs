@@ -28,20 +28,20 @@ namespace LinFu.UnitTests.AOP
         [Test]
         public void ShouldInterceptObjectInstantiation()
         {
-            AssemblyDefinition assembly = AssemblyFactory.GetAssembly("SampleLibrary.dll");
+            var assembly = AssemblyFactory.GetAssembly("SampleLibrary.dll");
 
-            ModuleDefinition module = assembly.MainModule;
-            string typeName = "SampleClassWithNewInstanceCall";
-            TypeDefinition targetType = (from TypeDefinition t in module.Types
+            var module = assembly.MainModule;
+            var typeName = "SampleClassWithNewInstanceCall";
+            var targetType = (from TypeDefinition t in module.Types
                                          where t.Name == typeName
                                          select t).First();
 
             targetType.InterceptNewInstances(declaringType => declaringType.Name == "SampleServiceImplementation");
 
-            Assembly modifiedAssembly = assembly.ToAssembly();
+            var modifiedAssembly = assembly.ToAssembly();
 
-            Type modifiedTargetType = modifiedAssembly.GetTypes().Where(t => t.Name == typeName).First();
-            object instance = Activator.CreateInstance(modifiedTargetType);
+            var modifiedTargetType = modifiedAssembly.GetTypes().Where(t => t.Name == typeName).First();
+            var instance = Activator.CreateInstance(modifiedTargetType);
             Assert.IsNotNull(instance);
 
             // The activator will return a new OtherSampleService() instance instead
@@ -50,8 +50,8 @@ namespace LinFu.UnitTests.AOP
             var host = (IActivatorHost) instance;
             host.Activator = activator;
 
-            MethodInfo targetMethod = modifiedTargetType.GetMethod("DoSomething");
-            object result = targetMethod.Invoke(instance, null);
+            var targetMethod = modifiedTargetType.GetMethod("DoSomething");
+            var result = targetMethod.Invoke(instance, null);
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result is OtherSampleService);

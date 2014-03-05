@@ -45,33 +45,33 @@ namespace LinFu.IoC.Reflection
         /// <returns>The method return value.</returns>
         public static object Invoke(this object instance, string methodName, MethodFinderContext context)
         {
-            Type targetType = instance.GetType();
-            BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic;
+            var targetType = instance.GetType();
+            var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic;
 
             // Group the methods by name
             var methodMap = new Dictionary<string, List<MethodInfo>>();
-            MethodInfo[] methods = targetType.GetMethods(flags);
-            foreach (MethodInfo method in methods)
+            var methods = targetType.GetMethods(flags);
+            foreach (var method in methods)
             {
-                string name = method.Name;
+                var name = method.Name;
                 if (!methodMap.ContainsKey(name))
                     methodMap[name] = new List<MethodInfo>();
 
-                List<MethodInfo> currentList = methodMap[name];
+                var currentList = methodMap[name];
                 currentList.Add(method);
             }
 
-            List<MethodInfo> targetMethods = methodMap.ContainsKey(methodName)
+            var targetMethods = methodMap.ContainsKey(methodName)
                                                  ? methodMap[methodName]
                                                  : (new MethodInfo[0]).ToList();
             var finder = _container.GetService<IMethodFinder<MethodInfo>>();
 
-            MethodInfo targetMethod = finder.GetBestMatch(targetMethods, context);
+            var targetMethod = finder.GetBestMatch(targetMethods, context);
 
             // Search the methods that match the given method name
             if (targetMethod == null || targetMethods.Count == 0)
             {
-                string message = string.Format("Method '{0}' not found on type '{1}'", methodName, targetType);
+                var message = string.Format("Method '{0}' not found on type '{1}'", methodName, targetType);
                 throw new ArgumentException(message, "methodName");
             }
 

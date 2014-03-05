@@ -28,19 +28,19 @@ namespace LinFu.Proxy
         {
             var results = new HashSet<MethodInfo>();
 
-            IEnumerable<MethodInfo> baseMethods = from method in baseType.GetMethods()
+            var baseMethods = from method in baseType.GetMethods()
                                                   where method.IsVirtual && !method.IsFinal && !method.IsPrivate
                                                   select method;
 
             // Add the virtual methods defined
             // in the base type
-            foreach (MethodInfo method in baseMethods)
+            foreach (var method in baseMethods)
             {
                 if (!results.Contains(method))
                     results.Add(method);
             }
 
-            IEnumerable<MethodInfo> interfaceMethods = from currentInterface in baseInterfaces
+            var interfaceMethods = from currentInterface in baseInterfaces
                                                        from method in currentInterface.GetMethods()
                                                        where method.IsPublic && method.IsVirtual &&
                                                              !method.IsFinal && !results.Contains(method)
@@ -48,7 +48,7 @@ namespace LinFu.Proxy
 
             // Add the virtual methods defined
             // in the interface types
-            foreach (MethodInfo method in interfaceMethods)
+            foreach (var method in interfaceMethods)
             {
                 results.Add(method);
             }

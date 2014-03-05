@@ -40,18 +40,18 @@ namespace LinFu.AOP.Cecil
         /// <param name="IL">The <see cref="CilWorker"/> pointing to the target method body.</param>
         public void Emit(CilWorker IL)
         {
-            MethodDefinition method = IL.GetMethod();
-            TypeReference returnType = method.ReturnType.ReturnType;
+            var method = IL.GetMethod();
+            var returnType = method.ReturnType.ReturnType;
 
-            Instruction endLabel = IL.Create(OpCodes.Nop);
-            Instruction executeOriginalInstructions = IL.Create(OpCodes.Nop);
+            var endLabel = IL.Create(OpCodes.Nop);
+            var executeOriginalInstructions = IL.Create(OpCodes.Nop);
 
             // Execute the method body replacement if and only if
             // interception is enabled
             IL.Emit(OpCodes.Ldloc, _interceptionDisabled);
             IL.Emit(OpCodes.Brtrue, executeOriginalInstructions);
 
-            Instruction invokeReplacement = IL.Create(OpCodes.Nop);
+            var invokeReplacement = IL.Create(OpCodes.Nop);
 
             IL.Emit(OpCodes.Ldloc, _methodReplacementProvider);
             IL.Emit(OpCodes.Brtrue, invokeReplacement);

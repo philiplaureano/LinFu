@@ -18,8 +18,8 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="weaver">The <see cref="ITypeWeaver"/> instance that will modify the methods in the given target type.</param>
         public static void WeaveWith(this TypeDefinition targetType, IMethodWeaver weaver)
         {
-            ModuleDefinition module = targetType.Module;
-            IEnumerable<MethodDefinition> targetMethods = from MethodDefinition method in targetType.Methods
+            var module = targetType.Module;
+            var targetMethods = from MethodDefinition method in targetType.Methods
                                                           where weaver.ShouldWeave(method)
                                                           select method;
 
@@ -29,7 +29,7 @@ namespace LinFu.AOP.Cecil.Extensions
             // Add any additional members to the target type
             weaver.AddAdditionalMembers(targetType);
 
-            foreach (MethodDefinition item in targetMethods)
+            foreach (var item in targetMethods)
             {
                 weaver.Weave(item);
             }
