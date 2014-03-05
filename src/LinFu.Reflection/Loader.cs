@@ -54,7 +54,7 @@ namespace LinFu.Reflection
         /// Initializes the target with the default settings.
         /// </summary>
         public Loader(ITypeExtractor<TAssembly, TType> typeExtractor, IAssemblyLoader<TAssembly> assemblyLoader,
-                      IActionLoader<ILoader<TTarget>, TType> pluginTypeLoader)
+            IActionLoader<ILoader<TTarget>, TType> pluginTypeLoader)
         {
             _pluginLoader = new AssemblyTargetLoader<ILoader<TTarget>, TAssembly, TType>(typeExtractor, assemblyLoader);
             DirectoryLister = new DefaultDirectoryLister();
@@ -64,7 +64,6 @@ namespace LinFu.Reflection
             _pluginLoader.TypeLoaders.Add(pluginTypeLoader);
         }
 
-        #region ILoader<TTarget> Members
 
         /// <summary>
         /// The list of actions that will execute
@@ -214,7 +213,6 @@ namespace LinFu.Reflection
             _loadedFiles.Clear();
         }
 
-        #endregion
 
         /// <summary>
         /// Monitors the given <paramref name="directory"/> for any file changes and
@@ -230,10 +228,10 @@ namespace LinFu.Reflection
                 throw new DirectoryNotFoundException(directory);
 
             FileSystemEventHandler handler = (source, e) =>
-                                                 {
-                                                     LoadDirectory(directory, fileSpec);
-                                                     LoadInto(target);
-                                                 };
+            {
+                LoadDirectory(directory, fileSpec);
+                LoadInto(target);
+            };
 
             var fullPath = Path.GetFullPath(directory);
             var watcher = new FileSystemWatcher(fullPath, fileSpec);

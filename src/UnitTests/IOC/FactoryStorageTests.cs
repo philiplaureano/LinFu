@@ -10,8 +10,6 @@ namespace LinFu.UnitTests.IOC
     [TestFixture]
     public class FactoryStorageTests : BaseTestFixture
     {
-        #region Setup/Teardown
-
         public override void Init()
         {
             _storage = new FactoryStorage();
@@ -22,7 +20,6 @@ namespace LinFu.UnitTests.IOC
             _storage = null;
         }
 
-        #endregion
 
         private IFactoryStorage _storage;
 

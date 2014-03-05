@@ -36,7 +36,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="target">The target object.</param>
         /// <param name="typeFilter">The type filter that determines which types will be modified for interception.</param>
         public static void InterceptMethodCalls(this IReflectionStructureVisitable target,
-                                                Func<TypeReference, bool> typeFilter)
+            Func<TypeReference, bool> typeFilter)
         {
             var hostMethodFilter = GetHostMethodFilter();
             Func<MethodReference, bool> methodCallFilter = m => true;
@@ -64,7 +64,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="methodCallFilter">The <see cref="IMethodCallFilter"/> instance that determines the method calls that will be intercepted.</param>
         /// <param name="hostMethodFilter">The <see cref="IMethodFilter"/> instance that determines the host method calls that will be modified</param>
         public static void InterceptMethodCalls(this IReflectionVisitable target, IMethodCallFilter methodCallFilter,
-                                                IMethodFilter hostMethodFilter)
+            IMethodFilter hostMethodFilter)
         {
             var rewriter = new InterceptMethodCalls(methodCallFilter);
             target.Accept(new ImplementModifiableType(GetDefaultTypeFilter()));
@@ -78,8 +78,8 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="methodCallFilter">The <see cref="IMethodCallFilter"/> instance that determines the method calls that will be intercepted.</param>
         /// <param name="hostMethodFilter">The <see cref="IMethodFilter"/> instance that determines the host method calls that will be modified</param>
         public static void InterceptMethodCalls(this IReflectionStructureVisitable target,
-                                                IMethodCallFilter methodCallFilter,
-                                                IMethodFilter hostMethodFilter)
+            IMethodCallFilter methodCallFilter,
+            IMethodFilter hostMethodFilter)
         {
             var rewriter = new InterceptMethodCalls(methodCallFilter);
             target.Accept(new ImplementModifiableType(GetDefaultTypeFilter()));
@@ -94,9 +94,9 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="hostMethodFilter">The filter that will determine the methods that will be modified on the target type.</param>
         /// <param name="methodCallFilter">The filter that will determine which third-party methods will be intercepted on the target type.</param>
         public static void InterceptMethodCalls(this IReflectionStructureVisitable target,
-                                                Func<TypeReference, bool> typeFilter,
-                                                Func<MethodReference, bool> hostMethodFilter,
-                                                Func<MethodReference, bool> methodCallFilter)
+            Func<TypeReference, bool> typeFilter,
+            Func<MethodReference, bool> hostMethodFilter,
+            Func<MethodReference, bool> methodCallFilter)
         {
             var rewriter = new InterceptMethodCalls(hostMethodFilter, methodCallFilter);
             target.Accept(new ImplementModifiableType(typeFilter));
@@ -111,8 +111,8 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="hostMethodFilter">The filter that will determine the methods that will be modified on the target type.</param>
         /// <param name="methodCallFilter">The filter that will determine which third-party methods will be intercepted on the target type.</param>
         public static void InterceptMethodCalls(this IReflectionVisitable target, Func<TypeReference, bool> typeFilter,
-                                                Func<MethodReference, bool> hostMethodFilter,
-                                                Func<MethodReference, bool> methodCallFilter)
+            Func<MethodReference, bool> hostMethodFilter,
+            Func<MethodReference, bool> methodCallFilter)
         {
             var rewriter = new InterceptMethodCalls(hostMethodFilter, methodCallFilter);
             target.Accept(new ImplementModifiableType(typeFilter));
@@ -122,19 +122,19 @@ namespace LinFu.AOP.Cecil.Extensions
         private static Func<TypeReference, bool> GetDefaultTypeFilter()
         {
             return type =>
-                       {
-                           var actualType1 = type.Resolve();
-                           return !actualType1.IsValueType && !actualType1.IsInterface;
-                       };
+            {
+                var actualType1 = type.Resolve();
+                return !actualType1.IsValueType && !actualType1.IsInterface;
+            };
         }
 
         private static Func<MethodReference, bool> GetHostMethodFilter()
         {
             return method =>
-                       {
-                           var actualMethod = method.Resolve();
-                           return actualMethod.HasBody;
-                       };
+            {
+                var actualMethod = method.Resolve();
+                return actualMethod.HasBody;
+            };
         }
     }
 }

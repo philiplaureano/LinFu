@@ -56,14 +56,14 @@ namespace LinFu.IoC.Configuration
 
             // Check for any named services that can be included in the service list
             Func<IServiceContainer, bool> hasNamedService = container =>
-                                                                {
-                                                                    var matches =
-                                                                        (from info in container.AvailableServices
-                                                                         where info.ServiceType == elementType
-                                                                         select info).Count();
+            {
+                var matches =
+                    (from info in container.AvailableServices
+                        where info.ServiceType == elementType
+                        select info).Count();
 
-                                                                    return matches > 0;
-                                                                };
+                return matches > 0;
+            };
 
             return hasService.Or(hasNamedService);
         }
@@ -88,14 +88,14 @@ namespace LinFu.IoC.Configuration
 
             // Check for any named services that can be included in the service list
             Func<IServiceContainer, bool> hasNamedService = container =>
-                                                                {
-                                                                    var matches =
-                                                                        (from info in container.AvailableServices
-                                                                         where info.ServiceType == elementType
-                                                                         select info).Count();
+            {
+                var matches =
+                    (from info in container.AvailableServices
+                        where info.ServiceType == elementType
+                        select info).Count();
 
-                                                                    return matches > 0;
-                                                                };
+                return matches > 0;
+            };
 
             return hasService.Or(hasNamedService);
         }
@@ -108,7 +108,7 @@ namespace LinFu.IoC.Configuration
         /// <param name="container">The container that will provide the method arguments.</param>
         /// <returns>An array of objects to be used with the target method.</returns>
         public static object[] ResolveArgumentsFrom(this MethodBase method,
-                                                    IServiceContainer container)
+            IServiceContainer container)
         {
             var resolver = container.GetService<IArgumentResolver>();
             return resolver.ResolveFrom(method, container);
@@ -125,10 +125,10 @@ namespace LinFu.IoC.Configuration
         /// <param name="additionalArguments">The additional arguments that will be passed to the target method.</param>
         /// <returns>An array of objects to be used with the target method.</returns>
         public static object[] ResolveFrom(this IArgumentResolver resolver, MethodBase method,
-                                           IServiceContainer container, params object[] additionalArguments)
+            IServiceContainer container, params object[] additionalArguments)
         {
             var parameterTypes = from p in method.GetParameters()
-                                                     select new NamedType(p) as INamedType;
+                select new NamedType(p) as INamedType;
 
             return resolver.ResolveFrom(parameterTypes, container, additionalArguments);
         }
@@ -144,8 +144,8 @@ namespace LinFu.IoC.Configuration
         public static object Cast(this IEnumerable items, Type targetElementType)
         {
             var castMethodDefinition = typeof (ResolutionExtensions).GetMethod("Cast",
-                                                                                      BindingFlags.NonPublic |
-                                                                                      BindingFlags.Static);
+                BindingFlags.NonPublic |
+                BindingFlags.Static);
             var castMethod = castMethodDefinition.MakeGenericMethod(targetElementType);
 
             var enumerable = items;

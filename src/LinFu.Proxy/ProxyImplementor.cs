@@ -15,8 +15,6 @@ namespace LinFu.Proxy
     [Implements(typeof (ITypeBuilder), LifecycleType.OncePerRequest, ServiceName = "ProxyImplementor")]
     internal class ProxyImplementor : ITypeBuilder
     {
-        #region ITypeBuilder Members
-
         /// <summary>
         /// Constructs a type that implements the
         /// <see cref="IProxy"/> interface.
@@ -35,7 +33,5 @@ namespace LinFu.Proxy
             targetType.Interfaces.Add(proxyInterfaceType);
             targetType.AddProperty("Interceptor", interceptorType);
         }
-
-        #endregion
     }
 }

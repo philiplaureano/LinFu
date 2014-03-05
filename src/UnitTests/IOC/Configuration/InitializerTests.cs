@@ -13,14 +13,11 @@ namespace LinFu.UnitTests.IOC.Configuration
         {
             public bool InitializeCalled { get; set; }
 
-            #region IInitialize Members
 
             public void Initialize(IServiceContainer source)
             {
                 InitializeCalled = true;
             }
-
-            #endregion
         }
 
         public class TestServiceContainer : ServiceContainer

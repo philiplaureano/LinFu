@@ -36,7 +36,6 @@ namespace LinFu.Proxy
         /// </summary>
         public IEmitInvocationInfo InvocationInfoEmitter { get; set; }
 
-        #region IInitialize Members
 
         /// <summary>
         /// Initializes the MethodBodyEmitter class.
@@ -47,9 +46,6 @@ namespace LinFu.Proxy
             InvocationInfoEmitter = (IEmitInvocationInfo) source.GetService(typeof (IEmitInvocationInfo));
         }
 
-        #endregion
-
-        #region IMethodBodyEmitter Members
 
         /// <summary>
         /// Generates a method body for the <paramref name="targetMethod"/>.
@@ -100,12 +96,12 @@ namespace LinFu.Proxy
 
             // Save the ref arguments
             var parameters = from ParameterDefinition param in targetMethod.Parameters
-                                                          select param;
+                select param;
 
             // Determine the return type
             var returnType = targetMethod.ReturnType != null
-                                           ? targetMethod.ReturnType.ReturnType
-                                           : voidType;
+                ? targetMethod.ReturnType.ReturnType
+                : voidType;
 
             IL.PackageReturnValue(module, returnType);
 
@@ -122,7 +118,6 @@ namespace LinFu.Proxy
             IL.Emit(OpCodes.Ret);
         }
 
-        #endregion
 
         /// <summary>
         /// Emits the IL instructions to obtain an <see cref="IInterceptor"/> instance for the proxy type.
@@ -131,7 +126,7 @@ namespace LinFu.Proxy
         /// <param name="proxyType">The proxy type.</param>
         /// <param name="getInterceptorMethod">The getter method for the interceptor.</param>
         protected virtual void EmitGetInterceptorInstruction(CilWorker IL, TypeReference proxyType,
-                                                             MethodReference getInterceptorMethod)
+            MethodReference getInterceptorMethod)
         {
             IL.Emit(OpCodes.Ldarg_0);
             IL.Emit(OpCodes.Isinst, proxyType);
@@ -165,7 +160,7 @@ namespace LinFu.Proxy
         /// <param name="invocationInfo">The local variable that contains the <see cref="IInvocationInfo"/> instance.</param>
         /// <param name="arguments">The local variable that will store the arguments from the <see cref="IInvocationInfo"/> instance.</param>
         private static void SaveRefArguments(CilWorker IL, IEnumerable<ParameterDefinition> parameters,
-                                             VariableDefinition invocationInfo, VariableDefinition arguments)
+            VariableDefinition invocationInfo, VariableDefinition arguments)
         {
             var body = IL.GetBody();
             var targetMethod = body.Method;

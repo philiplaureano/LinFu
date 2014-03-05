@@ -14,7 +14,7 @@ namespace LinFu.UnitTests.IOC
         public void ShouldLoadAssemblyIntoLoaderAtRuntime()
         {
             var path = Path.Combine(@"..\..\..\SampleFileWatcherLibrary\bin\Debug",
-                                       AppDomain.CurrentDomain.BaseDirectory);
+                AppDomain.CurrentDomain.BaseDirectory);
             var targetFile = "SampleFileWatcherLibrary.dll";
             var sourceFileName = Path.Combine(path, targetFile);
 

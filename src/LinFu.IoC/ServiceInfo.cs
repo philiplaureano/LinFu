@@ -41,7 +41,6 @@ namespace LinFu.IoC
             _arguments = arguments;
         }
 
-        #region IServiceInfo Members
 
         /// <summary>
         /// The name of the service being created. By default, this property is blank.
@@ -67,7 +66,6 @@ namespace LinFu.IoC
             get { return _arguments; }
         }
 
-        #endregion
 
         /// <summary>
         /// Displays the name of the current service and the current service type.
@@ -76,7 +74,7 @@ namespace LinFu.IoC
         public override string ToString()
         {
             return string.Format("Service Name: '{0}', Service Type = '{1}'", ServiceName,
-                                 ServiceType.AssemblyQualifiedName);
+                ServiceType.AssemblyQualifiedName);
         }
 
         /// <summary>

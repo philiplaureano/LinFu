@@ -9,8 +9,6 @@ namespace LinFu.IoC
     /// </summary>
     internal class ServiceRequestResult : IServiceRequestResult
     {
-        #region IServiceRequestResult Members
-
         /// <summary>
         /// The name of the service being created. By default, this property is blank.
         /// </summary>
@@ -44,7 +42,5 @@ namespace LinFu.IoC
         /// were used during the service request.
         /// </summary>
         public object[] AdditionalArguments { get; internal set; }
-
-        #endregion
     }
 }

@@ -54,11 +54,11 @@ namespace LinFu.UnitTests.IOC
             {
                 var signal = new ManualResetEvent(false);
                 WaitCallback callback = state =>
-                                            {
-                                                // Create the service instance
-                                                var instance = container.GetService<IDisposable>();
-                                                signal.Set();
-                                            };
+                {
+                    // Create the service instance
+                    var instance = container.GetService<IDisposable>();
+                    signal.Set();
+                };
 
                 ThreadPool.QueueUserWorkItem(callback);
 

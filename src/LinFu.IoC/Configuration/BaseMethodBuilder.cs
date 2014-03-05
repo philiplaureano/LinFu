@@ -14,8 +14,6 @@ namespace LinFu.IoC.Configuration
     public abstract class BaseMethodBuilder<TMethod> : IMethodBuilder<TMethod>
         where TMethod : MethodBase
     {
-        #region IMethodBuilder<TMethod> Members
-
         /// <summary>
         /// Creates a method from the <paramref name="existingMethod"/>.
         /// </summary>
@@ -25,7 +23,7 @@ namespace LinFu.IoC.Configuration
         {
             var returnType = GetReturnType(existingMethod);
             var parameterTypes = (from p in existingMethod.GetParameters()
-                                     select p.ParameterType).ToArray();
+                select p.ParameterType).ToArray();
 
             // Determine the method signature
             var parameterList = GetParameterList(existingMethod, parameterTypes);
@@ -50,7 +48,6 @@ namespace LinFu.IoC.Configuration
             return dynamicMethod;
         }
 
-        #endregion
 
         /// <summary>
         /// Pushes the method arguments onto the stack.
@@ -60,7 +57,7 @@ namespace LinFu.IoC.Configuration
         protected virtual void PushMethodArguments(ILGenerator IL, MethodBase targetMethod)
         {
             var parameterTypes = (from p in targetMethod.GetParameters()
-                                     select p.ParameterType).ToArray();
+                select p.ParameterType).ToArray();
 
             // Push the method arguments onto the stack
             var parameterCount = parameterTypes.Length;

@@ -19,7 +19,6 @@ namespace LinFu.Proxy.Interfaces
             _doIntercept = intercept;
         }
 
-        #region IInterceptor Members
 
         /// <summary>
         /// A method that redirects the method calls to 
@@ -34,7 +33,5 @@ namespace LinFu.Proxy.Interfaces
 
             return _doIntercept(info);
         }
-
-        #endregion
     }
 }

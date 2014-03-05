@@ -18,7 +18,6 @@ namespace LinFu.IoC
         private bool _disposed;
         private int _threadId;
 
-        #region IInitialize Members
 
         /// <summary>
         /// Inserts the scope into the target <paramref name="source">container</paramref>.
@@ -39,9 +38,6 @@ namespace LinFu.IoC
             }
         }
 
-        #endregion
-
-        #region IPostProcessor Members
 
         /// <summary>
         /// Monitors the <see cref="IServiceContainer"/> for any services that are created and automatically disposes them
@@ -66,9 +62,6 @@ namespace LinFu.IoC
             _disposables.Add(weakRef);
         }
 
-        #endregion
-
-        #region IScope Members
 
         /// <summary>
         /// Disposes the services that have been created while the scope has been active.
@@ -100,7 +93,5 @@ namespace LinFu.IoC
             // Remove the scope from the target container
             _container.PostProcessors.Remove(this);
         }
-
-        #endregion
     }
 }

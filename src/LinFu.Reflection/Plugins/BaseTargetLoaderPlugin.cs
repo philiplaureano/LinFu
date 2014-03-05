@@ -11,7 +11,7 @@ namespace LinFu.Reflection.Plugins
     /// <typeparam name="TAssembly">The assembly type.</typeparam>
     /// <typeparam name="TType">The input type.</typeparam>
     public abstract class BaseTargetLoaderPlugin<TTarget, TAssembly, TType> : BaseLoaderPlugin<TTarget>,
-                                                                              IInitialize<ILoader<TTarget>>
+        IInitialize<ILoader<TTarget>>
     {
         private readonly IAssemblyTargetLoader<TTarget, TAssembly, TType> _assemblyLoader;
         private readonly ITypeExtractor<TAssembly, TType> _typeExtractor;
@@ -22,13 +22,12 @@ namespace LinFu.Reflection.Plugins
         /// <param name="typeExtractor">The type extractor that will pull the types out of the current assembly.</param>
         /// <param name="assemblyLoader">The assembly loader that will load the current assembly into memory.</param>
         protected BaseTargetLoaderPlugin(ITypeExtractor<TAssembly, TType> typeExtractor,
-                                         IAssemblyTargetLoader<TTarget, TAssembly, TType> assemblyLoader)
+            IAssemblyTargetLoader<TTarget, TAssembly, TType> assemblyLoader)
         {
             _typeExtractor = typeExtractor;
             _assemblyLoader = assemblyLoader;
         }
 
-        #region IInitialize<ILoader<TTarget>> Members
 
         /// <summary>
         /// Searches the loader for an <see cref="IAssemblyTargetLoader{T}"/>
@@ -41,7 +40,6 @@ namespace LinFu.Reflection.Plugins
             Initialize(source, _assemblyLoader);
         }
 
-        #endregion
 
         /// <summary>
         /// Initializes the <paramref name="loader"/> instance
@@ -50,7 +48,7 @@ namespace LinFu.Reflection.Plugins
         /// <param name="loader">The loader being configured.</param>
         /// <param name="assemblyLoader">The assembly loader that will load the types into the loader itself.</param>
         protected abstract void Initialize(ILoader<TTarget> loader,
-                                           IAssemblyTargetLoader<TTarget, TAssembly, TType> assemblyLoader);
+            IAssemblyTargetLoader<TTarget, TAssembly, TType> assemblyLoader);
     }
 
     /// <summary>

@@ -7,8 +7,6 @@ namespace SampleLibrary
     [Factory(typeof (ISampleGenericService<>))]
     public class SampleOpenGenericFactory : IFactory
     {
-        #region IFactory Members
-
         public object CreateInstance(IFactoryRequest request)
         {
             var serviceType = request.ServiceType;
@@ -17,7 +15,5 @@ namespace SampleLibrary
 
             return Activator.CreateInstance(resultType);
         }
-
-        #endregion
     }
 }

@@ -21,7 +21,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="targetMethod">The actual method that will contain the resulting instructions.</param>
         /// <param name="invocationInfo">The <see cref="VariableDefinition">local variable</see> that will store the current <see cref="IInvocationInfo"/> instance.</param>
         public static void Emit(this IEmitInvocationInfo emitter, MethodInfo method, MethodDefinition targetMethod,
-                                VariableDefinition invocationInfo)
+            VariableDefinition invocationInfo)
         {
             var module = targetMethod.DeclaringType.Module;
             var interceptedMethod = module.Import(method);
@@ -73,7 +73,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="arguments">The arguments that will be used for the actual method call.</param>
         /// <returns>The return value of the method call.</returns>
         public static object Proceed(this IInvocationInfo info, object target,
-                                     params object[] arguments)
+            params object[] arguments)
         {
             var targetMethod = info.TargetMethod;
             return targetMethod.Invoke(target, arguments);

@@ -8,8 +8,9 @@ namespace LinFu.AOP.Interfaces
 {
     internal class MultiThreadedCallCounter : ICallCounter
     {
-        private readonly Dictionary<int, SingleThreadedCallCounter> _counts = new Dictionary<int, SingleThreadedCallCounter>();
-        #region ICallCounter Members
+        private readonly Dictionary<int, SingleThreadedCallCounter> _counts =
+            new Dictionary<int, SingleThreadedCallCounter>();
+
 
         public void Increment(IInvocationInfo context)
         {
@@ -44,7 +45,5 @@ namespace LinFu.AOP.Interfaces
 
             return _counts[threadId].GetPendingCalls(context);
         }
-
-        #endregion
     }
 }

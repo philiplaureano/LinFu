@@ -22,7 +22,6 @@ namespace LinFu.AOP.Cecil
             _filter = filter;
         }
 
-        #region ITypeWeaver Members
 
         public bool ShouldWeave(TypeDefinition item)
         {
@@ -59,7 +58,5 @@ namespace LinFu.AOP.Cecil
         public void ImportReferences(ModuleDefinition module)
         {
         }
-
-        #endregion
     }
 }

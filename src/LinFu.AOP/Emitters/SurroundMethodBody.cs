@@ -39,9 +39,9 @@ namespace LinFu.AOP.Cecil
             _providerName = providerName;
 
             var getMethodReplacementProvider = new GetMethodReplacementProvider(_methodReplacementProvider,
-                                                                                parameters.TargetMethod,
-                                                                                parameters.
-                                                                                    GetMethodReplacementProviderMethod);
+                parameters.TargetMethod,
+                parameters.
+                    GetMethodReplacementProviderMethod);
 
             _getMethodReplacementProvider = getMethodReplacementProvider;
             _registryType = parameters.RegistryType;
@@ -58,12 +58,12 @@ namespace LinFu.AOP.Cecil
         /// <param name="registryType">The interception registry type that will be responsible for handling class-level interception events.</param>
         /// <param name="providerName">The name of the <see cref="IAroundInvokeProvider"/> property.</param>
         public SurroundMethodBody(VariableDefinition methodReplacementProvider,
-                                  VariableDefinition aroundInvokeProvider,
-                                  VariableDefinition invocationInfo,
-                                  VariableDefinition interceptionDisabled,
-                                  VariableDefinition returnValue,
-                                  Type registryType,
-                                  string providerName)
+            VariableDefinition aroundInvokeProvider,
+            VariableDefinition invocationInfo,
+            VariableDefinition interceptionDisabled,
+            VariableDefinition returnValue,
+            Type registryType,
+            string providerName)
         {
             _methodReplacementProvider = methodReplacementProvider;
             _aroundInvokeProvider = aroundInvokeProvider;
@@ -74,7 +74,6 @@ namespace LinFu.AOP.Cecil
             _providerName = providerName;
         }
 
-        #region ISurroundMethodBody Members
 
         /// <summary>
         /// Adds a prolog to the given method body.
@@ -112,9 +111,9 @@ namespace LinFu.AOP.Cecil
             // if (aroundInvokeProvider != null ) {
             var skipGetSurroundingImplementation = IL.Create(OpCodes.Nop);
             var getSurroundingImplementationInstance = new GetSurroundingImplementationInstance(_aroundInvokeProvider,
-                                                                                                _invocationInfo,
-                                                                                                _surroundingImplementation,
-                                                                                                skipGetSurroundingImplementation);
+                _invocationInfo,
+                _surroundingImplementation,
+                skipGetSurroundingImplementation);
 
             getSurroundingImplementationInstance.Emit(IL);
 
@@ -122,7 +121,7 @@ namespace LinFu.AOP.Cecil
 
             IL.Append(skipGetSurroundingImplementation);
             var emitBeforeInvoke = new EmitBeforeInvoke(_invocationInfo, _surroundingClassImplementation,
-                                                        _surroundingImplementation, _registryType);
+                _surroundingImplementation, _registryType);
             emitBeforeInvoke.Emit(IL);
 
             IL.Append(skipProlog);
@@ -142,13 +141,11 @@ namespace LinFu.AOP.Cecil
 
             // surroundingImplementation.AfterInvoke(invocationInfo, returnValue);
             var emitAfterInvoke = new EmitAfterInvoke(_surroundingImplementation, _surroundingClassImplementation,
-                                                      _invocationInfo, _returnValue);
+                _invocationInfo, _returnValue);
             emitAfterInvoke.Emit(IL);
 
             // }
             IL.Append(skipEpilog);
         }
-
-        #endregion
     }
 }

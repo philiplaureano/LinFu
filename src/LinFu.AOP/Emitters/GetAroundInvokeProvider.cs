@@ -25,7 +25,6 @@ namespace LinFu.AOP.Cecil
             _providerName = providerName;
         }
 
-        #region IInstructionEmitter Members
 
         /// <summary>
         /// Emits the call to obtain the <see cref="IAroundInvokeProvider"/> instance.
@@ -51,7 +50,5 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Callvirt, getAroundInvokeProvider);
             IL.Emit(OpCodes.Stloc, _aroundInvokeProvider);
         }
-
-        #endregion
     }
 }

@@ -16,7 +16,6 @@ namespace LinFu.AOP.Cecil
             _filter = filter;
         }
 
-        #region ITypeWeaver Members
 
         public virtual bool ShouldWeave(TypeDefinition item)
         {
@@ -54,7 +53,5 @@ namespace LinFu.AOP.Cecil
         {
             _hostType = module.Import(typeof (IMethodReplacementHost));
         }
-
-        #endregion
     }
 }

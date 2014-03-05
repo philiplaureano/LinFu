@@ -17,13 +17,10 @@ namespace SampleLibrary.IOC
             _sample = service;
         }
 
-        #region IFactory Members
 
         public object CreateInstance(IFactoryRequest request)
         {
             return "42";
         }
-
-        #endregion
     }
 }

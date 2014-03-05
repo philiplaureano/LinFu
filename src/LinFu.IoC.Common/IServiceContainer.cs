@@ -32,7 +32,7 @@ namespace LinFu.IoC.Interfaces
         /// <param name="additionalParameterTypes">The list of additional parameters that this factory type will support.</param>
         /// <param name="factory">The <see cref="IFactory"/> instance that will create the object instance.</param>
         void AddFactory(string serviceName, Type serviceType, IEnumerable<Type> additionalParameterTypes,
-                        IFactory factory);
+            IFactory factory);
 
         /// <summary>
         /// Determines whether or not a service can be created using

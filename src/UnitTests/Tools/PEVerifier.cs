@@ -23,7 +23,6 @@ namespace LinFu.UnitTests.Tools
             _filename = filename;
         }
 
-        #region IVerifier Members
 
         public void Verify(AssemblyDefinition assembly)
         {
@@ -32,7 +31,6 @@ namespace LinFu.UnitTests.Tools
             PEVerify(location);
         }
 
-        #endregion
 
         ~PEVerifier()
         {
@@ -50,11 +48,11 @@ namespace LinFu.UnitTests.Tools
         private void PEVerify(string assemblyLocation)
         {
             var pathKeys = new[]
-                               {
-                                   "sdkDir",
-                                   "x86SdkDir",
-                                   "sdkDirUnderVista"
-                               };
+            {
+                "sdkDir",
+                "x86SdkDir",
+                "sdkDirUnderVista"
+            };
 
             var process = new Process();
             var peVerifyLocation = string.Empty;

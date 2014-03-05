@@ -17,12 +17,9 @@ namespace LinFu.Proxy
             Interfaces = interfaces;
         }
 
-        #region Nested type: EqualityComparer
 
         internal class EqualityComparer : IEqualityComparer<ProxyCacheEntry>
         {
-            #region IEqualityComparer<ProxyCacheEntry> Members
-
             public bool Equals(ProxyCacheEntry x, ProxyCacheEntry y)
             {
                 // Match the base t ypes
@@ -81,10 +78,6 @@ namespace LinFu.Proxy
 
                 return result;
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

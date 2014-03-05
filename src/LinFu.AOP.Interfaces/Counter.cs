@@ -8,7 +8,8 @@ namespace LinFu.AOP.Interfaces
     internal class Counter<T>
     {
         private int _count;
-        private object lockObject = new object();
+        private readonly object lockObject = new object();
+
         public void Increment()
         {
             lock (lockObject)
@@ -16,6 +17,7 @@ namespace LinFu.AOP.Interfaces
                 _count++;
             }
         }
+
         public void Decrement()
         {
             lock (lockObject)
@@ -23,6 +25,7 @@ namespace LinFu.AOP.Interfaces
                 _count--;
             }
         }
+
         public int GetCount()
         {
             return _count;

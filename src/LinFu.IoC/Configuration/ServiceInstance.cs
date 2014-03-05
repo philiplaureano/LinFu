@@ -7,12 +7,8 @@ namespace LinFu.IoC.Configuration
     /// </summary>
     internal class ServiceInstance : IServiceInstance
     {
-        #region IServiceInstance Members
-
         public IServiceInfo ServiceInfo { get; internal set; }
 
         public object Object { get; internal set; }
-
-        #endregion
     }
 }

@@ -23,7 +23,6 @@ namespace LinFu.IoC.Configuration.Injectors
             _factory = factory;
         }
 
-        #region IPreProcessor Members
 
         /// <summary>
         /// Injects the given factory into the target container.
@@ -54,7 +53,5 @@ namespace LinFu.IoC.Configuration.Injectors
             // Inject the custom factory itself            
             request.ActualFactory = _factory;
         }
-
-        #endregion
     }
 }

@@ -20,13 +20,12 @@ namespace LinFu.IoC.Interceptors
         /// <param name="filterPredicate">The predicate that will determine which service requests will be proxied.</param>
         /// <param name="createProxy">The factory method that will generate the proxy instance itself.</param>
         public ProxyInjector(Func<IServiceRequestResult, bool> filterPredicate,
-                               Func<IServiceRequestResult, object> createProxy)
+            Func<IServiceRequestResult, object> createProxy)
         {
             _filterPredicate = filterPredicate;
             _createProxy = createProxy;
         }
 
-        #region IPostProcessor Members
 
         /// <summary>
         /// A method that injects service proxies in place of the actual <see cref="IServiceRequestResult.ActualResult"/>.
@@ -53,7 +52,5 @@ namespace LinFu.IoC.Interceptors
             // Replace the actual result with the proxy itself
             result.ActualResult = _createProxy(result);
         }
-
-        #endregion
     }
 }

@@ -8,8 +8,6 @@ namespace LinFu.Reflection
     /// </summary>
     internal class DefaultDirectoryLister : IDirectoryListing
     {
-        #region IDirectoryListing Members
-
         /// <summary>
         /// Returns a list of files that match the <paramref name="searchPattern"/>
         /// from the given directory <paramref name="path"/>.
@@ -21,7 +19,5 @@ namespace LinFu.Reflection
         {
             return Directory.GetFiles(path, searchPattern);
         }
-
-        #endregion
     }
 }

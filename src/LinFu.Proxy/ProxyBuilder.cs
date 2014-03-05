@@ -47,7 +47,6 @@ namespace LinFu.Proxy
         /// </summary>
         public IMethodBuilder ProxyMethodBuilder { get; set; }
 
-        #region IInitialize Members
 
         /// <summary>
         /// Initializes the current instance
@@ -61,9 +60,6 @@ namespace LinFu.Proxy
             ProxyMethodBuilder = (IMethodBuilder) source.GetService("ProxyMethodBuilder", typeof (IMethodBuilder));
         }
 
-        #endregion
-
-        #region IProxyBuilder Members
 
         /// <summary>
         /// Generates a proxy that forwards all virtual method calls
@@ -74,7 +70,7 @@ namespace LinFu.Proxy
         /// <param name="module">The module that will hold the brand new type.</param>
         /// <param name="targetType">The <see cref="TypeDefinition"/> that represents the type to be created.</param>
         public virtual void Construct(Type originalBaseType, IEnumerable<Type> baseInterfaces,
-                                      ModuleDefinition module, TypeDefinition targetType)
+            ModuleDefinition module, TypeDefinition targetType)
         {
             // Determine which interfaces need to be implemented
             var interfaces = new HashSet<Type>(baseInterfaces);
@@ -98,7 +94,5 @@ namespace LinFu.Proxy
                 ProxyMethodBuilder.CreateMethod(targetType, method);
             }
         }
-
-        #endregion
     }
 }

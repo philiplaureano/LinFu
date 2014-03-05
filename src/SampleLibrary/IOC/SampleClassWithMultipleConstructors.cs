@@ -19,15 +19,15 @@
         }
 
         public SampleClassWithMultipleConstructors(ISampleService firstService, ISampleService secondService,
-                                                   ISampleGenericService<int> otherService)
+            ISampleGenericService<int> otherService)
         {
             // This is a dummy constructor that will be used
             // to attempt to confuse the fuzzy constructor search
         }
 
         public SampleClassWithMultipleConstructors(ISampleService firstService, ISampleService secondService,
-                                                   ISampleGenericService<int> otherService,
-                                                   ISampleGenericService<string> someOtherService)
+            ISampleGenericService<int> otherService,
+            ISampleGenericService<string> someOtherService)
         {
             // This is a dummy constructor that will be used
             // to attempt to confuse the fuzzy constructor search

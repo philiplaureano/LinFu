@@ -22,11 +22,11 @@ namespace LinFu.IoC.Configuration
         /// <param name="additionalArguments">The additional arguments that were passed to the <see cref="IServiceRequestResult"/> during the instantiation process.</param>
         /// <param name="container">The container that will provide the service instances.</param>
         protected override void Inject(object target, MethodInfo method,
-                                       IArgumentResolver resolver, IServiceContainer container,
-                                       object[] additionalArguments)
+            IArgumentResolver resolver, IServiceContainer container,
+            object[] additionalArguments)
         {
             var parameterTypes = from p in method.GetParameters()
-                                                     select new NamedType(p) as INamedType;
+                select new NamedType(p) as INamedType;
 
             var arguments = resolver.ResolveFrom(parameterTypes, container, additionalArguments);
 

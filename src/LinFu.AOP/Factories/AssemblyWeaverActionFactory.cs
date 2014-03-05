@@ -13,8 +13,6 @@ namespace LinFu.AOP.Cecil.Factories
     [Factory(typeof (Action<string, AssemblyDefinition>), ServiceName = "AssemblyWeaver")]
     public class AssemblyWeaverActionFactory : IFactory
     {
-        #region IFactory Members
-
         /// <summary>
         /// Generates <see cref="Action{T1, T2}"/> instances
         /// that apply a specific method weaver (with the name given in the first delegate parameter)
@@ -27,23 +25,21 @@ namespace LinFu.AOP.Cecil.Factories
             var container = request.Container;
             Action<string, AssemblyDefinition> result =
                 (weaverName, assembly) =>
-                    {
-                        // Create the lambda that can modify the target types
-                        var weaveWith =
-                            (Action<string, TypeDefinition>)
+                {
+                    // Create the lambda that can modify the target types
+                    var weaveWith =
+                        (Action<string, TypeDefinition>)
                             container.GetService("TypeWeaver", typeof (Action<string, TypeDefinition>));
-                        var mainModule = assembly.MainModule;
+                    var mainModule = assembly.MainModule;
 
-                        foreach (TypeDefinition type in mainModule.Types)
-                        {
-                            // Use the method weaver on the target type
-                            weaveWith(weaverName, type);
-                        }
-                    };
+                    foreach (TypeDefinition type in mainModule.Types)
+                    {
+                        // Use the method weaver on the target type
+                        weaveWith(weaverName, type);
+                    }
+                };
 
             return result;
         }
-
-        #endregion
     }
 }

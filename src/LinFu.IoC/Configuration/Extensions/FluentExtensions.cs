@@ -23,10 +23,10 @@ namespace LinFu.IoC
         public static IUsingLambda<TService> Inject<TService>(this IServiceContainer container, string serviceName)
         {
             var context = new InjectionContext<TService>
-                              {
-                                  ServiceName = serviceName,
-                                  Container = container
-                              };
+            {
+                ServiceName = serviceName,
+                Container = container
+            };
 
             return new UsingLambda<TService>(context);
         }
@@ -41,10 +41,10 @@ namespace LinFu.IoC
         public static IUsingLambda<TService> Inject<TService>(this IServiceContainer container)
         {
             var context = new InjectionContext<TService>
-                              {
-                                  ServiceName = null,
-                                  Container = container
-                              };
+            {
+                ServiceName = null,
+                Container = container
+            };
 
             return new UsingLambda<TService>(context);
         }
@@ -68,13 +68,13 @@ namespace LinFu.IoC
         /// <param name="serviceName">The name of the service to initialize.</param>
         /// <returns>A <see cref="IPropertyInjectionLambda{T}"/> instance. This cannot be <c>null</c>.</returns>
         public static IPropertyInjectionLambda<TService> Initialize<TService>(this IServiceContainer container,
-                                                                              string serviceName)
+            string serviceName)
         {
             var context = new ActionContext<TService>
-                              {
-                                  ServiceName = serviceName,
-                                  Container = container,
-                              };
+            {
+                ServiceName = serviceName,
+                Container = container,
+            };
 
             return new PropertyInjectionLambda<TService>(context);
         }

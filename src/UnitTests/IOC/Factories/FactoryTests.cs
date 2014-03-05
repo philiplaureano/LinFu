@@ -14,8 +14,6 @@ namespace LinFu.UnitTests.IOC.Factories
     [TestFixture]
     public class FactoryTests
     {
-        #region Setup/Teardown
-
         [SetUp]
         public void Init()
         {
@@ -30,7 +28,6 @@ namespace LinFu.UnitTests.IOC.Factories
             createInstance = null;
         }
 
-        #endregion
 
         private Func<IFactoryRequest, ISerializable> createInstance;
 
@@ -49,11 +46,11 @@ namespace LinFu.UnitTests.IOC.Factories
             Assert.IsInstanceOfType(typeof (IFactory), adapter);
 
             var factoryRequest = new FactoryRequest
-                                     {
-                                         ServiceName = null,
-                                         ServiceType = typeof (ISerializable),
-                                         Container = container
-                                     };
+            {
+                ServiceName = null,
+                ServiceType = typeof (ISerializable),
+                Container = container
+            };
 
             adapter.CreateInstance(factoryRequest);
 
@@ -95,18 +92,18 @@ namespace LinFu.UnitTests.IOC.Factories
             var resultList = new List<ISerializable>();
 
             Action<IFactory<ISerializable>> doCreate = factory =>
-                                                           {
-                                                               var instance = factory.CreateInstance(null);
-                                                               var otherInstance = factory.CreateInstance(null);
+            {
+                var instance = factory.CreateInstance(null);
+                var otherInstance = factory.CreateInstance(null);
 
-                                                               // The two instances 
-                                                               // within the same thread must match
-                                                               Assert.AreSame(instance, otherInstance);
-                                                               lock (resultList)
-                                                               {
-                                                                   resultList.Add(instance);
-                                                               }
-                                                           };
+                // The two instances 
+                // within the same thread must match
+                Assert.AreSame(instance, otherInstance);
+                lock (resultList)
+                {
+                    resultList.Add(instance);
+                }
+            };
 
 
             // Create the instance in another thread
@@ -173,12 +170,12 @@ namespace LinFu.UnitTests.IOC.Factories
             var container = new ServiceContainer();
 
             var request = new FactoryRequest
-                              {
-                                  ServiceName = null,
-                                  Arguments = new object[0],
-                                  Container = container,
-                                  ServiceType = typeof (ISerializable)
-                              };
+            {
+                ServiceName = null,
+                Arguments = new object[0],
+                Container = container,
+                ServiceType = typeof (ISerializable)
+            };
 
             var first = factory.CreateInstance(request);
             var second = factory.CreateInstance(request);

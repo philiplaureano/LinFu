@@ -42,8 +42,8 @@ namespace LinFu.AOP.Interfaces
                     {
                         var componentName = component != null ? component.GetType().Name : "(unknown)";
                         var message = string.Format("{0} Error: Unable to load component '{1}' - {2}",
-                                                       GetType().FullName,
-                                                       componentName, ex);
+                            GetType().FullName,
+                            componentName, ex);
 
                         throw new BootstrapException(message, ex);
                     }
@@ -60,7 +60,6 @@ namespace LinFu.AOP.Interfaces
             return _components;
         }
 
-        #region Nested type: NestedLoader
 
         private class NestedLoader
         {
@@ -73,7 +72,5 @@ namespace LinFu.AOP.Interfaces
                 Instance = new BootStrapRegistry();
             }
         }
-
-        #endregion
     }
 }

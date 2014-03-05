@@ -22,7 +22,6 @@ namespace LinFu.AOP.Interfaces
             }
         }
 
-        #region IAroundInvoke Members
 
         public void AfterInvoke(IInvocationInfo context, object returnValue)
         {
@@ -39,7 +38,5 @@ namespace LinFu.AOP.Interfaces
                 invoke.BeforeInvoke(context);
             }
         }
-
-        #endregion
     }
 }

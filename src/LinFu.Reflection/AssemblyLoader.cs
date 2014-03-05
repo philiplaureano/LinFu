@@ -8,8 +8,6 @@ namespace LinFu.Reflection
     /// </summary>
     public class AssemblyLoader : IAssemblyLoader
     {
-        #region IAssemblyLoader Members
-
         /// <summary>
         /// Loads the target assembly into memory.
         /// </summary>
@@ -19,7 +17,5 @@ namespace LinFu.Reflection
         {
             return Assembly.LoadFrom(assemblyFile);
         }
-
-        #endregion
     }
 }

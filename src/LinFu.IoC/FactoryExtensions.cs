@@ -17,14 +17,14 @@ namespace LinFu.IoC
         /// <param name="additionalArguments">The additional arguments that will be used to create the service instance.</param>
         /// <returns>A service instance.</returns>
         public static object CreateInstance(this IFactory factory, Type serviceType,
-                                            IServiceContainer container, params object[] additionalArguments)
+            IServiceContainer container, params object[] additionalArguments)
         {
             var request = new FactoryRequest
-                              {
-                                  ServiceName = null,
-                                  ServiceType = serviceType,
-                                  Arguments = additionalArguments
-                              };
+            {
+                ServiceName = null,
+                ServiceType = serviceType,
+                Arguments = additionalArguments
+            };
 
             return factory.CreateInstance(request);
         }

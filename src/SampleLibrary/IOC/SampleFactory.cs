@@ -6,13 +6,9 @@ namespace SampleLibrary
     [Factory(typeof (ISampleService))]
     public class SampleFactory : IFactory
     {
-        #region IFactory Members
-
         public object CreateInstance(IFactoryRequest request)
         {
             return new SampleClass();
         }
-
-        #endregion
     }
 }

@@ -21,8 +21,6 @@ namespace LinFu.UnitTests.Proxy
     [TestFixture]
     public class ProxyFactoryTests : BaseTestFixture
     {
-        #region Setup/Teardown
-
         public override void Init()
         {
             loader = new Loader();
@@ -54,7 +52,6 @@ namespace LinFu.UnitTests.Proxy
             }
         }
 
-        #endregion
 
         private ServiceContainer container;
         private Loader loader;
@@ -134,17 +131,17 @@ namespace LinFu.UnitTests.Proxy
 
             // Assign the ref/out value for the int argument
             Func<IInvocationInfo, object> implementation = info =>
-                                                               {
-                                                                   var methodName = info.TargetMethod.Name;
+            {
+                var methodName = info.TargetMethod.Name;
 
-                                                                   if (methodName == "DoSomething")
-                                                                       info.Arguments[0] = 54321;
+                if (methodName == "DoSomething")
+                    info.Arguments[0] = 54321;
 
-                                                                   if (methodName == "get_SomeProp")
-                                                                       return "blah";
+                if (methodName == "get_SomeProp")
+                    return "blah";
 
-                                                                   return null;
-                                                               };
+                return null;
+            };
 
             var interceptor = new MockInterceptor(implementation);
             var proxy = factory.CreateProxy<SampleClassWithPropertyInitializedInCtor>(interceptor);
@@ -225,12 +222,12 @@ namespace LinFu.UnitTests.Proxy
         {
             var genericParameterType = typeof (int);
             var proxy = CreateProxy<ClassWithGenericMethod>(info =>
-                                                                {
-                                                                    // The generic parameter type must match the given parameter type
-                                                                    Assert.IsTrue(
-                                                                        info.TypeArguments.Contains(genericParameterType));
-                                                                    return null;
-                                                                });
+            {
+                // The generic parameter type must match the given parameter type
+                Assert.IsTrue(
+                    info.TypeArguments.Contains(genericParameterType));
+                return null;
+            });
 
             proxy.DoSomething<int>();
         }
@@ -242,17 +239,17 @@ namespace LinFu.UnitTests.Proxy
 
             // The dummy list will be altered if the method body is called
             Func<IInvocationInfo, object> methodBody = info =>
-                                                           {
-                                                               var typeArguments = info.TypeArguments;
+            {
+                var typeArguments = info.TypeArguments;
 
-                                                               // Match the type arguments
+                // Match the type arguments
 
-                                                               //Assert.AreEqual(typeArguments[0], typeof(int));
+                //Assert.AreEqual(typeArguments[0], typeof(int));
 
-                                                               dummyList.Add(1, new List<string> {"SomeValue"});
+                dummyList.Add(1, new List<string> {"SomeValue"});
 
-                                                               return dummyList[1];
-                                                           };
+                return dummyList[1];
+            };
 
             var proxy = CreateProxy<ClassWithNestedOpenGenericParameters>(methodBody);
             proxy.DoSomething(dummyList);
@@ -264,22 +261,22 @@ namespace LinFu.UnitTests.Proxy
         {
             var genericParameterType = typeof (int);
             var proxy = CreateProxy<ClassWithParametersFromGenericMethodTypeArguments>(info =>
-                                                                                           {
-                                                                                               // Match the type argument
-                                                                                               Assert.IsTrue(
-                                                                                                   info.TypeArguments.
-                                                                                                       Contains(
-                                                                                                           genericParameterType));
-                                                                                               Assert.AreEqual(1,
-                                                                                                               info.
-                                                                                                                   Arguments
-                                                                                                                   [0]);
-                                                                                               Assert.AreEqual(1,
-                                                                                                               info.
-                                                                                                                   Arguments
-                                                                                                                   [1]);
-                                                                                               return null;
-                                                                                           });
+            {
+                // Match the type argument
+                Assert.IsTrue(
+                    info.TypeArguments.
+                        Contains(
+                            genericParameterType));
+                Assert.AreEqual(1,
+                    info.
+                        Arguments
+                        [0]);
+                Assert.AreEqual(1,
+                    info.
+                        Arguments
+                        [1]);
+                return null;
+            });
 
             proxy.DoSomething(1, 1);
         }
@@ -288,46 +285,46 @@ namespace LinFu.UnitTests.Proxy
         public void ShouldSupportMethodCallsWithGenericParametersFromHostGenericTypeArguments()
         {
             var proxy = CreateProxy<ClassWithParametersFromHostGenericTypeArguments<double, string>>(info =>
-                                                                                                         {
-                                                                                                             // Match the type arguments
-                                                                                                             Assert.
-                                                                                                                 AreEqual
-                                                                                                                 (info.
-                                                                                                                      ParameterTypes
-                                                                                                                      [0
-                                                                                                                      ],
-                                                                                                                  typeof
-                                                                                                                      (
-                                                                                                                      double
-                                                                                                                      ));
-                                                                                                             Assert.
-                                                                                                                 AreEqual
-                                                                                                                 (info.
-                                                                                                                      ParameterTypes
-                                                                                                                      [1
-                                                                                                                      ],
-                                                                                                                  typeof
-                                                                                                                      (
-                                                                                                                      string
-                                                                                                                      ));
+            {
+                // Match the type arguments
+                Assert.
+                    AreEqual
+                    (info.
+                        ParameterTypes
+                        [0
+                        ],
+                        typeof
+                            (
+                            double
+                            ));
+                Assert.
+                    AreEqual
+                    (info.
+                        ParameterTypes
+                        [1
+                        ],
+                        typeof
+                            (
+                            string
+                            ));
 
-                                                                                                             // Match the argument values
-                                                                                                             Assert.
-                                                                                                                 AreEqual
-                                                                                                                 (1.0,
-                                                                                                                  info.
-                                                                                                                      Arguments
-                                                                                                                      [0
-                                                                                                                      ]);
-                                                                                                             Assert.
-                                                                                                                 AreEqual
-                                                                                                                 ("Test",
-                                                                                                                  info.
-                                                                                                                      Arguments
-                                                                                                                      [1
-                                                                                                                      ]);
-                                                                                                             return null;
-                                                                                                         });
+                // Match the argument values
+                Assert.
+                    AreEqual
+                    (1.0,
+                        info.
+                            Arguments
+                            [0
+                            ]);
+                Assert.
+                    AreEqual
+                    ("Test",
+                        info.
+                            Arguments
+                            [1
+                            ]);
+                return null;
+            });
 
             proxy.DoSomething(1.0, "Test");
         }
@@ -339,14 +336,14 @@ namespace LinFu.UnitTests.Proxy
 
             // The dummy list will be altered if the method body is called
             Func<IInvocationInfo, object> methodBody = info =>
-                                                           {
-                                                               var typeArguments = info.TypeArguments;
+            {
+                var typeArguments = info.TypeArguments;
 
-                                                               // Match the type arguments
-                                                               Assert.AreEqual(typeArguments[0], typeof (int));
-                                                               dummyList.Add(12345);
-                                                               return 12345;
-                                                           };
+                // Match the type arguments
+                Assert.AreEqual(typeArguments[0], typeof (int));
+                dummyList.Add(12345);
+                return 12345;
+            };
 
             var proxy = CreateProxy<ClassWithMethodReturnTypeFromGenericTypeArguments>(methodBody);
             proxy.DoSomething<int>();
@@ -359,12 +356,12 @@ namespace LinFu.UnitTests.Proxy
         {
             var proxy = CreateProxy<ClassWithMethodReturnValueFromTypeArgument<int>>(
                 info =>
-                    {
-                        // Make sure that the method return type 
-                        // matches the given return type
-                        Assert.IsTrue(info.ReturnType == typeof (int));
-                        return 54321;
-                    });
+                {
+                    // Make sure that the method return type 
+                    // matches the given return type
+                    Assert.IsTrue(info.ReturnType == typeof (int));
+                    return 54321;
+                });
 
             var result = proxy.DoSomething();
 
@@ -378,17 +375,17 @@ namespace LinFu.UnitTests.Proxy
 
             // The dummy list will be altered if the method body is called
             Func<IInvocationInfo, object> methodBody = info =>
-                                                           {
-                                                               var typeArguments = info.TypeArguments;
+            {
+                var typeArguments = info.TypeArguments;
 
-                                                               // Match the type arguments
+                // Match the type arguments
 
-                                                               Assert.AreEqual(typeArguments[0], typeof (int));
+                Assert.AreEqual(typeArguments[0], typeof (int));
 
-                                                               dummyList.Add(12345);
+                dummyList.Add(12345);
 
-                                                               return dummyList;
-                                                           };
+                return dummyList;
+            };
 
             var proxy = CreateProxy<ClassWithOpenGenericParameters>(methodBody);
             proxy.DoSomething(dummyList);
@@ -402,15 +399,15 @@ namespace LinFu.UnitTests.Proxy
 
             // The dummy list will be altered if the method body is called
             Func<IInvocationInfo, object> methodBody = info =>
-                                                           {
-                                                               var typeArguments = info.TypeArguments;
+            {
+                var typeArguments = info.TypeArguments;
 
-                                                               // Match the type arguments
+                // Match the type arguments
 
-                                                               Assert.AreEqual(typeArguments[0], typeof (int));
-                                                               dummyList.Add(12345);
-                                                               return dummyList;
-                                                           };
+                Assert.AreEqual(typeArguments[0], typeof (int));
+                dummyList.Add(12345);
+                return dummyList;
+            };
 
             var proxy = CreateProxy<ClassWithGenericTypeDefinitionReturnType>(methodBody);
             proxy.DoSomething<int>();
@@ -424,10 +421,10 @@ namespace LinFu.UnitTests.Proxy
 
             // Assign the ref/out value for the int argument
             Func<IInvocationInfo, object> implementation = info =>
-                                                               {
-                                                                   info.Arguments[0] = 54321;
-                                                                   return null;
-                                                               };
+            {
+                info.Arguments[0] = 54321;
+                return null;
+            };
 
             var interceptor = new MockInterceptor(implementation);
             var proxy = factory.CreateProxy<ClassWithVirtualMethodWithOutParameter>(interceptor);
@@ -446,10 +443,10 @@ namespace LinFu.UnitTests.Proxy
 
             // Assign the ref/out value for the int argument
             Func<IInvocationInfo, object> implementation = info =>
-                                                               {
-                                                                   info.Arguments[0] = 54321;
-                                                                   return null;
-                                                               };
+            {
+                info.Arguments[0] = 54321;
+                return null;
+            };
 
             var interceptor = new MockInterceptor(implementation);
             var proxy = factory.CreateProxy<ClassWithVirtualByRefMethod>(interceptor);
@@ -469,15 +466,15 @@ namespace LinFu.UnitTests.Proxy
 
             // The dummy list will be altered if the method body is called
             Func<IInvocationInfo, object> methodBody = info =>
-                                                           {
-                                                               var typeArguments = info.TypeArguments;
+            {
+                var typeArguments = info.TypeArguments;
 
-                                                               // Match the type arguments
+                // Match the type arguments
 
-                                                               Assert.AreEqual(typeArguments[0], typeof (int));
-                                                               dummyList.Add(12345);
-                                                               return dummyList;
-                                                           };
+                Assert.AreEqual(typeArguments[0], typeof (int));
+                dummyList.Add(12345);
+                return dummyList;
+            };
 
             var proxy = CreateProxy<ClassWithGenericTypeDefinitionReturnType>(methodBody);
             proxy.DoSomething<int>();
@@ -491,10 +488,10 @@ namespace LinFu.UnitTests.Proxy
             var actualList = new List<int>();
 
             Func<IInvocationInfo, object> implementation = info =>
-                                                               {
-                                                                   IList<int> list = actualList;
-                                                                   return info.Proceed(list);
-                                                               };
+            {
+                IList<int> list = actualList;
+                return info.Proceed(list);
+            };
             var interceptor = new MockInterceptor(implementation);
             var proxy = factory.CreateProxy<IList<int>>(interceptor);
 

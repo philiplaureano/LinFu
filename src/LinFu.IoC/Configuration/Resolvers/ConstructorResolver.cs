@@ -23,7 +23,7 @@ namespace LinFu.IoC.Configuration
         /// </summary>
         /// <param name="getFinder">The functor that will be used to instantiate the method finder.</param>
         public ConstructorResolver(Func<IServiceContainer,
-                                       IMethodFinder<ConstructorInfo>> getFinder) : base(getFinder)
+            IMethodFinder<ConstructorInfo>> getFinder) : base(getFinder)
         {
         }
 
@@ -45,7 +45,7 @@ namespace LinFu.IoC.Configuration
         protected override ConstructorInfo GetDefaultResult(Type concreteType)
         {
             return concreteType.GetConstructor(BindingFlags.Public | BindingFlags.Instance, null,
-                                               new Type[0], null);
+                new Type[0], null);
         }
     }
 }

@@ -24,7 +24,6 @@ namespace LinFu.IoC.Configuration
             _context = context;
         }
 
-        #region IGenerateFactory<TService> Members
 
         /// <summary>
         /// Creates a singleton factory.
@@ -53,7 +52,6 @@ namespace LinFu.IoC.Configuration
             AddFactory(adapter => new OncePerRequestFactory<TService>(adapter));
         }
 
-        #endregion
 
         /// <summary>
         /// Adds a factory to the container by using the 
@@ -63,7 +61,7 @@ namespace LinFu.IoC.Configuration
         /// </summary>
         /// <param name="createFactory">The delegate that will create the actual factory instance.</param>
         private void AddFactory(Func<Func<IFactoryRequest, TService>,
-                                    IFactory<TService>> createFactory)
+            IFactory<TService>> createFactory)
         {
             var container = _context.Container;
             var adapter = _context.FactoryMethod.CreateAdapter();

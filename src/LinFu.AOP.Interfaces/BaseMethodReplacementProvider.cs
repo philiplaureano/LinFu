@@ -10,7 +10,7 @@ namespace LinFu.AOP.Interfaces
     /// </summary>
     public abstract class BaseMethodReplacementProvider : IMethodReplacementProvider, IAroundInvoke
     {
-        private ICallCounter _counter = new MultiThreadedCallCounter();
+        private readonly ICallCounter _counter = new MultiThreadedCallCounter();
 
         /// <summary>
         /// Determines whether or not the current method implementation can be replaced.

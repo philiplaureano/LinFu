@@ -11,13 +11,10 @@ namespace SampleLibrary.AOP
             _aroundInvoke = aroundInvoke;
         }
 
-        #region IAroundInvokeProvider Members
 
         public IAroundInvoke GetSurroundingImplementation(IInvocationInfo context)
         {
             return _aroundInvoke;
         }
-
-        #endregion
     }
 }

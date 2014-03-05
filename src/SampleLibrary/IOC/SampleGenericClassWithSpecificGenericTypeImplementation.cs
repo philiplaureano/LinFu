@@ -7,13 +7,9 @@ namespace SampleLibrary.IOC
     [Implements(typeof (ISampleGenericService<double>), ServiceName = "SpecificGenericService")]
     public class SampleGenericClassWithSpecificGenericTypeImplementation<T> : ISampleGenericService<T>
     {
-        #region ISampleGenericService<T> Members
-
         public bool Called
         {
             get { throw new NotImplementedException(); }
         }
-
-        #endregion
     }
 }

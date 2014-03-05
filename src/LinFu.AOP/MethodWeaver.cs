@@ -40,7 +40,7 @@ namespace LinFu.AOP.Cecil
             _instructionProvider = instructionProvider;
         }
 
-        #region IMethodWeaver Members
+        
 
         /// <summary>
         /// Determines whether or not a method should be modified.
@@ -104,7 +104,7 @@ namespace LinFu.AOP.Cecil
             _rewriter.ImportReferences(module);
         }
 
-        #endregion
+        
 
         /// <summary>
         /// Rewrites an existing method.

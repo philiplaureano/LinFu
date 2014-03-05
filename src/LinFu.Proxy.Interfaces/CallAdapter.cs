@@ -19,7 +19,6 @@ namespace LinFu.Proxy
             _wrapper = wrapper;
         }
 
-        #region IInterceptor Members
 
         /// <summary>
         /// Intercepts a method call and passes the <see cref="IInvocationInfo"/> arguments
@@ -42,7 +41,5 @@ namespace LinFu.Proxy
 
             return result;
         }
-
-        #endregion
     }
 }

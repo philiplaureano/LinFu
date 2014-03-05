@@ -20,8 +20,8 @@ namespace LinFu.IoC.Configuration
         /// <param name="additionalArguments">The additional arguments that were passed to the <see cref="IServiceRequestResult"/> during the instantiation process.</param>
         /// <param name="container">The container that will provide the service instances.</param>
         protected override void Inject(object target, PropertyInfo property,
-                                       IArgumentResolver resolver, IServiceContainer container,
-                                       object[] additionalArguments)
+            IArgumentResolver resolver, IServiceContainer container,
+            object[] additionalArguments)
         {
             var setter = container.GetService<IPropertySetter>();
             if (setter == null)

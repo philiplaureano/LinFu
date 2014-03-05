@@ -21,13 +21,10 @@ namespace LinFu.IoC.Configuration
             _targetAssembly = targetAssembly;
         }
 
-        #region IAssemblyLoader Members
 
         public Assembly Load(string assemblyFile)
         {
             return _targetAssembly;
         }
-
-        #endregion
     }
 }

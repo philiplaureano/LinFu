@@ -12,8 +12,6 @@ namespace LinFu.Proxy
     [Implements(typeof (IExtractInterfaces), LifecycleType.OncePerRequest)]
     public class InterfaceExtractor : IExtractInterfaces
     {
-        #region IExtractInterfaces Members
-
         /// <summary>
         /// Determines which interfaces a given type should implement.
         /// </summary>
@@ -34,7 +32,5 @@ namespace LinFu.Proxy
                 GetInterfaces(current, interfaceList);
             }
         }
-
-        #endregion
     }
 }

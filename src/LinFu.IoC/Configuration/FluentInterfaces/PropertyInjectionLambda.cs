@@ -23,7 +23,6 @@ namespace LinFu.IoC.Configuration
             _context = context;
         }
 
-        #region IPropertyInjectionLambda<TService> Members
 
         /// <summary>
         /// Initializes service instances with the given
@@ -52,7 +51,6 @@ namespace LinFu.IoC.Configuration
             AddPostProcessor(_context);
         }
 
-        #endregion
 
         /// <summary>
         /// Attaches the action associated with the <see cref="ActionContext{TService}"/>

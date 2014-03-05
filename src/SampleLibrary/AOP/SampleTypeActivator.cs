@@ -12,7 +12,6 @@ namespace SampleLibrary.AOP
             _createInstance = createInstance;
         }
 
-        #region ITypeActivator Members
 
         public bool CanActivate(ITypeActivationContext context)
         {
@@ -23,7 +22,5 @@ namespace SampleLibrary.AOP
         {
             return _createInstance(context);
         }
-
-        #endregion
     }
 }

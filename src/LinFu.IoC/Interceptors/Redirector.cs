@@ -16,7 +16,7 @@ namespace LinFu.IoC.Interceptors
         private readonly IProxyFactory _proxyFactory;
 
         public Redirector(Func<object> getActualTarget, IInterceptor targetInterceptor, IProxyFactory factory,
-                          IMethodInvoke<MethodInfo> methodInvoke)
+            IMethodInvoke<MethodInfo> methodInvoke)
             : base(methodInvoke)
         {
             _getActualTarget = getActualTarget;

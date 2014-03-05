@@ -24,7 +24,7 @@ namespace LinFu.Reflection
         /// <param name="getTypeLoaders">The delegate that will return the actual list of typeloaders.</param>
         /// <param name="typeExtractor">The type extractor that will be responsible for pulling the types out of the current assembly.</param>
         public AssemblyActionLoader(Func<IList<IActionLoader<TTarget, TType>>> getTypeLoaders,
-                                    ITypeExtractor<TAssembly, TType> typeExtractor)
+            ITypeExtractor<TAssembly, TType> typeExtractor)
         {
             _getTypeLoaders = getTypeLoaders;
             TypeExtractor = typeExtractor;
@@ -36,7 +36,6 @@ namespace LinFu.Reflection
         /// </summary>
         public ITypeExtractor<TAssembly, TType> TypeExtractor { get; set; }
 
-        #region IActionLoader<IList<Action<TTarget>>,TAssembly> Members
 
         /// <summary>
         /// Loads the target assembly and creates an action that can
@@ -59,7 +58,6 @@ namespace LinFu.Reflection
             return assembly != null;
         }
 
-        #endregion
 
         /// <summary>
         /// Generates a list of actions from a target assemby.

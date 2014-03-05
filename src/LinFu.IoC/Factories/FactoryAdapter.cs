@@ -31,7 +31,6 @@ namespace LinFu.IoC
             get { return _factory as IFactory<T>; }
         }
 
-        #region IFactory Members
 
         /// <summary>
         /// Overridden. Uses the strongly-typed factory
@@ -53,9 +52,6 @@ namespace LinFu.IoC
             return factory.CreateInstance(request);
         }
 
-        #endregion
-
-        #region IFactory<T> Members
 
         T IFactory<T>.CreateInstance(IFactoryRequest request)
         {
@@ -65,7 +61,5 @@ namespace LinFu.IoC
 
             return factory.CreateInstance(request);
         }
-
-        #endregion
     }
 }

@@ -28,7 +28,7 @@ namespace LinFu.IoC.Interceptors
         /// <param name="methodInvoke">The method invoker.</param>
         /// <param name="realInfo">The <see cref="IInvocationInfo"/> instance that describes the current execution context.</param>
         internal InvocationInfoInterceptor(IInvocationInfo realInfo, Func<object> getActualTarget,
-                                           IMethodInvoke<MethodInfo> methodInvoke) : base(methodInvoke)
+            IMethodInvoke<MethodInfo> methodInvoke) : base(methodInvoke)
         {
             _getActualTarget = getActualTarget;
             _realInfo = realInfo;

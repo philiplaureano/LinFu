@@ -9,8 +9,6 @@ namespace LinFu.IoC.Configuration
     /// </summary>
     public class InitializerPlugin : ILoaderPlugin<IServiceContainer>
     {
-        #region ILoaderPlugin<IServiceContainer> Members
-
         /// <summary>
         /// This override does absolutely nothing.
         /// </summary>
@@ -29,7 +27,5 @@ namespace LinFu.IoC.Configuration
         {
             target.PostProcessors.Add(new Initializer());
         }
-
-        #endregion
     }
 }

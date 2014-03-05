@@ -23,15 +23,14 @@ namespace LinFu.AOP.Cecil
         /// <param name="surroundingClassImplementation">The variable that contains the <see cref="IAroundInvoke"/> instance.</param>
         /// <param name="getSurroundingImplementationMethod">The method that will obtain the <see cref="IAroundInvoke"/> instance.</param>
         public GetSurroundingClassImplementation(VariableDefinition invocationInfo,
-                                                 VariableDefinition surroundingClassImplementation,
-                                                 MethodInfo getSurroundingImplementationMethod)
+            VariableDefinition surroundingClassImplementation,
+            MethodInfo getSurroundingImplementationMethod)
         {
             _invocationInfo = invocationInfo;
             _surroundingClassImplementation = surroundingClassImplementation;
             _getSurroundingImplementationMethod = getSurroundingImplementationMethod;
         }
 
-        #region IInstructionEmitter Members
 
         /// <summary>
         /// Emits the instructions that obtain the <see cref="IAroundInvoke"/> instance.
@@ -48,7 +47,5 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Call, getSurroundingImplementation);
             IL.Emit(OpCodes.Stloc, _surroundingClassImplementation);
         }
-
-        #endregion
     }
 }

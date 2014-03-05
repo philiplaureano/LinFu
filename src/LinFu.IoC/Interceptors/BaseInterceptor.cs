@@ -38,7 +38,6 @@ namespace LinFu.IoC.Interceptors
             get { return _methodInvoke; }
         }
 
-        #region IInterceptor Members
 
         /// <summary>
         /// Intercepts a method call using the given
@@ -58,7 +57,6 @@ namespace LinFu.IoC.Interceptors
             return _methodInvoke.Invoke(target, (MethodInfo) method, arguments);
         }
 
-        #endregion
 
         /// <summary>
         /// Gets the target object instance.

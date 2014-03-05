@@ -21,6 +21,6 @@ namespace LinFu.IoC.Configuration.Interfaces
         /// <param name="finderContext">The <see cref="IMethodFinderContext"/> that describes the target method.</param>        
         /// <returns>A <typeparamref name="TMember"/> instance if a match is found; otherwise, it will return <c>null</c>.</returns>
         TMember ResolveFrom(Type concreteType, IServiceContainer container,
-                            IMethodFinderContext finderContext);
+            IMethodFinderContext finderContext);
     }
 }

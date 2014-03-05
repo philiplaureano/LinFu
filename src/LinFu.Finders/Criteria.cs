@@ -9,8 +9,6 @@ namespace LinFu.Finders
     /// <typeparam name="T">The type of item to test.</typeparam>
     public class Criteria<T> : ICriteria<T>
     {
-        #region ICriteria<T> Members
-
         /// <summary>
         /// Gets or sets a value indicating the <see cref="CriteriaType"/>
         /// of the current <see cref="Criteria{T}"/>.
@@ -27,7 +25,5 @@ namespace LinFu.Finders
         /// The weight of the given <see cref="Predicate"/>.
         /// </summary>
         public int Weight { get; set; }
-
-        #endregion
     }
 }

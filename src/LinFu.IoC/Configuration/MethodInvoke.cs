@@ -25,7 +25,7 @@ namespace LinFu.IoC.Configuration
         /// <param name="arguments">The method arguments.</param>
         /// <returns>The return value from the target method.</returns>
         protected override object DoInvoke(object target, MethodInfo originalMethod, MethodBase targetMethod,
-                                           object[] arguments)
+            object[] arguments)
         {
             var actualArguments = new List<object>();
 
@@ -38,7 +38,7 @@ namespace LinFu.IoC.Configuration
             try
             {
                 result = targetMethod.Invoke(targetMethod.IsStatic ? null : target,
-                                             actualArguments.ToArray());
+                    actualArguments.ToArray());
             }
             catch (TargetInvocationException ex)
             {

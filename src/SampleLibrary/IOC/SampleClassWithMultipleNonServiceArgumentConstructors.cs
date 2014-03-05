@@ -19,17 +19,14 @@ namespace SampleLibrary.IOC
         }
 
         public SampleClassWithMultipleNonServiceArgumentConstructors(string arg1, int arg2, SampleEnum arg3,
-                                                                     decimal arg4, int arg5)
+            decimal arg4, int arg5)
         {
         }
 
-        #region ISampleService Members
 
         public void DoSomething()
         {
             throw new NotImplementedException();
         }
-
-        #endregion
     }
 }

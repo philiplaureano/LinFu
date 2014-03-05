@@ -62,8 +62,8 @@ namespace LinFu.IoC.Reflection
             }
 
             var targetMethods = methodMap.ContainsKey(methodName)
-                                                 ? methodMap[methodName]
-                                                 : (new MethodInfo[0]).ToList();
+                ? methodMap[methodName]
+                : (new MethodInfo[0]).ToList();
             var finder = _container.GetService<IMethodFinder<MethodInfo>>();
 
             var targetMethod = finder.GetBestMatch(targetMethods, context);
@@ -167,7 +167,7 @@ namespace LinFu.IoC.Reflection
         /// <param name="arguments">The arguments that will be passed to the target method.</param>
         /// <returns>The method return value.</returns>
         public static object Invoke(this object instance, string methodName, Type[] typeArguments,
-                                    params object[] arguments)
+            params object[] arguments)
         {
             var context = new MethodFinderContext(typeArguments, arguments, null);
             return Invoke(instance, methodName, context);

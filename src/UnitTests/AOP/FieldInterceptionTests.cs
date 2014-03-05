@@ -14,8 +14,6 @@ namespace LinFu.UnitTests.AOP
     {
         public class FieldInterceptorImpl : IFieldInterceptor
         {
-            #region IFieldInterceptor Members
-
             public bool CanIntercept(IFieldInterceptionContext context)
             {
                 return true;
@@ -31,8 +29,6 @@ namespace LinFu.UnitTests.AOP
                 // Prevent any setter calls by replacing the setter value
                 return "freeze!";
             }
-
-            #endregion
         }
 
         [Test]

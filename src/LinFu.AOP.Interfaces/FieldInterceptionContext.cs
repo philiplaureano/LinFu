@@ -23,7 +23,6 @@ namespace LinFu.AOP.Interfaces
             HostType = hostType;
         }
 
-        #region IFieldInterceptionContext Members
 
         /// <summary>
         /// Gets a value indicating the target instance that is attached to the target field.
@@ -45,7 +44,5 @@ namespace LinFu.AOP.Interfaces
         /// Gets a value indicating the <see cref="System.Type"/> that holds the target field.
         /// </summary>
         public Type HostType { get; internal set; }
-
-        #endregion
     }
 }

@@ -24,7 +24,6 @@ namespace LinFu.AOP.Cecil
             _endLabel = endLabel;
         }
 
-        #region IInstructionEmitter Members
 
         /// <summary>
         /// Adds the original instructions to a given method body.
@@ -64,7 +63,5 @@ namespace LinFu.AOP.Cecil
                 IL.Append(instruction);
             }
         }
-
-        #endregion
     }
 }

@@ -34,6 +34,6 @@ namespace LinFu.AOP.Cecil.Interfaces
         /// <param name="targetConstructor">The constructor that is currently being used to instantiate the concrete type.</param>
         /// <param name="concreteType">The <see cref="System.Type"/> that describes the object type that needs to be instantiated.</param>
         void EmitNewObject(MethodDefinition hostMethod, CilWorker IL, MethodReference targetConstructor,
-                           TypeReference concreteType);
+            TypeReference concreteType);
     }
 }

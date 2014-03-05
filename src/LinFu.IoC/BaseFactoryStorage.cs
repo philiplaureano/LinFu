@@ -11,7 +11,6 @@ namespace LinFu.IoC
         private readonly Dictionary<IServiceInfo, IFactory> _entries = new Dictionary<IServiceInfo, IFactory>();
         private readonly object _lock = new object();
 
-        #region IFactoryStorage Members
 
         /// <summary>
         /// Determines which factories should be used
@@ -59,7 +58,5 @@ namespace LinFu.IoC
         {
             get { return _entries.Keys; }
         }
-
-        #endregion
     }
 }

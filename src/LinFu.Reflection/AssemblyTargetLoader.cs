@@ -15,7 +15,7 @@ namespace LinFu.Reflection
     /// <typeparam name="TAssembly">The assembly type.</typeparam>
     /// <typeparam name="TType">The target type.</typeparam>
     public class AssemblyTargetLoader<TTarget, TAssembly, TType> : IAssemblyTargetLoader<TTarget, TAssembly, TType>,
-                                                                   IActionLoader<TTarget, string>
+        IActionLoader<TTarget, string>
     {
         private readonly IList<IActionLoader<TTarget, TType>> _typeLoaders = new List<IActionLoader<TTarget, TType>>();
         private IActionLoader<IList<Action<TTarget>>, TAssembly> _assemblyActionLoader;
@@ -25,7 +25,7 @@ namespace LinFu.Reflection
         /// Initializes a new instance of the <see cref="AssemblyTargetLoader{TTarget,TAssembly,TType}"/> class.
         /// </summary>
         public AssemblyTargetLoader(ITypeExtractor<TAssembly, TType> typeExtractor,
-                                    IAssemblyLoader<TAssembly> assemblyLoader)
+            IAssemblyLoader<TAssembly> assemblyLoader)
         {
             _assemblyActionLoader = new AssemblyActionLoader<TTarget, TAssembly, TType>(() => TypeLoaders, typeExtractor);
             _assemblyLoader = assemblyLoader;
@@ -42,7 +42,6 @@ namespace LinFu.Reflection
             set { _assemblyActionLoader = value; }
         }
 
-        #region IAssemblyTargetLoader<TTarget,TAssembly,TType> Members
 
         /// <summary>
         /// The <see cref="IAssemblyLoader"/> instance that will load
@@ -107,8 +106,6 @@ namespace LinFu.Reflection
 
             return results;
         }
-
-        #endregion
     }
 
     /// <summary>

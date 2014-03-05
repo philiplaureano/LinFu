@@ -19,7 +19,6 @@ namespace LinFu.IoC
             _instance = instance;
         }
 
-        #region IFactory Members
 
         /// <summary>
         /// A method that returns the existing object reference associated with
@@ -31,7 +30,5 @@ namespace LinFu.IoC
         {
             return _instance;
         }
-
-        #endregion
     }
 }

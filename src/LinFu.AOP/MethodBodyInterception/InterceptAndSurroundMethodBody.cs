@@ -33,12 +33,12 @@ namespace LinFu.AOP.Cecil
         /// <param name="addMethodReplacement">The instruction emitter that will add the call to obtain the method body replacement instance. </param>
         /// <param name="parameters">The parameters that describe the context of the method body rewrite.</param>
         public InterceptAndSurroundMethodBody(IEmitInvocationInfo emitter,
-                                              IInstructionEmitter getInterceptionDisabled,
-                                              ISurroundMethodBody surroundMethodBody,
-                                              IInstructionEmitter getInstanceMethodReplacementProvider,
-                                              IInstructionEmitter getClassMethodReplacementProvider,
-                                              IInstructionEmitter addMethodReplacement,
-                                              IMethodBodyRewriterParameters parameters)
+            IInstructionEmitter getInterceptionDisabled,
+            ISurroundMethodBody surroundMethodBody,
+            IInstructionEmitter getInstanceMethodReplacementProvider,
+            IInstructionEmitter getClassMethodReplacementProvider,
+            IInstructionEmitter addMethodReplacement,
+            IMethodBodyRewriterParameters parameters)
         {
             _getInterceptionDisabled = getInterceptionDisabled;
             _surroundMethodBody = surroundMethodBody;
@@ -51,7 +51,6 @@ namespace LinFu.AOP.Cecil
             _interceptionDisabled = parameters.InterceptionDisabled;
         }
 
-        #region IMethodBodyRewriter Members
 
         /// <summary>
         /// Rewrites a target method using the given CilWorker.
@@ -60,7 +59,7 @@ namespace LinFu.AOP.Cecil
         /// <param name="IL">The CilWorker that will be used to rewrite the target method.</param>
         /// <param name="oldInstructions">The original instructions from the target method body.</param>
         public void Rewrite(MethodDefinition method, CilWorker IL,
-                            IEnumerable<Instruction> oldInstructions)
+            IEnumerable<Instruction> oldInstructions)
         {
             var targetMethod = _parameters.TargetMethod;
             var worker = targetMethod.GetILGenerator();
@@ -104,7 +103,5 @@ namespace LinFu.AOP.Cecil
 
             worker.Emit(OpCodes.Ret);
         }
-
-        #endregion
     }
 }

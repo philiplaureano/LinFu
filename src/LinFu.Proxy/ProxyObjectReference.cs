@@ -47,7 +47,6 @@ namespace LinFu.Proxy
             _proxy.Interceptor = interceptor;
         }
 
-        #region IObjectReference Members
 
         /// <summary>
         /// Returns the deserialized proxy instance.
@@ -59,9 +58,6 @@ namespace LinFu.Proxy
             return _proxy;
         }
 
-        #endregion
-
-        #region ISerializable Members
 
         /// <summary>
         /// Serializes the proxy to a stream. 
@@ -72,7 +68,5 @@ namespace LinFu.Proxy
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
         }
-
-        #endregion
     }
 }

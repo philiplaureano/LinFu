@@ -24,8 +24,8 @@ namespace LinFu.UnitTests.Proxy
 
             // The result list must only contain interface types
             var nonInterfaceTypes = from t in interfaces
-                                                  where !t.IsInterface
-                                                  select t;
+                where !t.IsInterface
+                select t;
 
             Assert.IsTrue(nonInterfaceTypes.Count() == 0);
         }

@@ -17,8 +17,6 @@ namespace LinFu.IoC.Configuration.Loaders
     /// <seealso cref="IFactory"/>
     public class ImplementsAttributeLoader : ITypeLoader
     {
-        #region ITypeLoader Members
-
         /// <summary>
         /// Converts a given <see cref="System.Type"/> into
         /// a set of <see cref="Action{IServiceContainer}"/> instances so that
@@ -66,7 +64,7 @@ namespace LinFu.IoC.Configuration.Loaders
                 }
 
                 results.Add(container =>
-                            container.AddFactory(serviceName, serviceType, currentFactory));
+                    container.AddFactory(serviceName, serviceType, currentFactory));
             }
 
             return results;
@@ -96,7 +94,6 @@ namespace LinFu.IoC.Configuration.Loaders
             }
         }
 
-        #endregion
 
         /// <summary>
         /// Creates a factory instance that can create instaces of the given
@@ -113,38 +110,38 @@ namespace LinFu.IoC.Configuration.Loaders
             // be available until runtime
             Func<IFactoryRequest, object> factoryMethod =
                 request =>
+                {
+                    var currentContainer = request.Container;
+                    var arguments = request.Arguments;
+                    var builder = currentContainer.GetService<IFactoryBuilder>();
+
+                    // HACK: If the service type is a type definition and
+                    // the implementing type is a type definition,
+                    // assume that the service type has the same number of
+                    // generic arguments as the implementing type
+                    var actualServiceType = serviceType;
+                    var actualImplementingType = implementingType;
+                    if (serviceType.IsGenericTypeDefinition && implementingType.IsGenericTypeDefinition &&
+                        serviceType.GetGenericArguments().Count() == implementingType.GetGenericArguments().Count())
                     {
-                        var currentContainer = request.Container;
-                        var arguments = request.Arguments;
-                        var builder = currentContainer.GetService<IFactoryBuilder>();
+                        var typeArguments = request.ServiceType.GetGenericArguments();
+                        actualServiceType = serviceType.MakeGenericType(typeArguments);
+                        actualImplementingType = implementingType.MakeGenericType(typeArguments);
+                    }
 
-                        // HACK: If the service type is a type definition and
-                        // the implementing type is a type definition,
-                        // assume that the service type has the same number of
-                        // generic arguments as the implementing type
-                        var actualServiceType = serviceType;
-                        var actualImplementingType = implementingType;
-                        if (serviceType.IsGenericTypeDefinition && implementingType.IsGenericTypeDefinition &&
-                            serviceType.GetGenericArguments().Count() == implementingType.GetGenericArguments().Count())
-                        {
-                            var typeArguments = request.ServiceType.GetGenericArguments();
-                            actualServiceType = serviceType.MakeGenericType(typeArguments);
-                            actualImplementingType = implementingType.MakeGenericType(typeArguments);
-                        }
+                    var actualFactory = builder.CreateFactory(actualServiceType, actualImplementingType,
+                        lifecycle);
 
-                        var actualFactory = builder.CreateFactory(actualServiceType, actualImplementingType,
-                                                                       lifecycle);
-
-                        var factoryRequest = new FactoryRequest
-                                                 {
-                                                     ServiceType = serviceType,
-                                                     ServiceName = request.ServiceName,
-                                                     Arguments = arguments,
-                                                     Container = currentContainer
-                                                 };
-
-                        return actualFactory.CreateInstance(factoryRequest);
+                    var factoryRequest = new FactoryRequest
+                    {
+                        ServiceType = serviceType,
+                        ServiceName = request.ServiceName,
+                        Arguments = arguments,
+                        Container = currentContainer
                     };
+
+                    return actualFactory.CreateInstance(factoryRequest);
+                };
 
             return new FunctorFactory(factoryMethod);
         }

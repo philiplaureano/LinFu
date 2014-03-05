@@ -7,8 +7,6 @@ namespace LinFu.IoC
     /// </summary>
     public class DefaultCreator : ICreateInstance
     {
-        #region ICreateInstance Members
-
         /// <summary>
         /// Creates a service instance using the given <paramref name="factoryRequest"/> and <see cref="IFactory"/> instance.
         /// </summary>
@@ -25,7 +23,5 @@ namespace LinFu.IoC
 
             return instance;
         }
-
-        #endregion
     }
 }

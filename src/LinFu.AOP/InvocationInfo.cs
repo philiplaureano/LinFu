@@ -37,8 +37,8 @@ namespace LinFu.AOP.Cecil
         /// <param name="returnType">The return type of the target method.</param>
         /// <param name="arguments">The arguments used in the method call.</param>
         public InvocationInfo(object target, MethodBase targetMethod,
-                              StackTrace stackTrace, Type[] parameterTypes,
-                              Type[] typeArguments, Type returnType, object[] arguments)
+            StackTrace stackTrace, Type[] parameterTypes,
+            Type[] typeArguments, Type returnType, object[] arguments)
         {
             _target = target;
             _targetMethod = targetMethod;
@@ -62,7 +62,6 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        #region IInvocationInfo Members
 
         /// <summary>
         /// The target instance currently being called.
@@ -135,7 +134,6 @@ namespace LinFu.AOP.Cecil
             get { return _arguments; }
         }
 
-        #endregion
 
         /// <summary>
         /// Returns a string that represents the current object.

@@ -25,7 +25,6 @@ namespace LinFu.IoC.Configuration
             _factoryTypes[LifecycleType.Singleton] = typeof (SingletonFactory<>);
         }
 
-        #region IFactoryBuilder Members
 
         /// <summary>
         /// Creates a factory instance that can create instaces of the given
@@ -52,39 +51,38 @@ namespace LinFu.IoC.Configuration
 
             Func<IFactoryRequest, object> factoryMethod =
                 request =>
+                {
+                    var serviceName = request.ServiceName;
+                    var type = request.ServiceType;
+                    var currentContainer = request.Container;
+                    var arguments = request.Arguments;
+
+                    // Determine the implementing type
+                    var concreteType = GetActualType(type, implementingType);
+
+                    // The concrete type cannot be null
+                    if (concreteType == null)
+                        return null;
+
+                    // Generate the concrete factory instance 
+                    // at runtime
+                    var factoryType = factoryTypeDefinition.MakeGenericType(type);
+                    var factory = CreateFactory(type, concreteType, factoryType);
+
+                    var factoryRequest = new FactoryRequest
                     {
-                        var serviceName = request.ServiceName;
-                        var type = request.ServiceType;
-                        var currentContainer = request.Container;
-                        var arguments = request.Arguments;
-
-                        // Determine the implementing type
-                        var concreteType = GetActualType(type, implementingType);
-
-                        // The concrete type cannot be null
-                        if (concreteType == null)
-                            return null;
-
-                        // Generate the concrete factory instance 
-                        // at runtime
-                        var factoryType = factoryTypeDefinition.MakeGenericType(type);
-                        var factory = CreateFactory(type, concreteType, factoryType);
-
-                        var factoryRequest = new FactoryRequest
-                                                 {
-                                                     ServiceType = serviceType,
-                                                     ServiceName = serviceName,
-                                                     Arguments = arguments,
-                                                     Container = currentContainer
-                                                 };
-
-                        return factory.CreateInstance(factoryRequest);
+                        ServiceType = serviceType,
+                        ServiceName = serviceName,
+                        Arguments = arguments,
+                        Container = currentContainer
                     };
+
+                    return factory.CreateInstance(factoryRequest);
+                };
 
             return new FunctorFactory(factoryMethod);
         }
 
-        #endregion
 
         /// <summary>
         /// Creates a factory instance that can create instaces of the given
@@ -178,19 +176,19 @@ namespace LinFu.IoC.Configuration
             where TImplementation : TService
         {
             return request =>
-                       {
-                           var container = request.Container;
-                           var arguments = request.Arguments;
-                           var serviceContainer = container;
+            {
+                var container = request.Container;
+                var arguments = request.Arguments;
+                var serviceContainer = container;
 
-                           // Attempt to autoresolve the constructor
-                           if (serviceContainer != null)
-                               return
-                                   (TService) serviceContainer.AutoCreateInternal(typeof (TImplementation), arguments);
+                // Attempt to autoresolve the constructor
+                if (serviceContainer != null)
+                    return
+                        (TService) serviceContainer.AutoCreateInternal(typeof (TImplementation), arguments);
 
-                           // Otherwise, use the default constructor
-                           return (TService) Activator.CreateInstance(typeof (TImplementation), arguments);
-                       };
+                // Otherwise, use the default constructor
+                return (TService) Activator.CreateInstance(typeof (TImplementation), arguments);
+            };
         }
     }
 }

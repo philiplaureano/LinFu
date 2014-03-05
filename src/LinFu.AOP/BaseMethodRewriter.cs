@@ -12,7 +12,7 @@ namespace LinFu.AOP.Cecil
     {
         private readonly HashSet<TypeDefinition> _modifiedTypes = new HashSet<TypeDefinition>();
 
-        #region IMethodRewriter Members
+        
 
         /// <summary>
         /// Rewrites a target method using the given CilWorker.
@@ -74,7 +74,7 @@ namespace LinFu.AOP.Cecil
         {
         }
 
-        #endregion
+        
 
         /// <summary>
         /// Determines whether or not the given method should be modified.

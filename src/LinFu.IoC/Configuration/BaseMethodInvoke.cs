@@ -36,7 +36,6 @@ namespace LinFu.IoC.Configuration
             set { _builder = value; }
         }
 
-        #region IInitialize Members
 
         /// <summary>
         /// Initializes the class with the <paramref name="source">source service container.</paramref>
@@ -47,9 +46,6 @@ namespace LinFu.IoC.Configuration
             _builder = source.GetService<IMethodBuilder<TMethod>>();
         }
 
-        #endregion
-
-        #region IMethodInvoke<TMethod> Members
 
         /// <summary>
         /// Instantiates an object instance with the <paramref name="targetMethod"/>
@@ -60,7 +56,7 @@ namespace LinFu.IoC.Configuration
         /// <param name="arguments">The arguments to be used with the method.</param>
         /// <returns>An object reference that represents the method return value.</returns>
         public object Invoke(object target, TMethod targetMethod,
-                             object[] arguments)
+            object[] arguments)
         {
             object result = null;
 
@@ -82,7 +78,6 @@ namespace LinFu.IoC.Configuration
             return result;
         }
 
-        #endregion
 
         /// <summary>
         /// Invokes the <paramref name="targetMethod"/> with the given <paramref name="arguments"/>.
@@ -93,7 +88,7 @@ namespace LinFu.IoC.Configuration
         /// <param name="arguments">The method arguments.</param>
         /// <returns>The return value from the target method.</returns>
         protected virtual object DoInvoke(object target, TMethod originalMethod, MethodBase targetMethod,
-                                          object[] arguments)
+            object[] arguments)
         {
             var result = targetMethod.Invoke(target, arguments);
 

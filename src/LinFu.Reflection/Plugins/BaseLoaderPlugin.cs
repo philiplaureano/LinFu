@@ -7,8 +7,6 @@
     /// <typeparam name="TTarget">The type being loaded.</typeparam>
     public abstract class BaseLoaderPlugin<TTarget> : ILoaderPlugin<TTarget>
     {
-        #region ILoaderPlugin<TTarget> Members
-
         /// <summary>
         /// Signals the beginning of a load.
         /// </summary>
@@ -24,7 +22,5 @@
         public virtual void EndLoad(TTarget target)
         {
         }
-
-        #endregion
     }
 }

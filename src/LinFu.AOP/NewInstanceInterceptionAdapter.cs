@@ -21,7 +21,6 @@ namespace LinFu.AOP.Cecil
             _filter = filter;
         }
 
-        #region INewInstanceFilter Members
 
         /// <summary>
         /// Determines whether or not a particular constructor call should be intercepted by the postweaver.
@@ -31,11 +30,9 @@ namespace LinFu.AOP.Cecil
         /// <param name="hostMethod">The host method that contains the new operator call.</param>
         /// <returns>Returns <c>true</c> if the new operator call should be intercepted; otherwise, it should return <c>false</c>.</returns>
         public bool ShouldWeave(MethodReference currentConstructor, TypeReference concreteType,
-                                MethodReference hostMethod)
+            MethodReference hostMethod)
         {
             return _filter(currentConstructor, concreteType, hostMethod);
         }
-
-        #endregion
     }
 }

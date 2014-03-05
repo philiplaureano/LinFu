@@ -11,14 +11,11 @@ namespace SampleLibrary.AOP
             get { return _called; }
         }
 
-        #region IInterceptor Members
 
         public object Intercept(IInvocationInfo info)
         {
             _called = true;
             return null;
         }
-
-        #endregion
     }
 }

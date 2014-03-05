@@ -29,14 +29,14 @@ namespace LinFu.Reflection.Emit
         /// <param name="parameterTypes">The list of argument types that will be used to define the method signature.</param>
         /// <returns>A <see cref="MethodDefinition"/> instance that represents the newly-created method.</returns>
         public static MethodDefinition DefineMethod(this TypeDefinition typeDef, string methodName,
-                                                    MethodAttributes attributes,
-                                                    MethodCallingConvention callingConvention, Type returnType,
-                                                    params Type[] parameterTypes)
+            MethodAttributes attributes,
+            MethodCallingConvention callingConvention, Type returnType,
+            params Type[] parameterTypes)
         {
             var method = new MethodDefinition(methodName, attributes, null)
-                             {
-                                 CallingConvention = callingConvention
-                             };
+            {
+                CallingConvention = callingConvention
+            };
 
             typeDef.Methods.Add(method);
 
@@ -60,8 +60,8 @@ namespace LinFu.Reflection.Emit
         /// <param name="genericParameterTypes">The list of generic argument types that will be used to define the method signature.</param>
         /// <returns>A <see cref="MethodDefinition"/> instance that represents the newly-created method.</returns>
         public static MethodDefinition DefineMethod(this TypeDefinition typeDef, string methodName,
-                                                    MethodAttributes attributes, Type returnType, Type[] parameterTypes,
-                                                    Type[] genericParameterTypes)
+            MethodAttributes attributes, Type returnType, Type[] parameterTypes,
+            Type[] genericParameterTypes)
         {
             var method = new MethodDefinition(methodName, attributes, null);
 
@@ -105,7 +105,7 @@ namespace LinFu.Reflection.Emit
             var module = targetType.Module;
             var voidType = module.Import(typeof (void));
             var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig
-                                                | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName;
+                                   | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName;
 
 
             var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
@@ -120,10 +120,10 @@ namespace LinFu.Reflection.Emit
 
             // Define the default constructor
             var ctor = new MethodDefinition(".ctor", methodAttributes, voidType)
-                           {
-                               CallingConvention = MethodCallingConvention.StdCall,
-                               ImplAttributes = (MethodImplAttributes.IL | MethodImplAttributes.Managed)
-                           };
+            {
+                CallingConvention = MethodCallingConvention.StdCall,
+                ImplAttributes = (MethodImplAttributes.IL | MethodImplAttributes.Managed)
+            };
 
             var IL = ctor.Body.CilWorker;
 
@@ -157,18 +157,15 @@ namespace LinFu.Reflection.Emit
         /// <param name="propertyName">The name of the property itself.</param>
         /// <param name="propertyType">The <see cref="TypeReference"/> instance that describes the property type.</param>
         public static void AddProperty(this TypeDefinition typeDef, string propertyName,
-                                       TypeReference propertyType)
+            TypeReference propertyType)
         {
-            #region Add the backing field
-
             var fieldName = string.Format("__{0}_backingField", propertyName);
             var actualField = new FieldDefinition(fieldName,
-                                                  propertyType, FieldAttributes.Private);
+                propertyType, FieldAttributes.Private);
 
 
             typeDef.Fields.Add(actualField);
 
-            #endregion
 
             FieldReference backingField = actualField;
             if (typeDef.GenericParameters.Count > 0)
@@ -202,14 +199,14 @@ namespace LinFu.Reflection.Emit
         /// <param name="getter">The property getter method.</param>
         /// <param name="setter">The property setter method.</param>
         public static void AddProperty(this TypeDefinition typeDef, string propertyName, TypeReference propertyType,
-                                       MethodDefinition getter, MethodDefinition setter)
+            MethodDefinition getter, MethodDefinition setter)
         {
             var newProperty = new PropertyDefinition(propertyName,
-                                                     propertyType, PropertyAttributes.Unused)
-                                  {
-                                      GetMethod = getter,
-                                      SetMethod = setter
-                                  };
+                propertyType, PropertyAttributes.Unused)
+            {
+                GetMethod = getter,
+                SetMethod = setter
+            };
 
             typeDef.Methods.Add(getter);
             typeDef.Methods.Add(setter);
@@ -225,8 +222,8 @@ namespace LinFu.Reflection.Emit
         public static MethodDefinition GetMethod(this TypeDefinition typeDef, string methodName)
         {
             var result = from MethodDefinition m in typeDef.Methods
-                                                   where m.Name == methodName
-                                                   select m;
+                where m.Name == methodName
+                select m;
 
             return result.FirstOrDefault();
         }
@@ -239,7 +236,7 @@ namespace LinFu.Reflection.Emit
         /// <param name="propertyType">The <see cref="TypeReference"/> that describes the property type being referenced.</param>
         /// <returns>A <see cref="FieldReference"/> that points to the actual backing field.</returns>
         private static FieldReference GetBackingField(string fieldName, TypeDefinition typeDef,
-                                                      TypeReference propertyType)
+            TypeReference propertyType)
         {
             // If the current type is a generic type, 
             // the current generic type must be resolved before
@@ -264,14 +261,14 @@ namespace LinFu.Reflection.Emit
         /// <param name="backingField">The field that will store the instance that the getter method will retrieve.</param>
         /// <returns>A <see cref="MethodDefinition"/> representing the getter method itself.</returns>
         private static MethodDefinition AddPropertyGetter(TypeReference propertyType,
-                                                          string getterName, MethodAttributes attributes,
-                                                          FieldReference backingField)
+            string getterName, MethodAttributes attributes,
+            FieldReference backingField)
         {
             var getter = new MethodDefinition(getterName, attributes, propertyType)
-                             {
-                                 IsPublic = true,
-                                 ImplAttributes = (MethodImplAttributes.Managed | MethodImplAttributes.IL)
-                             };
+            {
+                IsPublic = true,
+                ImplAttributes = (MethodImplAttributes.Managed | MethodImplAttributes.IL)
+            };
 
             var IL = getter.GetILGenerator();
             IL.Emit(OpCodes.Ldarg_0);
@@ -292,14 +289,14 @@ namespace LinFu.Reflection.Emit
         /// <param name="voidType">The <see cref="TypeReference"/> that represents <see cref="Void"/>.</param>
         /// <returns>A <see cref="MethodDefinition"/> that represents the setter method itself.</returns>
         private static MethodDefinition AddPropertySetter(TypeReference propertyType, MethodAttributes attributes,
-                                                          FieldReference backingField, string setterName,
-                                                          TypeReference voidType)
+            FieldReference backingField, string setterName,
+            TypeReference voidType)
         {
             var setter = new MethodDefinition(setterName, attributes, voidType)
-                             {
-                                 IsPublic = true,
-                                 ImplAttributes = (MethodImplAttributes.Managed | MethodImplAttributes.IL)
-                             };
+            {
+                IsPublic = true,
+                ImplAttributes = (MethodImplAttributes.Managed | MethodImplAttributes.IL)
+            };
 
             setter.Parameters.Add(new ParameterDefinition(propertyType));
 

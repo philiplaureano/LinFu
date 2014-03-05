@@ -15,7 +15,7 @@ namespace LinFu.AOP.Interfaces
         /// <param name="constructorArguments">The arguments that will be passed to the constructor.</param>
         /// <returns>An object reference that matches the given <paramref name="targetType"/>.</returns>
         public static object CreateInstance(this IActivator<IActivationContext> activator, Type targetType,
-                                            object[] constructorArguments)
+            object[] constructorArguments)
         {
             var context = new ActivationContext(targetType, constructorArguments);
             return activator.CreateInstance(context);

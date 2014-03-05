@@ -9,17 +9,12 @@ namespace SampleLibrary.IOC
     [Intercepts(typeof (ISampleInterceptedInterface))]
     public class SampleInterceptorClass : IInterceptor, IInitialize, ITargetHolder
     {
-        #region IInitialize Members
-
         public void Initialize(IServiceContainer source)
         {
             var typeName = GetType().Name;
             source.AddService<ITargetHolder>(typeName, this);
         }
 
-        #endregion
-
-        #region IInterceptor Members
 
         public object Intercept(IInvocationInfo info)
         {
@@ -28,12 +23,7 @@ namespace SampleLibrary.IOC
             return null;
         }
 
-        #endregion
-
-        #region ITargetHolder Members
 
         public object Target { get; set; }
-
-        #endregion
     }
 }

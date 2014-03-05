@@ -18,7 +18,6 @@ namespace LinFu.IoC
             _instance = instance;
         }
 
-        #region ICreateInstance Members
 
         /// <summary>
         /// Returns the object instance that given when the <see cref="CreatorFromInstance"/> class instance was initialized.
@@ -30,7 +29,5 @@ namespace LinFu.IoC
         {
             return _instance;
         }
-
-        #endregion
     }
 }

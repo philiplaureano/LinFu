@@ -20,7 +20,6 @@ namespace LinFu.IoC.Factories
             _getFactory = getFactory;
         }
 
-        #region IFactory Members
 
         /// <summary>
         /// Instantiates the actual factory instance and uses it to instantiate the target service type.
@@ -35,7 +34,5 @@ namespace LinFu.IoC.Factories
 
             return _realFactory == null ? null : _realFactory.CreateInstance(request);
         }
-
-        #endregion
     }
 }

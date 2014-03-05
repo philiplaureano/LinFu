@@ -54,7 +54,7 @@ namespace LinFu.AOP.Cecil
         /// <param name="IL">The <see cref="CilWorker"/> instance that represents the method body.</param>
         /// <param name="oldInstructions">The IL instructions of the original method body.</param>
         protected override void RewriteMethodBody(MethodDefinition targetMethod, CilWorker IL,
-                                                  IEnumerable<Instruction> oldInstructions)
+            IEnumerable<Instruction> oldInstructions)
         {
             var endOfOriginalInstructionBlock = IL.Create(OpCodes.Nop);
             var addOriginalInstructions = new AddOriginalInstructions(oldInstructions, endOfOriginalInstructionBlock);

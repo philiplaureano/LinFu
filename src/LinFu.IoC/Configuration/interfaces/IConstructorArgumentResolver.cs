@@ -16,6 +16,6 @@ namespace LinFu.IoC.Configuration.Interfaces
         /// <param name="additionalArguments">The list of additional arguments that should be combined with the arguments from the container.</param>
         /// <returns>A list of arguments that will be used for the given constructor.</returns>
         object[] GetConstructorArguments(ConstructorInfo constructor, IServiceContainer container,
-                                         object[] additionalArguments);
+            object[] additionalArguments);
     }
 }

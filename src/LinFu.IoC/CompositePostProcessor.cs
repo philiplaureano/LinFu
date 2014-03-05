@@ -20,7 +20,6 @@ namespace LinFu.IoC
             _postProcessors = postProcessors;
         }
 
-        #region IPostProcessor Members
 
         /// <summary>
         /// A method that passes every request result made
@@ -42,7 +41,5 @@ namespace LinFu.IoC
                 postProcessor.PostProcess(result);
             }
         }
-
-        #endregion
     }
 }

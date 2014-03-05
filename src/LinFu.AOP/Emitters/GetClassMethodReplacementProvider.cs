@@ -22,7 +22,7 @@ namespace LinFu.AOP.Cecil
         /// <param name="parameters">The method body rewriter paramters that describe the </param>
         /// <param name="resolveGetProviderMethod">The functor that resolves the method that obtains the method replacement provider instance.</param>
         public GetClassMethodReplacementProvider(IMethodBodyRewriterParameters parameters,
-                                                 Func<ModuleDefinition, MethodReference> resolveGetProviderMethod)
+            Func<ModuleDefinition, MethodReference> resolveGetProviderMethod)
         {
             _invocationInfo = parameters.InvocationInfo;
             _classMethodReplacementProvider = parameters.ClassMethodReplacementProvider;
@@ -36,15 +36,14 @@ namespace LinFu.AOP.Cecil
         /// <param name="classMethodReplacementProvider">The variable that contains the class method replacement provider instance.</param>
         /// <param name="resolveGetProviderMethod">The functor that resolves the method that obtains the method replacement provider instance.</param>
         public GetClassMethodReplacementProvider(VariableDefinition invocationInfo,
-                                                 VariableDefinition classMethodReplacementProvider,
-                                                 Func<ModuleDefinition, MethodReference> resolveGetProviderMethod)
+            VariableDefinition classMethodReplacementProvider,
+            Func<ModuleDefinition, MethodReference> resolveGetProviderMethod)
         {
             _invocationInfo = invocationInfo;
             _classMethodReplacementProvider = classMethodReplacementProvider;
             _resolveGetProviderMethod = resolveGetProviderMethod;
         }
 
-        #region IInstructionEmitter Members
 
         /// <summary>
         /// Emits the instructions that obtain a class-level <see cref="IMethodReplacementProvider"/> instance.
@@ -64,7 +63,5 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Call, getProvider);
             IL.Emit(OpCodes.Stloc, _classMethodReplacementProvider);
         }
-
-        #endregion
     }
 }

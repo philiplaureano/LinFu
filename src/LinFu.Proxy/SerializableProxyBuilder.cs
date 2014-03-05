@@ -29,7 +29,7 @@ namespace LinFu.Proxy
         /// <param name="module">The module that will hold the brand new type.</param>
         /// <param name="targetType">The <see cref="TypeDefinition"/> that represents the type to be created.</param>
         public override void Construct(Type originalBaseType, IEnumerable<Type> baseInterfaces, ModuleDefinition module,
-                                       TypeDefinition targetType)
+            TypeDefinition targetType)
         {
             var interfaces = new HashSet<Type>(baseInterfaces);
 
@@ -55,16 +55,16 @@ namespace LinFu.Proxy
 
             var interceptorType = module.ImportType<IInterceptor>();
             var interceptorGetterProperty = (from PropertyDefinition m in targetType.Properties
-                                                            where
-                                                                m.Name == "Interceptor" &&
-                                                                m.PropertyType == interceptorType
-                                                            select m).First();
+                where
+                    m.Name == "Interceptor" &&
+                    m.PropertyType == interceptorType
+                select m).First();
         }
 
         private static void DefineSerializationConstructor(ModuleDefinition module, TypeDefinition targetType)
         {
             var getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle",
-                                                                          BindingFlags.Public | BindingFlags.Static);
+                BindingFlags.Public | BindingFlags.Static);
 
             var parameterTypes = new[] {typeof (SerializationInfo), typeof (StreamingContext)};
 
@@ -106,11 +106,11 @@ namespace LinFu.Proxy
         }
 
         private static void ImplementGetObjectData(Type originalBaseType, IEnumerable<Type> baseInterfaces,
-                                                   ModuleDefinition module, TypeDefinition targetType)
+            ModuleDefinition module, TypeDefinition targetType)
         {
             var getObjectDataMethod = (from MethodDefinition m in targetType.Methods
-                                                    where m.Name.Contains("ISerializable.GetObjectData")
-                                                    select m).First();
+                where m.Name.Contains("ISerializable.GetObjectData")
+                select m).First();
 
             var body = getObjectDataMethod.Body;
             body.Instructions.Clear();
@@ -120,10 +120,10 @@ namespace LinFu.Proxy
 
             var proxyInterfaceType = module.ImportType<IProxy>();
             var getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle",
-                                                                          BindingFlags.Public | BindingFlags.Static);
+                BindingFlags.Public | BindingFlags.Static);
             var proxyObjectRefType = module.ImportType<ProxyObjectReference>();
             var setType = module.ImportMethod<SerializationInfo>("SetType",
-                                                                             BindingFlags.Public | BindingFlags.Instance);
+                BindingFlags.Public | BindingFlags.Instance);
             var getInterceptor = module.ImportMethod<IProxy>("get_Interceptor");
 
             IL.Emit(OpCodes.Ldarg_1);
@@ -133,10 +133,10 @@ namespace LinFu.Proxy
 
             // info.AddValue("__interceptor", __interceptor);
             var addValueMethod = typeof (SerializationInfo).GetMethod("AddValue",
-                                                                             BindingFlags.Public | BindingFlags.Instance,
-                                                                             null,
-                                                                             new[] {typeof (string), typeof (object)},
-                                                                             null);
+                BindingFlags.Public | BindingFlags.Instance,
+                null,
+                new[] {typeof (string), typeof (object)},
+                null);
             var addValue = module.Import(addValueMethod);
 
             IL.Emit(OpCodes.Ldarg_1);

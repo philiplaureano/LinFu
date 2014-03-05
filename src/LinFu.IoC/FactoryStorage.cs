@@ -125,9 +125,9 @@ namespace LinFu.IoC
             {
                 var defaultServiceInfo = new ServiceInfo(string.Empty, serviceType);
                 if (factory == null && base.ContainsFactory(defaultServiceInfo))
-                    factory = base.GetFactory(defaultServiceInfo);    
+                    factory = base.GetFactory(defaultServiceInfo);
             }
-            
+
 
             return factory;
         }
@@ -141,7 +141,7 @@ namespace LinFu.IoC
         /// <param name="actualServiceType">The service type.</param>
         /// <returns>A factory instance that can create the generic type.</returns>
         private IFactory GetGenericFactory(IServiceInfo serviceInfo, IFactory factory, string serviceName,
-                                           Type actualServiceType)
+            Type actualServiceType)
         {
             var info = new ServiceInfo(serviceName, actualServiceType, serviceInfo.ArgumentTypes);
 

@@ -27,20 +27,20 @@ namespace LinFu.AOP.Cecil
         static InvocationInfoEmitter()
         {
             var types = new[]
-                            {
-                                typeof (object),
-                                typeof (MethodBase),
-                                typeof (StackTrace),
-                                typeof (Type[]),
-                                typeof (Type[]),
-                                typeof (Type),
-                                typeof (object[])
-                            };
+            {
+                typeof (object),
+                typeof (MethodBase),
+                typeof (StackTrace),
+                typeof (Type[]),
+                typeof (Type[]),
+                typeof (Type),
+                typeof (object[])
+            };
 
             _invocationInfoConstructor = typeof (InvocationInfo).GetConstructor(types);
 
             _getTypeFromHandle = typeof (Type).GetMethod("GetTypeFromHandle",
-                                                         BindingFlags.Static | BindingFlags.Public);
+                BindingFlags.Static | BindingFlags.Public);
         }
 
         /// <summary>
@@ -60,7 +60,6 @@ namespace LinFu.AOP.Cecil
             _pushStackTrace = pushStackTrace;
         }
 
-        #region IEmitInvocationInfo Members
 
         /// <summary>
         /// Emits the IL to save information about
@@ -71,7 +70,7 @@ namespace LinFu.AOP.Cecil
         /// <param name="interceptedMethod">The method that will be passed to the <paramref name="invocationInfo"/> as the currently executing method.</param>
         /// <param name="invocationInfo">The local variable that will store the resulting <see cref="IInvocationInfo"/> instance.</param>
         public void Emit(MethodDefinition targetMethod, MethodReference interceptedMethod,
-                         VariableDefinition invocationInfo)
+            VariableDefinition invocationInfo)
         {
             var module = targetMethod.DeclaringType.Module;
             var currentMethod = MethodDefinitionExtensions.AddLocal(targetMethod, typeof (MethodBase));
@@ -82,7 +81,6 @@ namespace LinFu.AOP.Cecil
 
             var IL = targetMethod.GetILGenerator();
 
-            #region Initialize the InvocationInfo constructor arguments
 
             // Type[] typeArguments = new Type[genericTypeCount];
             var genericParameterCount = targetMethod.GenericParameters.Count;
@@ -159,7 +157,6 @@ namespace LinFu.AOP.Cecil
             // Push the arguments back onto the stack
             IL.Emit(OpCodes.Ldloc, arguments);
 
-            #endregion
 
             // InvocationInfo info = new InvocationInfo(...);
             var infoConstructor = module.Import(_invocationInfoConstructor);
@@ -170,7 +167,5 @@ namespace LinFu.AOP.Cecil
             var addInstance = module.Import(typeof (IgnoredInstancesRegistry).GetMethod("AddInstance"));
             IL.Emit(OpCodes.Call, addInstance);
         }
-
-        #endregion
     }
 }

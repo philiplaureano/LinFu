@@ -21,7 +21,7 @@ namespace LinFu.IoC
         /// <param name="proposedFactory">The <see cref="IFactory"/> instance that will be used to handle the service request.</param>
         /// <param name="container">The host container.</param>
         internal ServiceRequest(string serviceName, Type serviceType,
-                                object[] proposedArguments, IFactory proposedFactory, IServiceContainer container)
+            object[] proposedArguments, IFactory proposedFactory, IServiceContainer container)
             : base(serviceName, serviceType)
         {
             _proposedArguments = proposedArguments;
@@ -37,7 +37,6 @@ namespace LinFu.IoC
             ActualFactory = proposedFactory;
         }
 
-        #region IServiceRequest Members
 
         /// <summary>
         /// Gets the value indicating the original arguments that
@@ -76,7 +75,5 @@ namespace LinFu.IoC
         /// that will be used to handle the service request.
         /// </summary>
         public IFactory ActualFactory { get; set; }
-
-        #endregion
     }
 }

@@ -9,8 +9,6 @@ namespace LinFu.AOP.Cecil.Loaders
     /// </summary>
     public class PdbLoader : IPdbLoader
     {
-        #region IPdbLoader Members
-
         /// <summary>
         /// Loads an assembly into memory.
         /// </summary>
@@ -45,7 +43,5 @@ namespace LinFu.AOP.Cecil.Loaders
             // Update the debug symbols
             targetAssembly.MainModule.SaveSymbols();
         }
-
-        #endregion
     }
 }

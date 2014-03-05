@@ -21,7 +21,6 @@ namespace LinFu.AOP.Interfaces
             _additionalArguments = additionalArguments;
         }
 
-        #region IActivationContext Members
 
         /// <summary>
         /// Gets the value indicating the type to be instantiated.
@@ -38,7 +37,5 @@ namespace LinFu.AOP.Interfaces
         {
             get { return _additionalArguments; }
         }
-
-        #endregion
     }
 }

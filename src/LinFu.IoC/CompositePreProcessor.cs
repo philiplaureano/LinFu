@@ -19,7 +19,6 @@ namespace LinFu.IoC
             _preProcessors = preProcessors;
         }
 
-        #region IPreProcessor Members
 
         /// <summary>
         /// A method that passes every request result made
@@ -33,7 +32,5 @@ namespace LinFu.IoC
                 preprocessor.Preprocess(request);
             }
         }
-
-        #endregion
     }
 }

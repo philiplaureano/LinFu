@@ -10,6 +10,7 @@ namespace LinFu.AOP.Interfaces
     {
         private readonly Dictionary<object, Counter<MethodBase>> _counts = new Dictionary<object, Counter<MethodBase>>();
         private readonly object _lock = new object();
+
         public void Increment(IInvocationInfo context)
         {
             var instance = context.Target;

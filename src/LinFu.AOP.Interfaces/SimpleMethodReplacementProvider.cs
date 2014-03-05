@@ -20,28 +20,20 @@ namespace LinFu.AOP.Interfaces
         {
             MethodReplacement = replacement;
         }
-        
+
         /// <summary>
         /// Gets or sets the value indicating the Predicate that will determine whether or not 
         /// the method should be intercepted.
         /// </summary>
         /// <value>The interceptor predicate.</value>
-        public Func<IInvocationInfo, bool > MethodReplacementPredicate
-        {
-            get;
-            set;
-        }
+        public Func<IInvocationInfo, bool> MethodReplacementPredicate { get; set; }
 
         /// <summary>
         /// Gets or sets the value indicating the actual <see cref="IInterceptor"/>
         /// instance that will provide the method body implementations.
         /// </summary>
         /// <value>The interceptor that will swap the method bodies at runtime.</value>
-        public IInterceptor MethodReplacement
-        {
-            get;
-            set;
-        }
+        public IInterceptor MethodReplacement { get; set; }
 
         /// <summary>
         /// Determines whether or not a particular method body should be replaced at runtime.

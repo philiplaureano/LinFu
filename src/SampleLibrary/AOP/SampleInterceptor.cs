@@ -6,14 +6,11 @@ namespace SampleLibrary.AOP
     {
         public bool HasBeenInvoked { get; set; }
 
-        #region IInterceptor Members
 
         public object Intercept(IInvocationInfo info)
         {
             HasBeenInvoked = true;
             return null;
         }
-
-        #endregion
     }
 }

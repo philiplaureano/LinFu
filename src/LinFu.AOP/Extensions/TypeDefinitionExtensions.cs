@@ -20,8 +20,8 @@ namespace LinFu.AOP.Cecil.Extensions
         {
             var module = targetType.Module;
             var targetMethods = from MethodDefinition method in targetType.Methods
-                                                          where weaver.ShouldWeave(method)
-                                                          select method;
+                where weaver.ShouldWeave(method)
+                select method;
 
             // Modify the host module
             weaver.ImportReferences(module);

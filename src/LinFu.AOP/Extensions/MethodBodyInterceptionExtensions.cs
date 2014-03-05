@@ -53,7 +53,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="target">The target to be modified.</param>
         /// <param name="methodFilter">The method filter that will determine the methods that will be modified.</param>
         public static void InterceptMethodBody(this IReflectionStructureVisitable target,
-                                               Func<MethodReference, bool> methodFilter)
+            Func<MethodReference, bool> methodFilter)
         {
             var typeFilter = GetTypeFilter();
             target.Accept(new ImplementModifiableType(typeFilter));
@@ -68,7 +68,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="target">The target to be modified.</param>
         /// <param name="methodFilter">The method filter that will determine the methods that will be modified.</param>
         public static void InterceptMethodBody(this IReflectionVisitable target,
-                                               Func<MethodReference, bool> methodFilter)
+            Func<MethodReference, bool> methodFilter)
         {
             var typeFilter = GetTypeFilter();
             target.Accept(new ImplementModifiableType(typeFilter));
@@ -80,13 +80,13 @@ namespace LinFu.AOP.Cecil.Extensions
         private static Func<TypeReference, bool> GetTypeFilter()
         {
             return type =>
-                       {
-                           var actualType = type.Resolve();
-                           if (actualType.IsValueType || actualType.IsInterface)
-                               return false;
+            {
+                var actualType = type.Resolve();
+                if (actualType.IsValueType || actualType.IsInterface)
+                    return false;
 
-                           return actualType.IsClass;
-                       };
+                return actualType.IsClass;
+            };
         }
     }
 }

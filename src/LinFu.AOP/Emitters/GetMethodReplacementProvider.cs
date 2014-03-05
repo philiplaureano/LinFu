@@ -22,9 +22,9 @@ namespace LinFu.AOP.Cecil
         /// <param name="hostMethod">The target method.</param>
         /// <param name="resolveGetProviderMethod">The functor that will resolve the GetProvider method.</param>
         public GetMethodReplacementProvider(VariableDefinition methodReplacementProvider, MethodDefinition hostMethod,
-                                            Func<ModuleDefinition, MethodReference> resolveGetProviderMethod)
+            Func<ModuleDefinition, MethodReference> resolveGetProviderMethod)
         {
-            if (methodReplacementProvider.VariableType.FullName != typeof(IMethodReplacementProvider).FullName)
+            if (methodReplacementProvider.VariableType.FullName != typeof (IMethodReplacementProvider).FullName)
                 throw new ArgumentException();
 
             _methodReplacementProvider = methodReplacementProvider;
@@ -32,7 +32,6 @@ namespace LinFu.AOP.Cecil
             _resolveGetProviderMethod = resolveGetProviderMethod;
         }
 
-        #region IInstructionEmitter Members
 
         /// <summary>
         /// Emits the instructions that obtain the <see cref="IMethodReplacementProvider"/> instance.
@@ -56,7 +55,5 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Callvirt, getProvider);
             IL.Emit(OpCodes.Stloc, _methodReplacementProvider);
         }
-
-        #endregion
     }
 }

@@ -19,7 +19,6 @@ namespace LinFu.IoC.Configuration
             _context = context;
         }
 
-        #region IPostProcessor Members
 
         public void PostProcess(IServiceRequestResult result)
         {
@@ -43,7 +42,5 @@ namespace LinFu.IoC.Configuration
             // context
             action(container, service);
         }
-
-        #endregion
     }
 }

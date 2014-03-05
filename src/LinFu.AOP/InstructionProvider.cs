@@ -10,8 +10,6 @@ namespace LinFu.AOP.Cecil
     /// </summary>
     internal class InstructionProvider : IInstructionProvider
     {
-        #region IInstructionProvider Members
-
         /// <summary>
         /// Determines the instructions for a given method.
         /// </summary>
@@ -28,7 +26,5 @@ namespace LinFu.AOP.Cecil
 
             return oldInstructions;
         }
-
-        #endregion
     }
 }

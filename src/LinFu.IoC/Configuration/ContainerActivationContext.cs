@@ -26,7 +26,6 @@ namespace LinFu.IoC.Configuration
             _container = container;
         }
 
-        #region IContainerActivationContext Members
 
         /// <summary>
         /// Gets the value indicating the <see cref="IServiceContainer"/> instance
@@ -36,7 +35,5 @@ namespace LinFu.IoC.Configuration
         {
             get { return _container; }
         }
-
-        #endregion
     }
 }

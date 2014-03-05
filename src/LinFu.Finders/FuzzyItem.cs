@@ -25,7 +25,6 @@ namespace LinFu.Finders
             _failed = false;
         }
 
-        #region IFuzzyItem<T> Members
 
         /// <summary>
         /// Reports the probability of a match
@@ -109,7 +108,5 @@ namespace LinFu.Finders
             _matches = 0;
             _failed = false;
         }
-
-        #endregion
     }
 }

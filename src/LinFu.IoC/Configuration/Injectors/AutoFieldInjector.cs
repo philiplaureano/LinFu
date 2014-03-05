@@ -19,7 +19,7 @@ namespace LinFu.IoC.Configuration
         /// <param name="additionalArguments">The additional arguments that were passed to the <see cref="IServiceRequestResult"/> during the instantiation process. Note: This parameter will be ignored by this override.</param>
         /// <param name="container">The container that will provide the service instances.</param>
         protected override void Inject(object target, FieldInfo member, IArgumentResolver argumentResolver,
-                                       IServiceContainer container, object[] additionalArguments)
+            IServiceContainer container, object[] additionalArguments)
         {
             // Get the field value from the container
             var fieldType = new NamedType(member.FieldType);

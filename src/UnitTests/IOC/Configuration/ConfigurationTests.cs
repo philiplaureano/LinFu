@@ -37,9 +37,9 @@ namespace LinFu.UnitTests.IOC.Configuration
             loader.LoadInto(container);
 
             var matches = from p in container.PostProcessors
-                                                  where p != null &&
-                                                        p.GetType() == typeof (SamplePostProcessor)
-                                                  select p;
+                where p != null &&
+                      p.GetType() == typeof (SamplePostProcessor)
+                select p;
 
             Assert.IsTrue(matches.Count() > 0, "The postprocessor failed to load.");
         }
@@ -55,9 +55,9 @@ namespace LinFu.UnitTests.IOC.Configuration
             loader.LoadInto(container);
 
             var matches = from p in container.PreProcessors
-                                                 where p != null &&
-                                                       p.GetType() == typeof (SamplePreprocessor)
-                                                 select p;
+                where p != null &&
+                      p.GetType() == typeof (SamplePreprocessor)
+                select p;
 
             Assert.IsTrue(matches.Count() > 0, "The preprocessor failed to load.");
         }
@@ -109,15 +109,15 @@ namespace LinFu.UnitTests.IOC.Configuration
             // Action<ILoader<IServiceContainer>> instance
             Action<ILoader<IServiceContainer>> customAction =
                 targetLoader =>
-                    {
-                        var initializer = mockInitializer.Object;
-                        var container = mockContainer.Object;
+                {
+                    var initializer = mockInitializer.Object;
+                    var container = mockContainer.Object;
 
-                        // The test will only succeed if
-                        // the following line of code
-                        // is invoked:
-                        initializer.Initialize(container);
-                    };
+                    // The test will only succeed if
+                    // the following line of code
+                    // is invoked:
+                    initializer.Initialize(container);
+                };
 
             loader.CustomLoaderActions.Add(customAction);
             loader.LoadInto(mockContainer.Object);
@@ -133,9 +133,9 @@ namespace LinFu.UnitTests.IOC.Configuration
             var mockListing = new Mock<IDirectoryListing>();
 
             var loader = new Loader<IServiceContainer>
-                             {
-                                 DirectoryLister = mockListing.Object
-                             };
+            {
+                DirectoryLister = mockListing.Object
+            };
 
             var filename = "input.dll";
             mockListing.Expect(listing => listing.GetFiles(It.IsAny<string>(), filename))

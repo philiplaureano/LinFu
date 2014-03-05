@@ -20,7 +20,7 @@ namespace LinFu.IoC.Interceptors
         /// <param name="methodInvoke">The method invoker.</param>
         /// <param name="aroundInvoke">The target <see cref="IAroundInvoke"/> instance.</param>
         internal AroundInvokeAdapter(Func<object> getTarget, IMethodInvoke<MethodInfo> methodInvoke,
-                                     IAroundInvoke aroundInvoke)
+            IAroundInvoke aroundInvoke)
             : base(methodInvoke)
         {
             _wrapper = aroundInvoke;

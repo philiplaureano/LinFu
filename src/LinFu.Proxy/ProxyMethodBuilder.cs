@@ -33,7 +33,6 @@ namespace LinFu.Proxy
         /// </summary>
         public virtual IMethodBodyEmitter Emitter { get; set; }
 
-        #region IInitialize Members
 
         /// <summary>
         /// Initializes the class with the <paramref name="source"/> container.
@@ -44,9 +43,6 @@ namespace LinFu.Proxy
             Emitter = (IMethodBodyEmitter) source.GetService(typeof (IMethodBodyEmitter));
         }
 
-        #endregion
-
-        #region IMethodBuilder Members
 
         /// <summary>
         /// Creates a method that matches the signature defined in the
@@ -56,8 +52,6 @@ namespace LinFu.Proxy
         /// <param name="method">The method from which the signature will be derived.</param>
         public virtual MethodDefinition CreateMethod(TypeDefinition targetType, MethodInfo method)
         {
-            #region Match the method signature
-
             var module = targetType.Module;
             var methodName = method.Name;
 
@@ -74,11 +68,10 @@ namespace LinFu.Proxy
             }
 
             var baseAttributes = MethodAttributes.Virtual |
-                                              MethodAttributes.HideBySig;
+                                 MethodAttributes.HideBySig;
 
             var attributes = default(MethodAttributes);
 
-            #region Match the visibility of the target method
 
             if (method.IsFamilyOrAssembly)
                 attributes = baseAttributes | MethodAttributes.FamORAssem;
@@ -89,21 +82,20 @@ namespace LinFu.Proxy
             if (method.IsPublic)
                 attributes = baseAttributes | MethodAttributes.Public;
 
-            #endregion
 
             // Build the list of parameter types
             var parameterTypes = (from param in method.GetParameters()
-                                     let type = param.ParameterType
-                                     let importedType = type
-                                     select importedType).ToArray();
+                let type = param.ParameterType
+                let importedType = type
+                select importedType).ToArray();
 
 
             //Build the list of generic parameter types
             var genericParameterTypes = method.GetGenericArguments();
 
             var newMethod = targetType.DefineMethod(methodName, attributes,
-                                                                 method.ReturnType, parameterTypes,
-                                                                 genericParameterTypes);
+                method.ReturnType, parameterTypes,
+                genericParameterTypes);
 
             newMethod.Body.InitLocals = true;
             newMethod.ImplAttributes = MethodImplAttributes.IL | MethodImplAttributes.Managed;
@@ -118,7 +110,6 @@ namespace LinFu.Proxy
             var originalMethodRef = module.Import(method);
             newMethod.Overrides.Add(originalMethodRef);
 
-            #endregion
 
             // Define the method body
             if (Emitter != null)
@@ -127,7 +118,6 @@ namespace LinFu.Proxy
             return newMethod;
         }
 
-        #endregion
 
         /// <summary>
         /// Matches the generic parameters of <paramref name="newMethod">a target method</paramref>

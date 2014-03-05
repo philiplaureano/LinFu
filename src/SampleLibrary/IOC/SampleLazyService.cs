@@ -9,14 +9,12 @@
 
         public static bool IsInitialized { get; private set; }
 
-        #region ISampleService Members
 
         public void DoSomething()
         {
             IsInitialized = true;
         }
 
-        #endregion
 
         public static void Reset()
         {

@@ -14,8 +14,6 @@ namespace LinFu.AOP.Cecil.Factories
     [Factory(typeof (Action<string, TypeDefinition>), ServiceName = "TypeWeaver")]
     public class TypeWeaverActionFactory : IFactory
     {
-        #region IFactory Members
-
         /// <summary>
         /// Generates the <see cref="Action{T1, T2}"/> instance that will
         /// weave the target type.
@@ -27,32 +25,30 @@ namespace LinFu.AOP.Cecil.Factories
             var container = request.Container;
             Action<string, TypeDefinition> result =
                 (weaverName, type) =>
-                    {
-                        // Get the method weaver instance that matches the weaverName
-                        var methodWeaver =
-                            (IHostWeaver<TypeDefinition>)
+                {
+                    // Get the method weaver instance that matches the weaverName
+                    var methodWeaver =
+                        (IHostWeaver<TypeDefinition>)
                             container.GetService(weaverName, typeof (IHostWeaver<TypeDefinition>));
 
-                        // Wrap it in a type weaver
-                        var typeWeaver =
-                            (ITypeWeaver) container.GetService("AutoMethodWeaver", typeof (ITypeWeaver), methodWeaver);
+                    // Wrap it in a type weaver
+                    var typeWeaver =
+                        (ITypeWeaver) container.GetService("AutoMethodWeaver", typeof (ITypeWeaver), methodWeaver);
 
-                        var module = type.Module;
-                        if (!typeWeaver.ShouldWeave(type))
-                            return;
+                    var module = type.Module;
+                    if (!typeWeaver.ShouldWeave(type))
+                        return;
 
-                        // Modify the host module
-                        typeWeaver.ImportReferences(module);
-                        typeWeaver.AddAdditionalMembers(module);
+                    // Modify the host module
+                    typeWeaver.ImportReferences(module);
+                    typeWeaver.AddAdditionalMembers(module);
 
-                        // Weave the type itself
-                        typeWeaver.Weave(type);
-                    };
+                    // Weave the type itself
+                    typeWeaver.Weave(type);
+                };
 
 
             return result;
         }
-
-        #endregion
     }
 }

@@ -12,8 +12,6 @@ namespace LinFu.IoC.Configuration.Injectors
     public class NullMemberInjectionFilter<TMember> : IMemberInjectionFilter<TMember>
         where TMember : MemberInfo
     {
-        #region IMemberInjectionFilter<TMember> Members
-
         /// <summary>
         /// Always returns an empty list of injectable members.
         /// </summary>
@@ -23,7 +21,5 @@ namespace LinFu.IoC.Configuration.Injectors
         {
             return new TMember[0];
         }
-
-        #endregion
     }
 }

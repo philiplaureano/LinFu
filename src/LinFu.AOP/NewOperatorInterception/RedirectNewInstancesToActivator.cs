@@ -39,7 +39,6 @@ namespace LinFu.AOP.Cecil
             _filter = new NewInstanceInterceptionAdapter(filter);
         }
 
-        #region INewObjectWeaver Members
 
         public bool ShouldIntercept(MethodReference constructor, TypeReference concreteType, MethodReference hostMethod)
         {
@@ -61,15 +60,15 @@ namespace LinFu.AOP.Cecil
         {
             // Static method imports
             _getStaticActivator = module.ImportMethod("GetActivator", typeof (TypeActivatorRegistry),
-                                                      BindingFlags.Public | BindingFlags.Static);
+                BindingFlags.Public | BindingFlags.Static);
             _getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle",
-                                                           BindingFlags.Public | BindingFlags.Static);
+                BindingFlags.Public | BindingFlags.Static);
 
             // Constructor imports
             _methodActivationContextCtor = module.ImportConstructor<TypeActivationContext>(typeof (object),
-                                                                                           typeof (MethodBase),
-                                                                                           typeof (Type),
-                                                                                           typeof (object[]));
+                typeof (MethodBase),
+                typeof (Type),
+                typeof (object[]));
 
             // Instance method imports
             _objectListCtor = module.ImportConstructor<List<object>>(new Type[0]);
@@ -85,7 +84,7 @@ namespace LinFu.AOP.Cecil
         }
 
         public void EmitNewObject(MethodDefinition hostMethod, CilWorker IL, MethodReference targetConstructor,
-                                  TypeReference concreteType)
+            TypeReference concreteType)
         {
             var parameters = targetConstructor.Parameters;
             var skipInterception = IL.Create(OpCodes.Nop);
@@ -144,7 +143,6 @@ namespace LinFu.AOP.Cecil
             _currentActivator = hostMethod.AddLocal<ITypeActivator>();
         }
 
-        #endregion
 
         private void EmitCreateInstance(CilWorker IL)
         {

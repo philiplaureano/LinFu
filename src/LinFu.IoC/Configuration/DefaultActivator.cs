@@ -15,7 +15,6 @@ namespace LinFu.IoC.Configuration
         private IMethodInvoke<ConstructorInfo> _constructorInvoke;
         private IMemberResolver<ConstructorInfo> _resolver;
 
-        #region IActivator<IContainerActivationContext> Members
 
         /// <summary>
         /// Creates an object instance.
@@ -46,9 +45,6 @@ namespace LinFu.IoC.Configuration
             return result;
         }
 
-        #endregion
-
-        #region IInitialize Members
 
         /// <summary>
         /// Initializes the class with the default services.
@@ -60,7 +56,5 @@ namespace LinFu.IoC.Configuration
             _constructorInvoke = container.GetService<IMethodInvoke<ConstructorInfo>>();
             _argumentResolver = container.GetService<IConstructorArgumentResolver>();
         }
-
-        #endregion
     }
 }

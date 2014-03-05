@@ -8,11 +8,8 @@ namespace LinFu.AOP.Cecil
 {
     internal class InterceptNewCalls : InstructionSwapper
     {
-        #region Private Fields
-
         private MethodReference _getCurrentMethod;
 
-        #endregion
 
         private readonly INewObjectWeaver _emitter;
 
@@ -29,7 +26,7 @@ namespace LinFu.AOP.Cecil
         public override void ImportReferences(ModuleDefinition module)
         {
             _getCurrentMethod = module.ImportMethod<MethodBase>("GetCurrentMethod",
-                                                                BindingFlags.Public | BindingFlags.Static);
+                BindingFlags.Public | BindingFlags.Static);
             _emitter.ImportReferences(module);
         }
 

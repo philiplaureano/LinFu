@@ -55,7 +55,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="visitable">The target type.</param>
         /// <param name="methodFilter">The method filter functor that will determine which methods should support exception interception.</param>
         public static void InterceptExceptions(this IReflectionStructureVisitable visitable,
-                                               Func<MethodReference, bool> methodFilter)
+            Func<MethodReference, bool> methodFilter)
         {
             if (visitable == null)
                 throw new ArgumentNullException("visitable");
@@ -70,7 +70,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="visitable">The target type.</param>
         /// <param name="methodFilter">The method filter functor that will determine which methods should support exception interception.</param>
         public static void InterceptExceptions(this IReflectionVisitable visitable,
-                                               Func<MethodReference, bool> methodFilter)
+            Func<MethodReference, bool> methodFilter)
         {
             if (visitable == null)
                 throw new ArgumentNullException("visitable");
@@ -82,10 +82,10 @@ namespace LinFu.AOP.Cecil.Extensions
         private static Func<MethodReference, bool> GetMethodFilter()
         {
             return method =>
-                       {
-                           var actualMethod = method.Resolve();
-                           return actualMethod.HasBody;
-                       };
+            {
+                var actualMethod = method.Resolve();
+                return actualMethod.HasBody;
+            };
         }
     }
 }

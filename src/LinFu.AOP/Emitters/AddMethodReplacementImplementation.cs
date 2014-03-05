@@ -32,7 +32,6 @@ namespace LinFu.AOP.Cecil
             _returnValue = parameters.ReturnValue;
         }
 
-        #region IInstructionEmitter Members
 
         /// <summary>
         /// Adds method body interception to the target method.
@@ -65,19 +64,17 @@ namespace LinFu.AOP.Cecil
             // This is equivalent to the following code:
             // var replacement = provider.GetMethodReplacement(info);
             var invokeMethodReplacement = new InvokeMethodReplacement(executeOriginalInstructions,
-                                                                      _methodReplacementProvider,
-                                                                      _classMethodReplacementProvider, _invocationInfo);
+                _methodReplacementProvider,
+                _classMethodReplacementProvider, _invocationInfo);
             invokeMethodReplacement.Emit(IL);
 
             IL.Emit(OpCodes.Br, endLabel);
 
-            #region The original instruction block
 
             IL.Append(executeOriginalInstructions);
             var addOriginalInstructions = new AddOriginalInstructions(_oldInstructions, endLabel);
             addOriginalInstructions.Emit(IL);
 
-            #endregion
 
             // Mark the end of the method body
             IL.Append(endLabel);
@@ -85,7 +82,5 @@ namespace LinFu.AOP.Cecil
             var saveReturnValue = new SaveReturnValue(returnType, _returnValue);
             saveReturnValue.Emit(IL);
         }
-
-        #endregion
     }
 }

@@ -25,9 +25,9 @@ namespace LinFu.AOP.Cecil
         /// <param name="classMethodReplacementProvider">The variable that contains the class-level <see cref="IMethodReplacementProvider"/> instance.</param>
         /// <param name="invocationInfo">The variable that contains the <see cref="IInvocationInfo"/> instance.</param>
         public InvokeMethodReplacement(Instruction executeOriginalInstructions,
-                                       VariableDefinition methodReplacementProvider,
-                                       VariableDefinition classMethodReplacementProvider,
-                                       VariableDefinition invocationInfo)
+            VariableDefinition methodReplacementProvider,
+            VariableDefinition classMethodReplacementProvider,
+            VariableDefinition invocationInfo)
         {
             _executeOriginalInstructions = executeOriginalInstructions;
             _methodReplacementProvider = methodReplacementProvider;
@@ -35,7 +35,6 @@ namespace LinFu.AOP.Cecil
             _invocationInfo = invocationInfo;
         }
 
-        #region IInstructionEmitter Members
 
         /// <summary>
         /// Emits the instructions that call the method replacement instead of the original method body.
@@ -64,11 +63,10 @@ namespace LinFu.AOP.Cecil
             InvokeInterceptor(module, IL, methodReplacement, returnType, _invocationInfo);
         }
 
-        #endregion
 
         private static void InvokeInterceptor(ModuleDefinition module, CilWorker IL,
-                                              VariableDefinition methodReplacement, TypeReference returnType,
-                                              VariableDefinition invocationInfo)
+            VariableDefinition methodReplacement, TypeReference returnType,
+            VariableDefinition invocationInfo)
         {
             var interceptMethod = module.ImportMethod<IInterceptor>("Intercept");
             IL.Emit(OpCodes.Ldloc, methodReplacement);
@@ -78,10 +76,10 @@ namespace LinFu.AOP.Cecil
         }
 
         private static void GetMethodReplacementInstance(MethodDefinition method,
-                                                         CilWorker IL,
-                                                         VariableDefinition methodReplacement,
-                                                         VariableDefinition methodReplacementProvider,
-                                                         VariableDefinition invocationInfo)
+            CilWorker IL,
+            VariableDefinition methodReplacement,
+            VariableDefinition methodReplacementProvider,
+            VariableDefinition invocationInfo)
         {
             var declaringType = method.DeclaringType;
             var module = declaringType.Module;

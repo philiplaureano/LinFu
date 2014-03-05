@@ -20,6 +20,6 @@ namespace LinFu.Proxy.Interfaces
         /// <param name="module">The module that will hold the brand new type.</param>
         /// <param name="targetType">The <see cref="TypeDefinition"/> that represents the type to be created.</param>
         void Construct(Type baseType, IEnumerable<Type> interfaces,
-                       ModuleDefinition module, TypeDefinition targetType);
+            ModuleDefinition module, TypeDefinition targetType);
     }
 }

@@ -32,7 +32,7 @@ namespace LinFu.IoC.Configuration
         protected override void PushMethodArguments(ILGenerator IL, MethodBase targetMethod)
         {
             var parameterTypes = (from p in targetMethod.GetParameters()
-                                     select p.ParameterType).ToArray();
+                select p.ParameterType).ToArray();
 
             var offset = targetMethod.IsStatic ? 0 : 1;
             // Push the method arguments onto the stack

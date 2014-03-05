@@ -6,13 +6,10 @@ namespace SampleLibrary.AOP
     {
         public bool Called { get; private set; }
 
-        #region IBootStrappedComponent Members
 
         public void Initialize()
         {
             Called = true;
         }
-
-        #endregion
     }
 }

@@ -16,13 +16,13 @@ namespace LinFu.UnitTests.AOP
     {
         private class OtherSampleService : ISampleService
         {
-            #region ISampleService Members
+            
 
             public void DoSomething()
             {
             }
 
-            #endregion
+            
         }
 
         [Test]

@@ -18,8 +18,6 @@ namespace LinFu.AOP.Cecil.Factories
     [Factory(typeof (Action<MethodDefinition>), ServiceName = "AddInvocationInfo")]
     public class AddInvocationInfoActionFactory : IFactory
     {
-        #region IFactory Members
-
         /// <summary>
         /// Generates the <see cref="Action{T}"/> delegate that will emit
         /// the necessary <see cref="IInvocationInfo"/> information.
@@ -31,28 +29,26 @@ namespace LinFu.AOP.Cecil.Factories
             var container = request.Container;
             Action<MethodDefinition> result =
                 method =>
-                    {
-                        var body = method.Body;
+                {
+                    var body = method.Body;
 
-                        // Add the IInvocationInfo 
-                        // instance only once
-                        var localAlreadyExists = (from VariableDefinition local in body.Variables
-                                                   where local.Name == "___invocationInfo___"
-                                                   select local).Count() > 0;
+                    // Add the IInvocationInfo 
+                    // instance only once
+                    var localAlreadyExists = (from VariableDefinition local in body.Variables
+                        where local.Name == "___invocationInfo___"
+                        select local).Count() > 0;
 
-                        if (localAlreadyExists)
-                            return;
+                    if (localAlreadyExists)
+                        return;
 
-                        var variable = method.AddLocal<IInvocationInfo>();
-                        variable.Name = "___invocationInfo___";
+                    var variable = method.AddLocal<IInvocationInfo>();
+                    variable.Name = "___invocationInfo___";
 
-                        var emitInfo = (IEmitInvocationInfo) container.GetService(typeof (IEmitInvocationInfo));
-                        emitInfo.Emit(method, method, variable);
-                    };
+                    var emitInfo = (IEmitInvocationInfo) container.GetService(typeof (IEmitInvocationInfo));
+                    emitInfo.Emit(method, method, variable);
+                };
 
             return result;
         }
-
-        #endregion
     }
 }

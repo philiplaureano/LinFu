@@ -14,8 +14,6 @@ namespace LinFu.Reflection
     public abstract class BasePluginLoader<TTarget, TAttribute> : IActionLoader<ILoader<TTarget>, Type>
         where TAttribute : Attribute
     {
-        #region IActionLoader<ILoader<TTarget>,Type> Members
-
         /// <summary>
         /// Determines if the plugin loader can load the <paramref name="inputType"/>.
         /// </summary>
@@ -56,7 +54,5 @@ namespace LinFu.Reflection
         /// <param name="input">The input that will be used to configure the target.</param>
         /// <returns>A set of <see cref="Action{TTarget}"/> instances. This cannot be <c>null</c>.</returns>
         public abstract IEnumerable<Action<ILoader<TTarget>>> Load(Type input);
-
-        #endregion
     }
 }

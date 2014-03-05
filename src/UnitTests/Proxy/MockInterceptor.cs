@@ -14,14 +14,11 @@ namespace LinFu.UnitTests.Proxy
 
         public bool Called { get; set; }
 
-        #region IInterceptor Members
 
         public object Intercept(IInvocationInfo info)
         {
             Called = true;
             return _implementation(info);
         }
-
-        #endregion
     }
 }

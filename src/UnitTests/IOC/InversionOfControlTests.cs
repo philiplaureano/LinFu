@@ -253,7 +253,7 @@ namespace LinFu.UnitTests.IOC
             container.PostProcessors.Add(mockPostProcessor.Object);
 
             mockPostProcessor.Expect(p =>
-                                     p.PostProcess(It.Is<IServiceRequestResult>(result => result != null)));
+                p.PostProcess(It.Is<IServiceRequestResult>(result => result != null)));
 
             container.SuppressErrors = true;
             container.GetService<ISerializable>();
@@ -313,7 +313,7 @@ namespace LinFu.UnitTests.IOC
             // Manually add the factory instance
             container.AddFactory(serviceType, mockFactory.Object);
             Assert.IsTrue(container.Contains(serviceType),
-                          "The container needs to have a factory for service type '{0}'", serviceType);
+                "The container needs to have a factory for service type '{0}'", serviceType);
         }
 
         [Test]
@@ -328,7 +328,7 @@ namespace LinFu.UnitTests.IOC
 
             container.AddFactory("MyService", serviceType, mockFactory.Object);
             Assert.IsTrue(container.Contains("MyService", serviceType),
-                          "The container is supposed to contain a service named 'MyService'");
+                "The container is supposed to contain a service named 'MyService'");
 
             var instance = new object();
             mockFactory.Expect(f => f.CreateInstance(
@@ -371,10 +371,10 @@ namespace LinFu.UnitTests.IOC
             // There should be a matching service type
             // at this point
             var matches = from s in availableServices
-                                                where
-                                                    s.ServiceType == typeof (ISampleService) &&
-                                                    s.ServiceName == "MyService"
-                                                select s;
+                where
+                    s.ServiceType == typeof (ISampleService) &&
+                    s.ServiceName == "MyService"
+                select s;
 
             Assert.IsTrue(matches.Count() > 0);
         }
@@ -391,8 +391,8 @@ namespace LinFu.UnitTests.IOC
             // There should be a matching service type
             // at this point
             var matches = from s in availableServices
-                                                where s.ServiceType == typeof (ISampleService)
-                                                select s;
+                where s.ServiceType == typeof (ISampleService)
+                select s;
 
             Assert.IsTrue(matches.Count() > 0);
         }
@@ -633,7 +633,7 @@ namespace LinFu.UnitTests.IOC
         {
             var container = new ServiceContainer();
             container.AddService(typeof (ISampleGenericService<>),
-                                 typeof (SampleGenericClassWithOpenGenericImplementation<>));
+                typeof (SampleGenericClassWithOpenGenericImplementation<>));
 
             var instance = container.GetService<ISampleGenericService<int>>();
             Assert.IsNotNull(instance);
@@ -645,14 +645,14 @@ namespace LinFu.UnitTests.IOC
         {
             var container = new ServiceContainer();
             container.AddService(typeof (ISampleGenericService<>),
-                                 typeof (SampleGenericClassWithOpenGenericImplementation<>));
+                typeof (SampleGenericClassWithOpenGenericImplementation<>));
 
             var instance = container.GetService(typeof (ISampleGenericService<int>));
             Assert.IsNotNull(instance);
         }
 
         [Test]
-        [ExpectedException(typeof(NamedServiceNotFoundException))]
+        [ExpectedException(typeof (NamedServiceNotFoundException))]
         public void ShouldNotReturnNamedServicesForGetServiceCallsForAnonymousServices()
         {
             var container = new ServiceContainer();

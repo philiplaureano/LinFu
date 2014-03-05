@@ -9,8 +9,6 @@ namespace SampleLibrary.IOC
     [Intercepts(typeof (ISampleWrappedInterface))]
     public class SampleAroundInvokeInterceptorClass : IAroundInvoke, IInitialize, ITargetHolder
     {
-        #region IAroundInvoke Members
-
         public void BeforeInvoke(IInvocationInfo info)
         {
             Target = info.Target;
@@ -20,9 +18,6 @@ namespace SampleLibrary.IOC
         {
         }
 
-        #endregion
-
-        #region IInitialize Members
 
         public void Initialize(IServiceContainer source)
         {
@@ -30,12 +25,7 @@ namespace SampleLibrary.IOC
             source.AddService<ITargetHolder>(typeName, this);
         }
 
-        #endregion
-
-        #region ITargetHolder Members
 
         public object Target { get; set; }
-
-        #endregion
     }
 }

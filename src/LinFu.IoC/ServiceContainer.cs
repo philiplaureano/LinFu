@@ -52,7 +52,6 @@ namespace LinFu.IoC
             get { return _factoryStorage; }
         }
 
-        #region IServiceContainer Members
 
         /// <summary>
         /// Gets or sets a <see cref="bool">System.Boolean</see> value
@@ -72,7 +71,7 @@ namespace LinFu.IoC
         /// <param name="additionalParameterTypes">The list of additional parameters that this factory type will support.</param>
         /// <param name="factory">The <see cref="IFactory"/> instance that will create the object instance.</param>
         public virtual void AddFactory(string serviceName, Type serviceType, IEnumerable<Type> additionalParameterTypes,
-                                       IFactory factory)
+            IFactory factory)
         {
             FactoryStorage.AddFactory(serviceName, serviceType, additionalParameterTypes, factory);
         }
@@ -190,7 +189,5 @@ namespace LinFu.IoC
         {
             get { return FactoryStorage.AvailableFactories; }
         }
-
-        #endregion
     }
 }

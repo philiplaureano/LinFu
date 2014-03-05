@@ -24,8 +24,8 @@ namespace LinFu.AOP.Cecil
         /// <param name="invocationInfo">The variable that contains the <see cref="IInvocationInfo"/> instance.</param>
         /// <param name="returnValue">The local vaiable that contains the return value of the target method.</param>
         public EmitAfterInvoke(VariableDefinition surroundingImplementation,
-                               VariableDefinition surroundingClassImplementation,
-                               VariableDefinition invocationInfo, VariableDefinition returnValue)
+            VariableDefinition surroundingClassImplementation,
+            VariableDefinition invocationInfo, VariableDefinition returnValue)
         {
             _surroundingImplementation = surroundingImplementation;
             _surroundingClassImplementation = surroundingClassImplementation;
@@ -33,7 +33,6 @@ namespace LinFu.AOP.Cecil
             _returnValue = returnValue;
         }
 
-        #region IInstructionEmitter Members
 
         /// <summary>
         /// Emits the call to the <see cref="IAfterInvoke"/> instance.
@@ -50,12 +49,11 @@ namespace LinFu.AOP.Cecil
             Emit(IL, module, _surroundingClassImplementation, _invocationInfo, _returnValue);
         }
 
-        #endregion
 
         private static void Emit(CilWorker IL, ModuleDefinition module,
-                                 VariableDefinition surroundingImplementation,
-                                 VariableDefinition invocationInfo,
-                                 VariableDefinition returnValue)
+            VariableDefinition surroundingImplementation,
+            VariableDefinition invocationInfo,
+            VariableDefinition returnValue)
         {
             var skipInvoke = IL.Create(OpCodes.Nop);
 

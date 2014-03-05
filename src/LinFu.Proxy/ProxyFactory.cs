@@ -54,7 +54,6 @@ namespace LinFu.Proxy
         /// </summary>
         public IProxyCache Cache { get; set; }
 
-        #region IInitialize Members
 
         /// <summary>
         /// Initializes the <see cref="ProxyFactory"/> instance
@@ -76,9 +75,6 @@ namespace LinFu.Proxy
                 Cache = (IProxyCache) source.GetService(typeof (IProxyCache));
         }
 
-        #endregion
-
-        #region IProxyFactory Members
 
         /// <summary>
         /// Creates a proxy type using the given
@@ -98,17 +94,16 @@ namespace LinFu.Proxy
 
             if (!baseType.IsPublic)
                 throw new ArgumentException("The proxy factory can only generate proxies from public base classes.",
-                                            "baseType");
+                    "baseType");
 
             var hasNonPublicInterfaces = (from t in baseInterfaces
-                                           where t.IsNotPublic
-                                           select t).Count() > 0;
+                where t.IsNotPublic
+                select t).Count() > 0;
 
             if (hasNonPublicInterfaces)
                 throw new ArgumentException("The proxy factory cannot generate proxies from non-public interfaces.",
-                                            "baseInterfaces");
+                    "baseInterfaces");
 
-            #region Determine which interfaces need to be implemented
 
             var actualBaseType = baseType.IsInterface ? typeof (object) : baseType;
             var interfaces = new HashSet<Type>(baseInterfaces);
@@ -133,30 +128,23 @@ namespace LinFu.Proxy
                 }
             }
 
-            #endregion
-
-            #region Generate the assembly
 
             var assemblyName = "LinFu.Proxy";
             var assembly = AssemblyFactory.DefineAssembly(assemblyName, AssemblyKind.Dll);
             var mainModule = assembly.MainModule;
             var importedBaseType = mainModule.Import(actualBaseType);
             var attributes = TypeAttributes.AutoClass | TypeAttributes.Class |
-                                        TypeAttributes.Public | TypeAttributes.BeforeFieldInit;
+                             TypeAttributes.Public | TypeAttributes.BeforeFieldInit;
 
-            #endregion
-
-            #region Initialize the proxy type
 
             var guid = Guid.NewGuid().ToString().Replace("-", "");
             var typeName = string.Format("{0}Proxy-{1}", baseType.Name, guid);
             var namespaceName = "LinFu.Proxy";
             var proxyType = mainModule.DefineClass(typeName, namespaceName,
-                                                              attributes, importedBaseType);
+                attributes, importedBaseType);
 
             proxyType.AddDefaultConstructor();
 
-            #endregion
 
             if (ProxyBuilder == null)
                 throw new NullReferenceException("The 'ProxyBuilder' property cannot be null");
@@ -178,7 +166,6 @@ namespace LinFu.Proxy
             if (Verifier != null)
                 Verifier.Verify(assembly);
 
-            #region Compile the results
 
             var compiledAssembly = assembly.ToAssembly();
 
@@ -194,10 +181,9 @@ namespace LinFu.Proxy
             }
 
             var result = (from t in types
-                           where t != null && t.IsClass
-                           select t).FirstOrDefault();
+                where t != null && t.IsClass
+                select t).FirstOrDefault();
 
-            #endregion
 
             // Cache the result
             if (Cache != null)
@@ -205,7 +191,5 @@ namespace LinFu.Proxy
 
             return result;
         }
-
-        #endregion
     }
 }

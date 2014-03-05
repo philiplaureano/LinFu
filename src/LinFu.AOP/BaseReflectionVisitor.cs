@@ -6,8 +6,6 @@ namespace LinFu.AOP.Cecil
 {
     public abstract class BaseReflectionVisitor : IReflectionVisitor, IReflectionStructureVisitor
     {
-        #region IReflectionStructureVisitor Members
-
         public virtual void TerminateAssemblyDefinition(AssemblyDefinition asm)
         {
         }
@@ -45,11 +43,6 @@ namespace LinFu.AOP.Cecil
         {
         }
 
-        #endregion
-
-        #region Collection Visitors
-
-        #region IReflectionStructureVisitor Members
 
         public virtual void VisitAssemblyNameReferenceCollection(AssemblyNameReferenceCollection names)
         {
@@ -79,9 +72,6 @@ namespace LinFu.AOP.Cecil
         {
         }
 
-        #endregion
-
-        #region IReflectionVisitor Members
 
         public virtual void VisitTypeDefinition(TypeDefinition type)
         {
@@ -245,11 +235,6 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        #endregion
-
-        #endregion
-
-        #region IReflectionVisitor Members
 
         public virtual void TerminateModuleDefinition(ModuleDefinition module)
         {
@@ -339,8 +324,6 @@ namespace LinFu.AOP.Cecil
         public virtual void VisitTypeReference(TypeReference type)
         {
         }
-
-        #endregion
     }
 }
 

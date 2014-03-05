@@ -9,8 +9,6 @@ namespace SampleLibrary.IOC.BugFixes
         //IFactory<MyClass<string>>
         IFactory
     {
-        #region IFactory Members
-
         public object CreateInstance(IFactoryRequest request)
         {
             if (string.IsNullOrEmpty(request.ServiceName))
@@ -22,7 +20,6 @@ namespace SampleLibrary.IOC.BugFixes
             return myClass;
         }
 
-        #endregion
 
         //MyClass<string> IFactory<MyClass<string>>.CreateInstance(IFactoryRequest request)
         //{

@@ -18,22 +18,16 @@ namespace SampleLibrary.Proxy
 
         public Guid Identifier { get; set; }
 
-        #region IInterceptor Members
 
         public object Intercept(IInvocationInfo info)
         {
             return null;
         }
 
-        #endregion
-
-        #region ISerializable Members
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("identifier", Identifier);
         }
-
-        #endregion
     }
 }

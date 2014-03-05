@@ -24,7 +24,6 @@ namespace LinFu.AOP.Cecil
             _returnValue = returnValue;
         }
 
-        #region IInstructionEmitter Members
 
         /// <summary>
         /// Saves the return value from a given method call.
@@ -42,7 +41,5 @@ namespace LinFu.AOP.Cecil
             if (_returnType != voidType)
                 IL.Create(OpCodes.Stloc, _returnValue);
         }
-
-        #endregion
     }
 }

@@ -19,7 +19,6 @@ namespace LinFu.IoC.Factories
             _factoryMethod = factoryMethod;
         }
 
-        #region IFactory Members
 
         /// <summary>
         /// Instantiates an object reference using the given factory method.
@@ -30,7 +29,5 @@ namespace LinFu.IoC.Factories
         {
             return _factoryMethod(request);
         }
-
-        #endregion
     }
 }

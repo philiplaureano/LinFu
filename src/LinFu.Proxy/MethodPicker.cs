@@ -14,8 +14,6 @@ namespace LinFu.Proxy
     [Implements(typeof (IMethodPicker), LifecycleType.OncePerRequest)]
     internal class MethodPicker : IMethodPicker
     {
-        #region IMethodPicker Members
-
         /// <summary>
         /// Determines which methods can be proxied from 
         /// the given <paramref name="baseType"/> and <paramref name="baseInterfaces"/>. 
@@ -29,8 +27,8 @@ namespace LinFu.Proxy
             var results = new HashSet<MethodInfo>();
 
             var baseMethods = from method in baseType.GetMethods()
-                                                  where method.IsVirtual && !method.IsFinal && !method.IsPrivate
-                                                  select method;
+                where method.IsVirtual && !method.IsFinal && !method.IsPrivate
+                select method;
 
             // Add the virtual methods defined
             // in the base type
@@ -41,10 +39,10 @@ namespace LinFu.Proxy
             }
 
             var interfaceMethods = from currentInterface in baseInterfaces
-                                                       from method in currentInterface.GetMethods()
-                                                       where method.IsPublic && method.IsVirtual &&
-                                                             !method.IsFinal && !results.Contains(method)
-                                                       select method;
+                from method in currentInterface.GetMethods()
+                where method.IsPublic && method.IsVirtual &&
+                      !method.IsFinal && !results.Contains(method)
+                select method;
 
             // Add the virtual methods defined
             // in the interface types
@@ -55,7 +53,5 @@ namespace LinFu.Proxy
 
             return results;
         }
-
-        #endregion
     }
 }

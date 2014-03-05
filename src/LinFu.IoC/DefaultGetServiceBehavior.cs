@@ -33,7 +33,7 @@ namespace LinFu.IoC
         /// <param name="preProcessor">The <see cref="IPreProcessor"/> that will allow users to intercept a given service request.</param>
         /// <param name="postProcessor">The <see cref="IPostProcessor"/> instance that will handle the results of a given service request.</param>
         public DefaultGetServiceBehavior(IServiceContainer container, ICreateInstance creator,
-                                         IPreProcessor preProcessor, IPostProcessor postProcessor)
+            IPreProcessor preProcessor, IPostProcessor postProcessor)
         {
             _container = container;
             _creator = creator;
@@ -41,7 +41,6 @@ namespace LinFu.IoC
             _postProcessor = postProcessor;
         }
 
-        #region IGetService Members
 
         /// <summary>
         /// Instantiates the service described by the <paramref name="serviceRequest"/>.
@@ -55,32 +54,30 @@ namespace LinFu.IoC
                 _preProcessor.Preprocess(serviceRequest);
 
             var factoryRequest = new FactoryRequest
-                                     {
-                                         ServiceType = serviceRequest.ServiceType,
-                                         ServiceName = serviceRequest.ServiceName,
-                                         Arguments = serviceRequest.ActualArguments,
-                                         Container = _container
-                                     };
+            {
+                ServiceType = serviceRequest.ServiceType,
+                ServiceName = serviceRequest.ServiceName,
+                Arguments = serviceRequest.ActualArguments,
+                Container = _container
+            };
 
             var instance = _creator.CreateFrom(factoryRequest, serviceRequest.ActualFactory);
 
             // Postprocess the results
             var result = new ServiceRequestResult
-                             {
-                                 ServiceName = serviceRequest.ServiceName,
-                                 ActualResult = instance,
-                                 Container = _container,
-                                 OriginalResult = instance,
-                                 ServiceType = serviceRequest.ServiceType,
-                                 AdditionalArguments = serviceRequest.ActualArguments
-                             };
+            {
+                ServiceName = serviceRequest.ServiceName,
+                ActualResult = instance,
+                Container = _container,
+                OriginalResult = instance,
+                ServiceType = serviceRequest.ServiceType,
+                AdditionalArguments = serviceRequest.ActualArguments
+            };
 
             if (_postProcessor != null)
                 _postProcessor.PostProcess(result);
 
             return result.ActualResult ?? result.OriginalResult;
         }
-
-        #endregion
     }
 }

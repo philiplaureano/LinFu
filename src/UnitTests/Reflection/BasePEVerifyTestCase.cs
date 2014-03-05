@@ -32,7 +32,8 @@ namespace LinFu.UnitTests.Reflection
 
         [SetUp]
         public void Init()
-        {OnInit();
+        {
+            OnInit();
         }
 
         [TearDown]
@@ -73,11 +74,11 @@ namespace LinFu.UnitTests.Reflection
         protected void PEVerify(string assemblyLocation)
         {
             var pathKeys = new[]
-                               {
-                                   "sdkDir",
-                                   "x86SdkDir",
-                                   "sdkDirUnderVista"
-                               };
+            {
+                "sdkDir",
+                "x86SdkDir",
+                "sdkDirUnderVista"
+            };
 
             var process = new Process();
             var peVerifyLocation = string.Empty;

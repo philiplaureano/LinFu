@@ -45,14 +45,14 @@ namespace LinFu.IoC.Configuration
         /// <param name="properties">The list of properties to be filtered.</param>
         /// <returns>A list of properties that should be injected.</returns>
         protected override IEnumerable<PropertyInfo> Filter(IServiceContainer container,
-                                                            IEnumerable<PropertyInfo> properties)
+            IEnumerable<PropertyInfo> properties)
         {
             // The property must have the custom attribute defined 
             var results = from p in properties
-                                                let propertyType = p.PropertyType
-                                                let attributes = p.GetCustomAttributes(_attributeType, false)
-                                                where attributes != null && attributes.Length > 0
-                                                select p;
+                let propertyType = p.PropertyType
+                let attributes = p.GetCustomAttributes(_attributeType, false)
+                where attributes != null && attributes.Length > 0
+                select p;
 
             return results;
         }

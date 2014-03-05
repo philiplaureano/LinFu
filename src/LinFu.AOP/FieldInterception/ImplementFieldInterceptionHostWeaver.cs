@@ -24,7 +24,6 @@ namespace LinFu.AOP.Cecil
             _filter = filter;
         }
 
-        #region ITypeWeaver Members
 
         /// <summary>
         /// Determines whether or not a type should be modified.
@@ -78,7 +77,5 @@ namespace LinFu.AOP.Cecil
             _hostInterfaceType = module.ImportType<IFieldInterceptionHost>();
             _interceptorPropertyType = module.ImportType<IFieldInterceptor>();
         }
-
-        #endregion
     }
 }

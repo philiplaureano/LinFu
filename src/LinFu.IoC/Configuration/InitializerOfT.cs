@@ -26,7 +26,6 @@ namespace LinFu.IoC.Configuration
             _getSource = getSource;
         }
 
-        #region IPostProcessor Members
 
         /// <summary>
         /// Initializes every service that implements
@@ -47,7 +46,6 @@ namespace LinFu.IoC.Configuration
             Initialize(actualResult, source);
         }
 
-        #endregion
 
         /// <summary>
         /// Initializes the <paramref name="target"/> with the given <paramref name="source"/> instance.
@@ -59,7 +57,7 @@ namespace LinFu.IoC.Configuration
             if (target == null)
                 return;
 
-            if ((_initializeCallCount = ++_initializeCallCount % 100) == 0)
+            if ((_initializeCallCount = ++_initializeCallCount%100) == 0)
                 _instances.RemoveWhere(w => w != null && !w.IsAlive);
 
             // Make sure that the target is initialized only once
@@ -72,7 +70,6 @@ namespace LinFu.IoC.Configuration
             _instances.Add(weakReference);
         }
 
-        #region Nested type: HashableWeakReference
 
         private class HashableWeakReference : WeakReference
         {
@@ -90,14 +87,9 @@ namespace LinFu.IoC.Configuration
             }
         }
 
-        #endregion
-
-        #region Nested type: HashableWeakReferenceComparer
 
         private class HashableWeakReferenceComparer : IEqualityComparer<HashableWeakReference>
         {
-            #region IEqualityComparer<Initializer<T>.HashableWeakReference> Members
-
             public bool Equals(HashableWeakReference x, HashableWeakReference y)
             {
                 if (x == null || y == null)
@@ -114,10 +106,6 @@ namespace LinFu.IoC.Configuration
                 }
                 return obj.GetHashCode();
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

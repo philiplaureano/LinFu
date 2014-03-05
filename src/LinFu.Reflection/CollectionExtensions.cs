@@ -20,8 +20,8 @@ namespace LinFu.Reflection
         public static bool HasElementWith<T>(this IEnumerable<T> items, Func<T, bool> predicate)
         {
             var matches = from item in items
-                                     where predicate(item)
-                                     select item;
+                where predicate(item)
+                select item;
 
             return matches.Count() > 0;
         }

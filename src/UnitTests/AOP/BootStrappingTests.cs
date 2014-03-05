@@ -15,9 +15,9 @@ namespace LinFu.UnitTests.AOP
             var registry = BootStrapRegistry.Instance;
             var bootStrappedComponents = registry.GetComponents();
             var targetComponent = (from c in bootStrappedComponents
-                                                      let type = c.GetType()
-                                                      where type == typeof (SampleBootstrapComponent)
-                                                      select c).First();
+                let type = c.GetType()
+                where type == typeof (SampleBootstrapComponent)
+                select c).First();
 
             var component = (SampleBootstrapComponent) targetComponent;
             Assert.IsTrue(component.Called);

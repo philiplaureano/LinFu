@@ -26,5 +26,5 @@ namespace LinFu.AOP.Interfaces
 
             return returnValue;
         }
-    }    
+    }
 }

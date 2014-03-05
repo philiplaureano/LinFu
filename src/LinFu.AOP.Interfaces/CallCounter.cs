@@ -8,7 +8,8 @@ namespace LinFu.AOP.Interfaces
 {
     internal class CallCounter
     {
-        private readonly Dictionary<int, SingleThreadedCallCounter> _counts = new Dictionary<int, SingleThreadedCallCounter>();
+        private readonly Dictionary<int, SingleThreadedCallCounter> _counts =
+            new Dictionary<int, SingleThreadedCallCounter>();
 
         public void Increment(IInvocationInfo context)
         {

@@ -19,7 +19,6 @@ namespace LinFu.IoC.Configuration
 
         private IServiceContainer _container;
 
-        #region IInitialize Members
 
         /// <summary>
         /// Initializes the <see cref="BaseMemberInjectionFilter{TMember}"/> class.
@@ -30,9 +29,6 @@ namespace LinFu.IoC.Configuration
             _container = source;
         }
 
-        #endregion
-
-        #region IMemberInjectionFilter<TMember> Members
 
         /// <summary>
         /// Returns the list of <typeparamref name="TMember"/> objects
@@ -52,7 +48,7 @@ namespace LinFu.IoC.Configuration
                 // must exist as either a service list or exist as an 
                 // existing service inside the current container
                 var members = from item in GetMembers(targetType, _container)
-                                               select item;
+                    select item;
 
                 lock (_itemCache)
                 {
@@ -65,7 +61,6 @@ namespace LinFu.IoC.Configuration
             return Filter(_container, items);
         }
 
-        #endregion
 
         /// <summary>
         /// Determines which members should be selected from the <paramref name="targetType"/>
@@ -83,7 +78,7 @@ namespace LinFu.IoC.Configuration
         /// <param name="items">The list of properties that will be filtered.</param>
         /// <returns>A list of properties that will be injected.</returns>
         protected virtual IEnumerable<TMember> Filter(IServiceContainer container,
-                                                      IEnumerable<TMember> items)
+            IEnumerable<TMember> items)
         {
             return items;
         }

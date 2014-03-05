@@ -48,7 +48,7 @@ namespace LinFu.Finders
         /// <param name="predicate">The condition that will be used to test the target item.</param>        
         /// <param name="criteriaType">The <see cref="CriteriaType"/> to associate with the predicate.</param>        
         public static void AddCriteria<TItem>(this IList<IFuzzyItem<TItem>> list, Func<TItem, bool> predicate,
-                                              CriteriaType criteriaType)
+            CriteriaType criteriaType)
         {
             const int defaultWeight = 1;
             list.AddCriteria(predicate, criteriaType, defaultWeight);
@@ -64,14 +64,14 @@ namespace LinFu.Finders
         /// <param name="criteriaType">The <see cref="CriteriaType"/> to associate with the predicate.</param>        
         /// <param name="weight">The weight of the predicate value expressed in the number of tests that will be counted for/against the target item as a result of the predicate.</param>
         public static void AddCriteria<TItem>(this IList<IFuzzyItem<TItem>> list, Func<TItem, bool> predicate,
-                                              CriteriaType criteriaType, int weight)
+            CriteriaType criteriaType, int weight)
         {
             var criteria = new Criteria<TItem>
-                               {
-                                   Predicate = predicate,
-                                   Weight = weight,
-                                   Type = criteriaType
-                               };
+            {
+                Predicate = predicate,
+                Weight = weight,
+                Type = criteriaType
+            };
 
             list.AddCriteria(criteria);
         }

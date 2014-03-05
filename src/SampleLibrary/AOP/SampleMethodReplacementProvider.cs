@@ -11,7 +11,6 @@ namespace SampleLibrary.AOP
             _interceptor = interceptor;
         }
 
-        #region IMethodReplacementProvider Members
 
         public bool CanReplace(object host, IInvocationInfo info)
         {
@@ -22,7 +21,5 @@ namespace SampleLibrary.AOP
         {
             return _interceptor;
         }
-
-        #endregion
     }
 }

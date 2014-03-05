@@ -15,8 +15,6 @@ namespace LinFu.IoC.Configuration.Loaders
     /// </summary>
     internal class PostProcessorLoader : IActionLoader<IServiceContainer, Type>
     {
-        #region IActionLoader<IServiceContainer,Type> Members
-
         /// <summary>
         /// Determines if the plugin loader can load the <paramref name="inputType"/>.
         /// </summary>
@@ -75,7 +73,5 @@ namespace LinFu.IoC.Configuration.Loaders
 
             return new[] {assignPostProcessor};
         }
-
-        #endregion
     }
 }

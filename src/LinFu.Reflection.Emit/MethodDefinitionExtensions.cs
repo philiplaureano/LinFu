@@ -137,8 +137,8 @@ namespace LinFu.Reflection.Emit
         {
             // Check if the parameter type already exists
             var matches = (from GenericParameter p in method.GenericParameters
-                                              where p.Name == parameterType.Name
-                                              select p).ToList();
+                where p.Name == parameterType.Name
+                select p).ToList();
 
             // Reuse the existing parameter
             if (matches.Count > 0)

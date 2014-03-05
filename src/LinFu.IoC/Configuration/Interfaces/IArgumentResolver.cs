@@ -18,6 +18,6 @@ namespace LinFu.IoC.Configuration.Interfaces
         /// <param name="additionalArguments">The additional arguments that will be passed to the target method.</param>
         /// <returns>An array of objects that represent the arguments to be passed to the target method.</returns>
         object[] ResolveFrom(IEnumerable<INamedType> parameterTypes, IServiceContainer container,
-                             params object[] additionalArguments);
+            params object[] additionalArguments);
     }
 }

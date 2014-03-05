@@ -12,8 +12,6 @@ namespace LinFu.UnitTests.IOC.Configuration
     [TestFixture]
     public class AssemblyContainerLoaderTests
     {
-        #region Setup/Teardown
-
         [SetUp]
         public void Init()
         {
@@ -34,7 +32,6 @@ namespace LinFu.UnitTests.IOC.Configuration
             _mockTypeLoader = null;
         }
 
-        #endregion
 
         private Mock<IAssemblyLoader> _mockAssemblyLoader;
         private Mock<ITypeExtractor> _mockTypeExtractor;

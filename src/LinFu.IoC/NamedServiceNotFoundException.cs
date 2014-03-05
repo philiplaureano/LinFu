@@ -35,7 +35,7 @@ namespace LinFu.IoC
             get
             {
                 return string.Format("Unable to find a service named '{0}' with type '{1}'", _serviceName,
-                                     _serviceType.AssemblyQualifiedName);
+                    _serviceType.AssemblyQualifiedName);
             }
         }
     }

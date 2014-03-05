@@ -10,8 +10,6 @@ namespace LinFu.Reflection
     /// </summary>
     public class TypeExtractor : ITypeExtractor
     {
-        #region ITypeExtractor Members
-
         /// <summary>
         /// Returns a set of types from a given assembly.
         /// </summary>
@@ -30,7 +28,5 @@ namespace LinFu.Reflection
             }
             return loadedTypes;
         }
-
-        #endregion
     }
 }

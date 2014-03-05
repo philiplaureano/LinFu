@@ -20,10 +20,10 @@ namespace LinFu.AOP.Interfaces
         public static IAroundInvoke GetSurroundingImplementation(IInvocationInfo context)
         {
             var resultList = (from p in _providers
-                                              where p != null
-                                              let aroundInvoke = p.GetSurroundingImplementation(context)
-                                              where aroundInvoke != null
-                                              select aroundInvoke).ToList();
+                where p != null
+                let aroundInvoke = p.GetSurroundingImplementation(context)
+                where aroundInvoke != null
+                select aroundInvoke).ToList();
 
             if (resultList.Count == 0)
                 return null;

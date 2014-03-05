@@ -25,9 +25,9 @@ namespace LinFu.AOP.Cecil
         /// <param name="surroundingImplementation">The variable that contains the instance-level <see cref="IAroundInvoke"/> instance.</param>
         /// <param name="registryType">The interception registry type that will be responsible for handling class-level interception events.</param>
         public EmitBeforeInvoke(VariableDefinition invocationInfo,
-                                VariableDefinition surroundingClassImplementation,
-                                VariableDefinition surroundingImplementation,
-                                Type registryType)
+            VariableDefinition surroundingClassImplementation,
+            VariableDefinition surroundingImplementation,
+            Type registryType)
         {
             _invocationInfo = invocationInfo;
             _surroundingClassImplementation = surroundingClassImplementation;
@@ -35,7 +35,6 @@ namespace LinFu.AOP.Cecil
             _registryType = registryType;
         }
 
-        #region IInstructionEmitter Members
 
         /// <summary>
         /// Emits the call to the <see cref="IAfterInvoke"/> instance.
@@ -48,9 +47,9 @@ namespace LinFu.AOP.Cecil
             var module = declaringType.Module;
 
             var getSurroundingClassImplementation = new GetSurroundingClassImplementation(_invocationInfo,
-                                                                                          _surroundingClassImplementation,
-                                                                                          _registryType.GetMethod(
-                                                                                              "GetSurroundingImplementation"));
+                _surroundingClassImplementation,
+                _registryType.GetMethod(
+                    "GetSurroundingImplementation"));
 
             // var classAroundInvoke = AroundInvokeRegistry.GetSurroundingImplementation(info);           
             getSurroundingClassImplementation.Emit(IL);
@@ -88,7 +87,5 @@ namespace LinFu.AOP.Cecil
             IL.Append(skipInvoke1);
             // }
         }
-
-        #endregion
     }
 }

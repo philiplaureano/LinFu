@@ -9,8 +9,6 @@ namespace LinFu.IoC.Configuration
     /// </summary>
     public class ConstructorInvoke : IMethodInvoke<ConstructorInfo>
     {
-        #region IMethodInvoke<ConstructorInfo> Members
-
         /// <summary>
         /// Invokes the <paramref name="targetMethod"/> constructor
         /// using the given <paramref name="arguments"/>.
@@ -24,7 +22,5 @@ namespace LinFu.IoC.Configuration
             var declaringType = targetMethod.DeclaringType;
             return Activator.CreateInstance(declaringType, arguments);
         }
-
-        #endregion
     }
 }

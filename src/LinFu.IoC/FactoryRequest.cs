@@ -8,8 +8,6 @@ namespace LinFu.IoC
     /// </summary>
     public class FactoryRequest : IFactoryRequest
     {
-        #region IFactoryRequest Members
-
         /// <summary>
         /// Gets the value indicating the service container that made the service request.
         /// </summary>
@@ -30,7 +28,5 @@ namespace LinFu.IoC
         /// Gets the value indicating the additional arguments given in the factory request.
         /// </summary>
         public object[] Arguments { get; set; }
-
-        #endregion
     }
 }

@@ -13,7 +13,6 @@ namespace LinFu.IoC.Configuration.Resolvers
     {
         private IArgumentResolver _argumentResolver;
 
-        #region IConstructorArgumentResolver Members
 
         /// <summary>
         /// Determines the parameter values that should be used for a given constructor.
@@ -23,18 +22,15 @@ namespace LinFu.IoC.Configuration.Resolvers
         /// <param name="additionalArguments">The list of additional arguments that should be combined with the arguments from the container.</param>
         /// <returns>A list of arguments that will be used for the given constructor.</returns>
         public object[] GetConstructorArguments(ConstructorInfo constructor, IServiceContainer container,
-                                                object[] additionalArguments)
+            object[] additionalArguments)
         {
             var parameterTypes = GetMissingParameterTypes(constructor, additionalArguments);
 
             // Generate the arguments for the target constructor
             return _argumentResolver.ResolveFrom(parameterTypes, container,
-                                                 additionalArguments);
+                additionalArguments);
         }
 
-        #endregion
-
-        #region IInitialize Members
 
         /// <summary>
         /// Initializes the class with the default services.
@@ -45,7 +41,6 @@ namespace LinFu.IoC.Configuration.Resolvers
             _argumentResolver = container.GetService<IArgumentResolver>();
         }
 
-        #endregion
 
         /// <summary>
         /// Determines which parameter types need to be supplied to invoke a particular
@@ -55,10 +50,10 @@ namespace LinFu.IoC.Configuration.Resolvers
         /// <param name="additionalArguments">The additional arguments that will be used to invoke the constructor.</param>
         /// <returns>The list of parameter types that are still missing parameter values.</returns>
         private static IEnumerable<INamedType> GetMissingParameterTypes(ConstructorInfo constructor,
-                                                                        IEnumerable<object> additionalArguments)
+            IEnumerable<object> additionalArguments)
         {
             var parameters = from p in constructor.GetParameters()
-                                                    select p;
+                select p;
 
             // Determine which parameters need to 
             // be supplied by the container
@@ -72,14 +67,14 @@ namespace LinFu.IoC.Configuration.Resolvers
                 var parameterCount = parameters.Count();
                 var maxIndex = parameterCount - argumentCount;
                 var targetParameters = from param in parameters.Where(p => p.Position < maxIndex)
-                                                           select new NamedType(param) as INamedType;
+                    select new NamedType(param) as INamedType;
 
                 parameterTypes.AddRange(targetParameters);
                 return parameterTypes;
             }
 
             var results = from param in parameters
-                                              select new NamedType(param) as INamedType;
+                select new NamedType(param) as INamedType;
 
             parameterTypes.AddRange(results);
 

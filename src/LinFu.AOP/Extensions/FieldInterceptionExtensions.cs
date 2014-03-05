@@ -84,8 +84,8 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="methodFilter">The filter that determines which methods on the target type will be modified to support field interception.</param>
         /// <param name="fieldFilter">The filter that determines which fields should be intercepted.</param>
         public static void InterceptFields(this IReflectionVisitable targetType,
-                                           Func<MethodReference, bool> methodFilter,
-                                           Func<FieldReference, bool> fieldFilter)
+            Func<MethodReference, bool> methodFilter,
+            Func<FieldReference, bool> fieldFilter)
         {
             var typeWeaver = new ImplementFieldInterceptionHostWeaver(t => true);
             var fieldWeaver = new InterceptFieldAccess(fieldFilter);
@@ -101,7 +101,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="hostTypeFilter">The filter that determines the host types to be modified.</param>
         /// <param name="fieldFilter">The field filter that determines the fields that will be intercepted.</param>
         public static void InterceptFields(this IReflectionStructureVisitable targetType, ITypeFilter hostTypeFilter,
-                                           IFieldFilter fieldFilter)
+            IFieldFilter fieldFilter)
         {
             var typeWeaver = new ImplementFieldInterceptionHostWeaver(hostTypeFilter.ShouldWeave);
             var fieldWeaver = new InterceptFieldAccess(fieldFilter);
@@ -117,8 +117,8 @@ namespace LinFu.AOP.Cecil.Extensions
         /// <param name="methodFilter">The filter that determines which methods on the target type will be modified to support field interception.</param>
         /// <param name="fieldFilter">The filter that determines which fields should be intercepted.</param>
         public static void InterceptFields(this IReflectionStructureVisitable targetType,
-                                           Func<MethodReference, bool> methodFilter,
-                                           Func<FieldReference, bool> fieldFilter)
+            Func<MethodReference, bool> methodFilter,
+            Func<FieldReference, bool> fieldFilter)
         {
             var typeWeaver = new ImplementFieldInterceptionHostWeaver(t => true);
             var fieldWeaver = new InterceptFieldAccess(fieldFilter);
@@ -135,17 +135,17 @@ namespace LinFu.AOP.Cecil.Extensions
         private static Func<FieldReference, bool> GetFieldFilter(Func<FieldDefinition, bool> fieldFilter)
         {
             return field =>
-                       {
-                           var actualField = field.Resolve();
-                           var fieldType = actualField.FieldType;
-                           var module = fieldType.Module;
+            {
+                var actualField = field.Resolve();
+                var fieldType = actualField.FieldType;
+                var module = fieldType.Module;
 
-                           var moduleName = module != null ? module.Name : string.Empty;
-                           if (moduleName.StartsWith("LinFu.AOP"))
-                               return false;
+                var moduleName = module != null ? module.Name : string.Empty;
+                if (moduleName.StartsWith("LinFu.AOP"))
+                    return false;
 
-                           return fieldFilter(actualField);
-                       };
+                return fieldFilter(actualField);
+            };
         }
     }
 }

@@ -35,7 +35,6 @@ namespace LinFu.AOP.Cecil
             _interceptionDisabled = interceptionDisabled;
         }
 
-        #region IInstructionEmitter Members
 
         /// <summary>
         /// Emits the instructions that determine whether or not method interception is disabled.
@@ -68,7 +67,5 @@ namespace LinFu.AOP.Cecil
 
             IL.Append(skipLabel);
         }
-
-        #endregion
     }
 }

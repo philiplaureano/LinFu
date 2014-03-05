@@ -32,7 +32,6 @@ namespace LinFu.IoC.Configuration
             ReturnType = returnType;
         }
 
-        #region IMethodFinderContext Members
 
         /// <summary>
         /// Gets or sets the value indicating the type arguments that will be passed to the target method.
@@ -48,7 +47,5 @@ namespace LinFu.IoC.Configuration
         /// Gets or sets the value indicating the <see cref="System.Type">return type</see> of the target method.
         /// </summary>
         public Type ReturnType { get; set; }
-
-        #endregion
     }
 }

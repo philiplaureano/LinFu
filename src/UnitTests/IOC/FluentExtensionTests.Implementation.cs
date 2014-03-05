@@ -11,25 +11,25 @@ namespace LinFu.UnitTests.IOC
     public partial class FluentExtensionTests
     {
         private static void TestOncePerThread(string serviceName,
-                                              Func<IUsingLambda<ISampleService>, IGenerateFactory<ISampleService>>
-                                                  doInject)
+            Func<IUsingLambda<ISampleService>, IGenerateFactory<ISampleService>>
+                doInject)
         {
             Test(serviceName, factory => factory.OncePerThread(), doInject, VerifyOncePerThread);
         }
 
         private static void TestSingleton(string serviceName,
-                                          Func<IUsingLambda<ISampleService>, IGenerateFactory<ISampleService>> doInject)
+            Func<IUsingLambda<ISampleService>, IGenerateFactory<ISampleService>> doInject)
         {
             Test(serviceName, factory => factory.AsSingleton(),
-                 doInject, VerifySingleton);
+                doInject, VerifySingleton);
         }
 
         private static void TestOncePerRequest(string serviceName,
-                                               Func<IUsingLambda<ISampleService>, IGenerateFactory<ISampleService>>
-                                                   doInject)
+            Func<IUsingLambda<ISampleService>, IGenerateFactory<ISampleService>>
+                doInject)
         {
             Test(serviceName, factory => factory.OncePerRequest(),
-                 doInject, VerifyOncePerRequest);
+                doInject, VerifyOncePerRequest);
         }
 
         private static bool VerifySingleton(string serviceName, IServiceContainer container)
@@ -50,15 +50,15 @@ namespace LinFu.UnitTests.IOC
         {
             var results = new List<ISampleService>();
             Func<ISampleService> createService = () =>
-                                                     {
-                                                         var result = container.GetService<ISampleService>(serviceName);
-                                                         lock (results)
-                                                         {
-                                                             results.Add(result);
-                                                         }
+            {
+                var result = container.GetService<ISampleService>(serviceName);
+                lock (results)
+                {
+                    results.Add(result);
+                }
 
-                                                         return null;
-                                                     };
+                return null;
+            };
 
             Assert.IsTrue(container.Contains(serviceName, typeof (ISampleService)));
 
@@ -101,8 +101,8 @@ namespace LinFu.UnitTests.IOC
         }
 
         private static void Inject(string serviceName, Action<IGenerateFactory<ISampleService>> usingFactory,
-                                   Func<IUsingLambda<ISampleService>, IGenerateFactory<ISampleService>> doInject,
-                                   ServiceContainer container)
+            Func<IUsingLambda<ISampleService>, IGenerateFactory<ISampleService>> doInject,
+            ServiceContainer container)
         {
             // HACK: Condense the fluent statements into a single,
             // reusable line of code
@@ -110,8 +110,8 @@ namespace LinFu.UnitTests.IOC
         }
 
         private static void Test(string serviceName, Action<IGenerateFactory<ISampleService>> usingFactory,
-                                 Func<IUsingLambda<ISampleService>, IGenerateFactory<ISampleService>> doInject,
-                                 Func<string, IServiceContainer, bool> verifyResult)
+            Func<IUsingLambda<ISampleService>, IGenerateFactory<ISampleService>> doInject,
+            Func<string, IServiceContainer, bool> verifyResult)
         {
             var container = new ServiceContainer();
 

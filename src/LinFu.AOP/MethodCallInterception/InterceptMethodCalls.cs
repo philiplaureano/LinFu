@@ -22,7 +22,6 @@ namespace LinFu.AOP.Cecil
         private VariableDefinition _returnValue;
         private MethodReference _stackCtor;
 
-        #region Method References
 
         private MethodReference _canReplace;
         private MethodReference _getProvider;
@@ -33,9 +32,6 @@ namespace LinFu.AOP.Cecil
         private MethodReference _pushMethod;
         private MethodReference _toArray;
 
-        #endregion
-
-        #region Local Variables
 
         private VariableDefinition _canReplaceFlag;
         private VariableDefinition _currentArgument;
@@ -48,10 +44,9 @@ namespace LinFu.AOP.Cecil
         private VariableDefinition _target;
         private VariableDefinition _typeArguments;
 
-        #endregion
 
         public InterceptMethodCalls(Func<MethodReference, bool> hostMethodFilter,
-                                    Func<MethodReference, bool> methodCallFilter)
+            Func<MethodReference, bool> methodCallFilter)
         {
             _callFilter = new MethodCallFilterAdapter(hostMethodFilter, methodCallFilter);
         }
@@ -64,15 +59,15 @@ namespace LinFu.AOP.Cecil
         public override void ImportReferences(ModuleDefinition module)
         {
             var types = new[]
-                            {
-                                typeof (object),
-                                typeof (MethodBase),
-                                typeof (StackTrace),
-                                typeof (Type[]),
-                                typeof (Type[]),
-                                typeof (Type),
-                                typeof (object[])
-                            };
+            {
+                typeof (object),
+                typeof (MethodBase),
+                typeof (StackTrace),
+                typeof (Type[]),
+                typeof (Type[]),
+                typeof (Type),
+                typeof (object[])
+            };
 
             _invocationInfoCtor = module.ImportConstructor<InvocationInfo>(types);
             _stackCtor = module.ImportConstructor<Stack<object>>(new Type[0]);
@@ -114,7 +109,7 @@ namespace LinFu.AOP.Cecil
         }
 
         protected override void Replace(Instruction oldInstruction, MethodDefinition hostMethod,
-                                        CilWorker IL)
+            CilWorker IL)
         {
             var targetMethod = (MethodReference) oldInstruction.Operand;
 
@@ -137,9 +132,9 @@ namespace LinFu.AOP.Cecil
             getInterceptionDisabled.Emit(IL);
 
             var surroundMethodBody = new SurroundMethodBody(_methodReplacementProvider, _aroundInvokeProvider,
-                                                            _invocationInfo, _interceptionDisabled, _returnValue,
-                                                            typeof (AroundInvokeMethodCallRegistry),
-                                                            "AroundMethodCallProvider");
+                _invocationInfo, _interceptionDisabled, _returnValue,
+                typeof (AroundInvokeMethodCallRegistry),
+                "AroundMethodCallProvider");
 
             surroundMethodBody.AddProlog(IL);
             // Use the MethodReplacementProvider attached to the
@@ -160,7 +155,7 @@ namespace LinFu.AOP.Cecil
         }
 
         private void Replace(CilWorker IL, Instruction oldInstruction, MethodReference targetMethod,
-                             MethodDefinition hostMethod, Instruction endLabel, Instruction callOriginalMethod)
+            MethodDefinition hostMethod, Instruction endLabel, Instruction callOriginalMethod)
         {
             var returnType = targetMethod.ReturnType.ReturnType;
             var module = hostMethod.DeclaringType.Module;
@@ -181,7 +176,6 @@ namespace LinFu.AOP.Cecil
             var callReplacement = IL.Create(OpCodes.Nop);
             var useStaticProvider = IL.Create(OpCodes.Nop);
 
-            #region Use the instance method replacement provider
 
             IL.Emit(OpCodes.Ldloc, _instanceProvider);
             IL.Emit(OpCodes.Brfalse, useStaticProvider);
@@ -197,7 +191,6 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Ldloc, _replacement);
             IL.Emit(OpCodes.Brtrue, callReplacement);
 
-            #endregion
 
             IL.Append(useStaticProvider);
             // if (!MethodReplacementProvider.CanReplace(info))
@@ -270,7 +263,7 @@ namespace LinFu.AOP.Cecil
         }
 
         private void SaveInvocationInfo(CilWorker IL, MethodReference targetMethod, ModuleDefinition module,
-                                        TypeReference returnType)
+            TypeReference returnType)
         {
             // If the target method is an instance method, then the remaining item on the stack
             // will be the target object instance

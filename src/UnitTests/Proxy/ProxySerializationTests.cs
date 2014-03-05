@@ -26,7 +26,7 @@ namespace LinFu.UnitTests.Proxy
             var typeArguments = new[] {typeof (string)};
             var arguments = new object[] {1, 2, 3};
             var info = new InvocationInfo(target, targetMethod, stackTrace, parameterTypes, typeArguments,
-                                          typeof (string), arguments);
+                typeof (string), arguments);
 
             var memoryStream = new MemoryStream();
             var formatter = new BinaryFormatter();
@@ -65,11 +65,11 @@ namespace LinFu.UnitTests.Proxy
             Assert.IsTrue(constructors.Length == 2);
 
             var serializationConstructor = proxyType.GetConstructor(constructorFlags, null,
-                                                                                new[]
-                                                                                    {
-                                                                                        typeof (SerializationInfo),
-                                                                                        typeof (StreamingContext)
-                                                                                    }, null);
+                new[]
+                {
+                    typeof (SerializationInfo),
+                    typeof (StreamingContext)
+                }, null);
             Assert.IsNotNull(serializationConstructor);
 
             // Serialize the proxy

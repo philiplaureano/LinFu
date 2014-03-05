@@ -11,8 +11,6 @@ namespace LinFu.Reflection
     public class CollectionLoader<T> : IActionLoader<ICollection<T>, Type>
         where T : class
     {
-        #region IActionLoader<ICollection<T>,Type> Members
-
         /// <summary>
         /// Creates the list of actions that load the target collection into memory.
         /// </summary>
@@ -59,7 +57,5 @@ namespace LinFu.Reflection
 
             return true;
         }
-
-        #endregion
     }
 }

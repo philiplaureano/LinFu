@@ -21,7 +21,6 @@ namespace LinFu.IoC.Interceptors
             _injector = injector;
         }
 
-        #region IContainerPlugin Members
 
         /// <summary>
         /// Injects a <see cref="ProxyInjector"/> into the <paramref name="target">target container</paramref>.
@@ -40,7 +39,5 @@ namespace LinFu.IoC.Interceptors
         {
             // Do nothing
         }
-
-        #endregion
     }
 }

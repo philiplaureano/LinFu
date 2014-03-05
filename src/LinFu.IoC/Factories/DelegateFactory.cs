@@ -25,7 +25,6 @@ namespace LinFu.IoC.Factories
             _targetDelegate = targetDelegate;
         }
 
-        #region IFactory Members
 
         /// <summary>
         /// Instantiates the service type using the given delegate.
@@ -55,7 +54,5 @@ namespace LinFu.IoC.Factories
 
             return result;
         }
-
-        #endregion
     }
 }

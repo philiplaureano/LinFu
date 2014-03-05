@@ -20,7 +20,6 @@ namespace LinFu.AOP.Cecil
             _filter = filter;
         }
 
-        #region IFieldFilter Members
 
         /// <summary>
         /// Determines whether or not a particular field get or set should be intercepted.
@@ -32,7 +31,5 @@ namespace LinFu.AOP.Cecil
         {
             return _filter(targetField);
         }
-
-        #endregion
     }
 }

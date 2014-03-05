@@ -37,19 +37,19 @@ namespace LinFu.AOP.Cecil
         /// <param name="getMethodReplacementProviderMethod">The functor that resolves the GetMethodReplacementProvider method.</param>
         /// <param name="registryType">The interception registry type that will be responsible for handling class-level interception events.</param>
         public MethodBodyRewriterParameters(CilWorker IL, IEnumerable<Instruction> oldInstructions,
-                                            VariableDefinition interceptionDisabled,
-                                            VariableDefinition invocationInfo,
-                                            VariableDefinition returnValue,
-                                            VariableDefinition methodReplacementProvider,
-                                            VariableDefinition aroundInvokeProvider,
-                                            VariableDefinition classMethodReplacementProvider,
-                                            Func<ModuleDefinition, MethodReference> getMethodReplacementProviderMethod,
-                                            Type registryType)
+            VariableDefinition interceptionDisabled,
+            VariableDefinition invocationInfo,
+            VariableDefinition returnValue,
+            VariableDefinition methodReplacementProvider,
+            VariableDefinition aroundInvokeProvider,
+            VariableDefinition classMethodReplacementProvider,
+            Func<ModuleDefinition, MethodReference> getMethodReplacementProviderMethod,
+            Type registryType)
         {
-            if (methodReplacementProvider.VariableType.FullName != typeof(IMethodReplacementProvider).FullName)
+            if (methodReplacementProvider.VariableType.FullName != typeof (IMethodReplacementProvider).FullName)
                 throw new ArgumentException("methodReplacementProvider");
 
-            if (aroundInvokeProvider.VariableType.FullName != typeof(IAroundInvokeProvider).FullName)
+            if (aroundInvokeProvider.VariableType.FullName != typeof (IAroundInvokeProvider).FullName)
                 throw new ArgumentException("aroundInvokeProvider");
 
             _cilWorker = IL;
@@ -64,7 +64,6 @@ namespace LinFu.AOP.Cecil
             _registryType = registryType;
         }
 
-        #region IMethodBodyRewriterParameters Members
 
         /// <summary>
         /// Gets the value indicating the list of old instructions in the current method body.
@@ -156,7 +155,5 @@ namespace LinFu.AOP.Cecil
         {
             get { return _getMethodReplacementProviderMethod; }
         }
-
-        #endregion
     }
 }

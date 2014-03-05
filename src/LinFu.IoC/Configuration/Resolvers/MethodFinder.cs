@@ -17,8 +17,6 @@ namespace LinFu.IoC.Configuration
     public class MethodFinder<T> : IMethodFinder<T>
         where T : MethodBase
     {
-        #region IMethodFinder<T> Members
-
         /// <summary>
         /// Determines which method best matches the
         /// services currently in the target container.
@@ -38,24 +36,24 @@ namespace LinFu.IoC.Configuration
 
             var additionalArguments = finderContext.Arguments;
             var additionalArgumentTypes = (from argument in additionalArguments
-                                                  let argumentType =
-                                                      argument == null ? typeof (object) : argument.GetType()
-                                                  select argumentType).ToList();
+                let argumentType =
+                    argument == null ? typeof (object) : argument.GetType()
+                select argumentType).ToList();
 
             Rank(fuzzyList, finderContext);
 
             // Match the generic parameter types
             var genericParameterCount = finderContext.TypeArguments != null ? finderContext.TypeArguments.Count() : 0;
             Func<T, bool> matchGenericArgumentCount = method =>
-                                                          {
-                                                              var genericArguments = method.IsGenericMethod
-                                                                                            ? method.GetGenericArguments
-                                                                                                  ()
-                                                                                            : new Type[0];
-                                                              var currentParameterCount = genericArguments.Count();
+            {
+                var genericArguments = method.IsGenericMethod
+                    ? method.GetGenericArguments
+                        ()
+                    : new Type[0];
+                var currentParameterCount = genericArguments.Count();
 
-                                                              return genericParameterCount == currentParameterCount;
-                                                          };
+                return genericParameterCount == currentParameterCount;
+            };
             fuzzyList.AddCriteria(matchGenericArgumentCount, CriteriaType.Critical);
 
             var candidates = fuzzyList.Where(fuzzy => fuzzy.Confidence > 0);
@@ -69,7 +67,6 @@ namespace LinFu.IoC.Configuration
             return GetNextBestMatch(fuzzyList, additionalArgumentTypes, bestMatch);
         }
 
-        #endregion
 
         private T GetNextBestMatch(IList<IFuzzyItem<T>> fuzzyList, List<Type> additionalArgumentTypes, T bestMatch)
         {
@@ -78,14 +75,14 @@ namespace LinFu.IoC.Configuration
 
             // Match the number of arguments
             Func<T, bool> matchParameterCount = method =>
-                                                    {
-                                                        var parameters = method.GetParameters();
-                                                        var parameterCount = parameters != null
-                                                                                 ? parameters.Length
-                                                                                 : 0;
+            {
+                var parameters = method.GetParameters();
+                var parameterCount = parameters != null
+                    ? parameters.Length
+                    : 0;
 
-                                                        return parameterCount == additionalArgumentCount;
-                                                    };
+                return parameterCount == additionalArgumentCount;
+            };
 
             // Remove any methods that do not match
             // the parameter count
@@ -144,7 +141,7 @@ namespace LinFu.IoC.Configuration
         /// <param name="fuzzyList">The list of items currently being compared.</param>
         /// <param name="additionalArgumentTypes">The set of <see cref="Type"/> instances that describe each supplied argument type.</param>
         private static void CheckArguments(IList<IFuzzyItem<T>> fuzzyList,
-                                           IEnumerable<Type> additionalArgumentTypes)
+            IEnumerable<Type> additionalArgumentTypes)
         {
             var argTypes = additionalArgumentTypes.ToArray();
 
@@ -154,22 +151,22 @@ namespace LinFu.IoC.Configuration
                 var currentIndex = argTypes.Length - currentOffset;
                 var currentArgumentType = argTypes[currentIndex];
                 Func<T, bool> hasCompatibleArgument = method =>
-                                                          {
-                                                              var parameters = method.GetParameters();
-                                                              var parameterCount = parameters.Length;
-                                                              var targetParameterIndex = currentIndex;
+                {
+                    var parameters = method.GetParameters();
+                    var parameterCount = parameters.Length;
+                    var targetParameterIndex = currentIndex;
 
-                                                              // Make sure that the index is valid
-                                                              if (targetParameterIndex < 0 ||
-                                                                  targetParameterIndex >= parameterCount)
-                                                                  return false;
+                    // Make sure that the index is valid
+                    if (targetParameterIndex < 0 ||
+                        targetParameterIndex >= parameterCount)
+                        return false;
 
-                                                              // The parameter type must be compatible with the
-                                                              // given argument type
-                                                              var parameterType =
-                                                                  parameters[targetParameterIndex].ParameterType;
-                                                              return parameterType.IsAssignableFrom(currentArgumentType);
-                                                          };
+                    // The parameter type must be compatible with the
+                    // given argument type
+                    var parameterType =
+                        parameters[targetParameterIndex].ParameterType;
+                    return parameterType.IsAssignableFrom(currentArgumentType);
+                };
 
                 // Match each additional argument type to its
                 // relative position from the end of the parameter
@@ -177,22 +174,22 @@ namespace LinFu.IoC.Configuration
                 fuzzyList.AddCriteria(hasCompatibleArgument, CriteriaType.Critical);
 
                 Func<T, bool> hasExactArgumentType = method =>
-                                                         {
-                                                             var parameters = method.GetParameters();
-                                                             var parameterCount = parameters.Length;
-                                                             var targetParameterIndex = currentIndex;
+                {
+                    var parameters = method.GetParameters();
+                    var parameterCount = parameters.Length;
+                    var targetParameterIndex = currentIndex;
 
-                                                             // Make sure that the index is valid
-                                                             if (targetParameterIndex < 0 ||
-                                                                 targetParameterIndex >= parameterCount)
-                                                                 return false;
+                    // Make sure that the index is valid
+                    if (targetParameterIndex < 0 ||
+                        targetParameterIndex >= parameterCount)
+                        return false;
 
-                                                             // The parameter type should match the
-                                                             // given argument type
-                                                             var parameterType =
-                                                                 parameters[targetParameterIndex].ParameterType;
-                                                             return parameterType.IsAssignableFrom(currentArgumentType);
-                                                         };
+                    // The parameter type should match the
+                    // given argument type
+                    var parameterType =
+                        parameters[targetParameterIndex].ParameterType;
+                    return parameterType.IsAssignableFrom(currentArgumentType);
+                };
 
                 // Make sure that the finder prefers exact
                 // type matches over compatible types

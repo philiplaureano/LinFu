@@ -24,9 +24,9 @@ namespace LinFu.AOP.Cecil
         /// <param name="surroundingImplementation"></param>
         /// <param name="skipGetSurroundingImplementation"></param>
         public GetSurroundingImplementationInstance(VariableDefinition aroundInvokeProvider,
-                                                    VariableDefinition invocationInfo,
-                                                    VariableDefinition surroundingImplementation,
-                                                    Instruction skipGetSurroundingImplementation)
+            VariableDefinition invocationInfo,
+            VariableDefinition surroundingImplementation,
+            Instruction skipGetSurroundingImplementation)
         {
             _aroundInvokeProvider = aroundInvokeProvider;
             _invocationInfo = invocationInfo;
@@ -34,7 +34,6 @@ namespace LinFu.AOP.Cecil
             _skipGetSurroundingImplementation = skipGetSurroundingImplementation;
         }
 
-        #region IInstructionEmitter Members
 
         /// <summary>
         /// Emits the instructions that obtain the current <see cref="IAroundInvoke"/> instance.
@@ -55,7 +54,5 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Callvirt, getSurroundingImplementation);
             IL.Emit(OpCodes.Stloc, _surroundingImplementation);
         }
-
-        #endregion
     }
 }

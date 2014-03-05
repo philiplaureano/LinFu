@@ -18,14 +18,13 @@ namespace LinFu.IoC.Configuration
     {
         private static readonly HashSet<Type> _excludedServices =
             new HashSet<Type>(new[]
-                                  {
-                                      typeof (IMemberInjectionFilter<TMember>), typeof (IArgumentResolver),
-                                      typeof (IPropertySetter)
-                                  });
+            {
+                typeof (IMemberInjectionFilter<TMember>), typeof (IArgumentResolver),
+                typeof (IPropertySetter)
+            });
 
         private bool _inProcess;
 
-        #region IContainerPlugin Members
 
         /// <summary>
         /// Does absolutely nothing.
@@ -45,9 +44,6 @@ namespace LinFu.IoC.Configuration
             target.PostProcessors.Add(this);
         }
 
-        #endregion
-
-        #region IPostProcessor Members
 
         /// <summary>
         /// Automatically injects service instances
@@ -73,7 +69,6 @@ namespace LinFu.IoC.Configuration
             }
         }
 
-        #endregion
 
         /// <summary>
         /// Injects services from the <paramref name="container"/> into the target <paramref name="member"/> instance.
@@ -84,7 +79,7 @@ namespace LinFu.IoC.Configuration
         /// <param name="additionalArguments">The additional arguments that were passed to the <see cref="IServiceRequestResult"/> during the instantiation process.</param>
         /// <param name="container">The container that will provide the service instances.</param>
         protected abstract void Inject(object target, TMember member, IArgumentResolver argumentResolver,
-                                       IServiceContainer container, object[] additionalArguments);
+            IServiceContainer container, object[] additionalArguments);
 
         /// <summary>
         /// Injects a member service dependency into a target service instance.

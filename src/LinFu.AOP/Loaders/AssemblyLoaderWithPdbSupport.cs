@@ -72,7 +72,7 @@ namespace LinFu.AOP.Cecil.Loaders
         /// <param name="pdbTempFileName">The full path and location of the temporary pdb file.</param>
         /// <param name="assemblyBackupFile">The full path and location of the backup assembly file.</param>
         private static void RemoveTemporaryFiles(string assemblyFile, string pdbFile, string pdbTempFileName,
-                                                 string assemblyBackupFile)
+            string assemblyBackupFile)
         {
             if (File.Exists(pdbTempFileName))
             {

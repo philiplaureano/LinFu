@@ -18,7 +18,6 @@ namespace LinFu.IoC.Configuration
 
         private static readonly Type[] _parameterTypes = {typeof (object), typeof (object)};
 
-        #region IPropertySetter Members
 
         /// <summary>
         /// Sets the value of the <paramref name="targetProperty"/>.
@@ -51,7 +50,6 @@ namespace LinFu.IoC.Configuration
                 setter(target, value);
         }
 
-        #endregion
 
         /// <summary>
         /// Generates an <see cref="Action{T1, T2}"/> delegate that will be used
@@ -65,13 +63,13 @@ namespace LinFu.IoC.Configuration
 
             if (setterMethod == null)
                 throw new ArgumentException(string.Format("The property '{0}' is missing a setter method!",
-                                                          targetProperty));
+                    targetProperty));
 
             // Validate the setter method
             if (!setterMethod.IsPublic)
                 throw new ArgumentException(
                     string.Format("The property '{0}' must have a publicly visible setter in order to be modified",
-                                  targetProperty));
+                        targetProperty));
 
             // HACK: Manually invoke the setter since the Mono runtime currently 
             // does not support the DynamicMethod class

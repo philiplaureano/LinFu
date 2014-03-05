@@ -8,7 +8,6 @@ namespace SampleLibrary.AOP
 
         public bool AfterInvokeWasCalled { get; private set; }
 
-        #region IAroundInvoke Members
 
         public void BeforeInvoke(IInvocationInfo info)
         {
@@ -19,7 +18,5 @@ namespace SampleLibrary.AOP
         {
             AfterInvokeWasCalled = true;
         }
-
-        #endregion
     }
 }

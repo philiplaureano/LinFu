@@ -35,7 +35,6 @@ namespace LinFu.IoC.Configuration
             _getFinder = getFinder;
         }
 
-        #region IMemberResolver<TMember> Members
 
         /// <summary>
         /// Uses the <paramref name="container"/> to determine which member to use from
@@ -46,7 +45,7 @@ namespace LinFu.IoC.Configuration
         /// <param name="finderContext">The <see cref="IMethodFinderContext"/> that describes the target method.</param>        
         /// <returns>A member instance if a match is found; otherwise, it will return <c>null</c>.</returns>
         public TMember ResolveFrom(Type concreteType, IServiceContainer container,
-                                   IMethodFinderContext finderContext)
+            IMethodFinderContext finderContext)
         {
             var constructors = GetMembers(concreteType);
             if (constructors == null)
@@ -69,7 +68,6 @@ namespace LinFu.IoC.Configuration
             return bestMatch;
         }
 
-        #endregion
 
         /// <summary>
         /// Determines the <see cref="IMethodFinder{T}"/> that will be used

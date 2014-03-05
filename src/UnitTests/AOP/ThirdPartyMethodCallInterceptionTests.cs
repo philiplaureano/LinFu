@@ -13,8 +13,6 @@ namespace LinFu.UnitTests.AOP
     [TestFixture]
     public class ThirdPartyMethodCallInterceptionTests : BaseTestFixture
     {
-        #region Setup/Teardown
-
         [SetUp]
         public override void Init()
         {
@@ -26,7 +24,6 @@ namespace LinFu.UnitTests.AOP
             AroundInvokeMethodCallRegistry.Clear();
         }
 
-        #endregion
 
         private Type GetModifiedTargetType()
         {
@@ -41,23 +38,23 @@ namespace LinFu.UnitTests.AOP
             // Intercept all calls to the System.Console.WriteLine method from the DoSomething method
             var typeName = "SampleClassWithThirdPartyMethodCall";
             var targetType = (from TypeDefinition t in module.Types
-                                         where t.Name == typeName
-                                         select t).First();
+                where t.Name == typeName
+                select t).First();
 
             modify(typeName, targetType);
 
             var modifiedAssembly = assembly.ToAssembly();
             return (from t in modifiedAssembly.GetTypes()
-                    where t.Name == typeName
-                    select t).First();
+                where t.Name == typeName
+                select t).First();
         }
 
         private void Modify(string typeName, TypeDefinition targetType)
         {
             targetType.InterceptMethodCalls(t => t.Name.Contains(typeName),
-                                            m => m.DeclaringType.Name.Contains(typeName) && m.Name == "DoSomething",
-                                            methodCall =>
-                                            methodCall.DeclaringType.Name == "Console" && methodCall.Name == "WriteLine");
+                m => m.DeclaringType.Name.Contains(typeName) && m.Name == "DoSomething",
+                methodCall =>
+                    methodCall.DeclaringType.Name == "Console" && methodCall.Name == "WriteLine");
         }
 
         [Test]

@@ -30,12 +30,9 @@ namespace SampleLibrary.IOC
             Bool = b;
         }
 
-        #region ISampleService<T> Members
 
         public int Int { get; set; }
         public string Text { get; set; }
         public bool Bool { get; set; }
-
-        #endregion
     }
 }

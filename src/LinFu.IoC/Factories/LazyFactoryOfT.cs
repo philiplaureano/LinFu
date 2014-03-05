@@ -20,7 +20,6 @@ namespace LinFu.IoC.Factories
             _getFactory = getFactory;
         }
 
-        #region IFactory Members
 
         object IFactory.CreateInstance(IFactoryRequest request)
         {
@@ -28,9 +27,6 @@ namespace LinFu.IoC.Factories
             return thisFactory.CreateInstance(request);
         }
 
-        #endregion
-
-        #region IFactory<T> Members
 
         /// <summary>
         /// Instantiates the service type using the actual factory.
@@ -49,7 +45,5 @@ namespace LinFu.IoC.Factories
 
             return factory.CreateInstance(request);
         }
-
-        #endregion
     }
 }

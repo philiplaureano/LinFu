@@ -42,13 +42,13 @@ namespace LinFu.IoC.Configuration
         /// <param name="container">The host container.</param>
         /// <returns>The list of methods that have the custom attribute type defined.</returns>
         protected override IEnumerable<MethodInfo> GetMembers(Type targetType,
-                                                              IServiceContainer container)
+            IServiceContainer container)
         {
             var results =
                 from method in targetType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
                 let attributes = _attributeType != null
-                                     ? method.GetCustomAttributes(_attributeType, false)
-                                     : null
+                    ? method.GetCustomAttributes(_attributeType, false)
+                    : null
                 where attributes != null && attributes.Length > 0
                 select method;
 

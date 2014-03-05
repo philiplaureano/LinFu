@@ -15,11 +15,9 @@ namespace LinFu.IoC.Configuration.Resolvers
     /// </summary>
     /// <typeparam name="TMethod">The method type that will be searched.</typeparam>
     public class MethodFinderFromContainer<TMethod> : MethodFinder<TMethod>, IMethodFinderWithContainer<TMethod>,
-                                                      IInitialize
+        IInitialize
         where TMethod : MethodBase
     {
-        #region IInitialize Members
-
         /// <summary>
         /// Initializes the target with the host container.
         /// </summary>
@@ -29,9 +27,6 @@ namespace LinFu.IoC.Configuration.Resolvers
             Container = container;
         }
 
-        #endregion
-
-        #region IMethodFinderWithContainer<TMethod> Members
 
         /// <summary>
         /// Gets the value indicating the service container that will be used in the
@@ -39,7 +34,6 @@ namespace LinFu.IoC.Configuration.Resolvers
         /// </summary>
         public IServiceContainer Container { get; private set; }
 
-        #endregion
 
         /// <summary>
         /// Examines a <see cref="ConstructorInfo"/> instance
@@ -51,7 +45,7 @@ namespace LinFu.IoC.Configuration.Resolvers
         /// <param name="maxIndex">Indicates the index that 
         /// marks the point where the user-supplied arguments begin.</param>
         private static void CheckParameters(IFuzzyItem<TMethod> fuzzyItem,
-                                            IServiceContainer container, int maxIndex)
+            IServiceContainer container, int maxIndex)
         {
             var constructor = fuzzyItem.Item;
             var currentIndex = 0;
@@ -85,8 +79,8 @@ namespace LinFu.IoC.Configuration.Resolvers
         {
             var additionalArguments = finderContext.Arguments ?? new object[0];
             var argumentTypes = (from argument in additionalArguments
-                                        let argumentType = argument == null ? typeof (object) : argument.GetType()
-                                        select argumentType).ToList();
+                let argumentType = argument == null ? typeof (object) : argument.GetType()
+                select argumentType).ToList();
 
             var argumentCount = argumentTypes.Count;
             foreach (var fuzzyItem in methods)
