@@ -65,6 +65,7 @@
     <Compile Include="BootstrapException.cs" />
     <Compile Include="BootStrapRegistry.cs" />
     <Compile Include="CallCounter.cs" />
+    <Compile Include="CompositeAroundInvokeProvider.cs" />
     <Compile Include="CompositeAroundInvoke.cs" />
     <Compile Include="Counter.cs" />
     <Compile Include="CountingInterceptor.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="MethodBodyReplacementProviderRegistry.cs" />
     <Compile Include="MethodCallReplacementProviderRegistry.cs" />
     <Compile Include="MultithreadedCallCounter.cs" />
+    <Compile Include="SimpleAroundInvokeProvider.cs" />
     <Compile Include="SimpleMethodReplacementProvider.cs" />
     <Compile Include="SingleThreadedCallCounter.cs" />
     <Compile Include="TypeActivationContext.cs" />
