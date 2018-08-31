@@ -13,7 +13,7 @@ namespace SampleLibrary.Proxy
 
         public SerializableInterceptor(SerializationInfo info, StreamingContext context)
         {
-            Identifier = (Guid) info.GetValue("identifier", typeof (Guid));
+            Identifier = (Guid) info.GetValue("identifier", typeof(Guid));
         }
 
         public Guid Identifier { get; set; }

@@ -3,8 +3,8 @@
 namespace LinFu.AOP.Interfaces
 {
     /// <summary>
-    /// Represents a registry that allows users to statically register <see cref="ITypeActivator"/>
-    /// instances.
+    ///     Represents a registry that allows users to statically register <see cref="ITypeActivator" />
+    ///     instances.
     /// </summary>
     public static class TypeActivatorRegistry
     {
@@ -12,9 +12,9 @@ namespace LinFu.AOP.Interfaces
         private static ITypeActivator _activator;
 
         /// <summary>
-        /// Obtains an activator for the given <paramref name="context"/>.
+        ///     Obtains an activator for the given <paramref name="context" />.
         /// </summary>
-        /// <param name="context">The <see cref="ITypeActivationContext"/> instance that describes the object to be created.</param>
+        /// <param name="context">The <see cref="ITypeActivationContext" /> instance that describes the object to be created.</param>
         /// <returns>A method activator.</returns>
         public static ITypeActivator GetActivator(ITypeActivationContext context)
         {
@@ -36,10 +36,10 @@ namespace LinFu.AOP.Interfaces
         }
 
         /// <summary>
-        /// Sets the <see cref="ITypeActivator"/> that will be used to 
-        /// instantiate object instances.
+        ///     Sets the <see cref="ITypeActivator" /> that will be used to
+        ///     instantiate object instances.
         /// </summary>
-        /// <param name="activator">The <see cref="ITypeActivator"/> that will instantiate types.</param>
+        /// <param name="activator">The <see cref="ITypeActivator" /> that will instantiate types.</param>
         public static void SetActivator(ITypeActivator activator)
         {
             lock (_lock)

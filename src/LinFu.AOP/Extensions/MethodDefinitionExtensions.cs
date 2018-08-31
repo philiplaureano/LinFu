@@ -5,12 +5,12 @@ using Mono.Cecil.Cil;
 namespace LinFu.AOP.Cecil.Extensions
 {
     /// <summary>
-    /// Represents an extension class that adds helper methods to the <see cref="MethodDefinition"/> type.
+    ///     Represents an extension class that adds helper methods to the <see cref="MethodDefinition" /> type.
     /// </summary>
     public static class MethodDefinitionExtensions
     {
         /// <summary>
-        /// Adds a local variable to the given method.
+        ///     Adds a local variable to the given method.
         /// </summary>
         /// <param name="methodDef">The target method.</param>
         /// <param name="localType">The variable type.</param>

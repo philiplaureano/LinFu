@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using LinFu.AOP.Cecil.Extensions;
 using LinFu.AOP.Interfaces;
 using LinFu.IoC.Reflection;
@@ -192,7 +191,7 @@ namespace LinFu.UnitTests.AOP
             {
                 var doSomethingMethod = type.GetMethod("DoSomething");
                 Assert.IsNotNull(doSomethingMethod);
-                Assert.IsFalse(type.GetInterfaces().Contains(typeof (IModifiableType)));
+                Assert.IsFalse(type.GetInterfaces().Contains(typeof(IModifiableType)));
             };
 
             Test("SampleLibrary.dll", "SampleStaticClassWithStaticMethod", methodFilter, doTest);

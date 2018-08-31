@@ -5,12 +5,12 @@ using Mono.Cecil.Cil;
 namespace LinFu.AOP.Cecil.Interfaces
 {
     /// <summary>
-    /// Represents a type that can modify method bodies.
+    ///     Represents a type that can modify method bodies.
     /// </summary>
     public interface IMethodBodyRewriter
     {
         /// <summary>
-        /// Rewrites a target method using the given CilWorker.
+        ///     Rewrites a target method using the given CilWorker.
         /// </summary>
         /// <param name="method">The target method.</param>
         /// <param name="IL">The CilWorker that will be used to rewrite the target method.</param>

@@ -7,7 +7,7 @@ using LinFu.Proxy.Interfaces;
 namespace LinFu.Proxy
 {
     /// <summary>
-    /// A class that adds proxy support to the <see cref="object"/> class
+    ///     A class that adds proxy support to the <see cref="object" /> class
     /// </summary>
     public static class ObjectExtensions
     {
@@ -19,8 +19,8 @@ namespace LinFu.Proxy
         }
 
         /// <summary>
-        /// Creates a duck type that redirects its calls to the
-        /// given <paramref name="target"/>.
+        ///     Creates a duck type that redirects its calls to the
+        ///     given <paramref name="target" />.
         /// </summary>
         /// <param name="target">The target instance that will be invoked once the duck type instance has been invoked.</param>
         /// <param name="baseInterfaces">The additional list of interfaces that will be implemented by the duck type.</param>
@@ -28,15 +28,15 @@ namespace LinFu.Proxy
         /// <returns>The return value from the target method.</returns>
         public static T CreateDuck<T>(this object target, params Type[] baseInterfaces)
         {
-            return (T) target.CreateDuck(typeof (T), baseInterfaces);
+            return (T) target.CreateDuck(typeof(T), baseInterfaces);
         }
 
         /// <summary>
-        /// Creates a duck type that redirects its calls to the
-        /// given <paramref name="target"/>.
+        ///     Creates a duck type that redirects its calls to the
+        ///     given <paramref name="target" />.
         /// </summary>
         /// <param name="target">The target instance that will be invoked once the duck type instance has been invoked.</param>
-        /// <param name="duckType">The <see cref="System.Type"/> that describes the duck type.</param>
+        /// <param name="duckType">The <see cref="System.Type" /> that describes the duck type.</param>
         /// <param name="baseInterfaces">The additional list of interfaces that will be implemented by the duck type.</param>
         /// <returns>The return value from the target method.</returns>
         public static object CreateDuck(this object target, Type duckType, params Type[] baseInterfaces)

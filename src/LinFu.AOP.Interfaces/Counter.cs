@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace LinFu.AOP.Interfaces
+﻿namespace LinFu.AOP.Interfaces
 {
     internal class Counter<T>
     {
-        private int _count;
         private readonly object lockObject = new object();
+        private int _count;
 
         public void Increment()
         {

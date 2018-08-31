@@ -4,7 +4,7 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC.Factories
 {
     /// <summary>
-    /// Represents a factory that returns strongly-typed IFactory instances.
+    ///     Represents a factory that returns strongly-typed IFactory instances.
     /// </summary>
     /// <typeparam name="T">The service type to be created.</typeparam>
     public class LazyFactory<T> : IFactory<T>, IFactory
@@ -12,7 +12,7 @@ namespace LinFu.IoC.Factories
         private readonly Func<IFactoryRequest, IFactory> _getFactory;
 
         /// <summary>
-        /// Initializes the factory with the given <paramref name="getFactory"/> functor.
+        ///     Initializes the factory with the given <paramref name="getFactory" /> functor.
         /// </summary>
         /// <param name="getFactory">The functor that will instantiate the actual factory instance.</param>
         public LazyFactory(Func<IFactoryRequest, IFactory> getFactory)
@@ -29,9 +29,9 @@ namespace LinFu.IoC.Factories
 
 
         /// <summary>
-        /// Instantiates the service type using the actual factory.
+        ///     Instantiates the service type using the actual factory.
         /// </summary>
-        /// <param name="request">The <see cref="IFactoryRequest"/> instance that describes the service to be created.</param>
+        /// <param name="request">The <see cref="IFactoryRequest" /> instance that describes the service to be created.</param>
         /// <returns></returns>
         public T CreateInstance(IFactoryRequest request)
         {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using LinFu.AOP.Cecil.Extensions;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
@@ -16,13 +15,9 @@ namespace LinFu.UnitTests.AOP
     {
         private class OtherSampleService : ISampleService
         {
-            
-
             public void DoSomething()
             {
             }
-
-            
         }
 
         [Test]
@@ -33,8 +28,8 @@ namespace LinFu.UnitTests.AOP
             var module = assembly.MainModule;
             var typeName = "SampleClassWithNewInstanceCall";
             var targetType = (from TypeDefinition t in module.Types
-                                         where t.Name == typeName
-                                         select t).First();
+                where t.Name == typeName
+                select t).First();
 
             targetType.InterceptNewInstances(declaringType => declaringType.Name == "SampleServiceImplementation");
 

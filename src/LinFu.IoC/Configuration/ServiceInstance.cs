@@ -3,7 +3,7 @@
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// Represents the default implementation of the <see cref="IServiceInstance"/> interface.
+    ///     Represents the default implementation of the <see cref="IServiceInstance" /> interface.
     /// </summary>
     internal class ServiceInstance : IServiceInstance
     {

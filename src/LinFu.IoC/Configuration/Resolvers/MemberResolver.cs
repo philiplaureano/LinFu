@@ -8,8 +8,8 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// Represents a class that can choose a member that best matches
-    /// the services currently available in a given <see cref="IServiceContainer"/> instance.
+    ///     Represents a class that can choose a member that best matches
+    ///     the services currently available in a given <see cref="IServiceContainer" /> instance.
     /// </summary>
     /// <typeparam name="TMember">The member type that will be searched.</typeparam>
     public abstract class MemberResolver<TMember> : IMemberResolver<TMember>
@@ -18,7 +18,7 @@ namespace LinFu.IoC.Configuration
         private readonly Func<IServiceContainer, IMethodFinder<TMember>> _getFinder;
 
         /// <summary>
-        /// The default constructor for the <see cref="MemberResolver{TMember}"/> class.
+        ///     The default constructor for the <see cref="MemberResolver{TMember}" /> class.
         /// </summary>
         protected MemberResolver()
         {
@@ -26,8 +26,8 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// Initializes the class with a <paramref name="getFinder">functor</paramref>
-        /// that will be used to instantiate the method finder that will be used in the search.
+        ///     Initializes the class with a <paramref name="getFinder">functor</paramref>
+        ///     that will be used to instantiate the method finder that will be used in the search.
         /// </summary>
         /// <param name="getFinder">The functor that will be used to instantiate the method finder.</param>
         protected MemberResolver(Func<IServiceContainer, IMethodFinder<TMember>> getFinder)
@@ -37,12 +37,12 @@ namespace LinFu.IoC.Configuration
 
 
         /// <summary>
-        /// Uses the <paramref name="container"/> to determine which member to use from
-        /// the <paramref name="concreteType">concrete type</paramref>.
+        ///     Uses the <paramref name="container" /> to determine which member to use from
+        ///     the <paramref name="concreteType">concrete type</paramref>.
         /// </summary>
         /// <param name="concreteType">The target type.</param>
         /// <param name="container">The container that contains the member values that will be used to invoke the members.</param>
-        /// <param name="finderContext">The <see cref="IMethodFinderContext"/> that describes the target method.</param>        
+        /// <param name="finderContext">The <see cref="IMethodFinderContext" /> that describes the target method.</param>
         /// <returns>A member instance if a match is found; otherwise, it will return <c>null</c>.</returns>
         public TMember ResolveFrom(Type concreteType, IServiceContainer container,
             IMethodFinderContext finderContext)
@@ -70,8 +70,8 @@ namespace LinFu.IoC.Configuration
 
 
         /// <summary>
-        /// Determines the <see cref="IMethodFinder{T}"/> that will be used
-        /// in the method search.
+        ///     Determines the <see cref="IMethodFinder{T}" /> that will be used
+        ///     in the method search.
         /// </summary>
         /// <param name="container"></param>
         /// <returns></returns>
@@ -81,17 +81,17 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// The method used to retrieve the default result if no
-        /// other alternative is found.
+        ///     The method used to retrieve the default result if no
+        ///     other alternative is found.
         /// </summary>
         /// <param name="concreteType">The target type that contains the default member.</param>
         /// <returns>The default member result.</returns>
         protected abstract TMember GetDefaultResult(Type concreteType);
 
         /// <summary>
-        /// Lists the members associated with the <paramref name="concreteType"/>.
+        ///     Lists the members associated with the <paramref name="concreteType" />.
         /// </summary>
-        /// <param name="concreteType">The target type that contains the type members.</param> 
+        /// <param name="concreteType">The target type that contains the type members.</param>
         /// <returns>A list of members that belong to the concrete type.</returns>
         protected abstract IEnumerable<TMember> GetMembers(Type concreteType);
     }

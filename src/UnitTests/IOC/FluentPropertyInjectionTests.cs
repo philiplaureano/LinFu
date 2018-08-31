@@ -1,5 +1,4 @@
-﻿using System;
-using LinFu.IoC;
+﻿using LinFu.IoC;
 using Moq;
 using NUnit.Framework;
 using SampleLibrary;
@@ -20,17 +19,12 @@ namespace LinFu.UnitTests.IOC
 
             // Use the named fluent interface for
             // named instances
-            if (!String.IsNullOrEmpty(serviceName))
-            {
+            if (!string.IsNullOrEmpty(serviceName))
                 container.Initialize<IInjectionTarget>(serviceName)
                     .With(service => service.SetValue(123));
-            }
             else
-            {
-                // Otherwise, use the other one
                 container.Initialize<IInjectionTarget>()
                     .With(service => service.SetValue(123));
-            }
             var result = container.GetService<IInjectionTarget>(serviceName);
             Assert.IsNotNull(result);
 

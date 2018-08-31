@@ -9,8 +9,8 @@ using LinFu.Proxy.Interfaces;
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// The base class that defines the behavior for automatically injecting service
-    /// instances into type member instances.
+    ///     The base class that defines the behavior for automatically injecting service
+    ///     instances into type member instances.
     /// </summary>
     /// <typeparam name="TMember"></typeparam>
     public abstract class AutoMemberInjector<TMember> : IPostProcessor, IContainerPlugin
@@ -19,15 +19,15 @@ namespace LinFu.IoC.Configuration
         private static readonly HashSet<Type> _excludedServices =
             new HashSet<Type>(new[]
             {
-                typeof (IMemberInjectionFilter<TMember>), typeof (IArgumentResolver),
-                typeof (IPropertySetter)
+                typeof(IMemberInjectionFilter<TMember>), typeof(IArgumentResolver),
+                typeof(IPropertySetter)
             });
 
         private bool _inProcess;
 
 
         /// <summary>
-        /// Does absolutely nothing.
+        ///     Does absolutely nothing.
         /// </summary>
         /// <param name="target">The target container.</param>
         public void BeginLoad(IServiceContainer target)
@@ -35,8 +35,8 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// Inserts the <see cref="AutoPropertyInjector"/> class at the end
-        /// of the PostProcessor chain.
+        ///     Inserts the <see cref="AutoPropertyInjector" /> class at the end
+        ///     of the PostProcessor chain.
         /// </summary>
         /// <param name="target">The target container.</param>
         public void EndLoad(IServiceContainer target)
@@ -46,10 +46,13 @@ namespace LinFu.IoC.Configuration
 
 
         /// <summary>
-        /// Automatically injects service instances
-        /// into properties as soon as they are initialized.
+        ///     Automatically injects service instances
+        ///     into properties as soon as they are initialized.
         /// </summary>
-        /// <param name="result">The service request result that contains the service whose members will be injected with service instances.</param>
+        /// <param name="result">
+        ///     The service request result that contains the service whose members will be injected with service
+        ///     instances.
+        /// </param>
         public void PostProcess(IServiceRequestResult result)
         {
             // Prevent recursion
@@ -71,20 +74,26 @@ namespace LinFu.IoC.Configuration
 
 
         /// <summary>
-        /// Injects services from the <paramref name="container"/> into the target <paramref name="member"/> instance.
+        ///     Injects services from the <paramref name="container" /> into the target <paramref name="member" /> instance.
         /// </summary>
         /// <param name="target">The target object.</param>
-        /// <param name="member">The <typeparamref name="TMember"/> instance that will store the service instance.</param>
-        /// <param name="argumentResolver">The <see cref="IArgumentResolver"/> that will determine which arguments will be assigned to the target member.</param>
-        /// <param name="additionalArguments">The additional arguments that were passed to the <see cref="IServiceRequestResult"/> during the instantiation process.</param>
+        /// <param name="member">The <typeparamref name="TMember" /> instance that will store the service instance.</param>
+        /// <param name="argumentResolver">
+        ///     The <see cref="IArgumentResolver" /> that will determine which arguments will be
+        ///     assigned to the target member.
+        /// </param>
+        /// <param name="additionalArguments">
+        ///     The additional arguments that were passed to the <see cref="IServiceRequestResult" />
+        ///     during the instantiation process.
+        /// </param>
         /// <param name="container">The container that will provide the service instances.</param>
         protected abstract void Inject(object target, TMember member, IArgumentResolver argumentResolver,
             IServiceContainer container, object[] additionalArguments);
 
         /// <summary>
-        /// Injects a member service dependency into a target service instance.
+        ///     Injects a member service dependency into a target service instance.
         /// </summary>
-        /// <param name="result">The <see cref="IServiceRequestResult"/> that will be processed for injection.</param>
+        /// <param name="result">The <see cref="IServiceRequestResult" /> that will be processed for injection.</param>
         private void AutoInject(IServiceRequestResult result)
         {
             // Ignore the excluded services
@@ -94,13 +103,13 @@ namespace LinFu.IoC.Configuration
             if (result.ServiceType.IsGenericType)
             {
                 var baseDefinition = result.ServiceType.GetGenericTypeDefinition();
-                if (baseDefinition == typeof (IMemberInjectionFilter<>))
+                if (baseDefinition == typeof(IMemberInjectionFilter<>))
                     return;
             }
 
             var container = result.Container;
 
-            if (!container.Contains(typeof (IMemberInjectionFilter<TMember>)))
+            if (!container.Contains(typeof(IMemberInjectionFilter<TMember>)))
                 return;
 
             var filter = container.GetService<IMemberInjectionFilter<TMember>>();
@@ -112,10 +121,8 @@ namespace LinFu.IoC.Configuration
 
             // Use the base class if the
             // target type is a proxy type
-            if (typeof (IProxy).IsAssignableFrom(targetType) && targetType.BaseType != typeof (object))
-            {
+            if (typeof(IProxy).IsAssignableFrom(targetType) && targetType.BaseType != typeof(object))
                 targetType = targetType.BaseType;
-            }
 
             var members = filter.GetInjectableMembers(targetType).ToList();
             if (members.Count == 0)
@@ -129,10 +136,7 @@ namespace LinFu.IoC.Configuration
                 return;
 
             var target = result.ActualResult;
-            foreach (var member in members)
-            {
-                Inject(target, member, resolver, container, result.AdditionalArguments);
-            }
+            foreach (var member in members) Inject(target, member, resolver, container, result.AdditionalArguments);
         }
     }
 }

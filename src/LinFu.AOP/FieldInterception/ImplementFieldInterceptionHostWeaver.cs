@@ -7,7 +7,7 @@ using Mono.Cecil;
 namespace LinFu.AOP.Cecil
 {
     /// <summary>
-    /// Represents a type weaver that modifies types to implement the <see cref="IFieldInterceptionHost"/> interface.
+    ///     Represents a type weaver that modifies types to implement the <see cref="IFieldInterceptionHost" /> interface.
     /// </summary>
     public class ImplementFieldInterceptionHostWeaver : ITypeWeaver
     {
@@ -16,7 +16,7 @@ namespace LinFu.AOP.Cecil
         private TypeReference _interceptorPropertyType;
 
         /// <summary>
-        /// Initializes a new instance of the ImplementFieldInterceptionHostWeaver class.
+        ///     Initializes a new instance of the ImplementFieldInterceptionHostWeaver class.
         /// </summary>
         /// <param name="filter">The filter that determines which types should be modified.</param>
         public ImplementFieldInterceptionHostWeaver(Func<TypeReference, bool> filter)
@@ -26,7 +26,7 @@ namespace LinFu.AOP.Cecil
 
 
         /// <summary>
-        /// Determines whether or not a type should be modified.
+        ///     Determines whether or not a type should be modified.
         /// </summary>
         /// <param name="item"></param>
         /// <returns><c>true</c> if the type should be modified; otherwise, it will return <c>false</c>.</returns>
@@ -45,7 +45,7 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Modifies the target type.
+        ///     Modifies the target type.
         /// </summary>
         /// <param name="type">The type to be modified.</param>
         public void Weave(TypeDefinition type)
@@ -61,7 +61,7 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Adds additional members to the target module.
+        ///     Adds additional members to the target module.
         /// </summary>
         /// <param name="host">The host module.</param>
         public void AddAdditionalMembers(ModuleDefinition host)
@@ -69,7 +69,7 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Imports references into the target module.
+        ///     Imports references into the target module.
         /// </summary>
         /// <param name="module">The module containing the type to be modified.</param>
         public void ImportReferences(ModuleDefinition module)

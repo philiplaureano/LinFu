@@ -3,7 +3,7 @@ using LinFu.IoC.Configuration;
 
 namespace SampleLibrary.IOC
 {
-    [Implements(typeof (ISampleService), ServiceName = "ClassWithMultipleNonServiceArgumentConstructors")]
+    [Implements(typeof(ISampleService), ServiceName = "ClassWithMultipleNonServiceArgumentConstructors")]
     public class SampleClassWithMultipleNonServiceArgumentConstructors : ISampleService
     {
         public SampleClassWithMultipleNonServiceArgumentConstructors(string arg1)

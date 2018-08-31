@@ -3,14 +3,14 @@
 namespace LinFu.Reflection.Emit.Interfaces
 {
     /// <summary>
-    /// Represents a type that can construct <see cref="TypeDefinition"/>
-    /// types.
+    ///     Represents a type that can construct <see cref="TypeDefinition" />
+    ///     types.
     /// </summary>
     public interface ITypeBuilder
     {
         /// <summary>
-        /// Constructs a <paramref name="targetType"/> using
-        /// the given <see cref="ModuleDefinition"/> instance.
+        ///     Constructs a <paramref name="targetType" /> using
+        ///     the given <see cref="ModuleDefinition" /> instance.
         /// </summary>
         /// <param name="module">The module that will hold the actual type.</param>
         /// <param name="targetType">The type being constructed.</param>

@@ -13,17 +13,20 @@ using LinFu.Reflection;
 namespace LinFu.IoC.Interceptors
 {
     /// <summary>
-    /// The class responsible for loading interceptors marked with the
-    /// <see cref="InterceptsAttribute"/> class.
+    ///     The class responsible for loading interceptors marked with the
+    ///     <see cref="InterceptsAttribute" /> class.
     /// </summary>
     internal class InterceptorAttributeLoader : ITypeLoader
     {
         private readonly ILoader<IServiceContainer> _loaderHost;
 
         /// <summary>
-        /// Initializes the class with the given <paramref name="loaderHost"/>.
+        ///     Initializes the class with the given <paramref name="loaderHost" />.
         /// </summary>
-        /// <param name="loaderHost">The <see cref="ILoader{TTarget}"/> instance that will be responsible for loading the <see cref="IServiceContainer"/> instance itself.</param>
+        /// <param name="loaderHost">
+        ///     The <see cref="ILoader{TTarget}" /> instance that will be responsible for loading the
+        ///     <see cref="IServiceContainer" /> instance itself.
+        /// </param>
         internal InterceptorAttributeLoader(ILoader<IServiceContainer> loaderHost)
         {
             _loaderHost = loaderHost;
@@ -31,12 +34,15 @@ namespace LinFu.IoC.Interceptors
 
 
         /// <summary>
-        /// Loads an <see cref="IInterceptor"/> derived class into a particular <see cref="IServiceContainer"/> instance
-        /// so that the current interceptor type can intercept calls made to services created from the given
-        /// target container.
+        ///     Loads an <see cref="IInterceptor" /> derived class into a particular <see cref="IServiceContainer" /> instance
+        ///     so that the current interceptor type can intercept calls made to services created from the given
+        ///     target container.
         /// </summary>
         /// <param name="input">The interceptor type.</param>
-        /// <returns>By default, this will always return an empty set of container actions. The actual interceptor itself will be injected at the end of the postprocessor chain.</returns>
+        /// <returns>
+        ///     By default, this will always return an empty set of container actions. The actual interceptor itself will be
+        ///     injected at the end of the postprocessor chain.
+        /// </returns>
         public IEnumerable<Action<IServiceContainer>> Load(Type input)
         {
             var typeInstance = Activator.CreateInstance(input);
@@ -46,7 +52,6 @@ namespace LinFu.IoC.Interceptors
 
             // Return the interceptor by default
             if (interceptor != null)
-            {
                 getInterceptor = result =>
                 {
                     var target = result.ActualResult;
@@ -61,7 +66,6 @@ namespace LinFu.IoC.Interceptors
 
                     return new Redirector(() => target, interceptor, factory, methodInvoke);
                 };
-            }
 
             if (typeInstance != null && typeInstance is IAroundInvoke)
             {
@@ -98,7 +102,7 @@ namespace LinFu.IoC.Interceptors
 
             // Determine which service types should be intercepted
             var attributes =
-                from attribute in input.GetCustomAttributes(typeof (InterceptsAttribute), false)
+                from attribute in input.GetCustomAttributes(typeof(InterceptsAttribute), false)
                 let currentAttribute = attribute as InterceptsAttribute
                 where currentAttribute != null
                 select currentAttribute;
@@ -131,12 +135,12 @@ namespace LinFu.IoC.Interceptors
 
                 // There must be a valid proxy factory
                 if (container == null ||
-                    !container.Contains(typeof (IProxyFactory)))
+                    !container.Contains(typeof(IProxyFactory)))
                     return false;
 
                 var serviceType = request.ServiceType;
                 // Ignore requests to intercept IMethodInvoke<MethodInfo>
-                if (serviceType == typeof (IMethodInvoke<MethodInfo>))
+                if (serviceType == typeof(IMethodInvoke<MethodInfo>))
                     return false;
 
                 // Sealed types cannot be proxied by default
@@ -184,15 +188,18 @@ namespace LinFu.IoC.Interceptors
         }
 
         /// <summary>
-        /// Determines whether or not a target type is an interceptor.
+        ///     Determines whether or not a target type is an interceptor.
         /// </summary>
         /// <param name="inputType">The target type currently being tested.</param>
-        /// <returns>Returns <c>true</c> if the <paramref name="inputType"/> is an interceptor; otherwise, it will return <c>false</c>.</returns>
+        /// <returns>
+        ///     Returns <c>true</c> if the <paramref name="inputType" /> is an interceptor; otherwise, it will return
+        ///     <c>false</c>.
+        /// </returns>
         public bool CanLoad(Type inputType)
         {
             try
             {
-                var attributes = inputType.GetCustomAttributes(typeof (InterceptsAttribute), false);
+                var attributes = inputType.GetCustomAttributes(typeof(InterceptsAttribute), false);
 
                 if (attributes == null)
                     attributes = new object[0];
@@ -219,12 +226,17 @@ namespace LinFu.IoC.Interceptors
 
 
         /// <summary>
-        /// Generates a proxy instance from an existing <see cref="IServiceRequestResult"/> instance.
+        ///     Generates a proxy instance from an existing <see cref="IServiceRequestResult" /> instance.
         /// </summary>
-        /// <param name="request">The <see cref="IServiceRequestResult"/> instance that describes the proxy type that must be generated.</param>
-        /// <param name="getInterceptor">The <see cref="IInterceptor"/> functor that will create the interceptor which will handle all calls made to the proxy instance.</param>
-        /// <returns
-        /// >A service proxy.</returns>
+        /// <param name="request">
+        ///     The <see cref="IServiceRequestResult" /> instance that describes the proxy type that must be
+        ///     generated.
+        /// </param>
+        /// <param name="getInterceptor">
+        ///     The <see cref="IInterceptor" /> functor that will create the interceptor which will handle
+        ///     all calls made to the proxy instance.
+        /// </param>
+        /// <returns>A service proxy.</returns>
         private static object CreateProxyFrom(IServiceRequestResult request,
             Func<IServiceRequestResult, IInterceptor> getInterceptor)
         {

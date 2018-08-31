@@ -9,7 +9,7 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC.Reflection
 {
     /// <summary>
-    /// A class that adds late binding support to any CLR object.
+    ///     A class that adds late binding support to any CLR object.
     /// </summary>
     public static class LateBoundExtensions
     {
@@ -21,7 +21,7 @@ namespace LinFu.IoC.Reflection
         }
 
         /// <summary>
-        /// Invokes a method on the target <paramref name="instance"/>.
+        ///     Invokes a method on the target <paramref name="instance" />.
         /// </summary>
         /// <param name="instance">The target instance that will be used to invoke the method.</param>
         /// <param name="methodName">The name of the target method.</param>
@@ -37,11 +37,12 @@ namespace LinFu.IoC.Reflection
         }
 
         /// <summary>
-        /// Invokes a method on the target <paramref name="instance"/> using the given <paramref name="methodName"/> and <paramref name="context"/>.
+        ///     Invokes a method on the target <paramref name="instance" /> using the given <paramref name="methodName" /> and
+        ///     <paramref name="context" />.
         /// </summary>
         /// <param name="instance">The target instance.</param>
         /// <param name="methodName">The name of the target method.</param>
-        /// <param name="context">The <see cref="IMethodFinderContext"/> that describes the target method.</param>
+        /// <param name="context">The <see cref="IMethodFinderContext" /> that describes the target method.</param>
         /// <returns>The method return value.</returns>
         public static object Invoke(this object instance, string methodName, MethodFinderContext context)
         {
@@ -63,7 +64,7 @@ namespace LinFu.IoC.Reflection
 
             var targetMethods = methodMap.ContainsKey(methodName)
                 ? methodMap[methodName]
-                : (new MethodInfo[0]).ToList();
+                : new MethodInfo[0].ToList();
             var finder = _container.GetService<IMethodFinder<MethodInfo>>();
 
             var targetMethod = finder.GetBestMatch(targetMethods, context);
@@ -85,11 +86,12 @@ namespace LinFu.IoC.Reflection
         }
 
         /// <summary>
-        /// Invokes a method on the target <paramref name="instance"/> using the given <paramref name="methodName"/>.
+        ///     Invokes a method on the target <paramref name="instance" /> using the given <paramref name="methodName" />.
         /// </summary>
         /// <param name="instance">The target instance.</param>
         /// <param name="methodName">The name of the target method.</param>
-        /// <typeparam name="T1">The type argument that will be passed to the target method</typeparam>.
+        /// <typeparam name="T1">The type argument that will be passed to the target method</typeparam>
+        /// .
         /// <param name="arguments">The arguments that will be passed to the target method.</param>
         /// <returns>The method return value.</returns>
         public static object Invoke<T1>(this object instance, string methodName, params object[] arguments)
@@ -97,17 +99,19 @@ namespace LinFu.IoC.Reflection
             if (instance == null)
                 throw new NullReferenceException("instance");
 
-            var context = new MethodFinderContext(new[] {typeof (T1)}, arguments, null);
+            var context = new MethodFinderContext(new[] {typeof(T1)}, arguments, null);
             return Invoke(instance, methodName, context);
         }
 
         /// <summary>
-        /// Invokes a method on the target <paramref name="instance"/> using the given <paramref name="methodName"/>.
+        ///     Invokes a method on the target <paramref name="instance" /> using the given <paramref name="methodName" />.
         /// </summary>
         /// <param name="instance">The target instance.</param>
         /// <param name="methodName">The name of the target method.</param>
-        /// <typeparam name="T1">The first type argument that will be passed to the target method</typeparam>.
-        /// <typeparam name="T2">The second type argument that will be passed to the target method</typeparam>.
+        /// <typeparam name="T1">The first type argument that will be passed to the target method</typeparam>
+        /// .
+        /// <typeparam name="T2">The second type argument that will be passed to the target method</typeparam>
+        /// .
         /// <param name="arguments">The arguments that will be passed to the target method.</param>
         /// <returns>The method return value.</returns>
         public static object Invoke<T1, T2>(this object instance, string methodName, params object[] arguments)
@@ -115,17 +119,19 @@ namespace LinFu.IoC.Reflection
             if (instance == null)
                 throw new NullReferenceException("instance");
 
-            var typeArguments = new[] {typeof (T1), typeof (T2)};
+            var typeArguments = new[] {typeof(T1), typeof(T2)};
             return Invoke(instance, methodName, typeArguments, arguments);
         }
 
         /// <summary>
-        /// Invokes a method on the target <paramref name="instance"/> using the given <paramref name="methodName"/>.
+        ///     Invokes a method on the target <paramref name="instance" /> using the given <paramref name="methodName" />.
         /// </summary>
         /// <param name="instance">The target instance.</param>
         /// <param name="methodName">The name of the target method.</param>
-        /// <typeparam name="T1">The first type argument that will be passed to the target method</typeparam>.
-        /// <typeparam name="T2">The second type argument that will be passed to the target method</typeparam>.
+        /// <typeparam name="T1">The first type argument that will be passed to the target method</typeparam>
+        /// .
+        /// <typeparam name="T2">The second type argument that will be passed to the target method</typeparam>
+        /// .
         /// <typeparam name="T3">The third type argument that will be passed to the target method.</typeparam>
         /// <param name="arguments">The arguments that will be passed to the target method.</param>
         /// <returns>The method return value.</returns>
@@ -134,17 +140,19 @@ namespace LinFu.IoC.Reflection
             if (instance == null)
                 throw new NullReferenceException("instance");
 
-            var typeArguments = new[] {typeof (T1), typeof (T2), typeof (T3)};
+            var typeArguments = new[] {typeof(T1), typeof(T2), typeof(T3)};
             return Invoke(instance, methodName, typeArguments, arguments);
         }
 
         /// <summary>
-        /// Invokes a method on the target <paramref name="instance"/> using the given <paramref name="methodName"/>.
+        ///     Invokes a method on the target <paramref name="instance" /> using the given <paramref name="methodName" />.
         /// </summary>
         /// <param name="instance">The target instance.</param>
         /// <param name="methodName">The name of the target method.</param>
-        /// <typeparam name="T1">The first type argument that will be passed to the target method</typeparam>.
-        /// <typeparam name="T2">The second type argument that will be passed to the target method</typeparam>.
+        /// <typeparam name="T1">The first type argument that will be passed to the target method</typeparam>
+        /// .
+        /// <typeparam name="T2">The second type argument that will be passed to the target method</typeparam>
+        /// .
         /// <typeparam name="T3">The third type argument that will be passed to the target method.</typeparam>
         /// <typeparam name="T4">The fourth type argument that will be passed to the target method.</typeparam>
         /// <param name="arguments">The arguments that will be passed to the target method.</param>
@@ -154,12 +162,12 @@ namespace LinFu.IoC.Reflection
             if (instance == null)
                 throw new NullReferenceException("instance");
 
-            var typeArguments = new[] {typeof (T1), typeof (T2), typeof (T3), typeof (T4)};
+            var typeArguments = new[] {typeof(T1), typeof(T2), typeof(T3), typeof(T4)};
             return Invoke(instance, methodName, typeArguments, arguments);
         }
 
         /// <summary>
-        /// Invokes a method on the target <paramref name="instance"/> using the given <paramref name="methodName"/>.
+        ///     Invokes a method on the target <paramref name="instance" /> using the given <paramref name="methodName" />.
         /// </summary>
         /// <param name="instance">The target instance.</param>
         /// <param name="methodName">The name of the target method.</param>

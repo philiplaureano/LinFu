@@ -25,18 +25,12 @@ namespace LinFu.AOP.Interfaces
 
         public void AfterInvoke(IInvocationInfo context, object returnValue)
         {
-            foreach (var invoke in _aroundInvokeList)
-            {
-                invoke.AfterInvoke(context, returnValue);
-            }
+            foreach (var invoke in _aroundInvokeList) invoke.AfterInvoke(context, returnValue);
         }
 
         public void BeforeInvoke(IInvocationInfo context)
         {
-            foreach (var invoke in _aroundInvokeList)
-            {
-                invoke.BeforeInvoke(context);
-            }
+            foreach (var invoke in _aroundInvokeList) invoke.BeforeInvoke(context);
         }
     }
 }

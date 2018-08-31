@@ -2,16 +2,11 @@
 {
     public class SampleClassWithServiceArrayAsConstructorArgument
     {
-        private readonly ISampleService[] _services;
-
         public SampleClassWithServiceArrayAsConstructorArgument(ISampleService[] services)
         {
-            _services = services;
+            Services = services;
         }
 
-        public ISampleService[] Services
-        {
-            get { return _services; }
-        }
+        public ISampleService[] Services { get; }
     }
 }

@@ -3,12 +3,12 @@
 namespace LinFu.AOP.Cecil.Interfaces
 {
     /// <summary>
-    /// Represents a type that determines whether or not a particular field get or set should be intercepted.
+    ///     Represents a type that determines whether or not a particular field get or set should be intercepted.
     /// </summary>
     public interface IFieldFilter
     {
         /// <summary>
-        /// Determines whether or not a particular field get or set should be intercepted.
+        ///     Determines whether or not a particular field get or set should be intercepted.
         /// </summary>
         /// <param name="hostMethod">The host method.</param>
         /// <param name="targetField">The target field.</param>

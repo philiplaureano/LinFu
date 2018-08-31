@@ -3,12 +3,12 @@
 namespace LinFu.AOP.Cecil
 {
     /// <summary>
-    /// A class that extends <see cref="AssemblyDefinition"/> instances.
+    ///     A class that extends <see cref="AssemblyDefinition" /> instances.
     /// </summary>
     public static class AssemblyDefinitionExtensions
     {
         /// <summary>
-        /// Removes the strong-name signature from the <paramref name="sourceAssembly"/>.
+        ///     Removes the strong-name signature from the <paramref name="sourceAssembly" />.
         /// </summary>
         /// <param name="sourceAssembly"></param>
         public static void RemoveStrongName(this AssemblyDefinition sourceAssembly)

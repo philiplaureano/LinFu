@@ -4,7 +4,7 @@ using SampleLibrary;
 
 namespace SampleFileWatcherLibrary
 {
-    [Implements(typeof (ISampleService))]
+    [Implements(typeof(ISampleService))]
     public class SampleFileWatcherServiceClassAddedAtRuntime : ISampleService
     {
         public void DoSomething()

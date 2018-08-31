@@ -4,35 +4,35 @@ using Mono.Cecil;
 namespace LinFu.AOP.Cecil
 {
     /// <summary>
-    /// Represents a visitor class that can iterate over <see cref="MethodDefinition"/>
-    /// instances.
+    ///     Represents a visitor class that can iterate over <see cref="MethodDefinition" />
+    ///     instances.
     /// </summary>
     public class MethodWeaverVisitor : BaseReflectionVisitor
     {
         private readonly IMethodWeaver _methodWeaver;
 
         /// <summary>
-        /// Initializes a new instance of the MethodWeaverVisitor class.
+        ///     Initializes a new instance of the MethodWeaverVisitor class.
         /// </summary>
-        /// <param name="methodWeaver">The <see cref="IMethodWeaver"/> that will be used to modify a given type.</param>
+        /// <param name="methodWeaver">The <see cref="IMethodWeaver" /> that will be used to modify a given type.</param>
         public MethodWeaverVisitor(IMethodWeaver methodWeaver)
         {
             _methodWeaver = methodWeaver;
         }
 
         /// <summary>
-        /// Visits a <see cref="MethodDefinition"/> instance.
+        ///     Visits a <see cref="MethodDefinition" /> instance.
         /// </summary>
-        /// <param name="ctor">The <see cref="MethodDefinition"/> instance that will be modified.</param>
+        /// <param name="ctor">The <see cref="MethodDefinition" /> instance that will be modified.</param>
         public override void VisitConstructor(MethodDefinition ctor)
         {
             VisitMethodDefinition(ctor);
         }
 
         /// <summary>
-        /// Visits a <see cref="MethodDefinition"/> instance.
+        ///     Visits a <see cref="MethodDefinition" /> instance.
         /// </summary>
-        /// <param name="method">The <see cref="MethodDefinition"/> instance that will be modified.</param>
+        /// <param name="method">The <see cref="MethodDefinition" /> instance that will be modified.</param>
         public override void VisitMethodDefinition(MethodDefinition method)
         {
             if (!_methodWeaver.ShouldWeave(method))
@@ -43,9 +43,9 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Visits a <see cref="ModuleDefinition"/> instance.
+        ///     Visits a <see cref="ModuleDefinition" /> instance.
         /// </summary>
-        /// <param name="module">A <see cref="ModuleDefinition"/> object.</param>
+        /// <param name="module">A <see cref="ModuleDefinition" /> object.</param>
         public override void VisitModuleDefinition(ModuleDefinition module)
         {
             _methodWeaver.ImportReferences(module);
@@ -53,9 +53,9 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Visits a <see cref="TypeDefinition"/> instance.
+        ///     Visits a <see cref="TypeDefinition" /> instance.
         /// </summary>
-        /// <param name="type">A <see cref="TypeDefinition"/> object.</param>
+        /// <param name="type">A <see cref="TypeDefinition" /> object.</param>
         public override void VisitTypeDefinition(TypeDefinition type)
         {
             _methodWeaver.AddAdditionalMembers(type);

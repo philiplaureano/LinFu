@@ -104,6 +104,7 @@ namespace LinFu.UnitTests.Tools
                 if (File.Exists(peVerifyLocation))
                     break;
             }
+
             return peVerifyLocation;
         }
     }

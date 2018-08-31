@@ -29,10 +29,10 @@ namespace LinFu.UnitTests.IOC
             var firstFactory = new Mock<IFactory>();
             var secondFactory = new Mock<IFactory>();
 
-            var serviceType = typeof (int);
+            var serviceType = typeof(int);
 
-            IEnumerable<Type> firstParameters = new[] {typeof (int), typeof (int)};
-            IEnumerable<Type> secondParameters = new[] {typeof (int), typeof (int), typeof (int), typeof (int)};
+            IEnumerable<Type> firstParameters = new[] {typeof(int), typeof(int)};
+            IEnumerable<Type> secondParameters = new[] {typeof(int), typeof(int), typeof(int), typeof(int)};
 
             _storage.AddFactory("", serviceType, firstParameters, firstFactory.Object);
             _storage.AddFactory("", serviceType, secondParameters, secondFactory.Object);

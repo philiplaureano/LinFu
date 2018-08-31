@@ -27,7 +27,7 @@ namespace LinFu.UnitTests.IOC
             // On initialization, the instance.SomeField value
             // should be a SampleClass type
             Assert.IsNotNull(instance.SomeField);
-            Assert.IsInstanceOfType(typeof (SampleClass), instance.SomeField);
+            Assert.IsInstanceOfType(typeof(SampleClass), instance.SomeField);
         }
     }
 }

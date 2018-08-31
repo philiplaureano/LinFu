@@ -7,19 +7,19 @@ using Mono.Cecil;
 namespace LinFu.AOP.Cecil.Factories
 {
     /// <summary>
-    /// Represents a class that generates <see cref="Action{T1,T2}"/> instances
-    /// that apply a specific method weaver (with the name given in the first delegate parameter)
-    /// to a specific <see cref="TypeDefinition"/> instance.
+    ///     Represents a class that generates <see cref="Action{T1,T2}" /> instances
+    ///     that apply a specific method weaver (with the name given in the first delegate parameter)
+    ///     to a specific <see cref="TypeDefinition" /> instance.
     /// </summary>
-    [Factory(typeof (Action<string, TypeDefinition>), ServiceName = "TypeWeaver")]
+    [Factory(typeof(Action<string, TypeDefinition>), ServiceName = "TypeWeaver")]
     public class TypeWeaverActionFactory : IFactory
     {
         /// <summary>
-        /// Generates the <see cref="Action{T1, T2}"/> instance that will
-        /// weave the target type.
+        ///     Generates the <see cref="Action{T1, T2}" /> instance that will
+        ///     weave the target type.
         /// </summary>
-        /// <param name="request">The <see cref="IFactoryRequest"/> that describes the service request.</param>
-        /// <returns>The <see cref="Action{T1, T2}"/> instance that will weave the target type.</returns>
+        /// <param name="request">The <see cref="IFactoryRequest" /> that describes the service request.</param>
+        /// <returns>The <see cref="Action{T1, T2}" /> instance that will weave the target type.</returns>
         public object CreateInstance(IFactoryRequest request)
         {
             var container = request.Container;
@@ -29,11 +29,11 @@ namespace LinFu.AOP.Cecil.Factories
                     // Get the method weaver instance that matches the weaverName
                     var methodWeaver =
                         (IHostWeaver<TypeDefinition>)
-                            container.GetService(weaverName, typeof (IHostWeaver<TypeDefinition>));
+                        container.GetService(weaverName, typeof(IHostWeaver<TypeDefinition>));
 
                     // Wrap it in a type weaver
                     var typeWeaver =
-                        (ITypeWeaver) container.GetService("AutoMethodWeaver", typeof (ITypeWeaver), methodWeaver);
+                        (ITypeWeaver) container.GetService("AutoMethodWeaver", typeof(ITypeWeaver), methodWeaver);
 
                     var module = type.Module;
                     if (!typeWeaver.ShouldWeave(type))

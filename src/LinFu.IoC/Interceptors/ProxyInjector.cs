@@ -5,8 +5,8 @@ using LinFu.Proxy.Interfaces;
 namespace LinFu.IoC.Interceptors
 {
     /// <summary>
-    /// Represents a class that automatically injects a proxy instance
-    /// instead of an actual service instance.
+    ///     Represents a class that automatically injects a proxy instance
+    ///     instead of an actual service instance.
     /// </summary>
     public class ProxyInjector : IPostProcessor
     {
@@ -14,8 +14,8 @@ namespace LinFu.IoC.Interceptors
         private readonly Func<IServiceRequestResult, bool> _filterPredicate;
 
         /// <summary>
-        /// Initializes the class with the <paramref name="filterPredicate"/>
-        /// and the <paramref name="createProxy"/> factory method.
+        ///     Initializes the class with the <paramref name="filterPredicate" />
+        ///     and the <paramref name="createProxy" /> factory method.
         /// </summary>
         /// <param name="filterPredicate">The predicate that will determine which service requests will be proxied.</param>
         /// <param name="createProxy">The factory method that will generate the proxy instance itself.</param>
@@ -28,16 +28,16 @@ namespace LinFu.IoC.Interceptors
 
 
         /// <summary>
-        /// A method that injects service proxies in place of the actual <see cref="IServiceRequestResult.ActualResult"/>.
+        ///     A method that injects service proxies in place of the actual <see cref="IServiceRequestResult.ActualResult" />.
         /// </summary>
-        /// <param name="result">The <see cref="IServiceRequestResult"/> instance that describes the service request.</param>
+        /// <param name="result">The <see cref="IServiceRequestResult" /> instance that describes the service request.</param>
         public void PostProcess(IServiceRequestResult result)
         {
             if (!_filterPredicate(result))
                 return;
 
             var container = result.Container;
-            var hasProxyFactory = container.Contains(typeof (IProxyFactory));
+            var hasProxyFactory = container.Contains(typeof(IProxyFactory));
 
             // Inject proxies only if a
             // proxy factory instance is available

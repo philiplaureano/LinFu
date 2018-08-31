@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using LinFu.IoC;
@@ -25,7 +24,7 @@ namespace LinFu.UnitTests.IOC
             container.AddService(sampleService.Object);
 
             var instance =
-                (SampleClassWithInjectionProperties) container.AutoCreate(typeof (SampleClassWithInjectionProperties));
+                (SampleClassWithInjectionProperties) container.AutoCreate(typeof(SampleClassWithInjectionProperties));
 
             // The container should initialize the SomeProperty method to match the mock ISampleService instance
             Assert.IsNotNull(instance.SomeProperty);
@@ -50,7 +49,7 @@ namespace LinFu.UnitTests.IOC
             // On initialization, the instance.SomeProperty value
             // should be a SampleClass type
             Assert.IsNotNull(instance.SomeProperty);
-            Assert.IsInstanceOfType(typeof (SampleClass), instance.SomeProperty);
+            Assert.IsInstanceOfType(typeof(SampleClass), instance.SomeProperty);
         }
 
         [Test]
@@ -74,7 +73,7 @@ namespace LinFu.UnitTests.IOC
 
             // Ensure that the injection occurred
             Assert.IsNotNull(instance.SomeProperty);
-            Assert.IsInstanceOfType(typeof (SampleClass), instance.SomeProperty);
+            Assert.IsInstanceOfType(typeof(SampleClass), instance.SomeProperty);
         }
 
         [Test]
@@ -101,7 +100,7 @@ namespace LinFu.UnitTests.IOC
         [Test]
         public void ShouldDetermineWhichPropertiesShouldBeInjected()
         {
-            var targetType = typeof (SampleClassWithInjectionProperties);
+            var targetType = typeof(SampleClassWithInjectionProperties);
             var targetProperty = targetType.GetProperty("SomeProperty");
             Assert.IsNotNull(targetProperty);
 
@@ -124,7 +123,7 @@ namespace LinFu.UnitTests.IOC
         [Test]
         public void ShouldSetPropertyValue()
         {
-            var targetType = typeof (SampleClassWithInjectionProperties);
+            var targetType = typeof(SampleClassWithInjectionProperties);
             var targetProperty = targetType.GetProperty("SomeProperty");
             Assert.IsNotNull(targetProperty);
 

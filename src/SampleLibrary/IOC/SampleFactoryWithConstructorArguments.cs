@@ -4,7 +4,7 @@ using LinFu.IoC.Interfaces;
 
 namespace SampleLibrary.IOC
 {
-    [Factory(typeof (string), ServiceName = "SampleFactoryWithConstructorArguments")]
+    [Factory(typeof(string), ServiceName = "SampleFactoryWithConstructorArguments")]
     public class SampleFactoryWithConstructorArguments : IFactory
     {
         public ISampleService _sample;

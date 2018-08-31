@@ -5,15 +5,15 @@ using System.Threading;
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// Counts the number of occurrences of a specific type.
+    ///     Counts the number of occurrences of a specific type.
     /// </summary>
     internal class TypeCounter
     {
         private readonly Dictionary<int, Dictionary<Type, int>> _counts = new Dictionary<int, Dictionary<Type, int>>();
 
         /// <summary>
-        /// Gets the value indicating the types that are
-        /// currently being counted.
+        ///     Gets the value indicating the types that are
+        ///     currently being counted.
         /// </summary>
         public IEnumerable<Type> AvailableTypes
         {
@@ -25,17 +25,14 @@ namespace LinFu.IoC.Configuration
                     return new Type[0];
 
                 var results = new List<Type>();
-                foreach (var type in _counts[threadId].Keys)
-                {
-                    results.Add(type);
-                }
+                foreach (var type in _counts[threadId].Keys) results.Add(type);
 
                 return results;
             }
         }
 
         /// <summary>
-        /// Increments the count for the current <paramref name="type"/>.
+        ///     Increments the count for the current <paramref name="type" />.
         /// </summary>
         /// <param name="type">The type being counted.</param>
         public void Increment(Type type)
@@ -44,21 +41,17 @@ namespace LinFu.IoC.Configuration
 
             // Create a new counter, if necessary
             if (!_counts.ContainsKey(threadId))
-            {
                 lock (_counts)
                 {
                     _counts[threadId] = new Dictionary<Type, int>();
                 }
-            }
 
             var currentCounts = _counts[threadId];
             if (!currentCounts.ContainsKey(type))
-            {
                 lock (currentCounts)
                 {
                     currentCounts[type] = 0;
                 }
-            }
 
             lock (currentCounts)
             {
@@ -67,7 +60,7 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// Returns the number of occurrences of a specific <paramref name="type"/>.
+        ///     Returns the number of occurrences of a specific <paramref name="type" />.
         /// </summary>
         /// <param name="type">The type being counted.</param>
         /// <returns>The number of occurrences for the given type.</returns>
@@ -83,7 +76,7 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// Decrements the count for the current <paramref name="type"/>.
+        ///     Decrements the count for the current <paramref name="type" />.
         /// </summary>
         /// <param name="type">The type being counted.</param>
         public void Decrement(Type type)
@@ -96,12 +89,10 @@ namespace LinFu.IoC.Configuration
 
             // Create a new counter, if necessary
             if (!_counts.ContainsKey(threadId))
-            {
                 lock (_counts)
                 {
                     _counts[threadId] = new Dictionary<Type, int>();
                 }
-            }
 
             // Split the counts by thread
             var currentCounts = _counts[threadId];
@@ -112,7 +103,7 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// Resets the counts back to zero.
+        ///     Resets the counts back to zero.
         /// </summary>
         public void Reset()
         {

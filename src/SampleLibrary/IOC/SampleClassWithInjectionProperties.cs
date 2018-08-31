@@ -5,8 +5,7 @@ namespace SampleLibrary.IOC
 {
     public class SampleClassWithInjectionProperties : ISampleService
     {
-        [Inject]
-        public ISampleService SomeProperty { get; set; }
+        [Inject] public ISampleService SomeProperty { get; set; }
 
 
         public void DoSomething()

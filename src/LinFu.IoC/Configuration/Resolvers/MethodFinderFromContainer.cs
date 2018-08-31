@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using LinFu.Finders;
@@ -10,8 +9,8 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC.Configuration.Resolvers
 {
     /// <summary>
-    /// A <see cref="MethodFinder{TMethod}"/> type that uses a <see cref="IServiceContainer"/>
-    /// instance to find a method with the most resolvable parameters.
+    ///     A <see cref="MethodFinder{TMethod}" /> type that uses a <see cref="IServiceContainer" />
+    ///     instance to find a method with the most resolvable parameters.
     /// </summary>
     /// <typeparam name="TMethod">The method type that will be searched.</typeparam>
     public class MethodFinderFromContainer<TMethod> : MethodFinder<TMethod>, IMethodFinderWithContainer<TMethod>,
@@ -19,9 +18,9 @@ namespace LinFu.IoC.Configuration.Resolvers
         where TMethod : MethodBase
     {
         /// <summary>
-        /// Initializes the target with the host container.
+        ///     Initializes the target with the host container.
         /// </summary>
-        /// <param name="container">The host <see cref="IServiceContainer"/> instance.</param>
+        /// <param name="container">The host <see cref="IServiceContainer" /> instance.</param>
         public void Initialize(IServiceContainer container)
         {
             Container = container;
@@ -29,21 +28,23 @@ namespace LinFu.IoC.Configuration.Resolvers
 
 
         /// <summary>
-        /// Gets the value indicating the service container that will be used in the
-        /// method search.
+        ///     Gets the value indicating the service container that will be used in the
+        ///     method search.
         /// </summary>
         public IServiceContainer Container { get; private set; }
 
 
         /// <summary>
-        /// Examines a <see cref="ConstructorInfo"/> instance
-        /// and determines if it can be instantiated with the services embedded in
-        /// the target <paramref name="container"/>.
+        ///     Examines a <see cref="ConstructorInfo" /> instance
+        ///     and determines if it can be instantiated with the services embedded in
+        ///     the target <paramref name="container" />.
         /// </summary>
-        /// <param name="fuzzyItem">The <see cref="FuzzyItem{T}"/> that represents the constructor to be examined.</param>
+        /// <param name="fuzzyItem">The <see cref="FuzzyItem{T}" /> that represents the constructor to be examined.</param>
         /// <param name="container">The container that contains the services that will be used to instantiate the target type.</param>
-        /// <param name="maxIndex">Indicates the index that 
-        /// marks the point where the user-supplied arguments begin.</param>
+        /// <param name="maxIndex">
+        ///     Indicates the index that
+        ///     marks the point where the user-supplied arguments begin.
+        /// </param>
         private static void CheckParameters(IFuzzyItem<TMethod> fuzzyItem,
             IServiceContainer container, int maxIndex)
         {
@@ -71,15 +72,15 @@ namespace LinFu.IoC.Configuration.Resolvers
         }
 
         /// <summary>
-        /// Adds additional <see cref="ICriteria{T}"/> to the fuzzy search list.
+        ///     Adds additional <see cref="ICriteria{T}" /> to the fuzzy search list.
         /// </summary>
         /// <param name="methods">The list of methods to rank.</param>
-        /// <param name="finderContext">The <see cref="IMethodFinderContext"/> that describes the target method.</param>        
+        /// <param name="finderContext">The <see cref="IMethodFinderContext" /> that describes the target method.</param>
         protected override void Rank(IList<IFuzzyItem<TMethod>> methods, IMethodFinderContext finderContext)
         {
             var additionalArguments = finderContext.Arguments ?? new object[0];
             var argumentTypes = (from argument in additionalArguments
-                let argumentType = argument == null ? typeof (object) : argument.GetType()
+                let argumentType = argument == null ? typeof(object) : argument.GetType()
                 select argumentType).ToList();
 
             var argumentCount = argumentTypes.Count;

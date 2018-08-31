@@ -23,7 +23,7 @@ namespace LinFu.UnitTests.IOC
 
             // There should be nothing loaded at this point since the assembly hasn't
             // been copied to the target directory yet
-            Assert.IsFalse(container.Contains(typeof (ISampleService)));
+            Assert.IsFalse(container.Contains(typeof(ISampleService)));
 
             // Copy the assembly to the target directory
             // and watch for changes
@@ -32,7 +32,7 @@ namespace LinFu.UnitTests.IOC
 
             // Give the watcher thread enough time to load the assembly into memory
             Thread.Sleep(500);
-            Assert.IsTrue(container.Contains(typeof (ISampleService)));
+            Assert.IsTrue(container.Contains(typeof(ISampleService)));
 
             var instance = container.GetService<ISampleService>();
             Assert.IsNotNull(instance);

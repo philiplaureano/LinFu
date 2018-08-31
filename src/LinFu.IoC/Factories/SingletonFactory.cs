@@ -5,24 +5,25 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC.Factories
 {
     /// <summary>
-    /// A factory that creates Singletons. Each service that this factory creates will only be created once per concrete type.
+    ///     A factory that creates Singletons. Each service that this factory creates will only be created once per concrete
+    ///     type.
     /// </summary>
     /// <typeparam name="T">The type of service to instantiate.</typeparam>
     public class SingletonFactory<T> : BaseFactory<T>
     {
         private static readonly Dictionary<object, T> _instances = new Dictionary<object, T>();
-        private readonly Func<IFactoryRequest, T> _createInstance;
 
         private static readonly object _lock = new object();
+        private readonly Func<IFactoryRequest, T> _createInstance;
 
         /// <summary>
-        /// Initializes the factory class using the <paramref name="createInstance"/>
-        /// parameter as a factory delegate.
+        ///     Initializes the factory class using the <paramref name="createInstance" />
+        ///     parameter as a factory delegate.
         /// </summary>
         /// <example>
-        /// The following is an example of initializing a <c>SingletonFactory&lt;T&gt;</c>
-        /// type:
-        /// <code>
+        ///     The following is an example of initializing a <c>SingletonFactory&lt;T&gt;</c>
+        ///     type:
+        ///     <code>
         ///     // Define the factory delegate
         ///     Func&lt;IFactoryRequest, ISomeService&gt; createService = container=>new SomeServiceImplementation();
         /// 
@@ -42,9 +43,9 @@ namespace LinFu.IoC.Factories
         }
 
         /// <summary>
-        /// A method that creates a service instance as a singleton.
+        ///     A method that creates a service instance as a singleton.
         /// </summary>
-        /// <param name="request">The <see cref="IFactoryRequest"/> instance that describes the requested service.</param>
+        /// <param name="request">The <see cref="IFactoryRequest" /> instance that describes the requested service.</param>
         /// <returns>A service instance as a singleton.</returns>
         public override T CreateInstance(IFactoryRequest request)
         {
@@ -59,10 +60,7 @@ namespace LinFu.IoC.Factories
                     return _instances[key];
 
                 var result = _createInstance(request);
-                if (result != null)
-                {
-                    _instances[key] = result;
-                }
+                if (result != null) _instances[key] = result;
             }
 
             return _instances[key];

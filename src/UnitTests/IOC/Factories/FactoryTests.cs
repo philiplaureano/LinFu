@@ -19,7 +19,7 @@ namespace LinFu.UnitTests.IOC.Factories
         {
             // Create a new mock service instance on each
             // factory method call
-            createInstance = request => (new Mock<ISerializable>()).Object;
+            createInstance = request => new Mock<ISerializable>().Object;
         }
 
         [TearDown]
@@ -43,12 +43,12 @@ namespace LinFu.UnitTests.IOC.Factories
             mockFactory.Expect(f => f.CreateInstance(It.Is<IFactoryRequest>(request => request.Container == container)))
                 .Returns(mockService.Object);
 
-            Assert.IsInstanceOfType(typeof (IFactory), adapter);
+            Assert.IsInstanceOfType(typeof(IFactory), adapter);
 
             var factoryRequest = new FactoryRequest
             {
                 ServiceName = null,
-                ServiceType = typeof (ISerializable),
+                ServiceType = typeof(ISerializable),
                 Container = container
             };
 
@@ -129,7 +129,7 @@ namespace LinFu.UnitTests.IOC.Factories
         {
             var container = new ServiceContainer();
             container.Initialize();
-            container.LoadFrom(typeof (MyClass<>).Assembly);
+            container.LoadFrom(typeof(MyClass<>).Assembly);
 
             // Get ServiceNotFoundException here instead of a service instance.
             var serviceName = "frobozz";
@@ -157,7 +157,7 @@ namespace LinFu.UnitTests.IOC.Factories
         public void ShouldLoadStronglyTypedFactoryFromLoadFromExtensionMethod()
         {
             var container = new ServiceContainer();
-            container.LoadFrom(typeof (SampleClass).Assembly);
+            container.LoadFrom(typeof(SampleClass).Assembly);
 
             var serviceInstance = container.GetService<ISampleService>("Test");
             Assert.IsNotNull(serviceInstance);
@@ -174,7 +174,7 @@ namespace LinFu.UnitTests.IOC.Factories
                 ServiceName = null,
                 Arguments = new object[0],
                 Container = container,
-                ServiceType = typeof (ISerializable)
+                ServiceType = typeof(ISerializable)
             };
 
             var first = factory.CreateInstance(request);

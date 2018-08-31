@@ -5,13 +5,13 @@ using LinFu.IoC.Configuration.Interfaces;
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// A class that invokes constructor instances.
+    ///     A class that invokes constructor instances.
     /// </summary>
     public class ConstructorInvoke : IMethodInvoke<ConstructorInfo>
     {
         /// <summary>
-        /// Invokes the <paramref name="targetMethod"/> constructor
-        /// using the given <paramref name="arguments"/>.
+        ///     Invokes the <paramref name="targetMethod" /> constructor
+        ///     using the given <paramref name="arguments" />.
         /// </summary>
         /// <param name="target">The target object instance.</param>
         /// <param name="targetMethod">The target method to invoke.</param>

@@ -2,11 +2,9 @@
 {
     public class SampleClassWithNonServiceArgument
     {
-        private readonly string _value;
-
         public SampleClassWithNonServiceArgument(string value)
         {
-            _value = value;
+            Value = value;
         }
 
         // This is just a dummy constructor that
@@ -21,9 +19,6 @@
         {
         }
 
-        public string Value
-        {
-            get { return _value; }
-        }
+        public string Value { get; }
     }
 }

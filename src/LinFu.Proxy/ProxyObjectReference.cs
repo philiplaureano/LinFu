@@ -7,7 +7,7 @@ using LinFu.Proxy.Interfaces;
 namespace LinFu.Proxy
 {
     /// <summary>
-    /// Represents a helper class that deserializes proxy instances.
+    ///     Represents a helper class that deserializes proxy instances.
     /// </summary>
     [Serializable]
     public class ProxyObjectReference : IObjectReference, ISerializable
@@ -16,10 +16,10 @@ namespace LinFu.Proxy
         private readonly IProxy _proxy;
 
         /// <summary>
-        /// Initializes a new instance of the ProxyObjectReference class.
+        ///     Initializes a new instance of the ProxyObjectReference class.
         /// </summary>
-        /// <param name="info">The <see cref="SerializationInfo"/> class that contains the serialized data.</param>
-        /// <param name="context">The <see cref="StreamingContext"/> that describes the serialization state.</param>
+        /// <param name="info">The <see cref="SerializationInfo" /> class that contains the serialized data.</param>
+        /// <param name="context">The <see cref="StreamingContext" /> that describes the serialization state.</param>
         protected ProxyObjectReference(SerializationInfo info, StreamingContext context)
         {
             // Deserialize the base type using its assembly qualified name
@@ -43,15 +43,15 @@ namespace LinFu.Proxy
             var proxyType = factory.CreateProxyType(_baseType, interfaceList.ToArray());
             _proxy = (IProxy) Activator.CreateInstance(proxyType);
 
-            var interceptor = (IInterceptor) info.GetValue("__interceptor", typeof (IInterceptor));
+            var interceptor = (IInterceptor) info.GetValue("__interceptor", typeof(IInterceptor));
             _proxy.Interceptor = interceptor;
         }
 
 
         /// <summary>
-        /// Returns the deserialized proxy instance.
+        ///     Returns the deserialized proxy instance.
         /// </summary>
-        /// <param name="context">The <see cref="StreamingContext"/> that describes the serialization state.</param>
+        /// <param name="context">The <see cref="StreamingContext" /> that describes the serialization state.</param>
         /// <returns></returns>
         public object GetRealObject(StreamingContext context)
         {
@@ -60,11 +60,11 @@ namespace LinFu.Proxy
 
 
         /// <summary>
-        /// Serializes the proxy to a stream. 
+        ///     Serializes the proxy to a stream.
         /// </summary>
         /// <remarks>This method override does nothing.</remarks>
-        /// <param name="info">The <see cref="SerializationInfo"/> class that contains the serialized data.</param>
-        /// <param name="context">The <see cref="StreamingContext"/> that describes the serialization state.</param>
+        /// <param name="info">The <see cref="SerializationInfo" /> class that contains the serialized data.</param>
+        /// <param name="context">The <see cref="StreamingContext" /> that describes the serialization state.</param>
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
         }

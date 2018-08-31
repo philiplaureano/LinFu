@@ -4,7 +4,7 @@ using System.Linq;
 namespace LinFu.AOP.Interfaces
 {
     /// <summary>
-    /// Represents a registry class that handles all class-level interception operations for all modified types.
+    ///     Represents a registry class that handles all class-level interception operations for all modified types.
     /// </summary>
     public static class AroundMethodBodyRegistry
     {
@@ -13,10 +13,10 @@ namespace LinFu.AOP.Interfaces
         private static readonly BootStrapRegistry _registry = BootStrapRegistry.Instance;
 
         /// <summary>
-        /// Obtains the <see cref="IAroundInvoke"/> instance for the given <paramref name="context"/>.
+        ///     Obtains the <see cref="IAroundInvoke" /> instance for the given <paramref name="context" />.
         /// </summary>
-        /// <param name="context">The <see cref="IInvocationInfo"/> instance that describes the current method call.</param>
-        /// <returns>An <see cref="IAroundInvoke"/> instance that will be used to wrap a method call or method body.</returns>
+        /// <param name="context">The <see cref="IInvocationInfo" /> instance that describes the current method call.</param>
+        /// <returns>An <see cref="IAroundInvoke" /> instance that will be used to wrap a method call or method body.</returns>
         public static IAroundInvoke GetSurroundingImplementation(IInvocationInfo context)
         {
             var resultList = (from p in _providers
@@ -32,9 +32,9 @@ namespace LinFu.AOP.Interfaces
         }
 
         /// <summary>
-        /// Adds an <see cref="IAroundInvokeProvider"/> to the list of provider instances.
+        ///     Adds an <see cref="IAroundInvokeProvider" /> to the list of provider instances.
         /// </summary>
-        /// <param name="provider">The <see cref="IAroundInvokeProvider"/> instance.</param>
+        /// <param name="provider">The <see cref="IAroundInvokeProvider" /> instance.</param>
         public static void AddProvider(IAroundInvokeProvider provider)
         {
             lock (_lock)
@@ -44,7 +44,7 @@ namespace LinFu.AOP.Interfaces
         }
 
         /// <summary>
-        /// Clears the list of <see cref="IAroundInvokeProvider"/> instances.
+        ///     Clears the list of <see cref="IAroundInvokeProvider" /> instances.
         /// </summary>
         public static void Clear()
         {

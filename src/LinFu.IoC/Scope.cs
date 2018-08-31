@@ -7,9 +7,9 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC
 {
     /// <summary>
-    /// Represents a class that keeps track of all the disposable objects 
-    /// created within a service container and disposes them when 
-    /// the scope itself has been disposed.
+    ///     Represents a class that keeps track of all the disposable objects
+    ///     created within a service container and disposes them when
+    ///     the scope itself has been disposed.
     /// </summary>
     public class Scope : IScope, IPostProcessor, IInitialize
     {
@@ -20,7 +20,7 @@ namespace LinFu.IoC
 
 
         /// <summary>
-        /// Inserts the scope into the target <paramref name="source">container</paramref>.
+        ///     Inserts the scope into the target <paramref name="source">container</paramref>.
         /// </summary>
         /// <param name="source">The container that will hold the scope instance.</param>
         public void Initialize(IServiceContainer source)
@@ -40,10 +40,10 @@ namespace LinFu.IoC
 
 
         /// <summary>
-        /// Monitors the <see cref="IServiceContainer"/> for any services that are created and automatically disposes them
-        /// once the <see cref="IScope"/> is disposed.
+        ///     Monitors the <see cref="IServiceContainer" /> for any services that are created and automatically disposes them
+        ///     once the <see cref="IScope" /> is disposed.
         /// </summary>
-        /// <param name="result">The <see cref="IServiceRequestResult"/> that describes the service being instantiated.</param>
+        /// <param name="result">The <see cref="IServiceRequestResult" /> that describes the service being instantiated.</param>
         public void PostProcess(IServiceRequestResult result)
         {
             if (_disposed)
@@ -64,7 +64,7 @@ namespace LinFu.IoC
 
 
         /// <summary>
-        /// Disposes the services that have been created while the scope has been active.
+        ///     Disposes the services that have been created while the scope has been active.
         /// </summary>
         public void Dispose()
         {

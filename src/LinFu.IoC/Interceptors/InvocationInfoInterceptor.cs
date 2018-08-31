@@ -6,8 +6,8 @@ using LinFu.IoC.Configuration.Interfaces;
 namespace LinFu.IoC.Interceptors
 {
     /// <summary>
-    /// An interceptor that intercepts <see cref="IInvocationInfo"/> instances
-    /// and replaces the original target instance with a surrogate instance.
+    ///     An interceptor that intercepts <see cref="IInvocationInfo" /> instances
+    ///     and replaces the original target instance with a surrogate instance.
     /// </summary>
     internal class InvocationInfoInterceptor : BaseInterceptor
     {
@@ -17,16 +17,19 @@ namespace LinFu.IoC.Interceptors
 
         static InvocationInfoInterceptor()
         {
-            var targetProperty = typeof (IInvocationInfo).GetProperty("Target");
+            var targetProperty = typeof(IInvocationInfo).GetProperty("Target");
             _targetMethod = targetProperty.GetGetMethod();
         }
 
         /// <summary>
-        /// Initializes the class with a functor that can provide the actual target instance.
+        ///     Initializes the class with a functor that can provide the actual target instance.
         /// </summary>
-        /// <param name="getActualTarget">The <see cref="Func{TResult}"/> that will provide the target instance that will be used for the method invocation.</param>
+        /// <param name="getActualTarget">
+        ///     The <see cref="Func{TResult}" /> that will provide the target instance that will be used
+        ///     for the method invocation.
+        /// </param>
         /// <param name="methodInvoke">The method invoker.</param>
-        /// <param name="realInfo">The <see cref="IInvocationInfo"/> instance that describes the current execution context.</param>
+        /// <param name="realInfo">The <see cref="IInvocationInfo" /> instance that describes the current execution context.</param>
         internal InvocationInfoInterceptor(IInvocationInfo realInfo, Func<object> getActualTarget,
             IMethodInvoke<MethodInfo> methodInvoke) : base(methodInvoke)
         {
@@ -39,7 +42,7 @@ namespace LinFu.IoC.Interceptors
             var targetMethod = info.TargetMethod;
 
             // Intercept calls made only to the IInvocationInfo interface
-            if (targetMethod.DeclaringType != typeof (IInvocationInfo) || targetMethod.Name != "get_Target")
+            if (targetMethod.DeclaringType != typeof(IInvocationInfo) || targetMethod.Name != "get_Target")
                 return base.Intercept(info);
 
             var target = _getActualTarget();
@@ -49,9 +52,9 @@ namespace LinFu.IoC.Interceptors
         }
 
         /// <summary>
-        /// Gets the target object instance.
+        ///     Gets the target object instance.
         /// </summary>
-        /// <param name="info">The <see cref="IInvocationInfo"/> instance that describes the current execution context.</param>
+        /// <param name="info">The <see cref="IInvocationInfo" /> instance that describes the current execution context.</param>
         protected override object GetTarget(IInvocationInfo info)
         {
             return _realInfo;

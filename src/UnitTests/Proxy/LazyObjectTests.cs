@@ -21,7 +21,7 @@ namespace LinFu.UnitTests.Proxy
             container.AddService<IProxyFactory>(new ProxyFactory());
             container.AddService<IMethodBuilder<MethodInfo>>(new MethodBuilder());
 
-            Assert.IsTrue(container.Contains(typeof (IProxyFactory)));
+            Assert.IsTrue(container.Contains(typeof(IProxyFactory)));
 
             var proxyFactory = container.GetService<IProxyFactory>();
             var interceptor = new LazyInterceptor<ISampleService>(() => new SampleLazyService());

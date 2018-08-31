@@ -6,7 +6,7 @@ using Mono.Cecil.Cil;
 namespace LinFu.AOP.Cecil
 {
     /// <summary>
-    /// Provides the basic functionality for the <see cref="IMethodRewriter"/> interface.
+    ///     Provides the basic functionality for the <see cref="IMethodRewriter" /> interface.
     /// </summary>
     public abstract class MethodRewriter : IMethodRewriter
     {
@@ -14,7 +14,7 @@ namespace LinFu.AOP.Cecil
 
 
         /// <summary>
-        /// Rewrites a target method using the given CilWorker.
+        ///     Rewrites a target method using the given CilWorker.
         /// </summary>
         /// <param name="method">The target method.</param>
         /// <param name="IL">The CilWorker that will be used to rewrite the target method.</param>
@@ -53,7 +53,7 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Adds additional members to the host type.
+        ///     Adds additional members to the host type.
         /// </summary>
         /// <param name="host">The host type.</param>
         public virtual void AddAdditionalMembers(TypeDefinition host)
@@ -61,7 +61,7 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Adds additional references to the target module.
+        ///     Adds additional references to the target module.
         /// </summary>
         /// <param name="module">The host module.</param>
         public virtual void ImportReferences(ModuleDefinition module)
@@ -69,7 +69,7 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Adds local variables to the <paramref name="hostMethod"/>.
+        ///     Adds local variables to the <paramref name="hostMethod" />.
         /// </summary>
         /// <param name="hostMethod">The target method.</param>
         public virtual void AddLocals(MethodDefinition hostMethod)
@@ -78,7 +78,7 @@ namespace LinFu.AOP.Cecil
 
 
         /// <summary>
-        /// Determines whether or not the method rewriter should replace the <paramref name="oldInstruction"/>.
+        ///     Determines whether or not the method rewriter should replace the <paramref name="oldInstruction" />.
         /// </summary>
         /// <param name="oldInstruction">The instruction that is currently being evaluated.</param>
         /// <param name="hostMethod">The method that hosts the current instruction.</param>
@@ -87,7 +87,7 @@ namespace LinFu.AOP.Cecil
 
 
         /// <summary>
-        /// Replaces the <paramref name="oldInstruction"/> with a new set of <paramref name="IL"/> instructions..
+        ///     Replaces the <paramref name="oldInstruction" /> with a new set of <paramref name="IL" /> instructions..
         /// </summary>
         /// <param name="oldInstruction">The instruction currently being evaluated.</param>
         /// <param name="hostMethod">The method that contains the target instruction.</param>

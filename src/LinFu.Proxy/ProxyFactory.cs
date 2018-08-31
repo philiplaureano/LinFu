@@ -13,13 +13,13 @@ using TypeAttributes = Mono.Cecil.TypeAttributes;
 namespace LinFu.Proxy
 {
     /// <summary>
-    /// Provides the basic implementation for a proxy factory class.
+    ///     Provides the basic implementation for a proxy factory class.
     /// </summary>
-    [Implements(typeof (IProxyFactory), LifecycleType.OncePerRequest)]
+    [Implements(typeof(IProxyFactory), LifecycleType.OncePerRequest)]
     public class ProxyFactory : IProxyFactory, IInitialize
     {
         /// <summary>
-        /// Initializes the proxy factory with the default values.
+        ///     Initializes the proxy factory with the default values.
         /// </summary>
         public ProxyFactory()
         {
@@ -30,57 +30,57 @@ namespace LinFu.Proxy
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="IExtractInterfaces"/> type that will be
-        /// responsible for determining which interfaces
-        /// the proxy type should implement.
+        ///     Gets or sets the <see cref="IExtractInterfaces" /> type that will be
+        ///     responsible for determining which interfaces
+        ///     the proxy type should implement.
         /// </summary>
         public IExtractInterfaces InterfaceExtractor { get; set; }
 
         /// <summary>
-        /// The <see cref="IProxyBuilder"/> instance that is
-        /// responsible for generating the proxy type.
+        ///     The <see cref="IProxyBuilder" /> instance that is
+        ///     responsible for generating the proxy type.
         /// </summary>
         public IProxyBuilder ProxyBuilder { get; set; }
 
         /// <summary>
-        /// The <see cref="IVerifier"/> instance that will be used to 
-        /// ensure that the generated assemblies are valid.
+        ///     The <see cref="IVerifier" /> instance that will be used to
+        ///     ensure that the generated assemblies are valid.
         /// </summary>
         public IVerifier Verifier { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating the <see cref="IProxyCache"/>
-        /// instance that will be used to cache previous proxy generation runs.
+        ///     Gets or sets a value indicating the <see cref="IProxyCache" />
+        ///     instance that will be used to cache previous proxy generation runs.
         /// </summary>
         public IProxyCache Cache { get; set; }
 
 
         /// <summary>
-        /// Initializes the <see cref="ProxyFactory"/> instance
-        /// with the <paramref name="source"/> container.
+        ///     Initializes the <see cref="ProxyFactory" /> instance
+        ///     with the <paramref name="source" /> container.
         /// </summary>
-        /// <param name="source">The <see cref="IServiceContainer"/> instance that will hold the ProxyFactory.</param>
+        /// <param name="source">The <see cref="IServiceContainer" /> instance that will hold the ProxyFactory.</param>
         public virtual void Initialize(IServiceContainer source)
         {
-            if (source.Contains(typeof (IProxyBuilder), new Type[0]))
-                ProxyBuilder = (IProxyBuilder) source.GetService(typeof (IProxyBuilder));
+            if (source.Contains(typeof(IProxyBuilder), new Type[0]))
+                ProxyBuilder = (IProxyBuilder) source.GetService(typeof(IProxyBuilder));
 
-            if (source.Contains(typeof (IExtractInterfaces), new Type[0]))
-                InterfaceExtractor = (IExtractInterfaces) source.GetService(typeof (IExtractInterfaces));
+            if (source.Contains(typeof(IExtractInterfaces), new Type[0]))
+                InterfaceExtractor = (IExtractInterfaces) source.GetService(typeof(IExtractInterfaces));
 
             //if (source.Contains(typeof(IVerifier)))
             //    Verifier = source.GetService<IVerifier>();
 
-            if (source.Contains(typeof (IProxyCache), new Type[0]))
-                Cache = (IProxyCache) source.GetService(typeof (IProxyCache));
+            if (source.Contains(typeof(IProxyCache), new Type[0]))
+                Cache = (IProxyCache) source.GetService(typeof(IProxyCache));
         }
 
 
         /// <summary>
-        /// Creates a proxy type using the given
-        /// <paramref name="baseType"/> as the base class
-        /// and ensures that the proxy type implements the given
-        /// interface types.
+        ///     Creates a proxy type using the given
+        ///     <paramref name="baseType" /> as the base class
+        ///     and ensures that the proxy type implements the given
+        ///     interface types.
         /// </summary>
         /// <param name="baseType">The base class from which the proxy type will be derived.</param>
         /// <param name="baseInterfaces">The list of interfaces that the proxy will implement.</param>
@@ -97,23 +97,20 @@ namespace LinFu.Proxy
                     "baseType");
 
             var hasNonPublicInterfaces = (from t in baseInterfaces
-                where t.IsNotPublic
-                select t).Count() > 0;
+                                             where t.IsNotPublic
+                                             select t).Count() > 0;
 
             if (hasNonPublicInterfaces)
                 throw new ArgumentException("The proxy factory cannot generate proxies from non-public interfaces.",
                     "baseInterfaces");
 
 
-            var actualBaseType = baseType.IsInterface ? typeof (object) : baseType;
+            var actualBaseType = baseType.IsInterface ? typeof(object) : baseType;
             var interfaces = new HashSet<Type>(baseInterfaces);
             // Move the base type into the list of interfaces
             // if the user mistakenly entered
             // an interface type as the base type
-            if (baseType.IsInterface)
-            {
-                interfaces.Add(baseType);
-            }
+            if (baseType.IsInterface) interfaces.Add(baseType);
 
             if (InterfaceExtractor != null)
             {
@@ -122,10 +119,7 @@ namespace LinFu.Proxy
 
                 var targetList = interfaces.ToArray();
                 // Extract the inherited interfaces
-                foreach (var type in targetList)
-                {
-                    InterfaceExtractor.GetInterfaces(type, interfaces);
-                }
+                foreach (var type in targetList) InterfaceExtractor.GetInterfaces(type, interfaces);
             }
 
 

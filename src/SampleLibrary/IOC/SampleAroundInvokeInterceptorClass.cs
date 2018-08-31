@@ -6,7 +6,7 @@ using LinFu.IoC.Interfaces;
 
 namespace SampleLibrary.IOC
 {
-    [Intercepts(typeof (ISampleWrappedInterface))]
+    [Intercepts(typeof(ISampleWrappedInterface))]
     public class SampleAroundInvokeInterceptorClass : IAroundInvoke, IInitialize, ITargetHolder
     {
         public void BeforeInvoke(IInvocationInfo info)

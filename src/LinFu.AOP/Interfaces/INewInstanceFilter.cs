@@ -3,12 +3,12 @@
 namespace LinFu.AOP.Cecil.Interfaces
 {
     /// <summary>
-    /// Represents a type that determines the constructor calls that will be intercepted by the postweaver.
+    ///     Represents a type that determines the constructor calls that will be intercepted by the postweaver.
     /// </summary>
     public interface INewInstanceFilter
     {
         /// <summary>
-        /// Determines whether or not a particular constructor call should be intercepted by the postweaver.
+        ///     Determines whether or not a particular constructor call should be intercepted by the postweaver.
         /// </summary>
         /// <param name="currentConstructor">The constructor used to instantiate the current instance.</param>
         /// <param name="concreteType">The concrete type that contains the new instance call.</param>

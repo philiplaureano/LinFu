@@ -1,7 +1,7 @@
 ﻿namespace LinFu.AOP.Interfaces
 {
     /// <summary>
-    /// Represents a static type that allows users to register a method replacement provider from a single location.
+    ///     Represents a static type that allows users to register a method replacement provider from a single location.
     /// </summary>
     public static class MethodBodyReplacementProviderRegistry
     {
@@ -10,11 +10,14 @@
         private static readonly BootStrapRegistry _registry = BootStrapRegistry.Instance;
 
         /// <summary>
-        /// Returns the provider that is currently attached to the registry.
+        ///     Returns the provider that is currently attached to the registry.
         /// </summary>
         /// <param name="host">The type that is currently being intercepted.</param>
-        /// <param name="info">The <see cref="IInvocationInfo"/> object that describes the invocation context.</param>
-        /// <returns>A <see cref="IMethodReplacementProvider"/> that will determine the code that will be executed once a target method is called.</returns>
+        /// <param name="info">The <see cref="IInvocationInfo" /> object that describes the invocation context.</param>
+        /// <returns>
+        ///     A <see cref="IMethodReplacementProvider" /> that will determine the code that will be executed once a target
+        ///     method is called.
+        /// </returns>
         public static IMethodReplacementProvider GetProvider(object host, IInvocationInfo info)
         {
             if (_provider == null)
@@ -24,9 +27,12 @@
         }
 
         /// <summary>
-        /// Assigns the <paramref name="provider"/> to the MethodReplacementProvider registry.
+        ///     Assigns the <paramref name="provider" /> to the MethodReplacementProvider registry.
         /// </summary>
-        /// <returns>A <see cref="IMethodReplacementProvider"/> that will determine the code that will be executed once a target method is called.</returns>
+        /// <returns>
+        ///     A <see cref="IMethodReplacementProvider" /> that will determine the code that will be executed once a target
+        ///     method is called.
+        /// </returns>
         public static void SetProvider(IMethodReplacementProvider provider)
         {
             lock (_lock)

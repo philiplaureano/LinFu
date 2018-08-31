@@ -10,8 +10,9 @@ using Mono.Cecil.Cil;
 namespace LinFu.AOP.Cecil
 {
     /// <summary>
-    /// Represents a <see cref="MethodRewriter"/> that intercepts calls to field getters and setters and redirects those calls to
-    /// a <see cref="IFieldInterceptor"/> instance.
+    ///     Represents a <see cref="MethodRewriter" /> that intercepts calls to field getters and setters and redirects those
+    ///     calls to
+    ///     a <see cref="IFieldInterceptor" /> instance.
     /// </summary>
     internal class InterceptFieldAccess : InstructionSwapper
     {
@@ -38,7 +39,7 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Initializes a new instance of the InterceptFieldAccess class.
+        ///     Initializes a new instance of the InterceptFieldAccess class.
         /// </summary>
         /// <param name="filter">The filter that determines which fields should be intercepted.</param>
         public InterceptFieldAccess(Func<FieldReference, bool> filter)
@@ -47,7 +48,7 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Initializes a new instance of the InterceptFieldAccess class.
+        ///     Initializes a new instance of the InterceptFieldAccess class.
         /// </summary>
         /// <param name="filter">The filter that determines which fields should be intercepted.</param>
         public InterceptFieldAccess(IFieldFilter filter)
@@ -56,7 +57,7 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Adds locals to the target method.
+        ///     Adds locals to the target method.
         /// </summary>
         /// <param name="hostMethod">The method to be modified</param>
         public override void AddLocals(MethodDefinition hostMethod)
@@ -67,18 +68,17 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Adds references to the target module.
+        ///     Adds references to the target module.
         /// </summary>
         /// <param name="module">The module that will be modified.</param>
         public override void ImportReferences(ModuleDefinition module)
         {
-            var parameterTypes = new[] {typeof (object), typeof (MethodBase), typeof (FieldInfo), typeof (Type)};
+            var parameterTypes = new[] {typeof(object), typeof(MethodBase), typeof(FieldInfo), typeof(Type)};
 
             _fieldInterceptionHostType = module.ImportType<IFieldInterceptionHost>();
 
             _fieldContextCtor = module.ImportConstructor<FieldInterceptionContext>(parameterTypes);
-            module.ImportMethod<FieldInfo>("GetFieldFromHandle",
-                new[] {typeof (RuntimeFieldHandle), typeof (RuntimeTypeHandle)});
+            module.ImportMethod<FieldInfo>("GetFieldFromHandle", typeof(RuntimeFieldHandle), typeof(RuntimeTypeHandle));
             module.ImportMethod<object>("GetType");
             _getInterceptor = module.ImportMethod<FieldInterceptorRegistry>("GetInterceptor");
             _getInstanceInterceptor = module.ImportMethod<IFieldInterceptionHost>("get_FieldInterceptor");
@@ -89,9 +89,12 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Determines whether or not the method rewriter should replace the <paramref name="oldInstruction"/>.
+        ///     Determines whether or not the method rewriter should replace the <paramref name="oldInstruction" />.
         /// </summary>
-        /// <remarks>The <see cref="InterceptFieldAccess"/> class only modifies instructions that get or set the value of static and instance fields.</remarks>
+        /// <remarks>
+        ///     The <see cref="InterceptFieldAccess" /> class only modifies instructions that get or set the value of static
+        ///     and instance fields.
+        /// </remarks>
         /// <param name="oldInstruction">The instruction that is currently being evaluated.</param>
         /// <param name="hostMethod">The method that hosts the current instruction.</param>
         /// <returns><c>true</c> if the method should be replaced; otherwise, it should return <c>false</c>.</returns>
@@ -107,7 +110,7 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Replaces the <paramref name="oldInstruction"/> with a set of new instructions.
+        ///     Replaces the <paramref name="oldInstruction" /> with a set of new instructions.
         /// </summary>
         /// <param name="oldInstruction">The instruction currently being evaluated.</param>
         /// <param name="hostMethod">The method that contains the target instruction.</param>
@@ -131,7 +134,7 @@ namespace LinFu.AOP.Cecil
             // There's no need to push the current object instance
             // since the this pointer is pushed prior to the field call
             if (hostMethod.IsStatic)
-                IL.Emit((OpCodes.Ldnull));
+                IL.Emit(OpCodes.Ldnull);
 
             // Push the current method
             var module = hostMethod.DeclaringType.Module;

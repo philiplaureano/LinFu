@@ -7,14 +7,14 @@ using System.Reflection.Emit;
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// A class that dynamically generates calls to a <see cref="MethodInfo"/> instance.
+    ///     A class that dynamically generates calls to a <see cref="MethodInfo" /> instance.
     /// </summary>
     public class MethodBuilder : BaseMethodBuilder<MethodInfo>
     {
         /// <summary>
-        /// Pushes the method target onto the evaluation stack.
+        ///     Pushes the method target onto the evaluation stack.
         /// </summary>
-        /// <param name="IL">The <see cref="ILGenerator"/> of the method body.</param>
+        /// <param name="IL">The <see cref="ILGenerator" /> of the method body.</param>
         /// <param name="method">The target method.</param>
         protected override void PushInstance(ILGenerator IL, MethodInfo method)
         {
@@ -25,9 +25,9 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// Pushes the method arguments onto the stack.
+        ///     Pushes the method arguments onto the stack.
         /// </summary>
-        /// <param name="IL">The <see cref="ILGenerator"/> of the target method body.</param>
+        /// <param name="IL">The <see cref="ILGenerator" /> of the target method body.</param>
         /// <param name="targetMethod">The target method that will be invoked.</param>
         protected override void PushMethodArguments(ILGenerator IL, MethodBase targetMethod)
         {
@@ -37,14 +37,11 @@ namespace LinFu.IoC.Configuration
             var offset = targetMethod.IsStatic ? 0 : 1;
             // Push the method arguments onto the stack
             var parameterCount = parameterTypes.Length;
-            for (var index = 0; index < parameterCount; index++)
-            {
-                IL.Emit(OpCodes.Ldarg, index + offset);
-            }
+            for (var index = 0; index < parameterCount; index++) IL.Emit(OpCodes.Ldarg, index + offset);
         }
 
         /// <summary>
-        /// Determines the return type from the target <paramref name="method"/>.
+        ///     Determines the return type from the target <paramref name="method" />.
         /// </summary>
         /// <param name="method">The target method itself.</param>
         /// <returns>The method return type.</returns>
@@ -54,11 +51,11 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// Determines the parameter types of the dynamically generated method.
+        ///     Determines the parameter types of the dynamically generated method.
         /// </summary>
         /// <param name="existingMethod">The target method.</param>
         /// <param name="parameterTypes">The target method argument types.</param>
-        /// <returns>The list of <see cref="System.Type"/> objects that describe the signature of the method to generate.</returns>
+        /// <returns>The list of <see cref="System.Type" /> objects that describe the signature of the method to generate.</returns>
         /// <remarks>This override will add an additional parameter type to accomodate the method target.</remarks>
         protected override IList<Type> GetParameterList(MethodInfo existingMethod, Type[] parameterTypes)
         {
@@ -73,9 +70,9 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// Emits the instruction to call the target <paramref name="method"/>
+        ///     Emits the instruction to call the target <paramref name="method" />
         /// </summary>
-        /// <param name="IL">The <see cref="ILGenerator"/> of the target method body.</param>
+        /// <param name="IL">The <see cref="ILGenerator" /> of the target method body.</param>
         /// <param name="method">The method that will be invoked.</param>
         protected override void EmitCall(ILGenerator IL, MethodInfo method)
         {

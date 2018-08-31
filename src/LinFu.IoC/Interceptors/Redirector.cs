@@ -7,7 +7,7 @@ using LinFu.Proxy.Interfaces;
 namespace LinFu.IoC.Interceptors
 {
     /// <summary>
-    /// An interceptor class that redirects calls to another interceptor.
+    ///     An interceptor class that redirects calls to another interceptor.
     /// </summary>
     internal class Redirector : BaseInterceptor
     {
@@ -28,7 +28,7 @@ namespace LinFu.IoC.Interceptors
         {
             // Instead of using the proxy as the target,
             // modify the InvocationInfo to show the actual target
-            var proxyType = _proxyFactory.CreateProxyType(typeof (IInvocationInfo), new Type[0]);
+            var proxyType = _proxyFactory.CreateProxyType(typeof(IInvocationInfo), new Type[0]);
             var infoProxy = Activator.CreateInstance(proxyType) as IProxy;
 
             if (infoProxy == null)
@@ -44,9 +44,9 @@ namespace LinFu.IoC.Interceptors
         }
 
         /// <summary>
-        /// Gets the target object instance.
+        ///     Gets the target object instance.
         /// </summary>
-        /// <param name="info">The <see cref="IInvocationInfo"/> instance that describes the current execution context.</param>
+        /// <param name="info">The <see cref="IInvocationInfo" /> instance that describes the current execution context.</param>
         protected override object GetTarget(IInvocationInfo info)
         {
             return _getActualTarget();

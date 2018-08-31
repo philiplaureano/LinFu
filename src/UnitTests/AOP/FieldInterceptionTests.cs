@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using LinFu.AOP.Cecil.Extensions;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
@@ -47,8 +46,8 @@ namespace LinFu.UnitTests.AOP
 
             var loadedAssembly = myLibrary.ToAssembly();
             var targetType = (from t in loadedAssembly.GetTypes()
-                               where t.Name.Contains("SampleClassWithReadOnlyField")
-                               select t).First();
+                where t.Name.Contains("SampleClassWithReadOnlyField")
+                select t).First();
 
             var instance = Activator.CreateInstance(targetType);
             Assert.IsNotNull(instance);

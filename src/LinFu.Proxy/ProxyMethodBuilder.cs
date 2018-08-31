@@ -13,14 +13,14 @@ using MethodImplAttributes = Mono.Cecil.MethodImplAttributes;
 namespace LinFu.Proxy
 {
     /// <summary>
-    /// Represents the default implementation of the
-    /// <see cref="IMethodBuilder"/> interface.
+    ///     Represents the default implementation of the
+    ///     <see cref="IMethodBuilder" /> interface.
     /// </summary>
-    [Implements(typeof (IMethodBuilder), LifecycleType.OncePerRequest, ServiceName = "ProxyMethodBuilder")]
+    [Implements(typeof(IMethodBuilder), LifecycleType.OncePerRequest, ServiceName = "ProxyMethodBuilder")]
     public class ProxyMethodBuilder : IMethodBuilder, IInitialize
     {
         /// <summary>
-        /// Initializes the <see cref="ProxyMethodBuilder"/> class with the default property values.
+        ///     Initializes the <see cref="ProxyMethodBuilder" /> class with the default property values.
         /// </summary>
         public ProxyMethodBuilder()
         {
@@ -28,25 +28,25 @@ namespace LinFu.Proxy
         }
 
         /// <summary>
-        /// The <see cref="IMethodBodyEmitter"/> instance that will be
-        /// responsible for generating the method body.
+        ///     The <see cref="IMethodBodyEmitter" /> instance that will be
+        ///     responsible for generating the method body.
         /// </summary>
         public virtual IMethodBodyEmitter Emitter { get; set; }
 
 
         /// <summary>
-        /// Initializes the class with the <paramref name="source"/> container.
+        ///     Initializes the class with the <paramref name="source" /> container.
         /// </summary>
-        /// <param name="source">The <see cref="IServiceContainer"/> instance that will create the class instance.</param>
+        /// <param name="source">The <see cref="IServiceContainer" /> instance that will create the class instance.</param>
         public virtual void Initialize(IServiceContainer source)
         {
-            Emitter = (IMethodBodyEmitter) source.GetService(typeof (IMethodBodyEmitter));
+            Emitter = (IMethodBodyEmitter) source.GetService(typeof(IMethodBodyEmitter));
         }
 
 
         /// <summary>
-        /// Creates a method that matches the signature defined in the
-        /// <paramref name="method"/> parameter.
+        ///     Creates a method that matches the signature defined in the
+        ///     <paramref name="method" /> parameter.
         /// </summary>
         /// <param name="targetType">The type that will host the new method.</param>
         /// <param name="method">The method from which the signature will be derived.</param>
@@ -120,16 +120,16 @@ namespace LinFu.Proxy
 
 
         /// <summary>
-        /// Matches the generic parameters of <paramref name="newMethod">a target method</paramref>
+        ///     Matches the generic parameters of <paramref name="newMethod">a target method</paramref>
         /// </summary>
         /// <param name="newMethod">The generic method that contains the generic type arguments.</param>
-        /// <param name="typeArguments">The array of <see cref="Type"/> objects that describe the generic parameters for the current method.</param>
+        /// <param name="typeArguments">
+        ///     The array of <see cref="Type" /> objects that describe the generic parameters for the
+        ///     current method.
+        /// </param>
         private static void MatchGenericArguments(MethodDefinition newMethod, ICollection<Type> typeArguments)
         {
-            foreach (var argument in typeArguments)
-            {
-                newMethod.AddGenericParameter(argument);
-            }
+            foreach (var argument in typeArguments) newMethod.AddGenericParameter(argument);
         }
     }
 }

@@ -10,14 +10,14 @@ using Mono.Cecil;
 namespace LinFu.AOP.Cecil.Loaders
 {
     /// <summary>
-    /// Represents a loader that modifies a given assembly prior to being loaded from disk.
+    ///     Represents a loader that modifies a given assembly prior to being loaded from disk.
     /// </summary>
     public class JITWeaver : AssemblyLoader
     {
         private readonly List<Action<AssemblyDefinition>> _assemblyWeavers = new List<Action<AssemblyDefinition>>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="JITWeaver"/> class.
+        ///     Initializes a new instance of the <see cref="JITWeaver" /> class.
         /// </summary>
         public JITWeaver()
             : this(new PdbLoader())
@@ -25,7 +25,7 @@ namespace LinFu.AOP.Cecil.Loaders
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="JITWeaver"/> class.
+        ///     Initializes a new instance of the <see cref="JITWeaver" /> class.
         /// </summary>
         /// <param name="pdbLoader">The loader that will be responsible for loading the program debugging information into memory.</param>
         public JITWeaver(IPdbLoader pdbLoader)
@@ -34,27 +34,25 @@ namespace LinFu.AOP.Cecil.Loaders
         }
 
         /// <summary>
-        /// Gets or sets the value indicating the <see cref="IPdbLoader"/> that will be used to load debug symbols into memory.
+        ///     Gets or sets the value indicating the <see cref="IPdbLoader" /> that will be used to load debug symbols into
+        ///     memory.
         /// </summary>
         public IPdbLoader PdbLoader { get; set; }
 
         /// <summary>
-        /// Gets the value indicating the list of <see cref="Action{T}"/> delegates
-        /// that will be used to modify the assemblies loaded into memory.
+        ///     Gets the value indicating the list of <see cref="Action{T}" /> delegates
+        ///     that will be used to modify the assemblies loaded into memory.
         /// </summary>
-        public virtual IList<Action<AssemblyDefinition>> AssemblyWeavers
-        {
-            get { return _assemblyWeavers; }
-        }
+        public virtual IList<Action<AssemblyDefinition>> AssemblyWeavers => _assemblyWeavers;
 
         /// <summary>
-        /// Gets or sets the value indicating the <see cref="IVerifier"/>
-        /// instance that will be used to ensure that the modified assemblies are valid.
+        ///     Gets or sets the value indicating the <see cref="IVerifier" />
+        ///     instance that will be used to ensure that the modified assemblies are valid.
         /// </summary>
         public virtual IVerifier AssemblyVerifier { get; set; }
 
         /// <summary>
-        /// Modifies a given assembly prior to being loaded from disk.
+        ///     Modifies a given assembly prior to being loaded from disk.
         /// </summary>
         /// <param name="assemblyFile">The filename of the target assembly.</param>
         /// <returns>A valid assembly.</returns>

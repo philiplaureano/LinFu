@@ -4,7 +4,7 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC.Factories
 {
     /// <summary>
-    /// Represents an <see cref="IFactory"/> class that instantiates a factory only on request.
+    ///     Represents an <see cref="IFactory" /> class that instantiates a factory only on request.
     /// </summary>
     public class LazyFactory : IFactory
     {
@@ -12,7 +12,7 @@ namespace LinFu.IoC.Factories
         private IFactory _realFactory;
 
         /// <summary>
-        /// Instantiates the class with the factory functor method.
+        ///     Instantiates the class with the factory functor method.
         /// </summary>
         /// <param name="getFactory">The functor that will be responsible for instantiating the actual factory.</param>
         public LazyFactory(Func<IFactoryRequest, IFactory> getFactory)
@@ -22,9 +22,9 @@ namespace LinFu.IoC.Factories
 
 
         /// <summary>
-        /// Instantiates the actual factory instance and uses it to instantiate the target service type.
+        ///     Instantiates the actual factory instance and uses it to instantiate the target service type.
         /// </summary>
-        /// <param name="request">The <see cref="IFactoryRequest"/> that describes the service to be created.</param>
+        /// <param name="request">The <see cref="IFactoryRequest" /> that describes the service to be created.</param>
         /// <returns>A valid service instance.</returns>
         public object CreateInstance(IFactoryRequest request)
         {

@@ -1,7 +1,7 @@
 ﻿namespace LinFu.AOP.Interfaces
 {
     /// <summary>
-    /// Represents a registry class that allows users to intercept fields from a single location.
+    ///     Represents a registry class that allows users to intercept fields from a single location.
     /// </summary>
     public class FieldInterceptorRegistry
     {
@@ -10,9 +10,13 @@
         private static readonly BootStrapRegistry _registry = BootStrapRegistry.Instance;
 
         /// <summary>
-        /// Gets current the <see cref="IFieldInterceptionContext"/> associated with the <see cref="FieldInterceptorRegistry"/>.
+        ///     Gets current the <see cref="IFieldInterceptionContext" /> associated with the
+        ///     <see cref="FieldInterceptorRegistry" />.
         /// </summary>
-        /// <param name="context">The <see cref="IFieldInterceptionContext"/> instance that describes the state of the method call when the field getter or setter is called.</param>
+        /// <param name="context">
+        ///     The <see cref="IFieldInterceptionContext" /> instance that describes the state of the method call
+        ///     when the field getter or setter is called.
+        /// </param>
         /// <returns>The field interceptor that will be used to preempt field getter and setter calls.</returns>
         public static IFieldInterceptor GetInterceptor(IFieldInterceptionContext context)
         {
@@ -26,7 +30,8 @@
         }
 
         /// <summary>
-        /// Sets current the <see cref="IFieldInterceptionContext"/> that will be associated with the <see cref="FieldInterceptorRegistry"/>.
+        ///     Sets current the <see cref="IFieldInterceptionContext" /> that will be associated with the
+        ///     <see cref="FieldInterceptorRegistry" />.
         /// </summary>
         /// <param name="interceptor">The field interceptor that will be used to preempt field getter and setter calls.</param>
         public static void SetInterceptor(IFieldInterceptor interceptor)

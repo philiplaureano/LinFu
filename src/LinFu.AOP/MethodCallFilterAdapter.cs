@@ -5,7 +5,7 @@ using Mono.Cecil;
 namespace LinFu.AOP.Cecil
 {
     /// <summary>
-    /// Represents a type that converts functors into method call filter instances.
+    ///     Represents a type that converts functors into method call filter instances.
     /// </summary>
     public class MethodCallFilterAdapter : IMethodCallFilter
     {
@@ -13,9 +13,12 @@ namespace LinFu.AOP.Cecil
         private readonly Func<MethodReference, bool> _methodCallFilter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MethodCallFilterAdapter"/> class.
+        ///     Initializes a new instance of the <see cref="MethodCallFilterAdapter" /> class.
         /// </summary>
-        /// <param name="hostMethodFilter">The method filter that will determine the host methods that will be modified for interception.</param>
+        /// <param name="hostMethodFilter">
+        ///     The method filter that will determine the host methods that will be modified for
+        ///     interception.
+        /// </param>
         /// <param name="methodCallFilter">The method filter that will determine which method calls will be intercepted.</param>
         public MethodCallFilterAdapter(Func<MethodReference, bool> hostMethodFilter,
             Func<MethodReference, bool> methodCallFilter)
@@ -26,7 +29,7 @@ namespace LinFu.AOP.Cecil
 
 
         /// <summary>
-        /// Determines whether or not a particular method call should be intercepted.
+        ///     Determines whether or not a particular method call should be intercepted.
         /// </summary>
         /// <param name="targetType">The host type that contains the method call.</param>
         /// <param name="hostMethod">The method that contains the current method call.</param>

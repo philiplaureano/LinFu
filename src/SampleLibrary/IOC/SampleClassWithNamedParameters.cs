@@ -2,16 +2,11 @@
 {
     public class SampleClassWithNamedParameters
     {
-        private readonly ISampleService _otherService;
-
         public SampleClassWithNamedParameters(ISampleService otherService)
         {
-            _otherService = otherService;
+            ServiceInstance = otherService;
         }
 
-        public ISampleService ServiceInstance
-        {
-            get { return _otherService; }
-        }
+        public ISampleService ServiceInstance { get; }
     }
 }

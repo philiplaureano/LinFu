@@ -6,15 +6,15 @@ using Mono.Cecil.Cil;
 namespace LinFu.AOP.Cecil
 {
     /// <summary>
-    /// Provides the basic functionality for the <see cref="IMethodRewriter"/> interface.
+    ///     Provides the basic functionality for the <see cref="IMethodRewriter" /> interface.
     /// </summary>
     public abstract class InstructionSwapper : BaseMethodRewriter
     {
         /// <summary>
-        /// Rewrites the instructions in the target method body.
+        ///     Rewrites the instructions in the target method body.
         /// </summary>
         /// <param name="method">The target method.</param>
-        /// <param name="IL">The <see cref="CilWorker"/> instance that represents the method body.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> instance that represents the method body.</param>
         /// <param name="oldInstructions">The IL instructions of the original method body.</param>
         protected override void RewriteMethodBody(MethodDefinition method, CilWorker IL,
             IEnumerable<Instruction> oldInstructions)
@@ -33,7 +33,7 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Determines whether or not the method rewriter should replace the <paramref name="oldInstruction"/>.
+        ///     Determines whether or not the method rewriter should replace the <paramref name="oldInstruction" />.
         /// </summary>
         /// <param name="oldInstruction">The instruction that is currently being evaluated.</param>
         /// <param name="hostMethod">The method that hosts the current instruction.</param>
@@ -41,7 +41,7 @@ namespace LinFu.AOP.Cecil
         protected abstract bool ShouldReplace(Instruction oldInstruction, MethodDefinition hostMethod);
 
         /// <summary>
-        /// Replaces the <paramref name="oldInstruction"/> with a new set of <paramref name="IL"/> instructions..
+        ///     Replaces the <paramref name="oldInstruction" /> with a new set of <paramref name="IL" /> instructions..
         /// </summary>
         /// <param name="oldInstruction">The instruction currently being evaluated.</param>
         /// <param name="hostMethod">The method that contains the target instruction.</param>

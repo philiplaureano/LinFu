@@ -59,26 +59,26 @@ namespace LinFu.AOP.Cecil
         public void ImportReferences(ModuleDefinition module)
         {
             // Static method imports
-            _getStaticActivator = module.ImportMethod("GetActivator", typeof (TypeActivatorRegistry),
+            _getStaticActivator = module.ImportMethod("GetActivator", typeof(TypeActivatorRegistry),
                 BindingFlags.Public | BindingFlags.Static);
             _getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle",
                 BindingFlags.Public | BindingFlags.Static);
 
             // Constructor imports
-            _methodActivationContextCtor = module.ImportConstructor<TypeActivationContext>(typeof (object),
-                typeof (MethodBase),
-                typeof (Type),
-                typeof (object[]));
+            _methodActivationContextCtor = module.ImportConstructor<TypeActivationContext>(typeof(object),
+                typeof(MethodBase),
+                typeof(Type),
+                typeof(object[]));
 
             // Instance method imports
-            _objectListCtor = module.ImportConstructor<List<object>>(new Type[0]);
+            _objectListCtor = module.ImportConstructor<List<object>>();
             _toArrayMethod = module.ImportMethod<List<object>>("ToArray", new Type[0]);
-            _addMethod = module.ImportMethod<List<object>>("Add", new[] {typeof (object)});
+            _addMethod = module.ImportMethod<List<object>>("Add", typeof(object));
             _reverseMethod = module.ImportMethod<List<object>>("Reverse", new Type[0]);
             _canActivate = module.ImportMethod<ITypeActivator>("CanActivate");
-            _getItem = module.ImportMethod<List<object>>("get_Item", new[] {typeof (int)});
+            _getItem = module.ImportMethod<List<object>>("get_Item", typeof(int));
 
-            var createInstanceMethod = typeof (IActivator<ITypeActivationContext>).GetMethod("CreateInstance");
+            var createInstanceMethod = typeof(IActivator<ITypeActivationContext>).GetMethod("CreateInstance");
 
             _createInstance = module.Import(createInstanceMethod);
         }
@@ -152,7 +152,8 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Callvirt, _createInstance);
         }
 
-        private void EmitCreateMethodActivationContext(MethodDefinition method, CilWorker IL, TypeReference concreteType)
+        private void EmitCreateMethodActivationContext(MethodDefinition method, CilWorker IL,
+            TypeReference concreteType)
         {
             // TODO: Add static method support
             var pushThis = method.IsStatic ? IL.Create(OpCodes.Ldnull) : IL.Create(OpCodes.Ldarg_0);

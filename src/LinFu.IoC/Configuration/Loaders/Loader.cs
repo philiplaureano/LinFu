@@ -5,22 +5,22 @@ using LinFu.Reflection;
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// Represents a class that can dynamically configure
-    /// <see cref="IServiceContainer"/> instances at runtime.
+    ///     Represents a class that can dynamically configure
+    ///     <see cref="IServiceContainer" /> instances at runtime.
     /// </summary>
     public class Loader : Loader<IServiceContainer>
     {
         private readonly AssemblyContainerLoader _containerLoader;
 
         /// <summary>
-        /// Initializes the loader using the default values.
+        ///     Initializes the loader using the default values.
         /// </summary>
         public Loader()
         {
             _containerLoader = this.CreateDefaultContainerLoader();
 
             // Load everything else into the container
-            var hostAssembly = typeof (Loader).Assembly;
+            var hostAssembly = typeof(Loader).Assembly;
             QueuedActions.Add(container => container.LoadFrom(hostAssembly));
 
             // Make sure that the plugins are only added once
@@ -42,13 +42,13 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// Gets or sets the value indicating the <see cref="IAssemblyLoader"/> instance
-        /// that will be used to load assemblies into memory.
+        ///     Gets or sets the value indicating the <see cref="IAssemblyLoader" /> instance
+        ///     that will be used to load assemblies into memory.
         /// </summary>
         public IAssemblyLoader<Assembly> AssemblyLoader
         {
-            get { return _containerLoader.AssemblyLoader; }
-            set { _containerLoader.AssemblyLoader = value; }
+            get => _containerLoader.AssemblyLoader;
+            set => _containerLoader.AssemblyLoader = value;
         }
     }
 }

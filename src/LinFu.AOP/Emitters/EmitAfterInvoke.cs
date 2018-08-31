@@ -7,7 +7,7 @@ using Mono.Cecil.Cil;
 namespace LinFu.AOP.Cecil
 {
     /// <summary>
-    /// Represents a type that emits the call to the <see cref="IAfterInvoke"/> instance.
+    ///     Represents a type that emits the call to the <see cref="IAfterInvoke" /> instance.
     /// </summary>
     public class EmitAfterInvoke : IInstructionEmitter
     {
@@ -17,11 +17,14 @@ namespace LinFu.AOP.Cecil
         private readonly VariableDefinition _surroundingImplementation;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EmitAfterInvoke"/> class.
+        ///     Initializes a new instance of the <see cref="EmitAfterInvoke" /> class.
         /// </summary>
-        /// <param name="surroundingImplementation">The variable that contains the <see cref="IAroundInvoke"/> instance.</param>
-        /// <param name="surroundingClassImplementation">The variable that contains the class-level <see cref="IAroundInvoke"/> instance.</param>
-        /// <param name="invocationInfo">The variable that contains the <see cref="IInvocationInfo"/> instance.</param>
+        /// <param name="surroundingImplementation">The variable that contains the <see cref="IAroundInvoke" /> instance.</param>
+        /// <param name="surroundingClassImplementation">
+        ///     The variable that contains the class-level <see cref="IAroundInvoke" />
+        ///     instance.
+        /// </param>
+        /// <param name="invocationInfo">The variable that contains the <see cref="IInvocationInfo" /> instance.</param>
         /// <param name="returnValue">The local vaiable that contains the return value of the target method.</param>
         public EmitAfterInvoke(VariableDefinition surroundingImplementation,
             VariableDefinition surroundingClassImplementation,
@@ -35,9 +38,9 @@ namespace LinFu.AOP.Cecil
 
 
         /// <summary>
-        /// Emits the call to the <see cref="IAfterInvoke"/> instance.
+        ///     Emits the call to the <see cref="IAfterInvoke" /> instance.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> that points to the current method body.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> that points to the current method body.</param>
         public void Emit(CilWorker IL)
         {
             var module = IL.GetModule();

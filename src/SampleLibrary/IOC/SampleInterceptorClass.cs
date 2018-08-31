@@ -6,7 +6,7 @@ using LinFu.IoC.Interfaces;
 
 namespace SampleLibrary.IOC
 {
-    [Intercepts(typeof (ISampleInterceptedInterface))]
+    [Intercepts(typeof(ISampleInterceptedInterface))]
     public class SampleInterceptorClass : IInterceptor, IInitialize, ITargetHolder
     {
         public void Initialize(IServiceContainer source)

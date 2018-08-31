@@ -6,8 +6,8 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC.Factories
 {
     /// <summary>
-    /// A factory that creates service instances that are unique
-    /// from within the same thread as the factory itself.
+    ///     A factory that creates service instances that are unique
+    ///     from within the same thread as the factory itself.
     /// </summary>
     /// <typeparam name="T">The type of service to instantiate.</typeparam>
     public class OncePerThreadFactory<T> : BaseFactory<T>
@@ -16,13 +16,13 @@ namespace LinFu.IoC.Factories
         private readonly Func<IFactoryRequest, T> _createInstance;
 
         /// <summary>
-        /// Initializes the factory class using the <paramref name="createInstance"/>
-        /// parameter as a factory delegate.
+        ///     Initializes the factory class using the <paramref name="createInstance" />
+        ///     parameter as a factory delegate.
         /// </summary>
         /// <example>
-        /// The following is an example of initializing a <c>OncePerThreadFactory&lt;T&gt;</c>
-        /// type:
-        /// <code>
+        ///     The following is an example of initializing a <c>OncePerThreadFactory&lt;T&gt;</c>
+        ///     type:
+        ///     <code>
         ///     // Define the factory delegate
         ///     Func&lt;IFactoryRequest, ISomeService&gt; createService = container=>new SomeServiceImplementation();
         /// 
@@ -42,11 +42,11 @@ namespace LinFu.IoC.Factories
         }
 
         /// <summary>
-        /// Creates the service instance using the given <see cref="IFactoryRequest"/>
-        /// instance. Every service instance created from this factory will
-        /// only be created once per thread.
+        ///     Creates the service instance using the given <see cref="IFactoryRequest" />
+        ///     instance. Every service instance created from this factory will
+        ///     only be created once per thread.
         /// </summary>
-        /// <param name="request">The <see cref="IFactoryRequest"/> instance that describes the requested service.</param>
+        /// <param name="request">The <see cref="IFactoryRequest" /> instance that describes the requested service.</param>
         /// <returns>A a service instance as thread-wide singleton.</returns>
         public override T CreateInstance(IFactoryRequest request)
         {

@@ -4,11 +4,11 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// Marks a target type as an <see cref="IPreProcessor"/>
-    /// instance that can be injected into a
-    /// <see cref="IServiceContainer"/> instance.
+    ///     Marks a target type as an <see cref="IPreProcessor" />
+    ///     instance that can be injected into a
+    ///     <see cref="IServiceContainer" /> instance.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class)]
     public class PreprocessorAttribute : Attribute
     {
     }

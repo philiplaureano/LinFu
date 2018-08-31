@@ -2,7 +2,7 @@
 
 namespace SampleLibrary.IOC
 {
-    [Implements(typeof (ISampleService<>), LifecycleType.OncePerRequest)]
+    [Implements(typeof(ISampleService<>), LifecycleType.OncePerRequest)]
     public class SampleService<T> : ISampleService<T>
     {
         public SampleService(string text, bool b)

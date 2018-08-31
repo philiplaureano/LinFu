@@ -2,12 +2,6 @@
 {
     public class SampleClassWithReadOnlyField
     {
-        private string fieldValue = "freeze!";
-
-        public string Value
-        {
-            get { return fieldValue; }
-            set { fieldValue = value; }
-        }
+        public string Value { get; set; } = "freeze!";
     }
 }

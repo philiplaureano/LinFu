@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace LinFu.AOP.Interfaces
 {
     /// <summary>
-    /// Represents the simplest possible <see cref="IMethodReplacementProvider"/> implementation
-    /// that will allow the user to use the original method body implementation as part
-    /// of the interceptor call.
+    ///     Represents the simplest possible <see cref="IMethodReplacementProvider" /> implementation
+    ///     that will allow the user to use the original method body implementation as part
+    ///     of the interceptor call.
     /// </summary>
     public class SimpleMethodReplacementProvider : BaseMethodReplacementProvider
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SimpleMethodReplacementProvider"/> class.
+        ///     Initializes a new instance of the <see cref="SimpleMethodReplacementProvider" /> class.
         /// </summary>
         /// <param name="replacement">The method body replacement interceptor.</param>
         public SimpleMethodReplacementProvider(IInterceptor replacement)
@@ -22,21 +19,21 @@ namespace LinFu.AOP.Interfaces
         }
 
         /// <summary>
-        /// Gets or sets the value indicating the Predicate that will determine whether or not 
-        /// the method should be intercepted.
+        ///     Gets or sets the value indicating the Predicate that will determine whether or not
+        ///     the method should be intercepted.
         /// </summary>
         /// <value>The interceptor predicate.</value>
         public Func<IInvocationInfo, bool> MethodReplacementPredicate { get; set; }
 
         /// <summary>
-        /// Gets or sets the value indicating the actual <see cref="IInterceptor"/>
-        /// instance that will provide the method body implementations.
+        ///     Gets or sets the value indicating the actual <see cref="IInterceptor" />
+        ///     instance that will provide the method body implementations.
         /// </summary>
         /// <value>The interceptor that will swap the method bodies at runtime.</value>
         public IInterceptor MethodReplacement { get; set; }
 
         /// <summary>
-        /// Determines whether or not a particular method body should be replaced at runtime.
+        ///     Determines whether or not a particular method body should be replaced at runtime.
         /// </summary>
         /// <param name="host">The host instance that contains the target method.</param>
         /// <param name="context">The context surrounding the method call.</param>
@@ -50,7 +47,7 @@ namespace LinFu.AOP.Interfaces
         }
 
         /// <summary>
-        /// Gets the method replacement for a given <see cref="IInvocationInfo">invocation context</see>.
+        ///     Gets the method replacement for a given <see cref="IInvocationInfo">invocation context</see>.
         /// </summary>
         /// <param name="host">The host instance that contains the target method.</param>
         /// <param name="context">The context surrounding the method call.</param>

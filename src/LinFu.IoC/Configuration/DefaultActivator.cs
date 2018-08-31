@@ -7,7 +7,7 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// Represents a class that can instantiate object instances.
+    ///     Represents a class that can instantiate object instances.
     /// </summary>
     public class DefaultActivator : IActivator<IContainerActivationContext>, IInitialize
     {
@@ -17,7 +17,7 @@ namespace LinFu.IoC.Configuration
 
 
         /// <summary>
-        /// Creates an object instance.
+        ///     Creates an object instance.
         /// </summary>
         /// <returns>A valid object instance.</returns>
         public object CreateInstance(IContainerActivationContext context)
@@ -47,7 +47,7 @@ namespace LinFu.IoC.Configuration
 
 
         /// <summary>
-        /// Initializes the class with the default services.
+        ///     Initializes the class with the default services.
         /// </summary>
         /// <param name="container">The target service container.</param>
         public void Initialize(IServiceContainer container)

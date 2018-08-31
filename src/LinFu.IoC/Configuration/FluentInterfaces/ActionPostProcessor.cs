@@ -1,13 +1,12 @@
-﻿using System;
-using LinFu.IoC.Interfaces;
+﻿using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// Represents a postprocessor that will execute
-    /// the action associated with the given <see cref="ActionContext{TService}"/>
-    /// instance every time the target container returns a 
-    /// service with particular service name and service type.
+    ///     Represents a postprocessor that will execute
+    ///     the action associated with the given <see cref="ActionContext{TService}" />
+    ///     instance every time the target container returns a
+    ///     service with particular service name and service type.
     /// </summary>
     /// <typeparam name="TService"></typeparam>
     internal class ActionPostProcessor<TService> : IPostProcessor
@@ -27,7 +26,7 @@ namespace LinFu.IoC.Configuration
                 return;
 
             // The service type must match the current service
-            if (result.ServiceType != typeof (TService))
+            if (result.ServiceType != typeof(TService))
                 return;
 
             // The service names must be equal

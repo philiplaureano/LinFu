@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace LinFu.AOP.Interfaces
 {
     internal class SingleThreadedCallCounter : ICallCounter
     {
-        private readonly Dictionary<object, Counter<MethodBase>> _counts = new Dictionary<object, Counter<MethodBase>>();
+        private readonly Dictionary<object, Counter<MethodBase>>
+            _counts = new Dictionary<object, Counter<MethodBase>>();
+
         private readonly object _lock = new object();
 
         public void Increment(IInvocationInfo context)

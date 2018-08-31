@@ -10,31 +10,30 @@ using LinFu.Reflection.Emit;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MethodAttributes = Mono.Cecil.MethodAttributes;
-using MethodBody = Mono.Cecil.Cil.MethodBody;
 
 namespace LinFu.Proxy
 {
     /// <summary>
-    /// Represents a <see cref="ProxyBuilder"/> type that can create serializable proxy types.
+    ///     Represents a <see cref="ProxyBuilder" /> type that can create serializable proxy types.
     /// </summary>
-    [Implements(typeof (IProxyBuilder), LifecycleType.OncePerRequest)]
+    [Implements(typeof(IProxyBuilder), LifecycleType.OncePerRequest)]
     public class SerializableProxyBuilder : ProxyBuilder
     {
         /// <summary>
-        /// Generates a proxy that forwards all virtual method calls
-        /// to a single <see cref="IInterceptor"/> instance.
+        ///     Generates a proxy that forwards all virtual method calls
+        ///     to a single <see cref="IInterceptor" /> instance.
         /// </summary>
         /// <param name="originalBaseType">The base class of the type being constructed.</param>
         /// <param name="baseInterfaces">The list of interfaces that the new type must implement.</param>
         /// <param name="module">The module that will hold the brand new type.</param>
-        /// <param name="targetType">The <see cref="TypeDefinition"/> that represents the type to be created.</param>
+        /// <param name="targetType">The <see cref="TypeDefinition" /> that represents the type to be created.</param>
         public override void Construct(Type originalBaseType, IEnumerable<Type> baseInterfaces, ModuleDefinition module,
             TypeDefinition targetType)
         {
             var interfaces = new HashSet<Type>(baseInterfaces);
 
-            if (!interfaces.Contains(typeof (ISerializable)))
-                interfaces.Add(typeof (ISerializable));
+            if (!interfaces.Contains(typeof(ISerializable)))
+                interfaces.Add(typeof(ISerializable));
 
             var serializableInterfaceType = module.ImportType<ISerializable>();
             if (!targetType.Interfaces.Contains(serializableInterfaceType))
@@ -66,7 +65,7 @@ namespace LinFu.Proxy
             var getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle",
                 BindingFlags.Public | BindingFlags.Static);
 
-            var parameterTypes = new[] {typeof (SerializationInfo), typeof (StreamingContext)};
+            var parameterTypes = new[] {typeof(SerializationInfo), typeof(StreamingContext)};
 
             // Define the constructor signature
             var serializationCtor = targetType.AddDefaultConstructor();
@@ -132,10 +131,10 @@ namespace LinFu.Proxy
             IL.Emit(OpCodes.Callvirt, setType);
 
             // info.AddValue("__interceptor", __interceptor);
-            var addValueMethod = typeof (SerializationInfo).GetMethod("AddValue",
+            var addValueMethod = typeof(SerializationInfo).GetMethod("AddValue",
                 BindingFlags.Public | BindingFlags.Instance,
                 null,
-                new[] {typeof (string), typeof (object)},
+                new[] {typeof(string), typeof(object)},
                 null);
             var addValue = module.Import(addValueMethod);
 
@@ -154,7 +153,7 @@ namespace LinFu.Proxy
             var baseInterfaceCount = baseInterfaces.Count();
 
             // Save the number of base interfaces
-            var integerType = module.ImportType<Int32>();
+            var integerType = module.ImportType<int>();
             IL.Emit(OpCodes.Ldarg_1);
             IL.Emit(OpCodes.Ldstr, "__baseInterfaceCount");
             IL.Emit(OpCodes.Ldc_I4, baseInterfaceCount);

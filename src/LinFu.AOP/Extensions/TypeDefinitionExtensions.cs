@@ -1,21 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil;
 
 namespace LinFu.AOP.Cecil.Extensions
 {
     /// <summary>
-    /// Adds helper methods to the <see cref="TypeDefinition"/> class.
+    ///     Adds helper methods to the <see cref="TypeDefinition" /> class.
     /// </summary>
     public static class TypeDefinitionExtensions
     {
         /// <summary>
-        /// Applies a <see cref="IMethodWeaver"/> instance to all methods
-        /// within the given <paramref name="targetType"/>.
+        ///     Applies a <see cref="IMethodWeaver" /> instance to all methods
+        ///     within the given <paramref name="targetType" />.
         /// </summary>
         /// <param name="targetType">The target module.</param>
-        /// <param name="weaver">The <see cref="ITypeWeaver"/> instance that will modify the methods in the given target type.</param>
+        /// <param name="weaver">The <see cref="ITypeWeaver" /> instance that will modify the methods in the given target type.</param>
         public static void WeaveWith(this TypeDefinition targetType, IMethodWeaver weaver)
         {
             var module = targetType.Module;
@@ -29,10 +28,7 @@ namespace LinFu.AOP.Cecil.Extensions
             // Add any additional members to the target type
             weaver.AddAdditionalMembers(targetType);
 
-            foreach (var item in targetMethods)
-            {
-                weaver.Weave(item);
-            }
+            foreach (var item in targetMethods) weaver.Weave(item);
         }
     }
 }

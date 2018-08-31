@@ -4,12 +4,12 @@ using System.Reflection;
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// A class that invokes methods.
+    ///     A class that invokes methods.
     /// </summary>
     public class MethodInvoke : BaseMethodInvoke<MethodInfo>
     {
         /// <summary>
-        /// Initializes the class with the default values.
+        ///     Initializes the class with the default values.
         /// </summary>
         public MethodInvoke()
         {
@@ -17,7 +17,7 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// Invokes the <paramref name="targetMethod"/> with the given <paramref name="arguments"/>.
+        ///     Invokes the <paramref name="targetMethod" /> with the given <paramref name="arguments" />.
         /// </summary>
         /// <param name="target">The target instance.</param>
         /// <param name="originalMethod">The original method that describes the target method.</param>

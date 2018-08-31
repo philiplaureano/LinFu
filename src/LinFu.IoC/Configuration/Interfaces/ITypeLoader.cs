@@ -5,9 +5,9 @@ using LinFu.Reflection;
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// Generates one or more <see cref="Action{T}"/> instances
-    /// from a given source type so that it can be used
-    /// against an <see cref="IContainer"/> instance.
+    ///     Generates one or more <see cref="Action{T}" /> instances
+    ///     from a given source type so that it can be used
+    ///     against an <see cref="IContainer" /> instance.
     /// </summary>
     public interface ITypeLoader : IActionLoader<IServiceContainer, Type>
     {

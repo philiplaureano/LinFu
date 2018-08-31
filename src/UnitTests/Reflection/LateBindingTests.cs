@@ -52,7 +52,7 @@ namespace LinFu.UnitTests.Reflection
             mock.Expect(m => m.DoSomething());
 
             var targetInstance = mock.Object;
-            targetInstance.Invoke("DoSomething", new object[0]);
+            targetInstance.Invoke("DoSomething");
 
             mock.VerifyAll();
         }

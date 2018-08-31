@@ -3,7 +3,7 @@
 namespace LinFu.IoC
 {
     /// <summary>
-    /// Represents the default implementation for the <see cref="IGetService"/> interface.
+    ///     Represents the default implementation for the <see cref="IGetService" /> interface.
     /// </summary>
     public class DefaultGetServiceBehavior :
         IGetService
@@ -14,7 +14,7 @@ namespace LinFu.IoC
         private readonly IPreProcessor _preProcessor;
 
         /// <summary>
-        /// Initializes the class with the given <paramref name="container"/> instance.
+        ///     Initializes the class with the given <paramref name="container" /> instance.
         /// </summary>
         /// <param name="container">The target service container.</param>
         public DefaultGetServiceBehavior(IServiceContainer container)
@@ -26,12 +26,15 @@ namespace LinFu.IoC
         }
 
         /// <summary>
-        /// Initializes the class with the given <paramref name="container"/> instance.
+        ///     Initializes the class with the given <paramref name="container" /> instance.
         /// </summary>
         /// <param name="container">The target service container.</param>
-        /// <param name="creator">The <see cref="ICreateInstance"/> instance responsible for instantiating service types.</param>
-        /// <param name="preProcessor">The <see cref="IPreProcessor"/> that will allow users to intercept a given service request.</param>
-        /// <param name="postProcessor">The <see cref="IPostProcessor"/> instance that will handle the results of a given service request.</param>
+        /// <param name="creator">The <see cref="ICreateInstance" /> instance responsible for instantiating service types.</param>
+        /// <param name="preProcessor">The <see cref="IPreProcessor" /> that will allow users to intercept a given service request.</param>
+        /// <param name="postProcessor">
+        ///     The <see cref="IPostProcessor" /> instance that will handle the results of a given service
+        ///     request.
+        /// </param>
         public DefaultGetServiceBehavior(IServiceContainer container, ICreateInstance creator,
             IPreProcessor preProcessor, IPostProcessor postProcessor)
         {
@@ -43,9 +46,12 @@ namespace LinFu.IoC
 
 
         /// <summary>
-        /// Instantiates the service described by the <paramref name="serviceRequest"/>.
+        ///     Instantiates the service described by the <paramref name="serviceRequest" />.
         /// </summary>
-        /// <param name="serviceRequest">The <see cref="IServiceRequest"/> that describes the service that needs to be instantiated.</param>
+        /// <param name="serviceRequest">
+        ///     The <see cref="IServiceRequest" /> that describes the service that needs to be
+        ///     instantiated.
+        /// </param>
         /// <returns>A valid object reference if the service can be found; otherwise, it will return <c>null</c>.</returns>
         public virtual object GetService(IServiceRequest serviceRequest)
         {

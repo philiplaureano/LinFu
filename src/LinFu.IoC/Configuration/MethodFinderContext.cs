@@ -5,12 +5,12 @@ using LinFu.IoC.Configuration.Interfaces;
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// Represents the data associated with a <see cref="IMethodFinder{T}"/> search.
+    ///     Represents the data associated with a <see cref="IMethodFinder{T}" /> search.
     /// </summary>
     public class MethodFinderContext : IMethodFinderContext
     {
         /// <summary>
-        /// Initializes the context with the default values.
+        ///     Initializes the context with the default values.
         /// </summary>
         /// <param name="arguments">The list of arguments that will be passed to the target method.</param>
         public MethodFinderContext(params object[] arguments)
@@ -20,7 +20,7 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// Initializes the context with the default values.
+        ///     Initializes the context with the default values.
         /// </summary>
         /// <param name="typeArguments">The type arguments that will be used to construct the target method.</param>
         /// <param name="arguments">The list of arguments that will be passed to the target method.</param>
@@ -34,17 +34,17 @@ namespace LinFu.IoC.Configuration
 
 
         /// <summary>
-        /// Gets or sets the value indicating the type arguments that will be passed to the target method.
+        ///     Gets or sets the value indicating the type arguments that will be passed to the target method.
         /// </summary>
         public IEnumerable<Type> TypeArguments { get; set; }
 
         /// <summary>
-        /// Gets or sets the value indicating the list of arguments that will be passed to the target method.
+        ///     Gets or sets the value indicating the list of arguments that will be passed to the target method.
         /// </summary>
         public IEnumerable<object> Arguments { get; set; }
 
         /// <summary>
-        /// Gets or sets the value indicating the <see cref="System.Type">return type</see> of the target method.
+        ///     Gets or sets the value indicating the <see cref="System.Type">return type</see> of the target method.
         /// </summary>
         public Type ReturnType { get; set; }
     }

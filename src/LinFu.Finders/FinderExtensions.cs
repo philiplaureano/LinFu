@@ -5,16 +5,19 @@ using LinFu.Finders.Interfaces;
 namespace LinFu.Finders
 {
     /// <summary>
-    /// A class that adds fuzzy search support to <see cref="IList{T}"/> instances.
+    ///     A class that adds fuzzy search support to <see cref="IList{T}" /> instances.
     /// </summary>
     public static class FinderExtensions
     {
         /// <summary>
-        /// Applies a criteria to the <paramref name="list"/> of 
-        /// fuzzy items.
+        ///     Applies a criteria to the <paramref name="list" /> of
+        ///     fuzzy items.
         /// </summary>
         /// <typeparam name="TItem">The type of item to test.</typeparam>
-        /// <param name="list">The list of <see cref="IFuzzyItem{T}"/> instances that represent a single test case in a fuzzy search.</param>
+        /// <param name="list">
+        ///     The list of <see cref="IFuzzyItem{T}" /> instances that represent a single test case in a fuzzy
+        ///     search.
+        /// </param>
         /// <param name="criteria">The criteria to test against each item in the list.</param>
         public static void AddCriteria<TItem>(this IList<IFuzzyItem<TItem>> list, ICriteria<TItem> criteria)
         {
@@ -28,25 +31,31 @@ namespace LinFu.Finders
         }
 
         /// <summary>
-        /// Applies a criteria to the <paramref name="list"/> of 
-        /// fuzzy items using the given <paramref name="predicate"/>.
+        ///     Applies a criteria to the <paramref name="list" /> of
+        ///     fuzzy items using the given <paramref name="predicate" />.
         /// </summary>
         /// <typeparam name="TItem">The type of item to test.</typeparam>
-        /// <param name="list">The list of <see cref="IFuzzyItem{T}"/> instances that represent a single test case in a fuzzy search.</param>
-        /// <param name="predicate">The condition that will be used to test the target item.</param>        
+        /// <param name="list">
+        ///     The list of <see cref="IFuzzyItem{T}" /> instances that represent a single test case in a fuzzy
+        ///     search.
+        /// </param>
+        /// <param name="predicate">The condition that will be used to test the target item.</param>
         public static void AddCriteria<TItem>(this IList<IFuzzyItem<TItem>> list, Func<TItem, bool> predicate)
         {
             list.AddCriteria(predicate, CriteriaType.Standard);
         }
 
         /// <summary>
-        /// Applies a criteria to the <paramref name="list"/> of 
-        /// fuzzy items using the given <paramref name="predicate"/>.
+        ///     Applies a criteria to the <paramref name="list" /> of
+        ///     fuzzy items using the given <paramref name="predicate" />.
         /// </summary>
         /// <typeparam name="TItem">The type of item to test.</typeparam>
-        /// <param name="list">The list of <see cref="IFuzzyItem{T}"/> instances that represent a single test case in a fuzzy search.</param>
-        /// <param name="predicate">The condition that will be used to test the target item.</param>        
-        /// <param name="criteriaType">The <see cref="CriteriaType"/> to associate with the predicate.</param>        
+        /// <param name="list">
+        ///     The list of <see cref="IFuzzyItem{T}" /> instances that represent a single test case in a fuzzy
+        ///     search.
+        /// </param>
+        /// <param name="predicate">The condition that will be used to test the target item.</param>
+        /// <param name="criteriaType">The <see cref="CriteriaType" /> to associate with the predicate.</param>
         public static void AddCriteria<TItem>(this IList<IFuzzyItem<TItem>> list, Func<TItem, bool> predicate,
             CriteriaType criteriaType)
         {
@@ -55,14 +64,20 @@ namespace LinFu.Finders
         }
 
         /// <summary>
-        /// Applies a criteria to the <paramref name="list"/> of 
-        /// fuzzy items using the given <paramref name="predicate"/>.
+        ///     Applies a criteria to the <paramref name="list" /> of
+        ///     fuzzy items using the given <paramref name="predicate" />.
         /// </summary>
         /// <typeparam name="TItem">The type of item to test.</typeparam>
-        /// <param name="list">The list of <see cref="IFuzzyItem{T}"/> instances that represent a single test case in a fuzzy search.</param>
-        /// <param name="predicate">The condition that will be used to test the target item.</param>        
-        /// <param name="criteriaType">The <see cref="CriteriaType"/> to associate with the predicate.</param>        
-        /// <param name="weight">The weight of the predicate value expressed in the number of tests that will be counted for/against the target item as a result of the predicate.</param>
+        /// <param name="list">
+        ///     The list of <see cref="IFuzzyItem{T}" /> instances that represent a single test case in a fuzzy
+        ///     search.
+        /// </param>
+        /// <param name="predicate">The condition that will be used to test the target item.</param>
+        /// <param name="criteriaType">The <see cref="CriteriaType" /> to associate with the predicate.</param>
+        /// <param name="weight">
+        ///     The weight of the predicate value expressed in the number of tests that will be counted
+        ///     for/against the target item as a result of the predicate.
+        /// </param>
         public static void AddCriteria<TItem>(this IList<IFuzzyItem<TItem>> list, Func<TItem, bool> predicate,
             CriteriaType criteriaType, int weight)
         {
@@ -77,7 +92,7 @@ namespace LinFu.Finders
         }
 
         /// <summary>
-        /// Adds an item to a fuzzy list.
+        ///     Adds an item to a fuzzy list.
         /// </summary>
         /// <typeparam name="T">The type of the item being added.</typeparam>
         /// <param name="list">The fuzzy list that will contain the new item.</param>
@@ -88,8 +103,8 @@ namespace LinFu.Finders
         }
 
         /// <summary>
-        /// Returns the FuzzyItem with the highest confidence score in a given
-        /// <see cref="IFuzzyItem{T}"/> list.
+        ///     Returns the FuzzyItem with the highest confidence score in a given
+        ///     <see cref="IFuzzyItem{T}" /> list.
         /// </summary>
         /// <typeparam name="TItem">The type of item being compared.</typeparam>
         /// <param name="list">The fuzzy list that contains the list of possible matches.</param>
@@ -111,20 +126,17 @@ namespace LinFu.Finders
         }
 
         /// <summary>
-        /// Resets the scores of all fuzzy items in the current list.
+        ///     Resets the scores of all fuzzy items in the current list.
         /// </summary>
         /// <typeparam name="TItem">The target item type.</typeparam>
         /// <param name="list">The fuzzy list itself.</param>
         public static void Reset<TItem>(this IList<IFuzzyItem<TItem>> list)
         {
-            foreach (var item in list)
-            {
-                item.Reset();
-            }
+            foreach (var item in list) item.Reset();
         }
 
         /// <summary>
-        /// Converts a list into a list of <see cref="IFuzzyItem{T}"/> objects.
+        ///     Converts a list into a list of <see cref="IFuzzyItem{T}" /> objects.
         /// </summary>
         /// <typeparam name="TItem">The item type will be used in the fuzzy search.</typeparam>
         /// <param name="items">The target list to be converted.</param>
@@ -132,10 +144,7 @@ namespace LinFu.Finders
         public static IList<IFuzzyItem<TItem>> AsFuzzyList<TItem>(this IEnumerable<TItem> items)
         {
             var result = new List<IFuzzyItem<TItem>>();
-            foreach (var item in items)
-            {
-                result.Add(item);
-            }
+            foreach (var item in items) result.Add(item);
 
             return result;
         }

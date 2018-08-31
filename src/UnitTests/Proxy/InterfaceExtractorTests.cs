@@ -13,14 +13,14 @@ namespace LinFu.UnitTests.Proxy
         [Test]
         public void InterfaceExtractorShouldReturnTheCorrectResults()
         {
-            var baseType = typeof (SampleClass);
+            var baseType = typeof(SampleClass);
             var extractor = new InterfaceExtractor();
             var interfaces = new HashSet<Type>();
 
             extractor.GetInterfaces(baseType, interfaces);
 
-            Assert.IsTrue(interfaces.Contains(typeof (ISampleService)));
-            Assert.IsTrue(interfaces.Contains(typeof (ISampleGenericService<int>)));
+            Assert.IsTrue(interfaces.Contains(typeof(ISampleService)));
+            Assert.IsTrue(interfaces.Contains(typeof(ISampleGenericService<int>)));
 
             // The result list must only contain interface types
             var nonInterfaceTypes = from t in interfaces

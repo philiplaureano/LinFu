@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using LinFu.IoC;
 using LinFu.IoC.Configuration;
 using LinFu.IoC.Interfaces;
@@ -22,7 +20,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             IAssemblyLoader loader = new AssemblyLoader();
 
             // The loader should return a valid assembly
-            var result = loader.Load(typeof (SampleClass).Assembly.Location);
+            var result = loader.Load(typeof(SampleClass).Assembly.Location);
             Assert.IsNotNull(result);
         }
 
@@ -38,7 +36,7 @@ namespace LinFu.UnitTests.IOC.Configuration
 
             var matches = from p in container.PostProcessors
                 where p != null &&
-                      p.GetType() == typeof (SamplePostProcessor)
+                      p.GetType() == typeof(SamplePostProcessor)
                 select p;
 
             Assert.IsTrue(matches.Count() > 0, "The postprocessor failed to load.");
@@ -56,7 +54,7 @@ namespace LinFu.UnitTests.IOC.Configuration
 
             var matches = from p in container.PreProcessors
                 where p != null &&
-                      p.GetType() == typeof (SamplePreprocessor)
+                      p.GetType() == typeof(SamplePreprocessor)
                 select p;
 
             Assert.IsTrue(matches.Count() > 0, "The preprocessor failed to load.");
@@ -146,7 +144,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             // with the given filename
             var path = string.Empty;
 
-            var emptyActions = new Action<IServiceContainer>[] {};
+            var emptyActions = new Action<IServiceContainer>[] { };
             mockLoader.Expect(l => l.CanLoad(filename)).Returns(true);
             mockLoader.Expect(l => l.Load(filename)).Returns(emptyActions);
 
@@ -212,7 +210,7 @@ namespace LinFu.UnitTests.IOC.Configuration
         [Test]
         public void TypeExtractorMustListTypesFromGivenAssembly()
         {
-            var targetAssembly = typeof (SampleClass).Assembly;
+            var targetAssembly = typeof(SampleClass).Assembly;
 
             ITypeExtractor extractor = new TypeExtractor();
             var results = extractor.GetTypes(targetAssembly);

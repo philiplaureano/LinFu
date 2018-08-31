@@ -24,7 +24,7 @@ namespace LinFu.UnitTests.IOC.Configuration
         {
             public TestServiceContainer()
             {
-                this.AddService(typeof (InitializableObject), typeof (InitializableObject));
+                this.AddService(typeof(InitializableObject), typeof(InitializableObject));
             }
         }
 

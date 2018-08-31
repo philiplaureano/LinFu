@@ -7,7 +7,7 @@ using Mono.Cecil.Cil;
 namespace LinFu.AOP.Cecil
 {
     /// <summary>
-    /// Represents a class that emits the instructions that determine whether or not method interception is disabled.
+    ///     Represents a class that emits the instructions that determine whether or not method interception is disabled.
     /// </summary>
     public class GetInterceptionDisabled : IInstructionEmitter
     {
@@ -15,9 +15,9 @@ namespace LinFu.AOP.Cecil
         private readonly VariableDefinition _interceptionDisabled;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GetInterceptionDisabled"/> class.
+        ///     Initializes a new instance of the <see cref="GetInterceptionDisabled" /> class.
         /// </summary>
-        /// <param name="parameters">The <see cref="IMethodBodyRewriterParameters"/> instance.</param>
+        /// <param name="parameters">The <see cref="IMethodBodyRewriterParameters" /> instance.</param>
         public GetInterceptionDisabled(IMethodBodyRewriterParameters parameters)
         {
             _hostMethod = parameters.TargetMethod;
@@ -25,7 +25,7 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GetInterceptionDisabled"/> class.
+        ///     Initializes a new instance of the <see cref="GetInterceptionDisabled" /> class.
         /// </summary>
         /// <param name="hostMethod">The target method.</param>
         /// <param name="interceptionDisabled">The local variable that determines whether or not method interception is disabled.</param>
@@ -37,9 +37,12 @@ namespace LinFu.AOP.Cecil
 
 
         /// <summary>
-        /// Emits the instructions that determine whether or not method interception is disabled.
+        ///     Emits the instructions that determine whether or not method interception is disabled.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> instance responsible for adding or removing instructions to the method body.</param>
+        /// <param name="IL">
+        ///     The <see cref="CilWorker" /> instance responsible for adding or removing instructions to the method
+        ///     body.
+        /// </param>
         public void Emit(CilWorker IL)
         {
             var module = IL.GetModule();

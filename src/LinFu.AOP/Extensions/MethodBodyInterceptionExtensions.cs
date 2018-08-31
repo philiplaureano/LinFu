@@ -5,12 +5,12 @@ using Mono.Cecil;
 namespace LinFu.AOP.Cecil.Extensions
 {
     /// <summary>
-    /// Represents an extension class that adds method body interception support to the Mono.Cecil object model.
+    ///     Represents an extension class that adds method body interception support to the Mono.Cecil object model.
     /// </summary>
     public static class MethodBodyInterceptionExtensions
     {
         /// <summary>
-        /// Intercepts all method bodies on the target item.
+        ///     Intercepts all method bodies on the target item.
         /// </summary>
         /// <param name="target">The target to be modified.</param>
         public static void InterceptAllMethodBodies(this IReflectionStructureVisitable target)
@@ -19,7 +19,7 @@ namespace LinFu.AOP.Cecil.Extensions
         }
 
         /// <summary>
-        /// Intercepts all method bodies on the target item.
+        ///     Intercepts all method bodies on the target item.
         /// </summary>
         /// <param name="target">The target to be modified.</param>
         public static void InterceptAllMethodBodies(this IReflectionVisitable target)
@@ -28,7 +28,7 @@ namespace LinFu.AOP.Cecil.Extensions
         }
 
         /// <summary>
-        /// Intercepts all method bodies on the target item.
+        ///     Intercepts all method bodies on the target item.
         /// </summary>
         /// <param name="target">The target to be modified.</param>
         /// <param name="methodFilter">The method filter that will determine the methods that will be modified.</param>
@@ -38,7 +38,7 @@ namespace LinFu.AOP.Cecil.Extensions
         }
 
         /// <summary>
-        /// Intercepts all method bodies on the target item.
+        ///     Intercepts all method bodies on the target item.
         /// </summary>
         /// <param name="target">The target to be modified.</param>
         /// <param name="methodFilter">The method filter that will determine the methods that will be modified.</param>
@@ -48,7 +48,7 @@ namespace LinFu.AOP.Cecil.Extensions
         }
 
         /// <summary>
-        /// Intercepts all method bodies on the target item.
+        ///     Intercepts all method bodies on the target item.
         /// </summary>
         /// <param name="target">The target to be modified.</param>
         /// <param name="methodFilter">The method filter that will determine the methods that will be modified.</param>
@@ -63,7 +63,7 @@ namespace LinFu.AOP.Cecil.Extensions
         }
 
         /// <summary>
-        /// Intercepts all method bodies on the target item.
+        ///     Intercepts all method bodies on the target item.
         /// </summary>
         /// <param name="target">The target to be modified.</param>
         /// <param name="methodFilter">The method filter that will determine the methods that will be modified.</param>

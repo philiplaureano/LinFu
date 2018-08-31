@@ -5,15 +5,16 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC
 {
     /// <summary>
-    /// Represents an <see cref="IFactoryStorage"/> instance that adds generics support to the <see cref="BaseFactoryStorage"/> implementation.
+    ///     Represents an <see cref="IFactoryStorage" /> instance that adds generics support to the
+    ///     <see cref="BaseFactoryStorage" /> implementation.
     /// </summary>
     public class FactoryStorage : BaseFactoryStorage
     {
         /// <summary>
-        /// Determines whether or not an <see cref="IFactory"/> instance
-        /// can be used to create the given service described by the <paramref name="serviceInfo"/> object.
+        ///     Determines whether or not an <see cref="IFactory" /> instance
+        ///     can be used to create the given service described by the <paramref name="serviceInfo" /> object.
         /// </summary>
-        /// <param name="serviceInfo">The <see cref="IServiceInfo"/> object that describes the service to be created.</param>
+        /// <param name="serviceInfo">The <see cref="IServiceInfo" /> object that describes the service to be created.</param>
         /// <returns><c>True</c> if the service can be created; otherwise, it will return <c>false</c>.</returns>
         public override bool ContainsFactory(IServiceInfo serviceInfo)
         {
@@ -50,7 +51,7 @@ namespace LinFu.IoC
             if (result)
                 return true;
 
-            if (baseDefinition == typeof (IFactory<>))
+            if (baseDefinition == typeof(IFactory<>))
             {
                 var typeArguments = serviceType.GetGenericArguments();
                 var actualServiceType = typeArguments[0];
@@ -63,11 +64,11 @@ namespace LinFu.IoC
         }
 
         /// <summary>
-        /// Obtains the <see cref="IFactory"/> instance that can instantiate the
-        /// service described by the <paramref name="serviceInfo"/> object instance.
+        ///     Obtains the <see cref="IFactory" /> instance that can instantiate the
+        ///     service described by the <paramref name="serviceInfo" /> object instance.
         /// </summary>
-        /// <param name="serviceInfo">The <see cref="IServiceInfo"/> object that describes the service to be created.</param>
-        /// <returns>A <see cref="IFactory"/> instance if the service can be instantiated; otherwise, it will return <c>false</c>.</returns>
+        /// <param name="serviceInfo">The <see cref="IServiceInfo" /> object that describes the service to be created.</param>
+        /// <returns>A <see cref="IFactory" /> instance if the service can be instantiated; otherwise, it will return <c>false</c>.</returns>
         public override IFactory GetFactory(IServiceInfo serviceInfo)
         {
             // Attempt to create the service type using
@@ -98,7 +99,7 @@ namespace LinFu.IoC
                 return base.GetFactory(defaultGenericServiceInfo);
 
 
-            if (definitionType != typeof (IFactory<>))
+            if (definitionType != typeof(IFactory<>))
                 return factory;
 
             var typeArguments = serviceType.GetGenericArguments();
@@ -109,11 +110,14 @@ namespace LinFu.IoC
         }
 
         /// <summary>
-        /// Gets the default factory for a particular service type if no other factory instance can be found.
+        ///     Gets the default factory for a particular service type if no other factory instance can be found.
         /// </summary>
         /// <param name="serviceName">The name of the service.</param>
         /// <param name="serviceType">The service type.</param>
-        /// <param name="factory">The original factory instance that was supposed to be created in order to instantiate the service instance.</param>
+        /// <param name="factory">
+        ///     The original factory instance that was supposed to be created in order to instantiate the service
+        ///     instance.
+        /// </param>
         /// <returns>The actual factory instance that will be used to create the service instance.</returns>
         private IFactory GetDefaultFactory(string serviceName, Type serviceType, IFactory factory)
         {
@@ -133,9 +137,9 @@ namespace LinFu.IoC
         }
 
         /// <summary>
-        /// Gets the generic factory for a concrete service type.
+        ///     Gets the generic factory for a concrete service type.
         /// </summary>
-        /// <param name="serviceInfo">The <see cref="IServiceInfo"/> object that describes the service to be created.</param>
+        /// <param name="serviceInfo">The <see cref="IServiceInfo" /> object that describes the service to be created.</param>
         /// <param name="factory">The factory instance that will be used to create the service.</param>
         /// <param name="serviceName">The name of the service.</param>
         /// <param name="actualServiceType">The service type.</param>

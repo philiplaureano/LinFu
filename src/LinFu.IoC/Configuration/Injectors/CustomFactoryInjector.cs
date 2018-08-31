@@ -4,8 +4,8 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC.Configuration.Injectors
 {
     /// <summary>
-    /// A class that injects unnamed custom <see cref="IFactory"/> instances into a given
-    /// service container.
+    ///     A class that injects unnamed custom <see cref="IFactory" /> instances into a given
+    ///     service container.
     /// </summary>
     public class CustomFactoryInjector : IPreProcessor
     {
@@ -13,10 +13,10 @@ namespace LinFu.IoC.Configuration.Injectors
         private readonly Type _serviceType;
 
         /// <summary>
-        /// Initializes the class with the given service type and factory.
+        ///     Initializes the class with the given service type and factory.
         /// </summary>
         /// <param name="serviceType">The service type that will be created by the factory.</param>
-        /// <param name="factory">The <see cref="IFactory"/> instance that will be used to create the service instance.</param>
+        /// <param name="factory">The <see cref="IFactory" /> instance that will be used to create the service instance.</param>
         public CustomFactoryInjector(Type serviceType, IFactory factory)
         {
             _serviceType = serviceType;
@@ -25,9 +25,12 @@ namespace LinFu.IoC.Configuration.Injectors
 
 
         /// <summary>
-        /// Injects the given factory into the target container.
+        ///     Injects the given factory into the target container.
         /// </summary>
-        /// <param name="request">The <see cref="IServiceRequest"/> instance that describes the service that is currently being requested.</param>
+        /// <param name="request">
+        ///     The <see cref="IServiceRequest" /> instance that describes the service that is currently being
+        ///     requested.
+        /// </param>
         public void Preprocess(IServiceRequest request)
         {
             // Inject the custom factory if no other

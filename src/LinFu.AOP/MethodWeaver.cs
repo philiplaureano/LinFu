@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using LinFu.AOP.Cecil.Interfaces;
 using Mono.Cecil;
-using Mono.Cecil.Cil;
 
 namespace LinFu.AOP.Cecil
 {
     /// <summary>
-    /// Represents the default implementation of the <see cref="IMethodWeaver"/> interface.
+    ///     Represents the default implementation of the <see cref="IMethodWeaver" /> interface.
     /// </summary>
     public class MethodWeaver : IMethodWeaver
     {
@@ -17,33 +16,32 @@ namespace LinFu.AOP.Cecil
         private readonly HashSet<MethodReference> _visitedMethods = new HashSet<MethodReference>();
 
         /// <summary>
-        /// Initializes a new instance of the MethodWeaver class.
+        ///     Initializes a new instance of the MethodWeaver class.
         /// </summary>
-        /// <param name="rewriter">The <see cref="IMethodRewriter"/> instance that will modify the existing method.</param>
-        /// <param name="filter">The filter that determines which methods should be modified.</param>        
+        /// <param name="rewriter">The <see cref="IMethodRewriter" /> instance that will modify the existing method.</param>
+        /// <param name="filter">The filter that determines which methods should be modified.</param>
         public MethodWeaver(IMethodRewriter rewriter, Func<MethodReference, bool> filter)
             : this(rewriter, new InstructionProvider(), filter)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the MethodWeaver class.
+        ///     Initializes a new instance of the MethodWeaver class.
         /// </summary>
-        /// <param name="rewriter">The <see cref="IMethodRewriter"/> instance that will modify the existing method.</param>
+        /// <param name="rewriter">The <see cref="IMethodRewriter" /> instance that will modify the existing method.</param>
         /// <param name="instructionProvider">The provider that will obtain the original instructions for the target method.</param>
-        /// <param name="filter">The filter that determines which methods should be modified.</param>        
+        /// <param name="filter">The filter that determines which methods should be modified.</param>
         public MethodWeaver(IMethodRewriter rewriter, IInstructionProvider instructionProvider,
-                            Func<MethodReference, bool> filter)
+            Func<MethodReference, bool> filter)
         {
             _filter = filter;
             _rewriter = rewriter;
             _instructionProvider = instructionProvider;
         }
 
-        
 
         /// <summary>
-        /// Determines whether or not a method should be modified.
+        ///     Determines whether or not a method should be modified.
         /// </summary>
         /// <param name="item">The target method.</param>
         /// <returns><c>true</c> if the method should be modified; otherwise, it returns <c>false</c>.</returns>
@@ -62,7 +60,7 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Modifies a target method.
+        ///     Modifies a target method.
         /// </summary>
         /// <param name="method">The target method.</param>
         public void Weave(MethodDefinition method)
@@ -81,7 +79,7 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Adds additional members to the target type.
+        ///     Adds additional members to the target type.
         /// </summary>
         /// <param name="host">The target type to be modified.</param>
         public void AddAdditionalMembers(TypeDefinition host)
@@ -93,7 +91,7 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Imports additional references into the given module.
+        ///     Imports additional references into the given module.
         /// </summary>
         /// <param name="module">The module that will store the additional references.</param>
         public void ImportReferences(ModuleDefinition module)
@@ -104,10 +102,9 @@ namespace LinFu.AOP.Cecil
             _rewriter.ImportReferences(module);
         }
 
-        
 
         /// <summary>
-        /// Rewrites an existing method.
+        ///     Rewrites an existing method.
         /// </summary>
         /// <param name="method">The method that needs to be modified.</param>
         private void Rewrite(MethodDefinition method)

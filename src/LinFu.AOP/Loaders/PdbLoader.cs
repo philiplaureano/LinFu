@@ -5,16 +5,16 @@ using Mono.Cecil;
 namespace LinFu.AOP.Cecil.Loaders
 {
     /// <summary>
-    /// Represents the default implementation of the <see cref="IPdbLoader"/> interface.
+    ///     Represents the default implementation of the <see cref="IPdbLoader" /> interface.
     /// </summary>
     public class PdbLoader : IPdbLoader
     {
         /// <summary>
-        /// Loads an assembly into memory.
+        ///     Loads an assembly into memory.
         /// </summary>
         /// <param name="assemblyArray">The bytes that represent the target assembly.</param>
         /// <param name="pdbBytes">The bytes that represent the PDB file.</param>
-        /// <returns>A <see cref="System.Reflection.Assembly"/> that represents the loaded assembly.</returns>
+        /// <returns>A <see cref="System.Reflection.Assembly" /> that represents the loaded assembly.</returns>
         public Assembly LoadAssembly(byte[] assemblyArray, byte[] pdbBytes)
         {
             // Load the assembly into the current application domain
@@ -25,7 +25,7 @@ namespace LinFu.AOP.Cecil.Loaders
         }
 
         /// <summary>
-        /// Loads the debug symbols from the target <paramref name="assembly"/>.
+        ///     Loads the debug symbols from the target <paramref name="assembly" />.
         /// </summary>
         /// <param name="assembly">The assembly that contains the symbols to be loaded.</param>
         public void LoadSymbols(AssemblyDefinition assembly)
@@ -35,7 +35,7 @@ namespace LinFu.AOP.Cecil.Loaders
         }
 
         /// <summary>
-        /// Saves the debug symbols for the  target<paramref name="assembly"/>.
+        ///     Saves the debug symbols for the  target<paramref name="assembly" />.
         /// </summary>
         /// <param name="targetAssembly">The assembly that contains the symbols to be saved.</param>
         public void SaveSymbols(AssemblyDefinition targetAssembly)

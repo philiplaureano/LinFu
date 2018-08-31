@@ -3,7 +3,7 @@ using LinFu.IoC.Interfaces;
 
 namespace SampleLibrary.IOC
 {
-    [Factory(typeof (ISampleService), ServiceName = "Test")]
+    [Factory(typeof(ISampleService), ServiceName = "Test")]
     public class SampleStronglyTypedFactoryWithNamedService : IFactory<ISampleService>
     {
         public ISampleService CreateInstance(IFactoryRequest request)

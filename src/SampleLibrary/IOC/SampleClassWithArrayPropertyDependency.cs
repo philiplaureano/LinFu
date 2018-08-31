@@ -4,7 +4,6 @@ namespace SampleLibrary.IOC
 {
     public class SampleClassWithArrayPropertyDependency
     {
-        [Inject]
-        public ISampleService[] Property { get; set; }
+        [Inject] public ISampleService[] Property { get; set; }
     }
 }

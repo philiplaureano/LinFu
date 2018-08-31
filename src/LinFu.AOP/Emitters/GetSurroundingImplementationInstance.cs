@@ -1,13 +1,12 @@
 ﻿using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
-using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 namespace LinFu.AOP.Cecil
 {
     /// <summary>
-    /// Represents a class that emits the instructions that obtain the current <see cref="IAroundInvoke"/> instance.
+    ///     Represents a class that emits the instructions that obtain the current <see cref="IAroundInvoke" /> instance.
     /// </summary>
     public class GetSurroundingImplementationInstance : IInstructionEmitter
     {
@@ -17,9 +16,9 @@ namespace LinFu.AOP.Cecil
         private readonly VariableDefinition _surroundingImplementation;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GetSurroundingImplementationInstance"/> class.
+        ///     Initializes a new instance of the <see cref="GetSurroundingImplementationInstance" /> class.
         /// </summary>
-        /// <param name="aroundInvokeProvider">The variable that will hold the <see cref="IAroundInvokeProvider"/> instance.</param>
+        /// <param name="aroundInvokeProvider">The variable that will hold the <see cref="IAroundInvokeProvider" /> instance.</param>
         /// <param name="invocationInfo"></param>
         /// <param name="surroundingImplementation"></param>
         /// <param name="skipGetSurroundingImplementation"></param>
@@ -36,7 +35,7 @@ namespace LinFu.AOP.Cecil
 
 
         /// <summary>
-        /// Emits the instructions that obtain the current <see cref="IAroundInvoke"/> instance.
+        ///     Emits the instructions that obtain the current <see cref="IAroundInvoke" /> instance.
         /// </summary>
         /// <param name="IL"></param>
         public void Emit(CilWorker IL)

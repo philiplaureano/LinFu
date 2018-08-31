@@ -4,13 +4,13 @@ using Mono.Cecil;
 namespace LinFu.AOP.Cecil.Extensions
 {
     /// <summary>
-    /// A helper class that extends Cecil to support LinFu's weaver model.
+    ///     A helper class that extends Cecil to support LinFu's weaver model.
     /// </summary>
     public static class CecilVisitorExtensions
     {
         /// <summary>
-        /// Allows a <see cref="ITypeWeaver"/> instance to traverse any <see cref="IReflectionVisitable"/>
-        /// instance.
+        ///     Allows a <see cref="ITypeWeaver" /> instance to traverse any <see cref="IReflectionVisitable" />
+        ///     instance.
         /// </summary>
         /// <param name="visitable">The visitable object.</param>
         /// <param name="typeWeaver">The type weaver.</param>
@@ -21,8 +21,8 @@ namespace LinFu.AOP.Cecil.Extensions
         }
 
         /// <summary>
-        /// Allows a <see cref="ITypeWeaver"/> instance to traverse any <see cref="IReflectionStructureVisitable"/>
-        /// instance.
+        ///     Allows a <see cref="ITypeWeaver" /> instance to traverse any <see cref="IReflectionStructureVisitable" />
+        ///     instance.
         /// </summary>
         /// <param name="visitable">The visitable object.</param>
         /// <param name="typeWeaver">The type weaver.</param>
@@ -33,8 +33,8 @@ namespace LinFu.AOP.Cecil.Extensions
         }
 
         /// <summary>
-        /// Allows a <see cref="IMethodWeaver"/> instance to traverse any <see cref="IReflectionVisitable"/>
-        /// instance.
+        ///     Allows a <see cref="IMethodWeaver" /> instance to traverse any <see cref="IReflectionVisitable" />
+        ///     instance.
         /// </summary>
         /// <param name="visitable">The visitable object.</param>
         /// <param name="methodWeaver">The method weaver.</param>
@@ -45,8 +45,8 @@ namespace LinFu.AOP.Cecil.Extensions
         }
 
         /// <summary>
-        /// Allows a <see cref="IMethodWeaver"/> instance to traverse any <see cref="IReflectionVisitable"/>
-        /// instance.
+        ///     Allows a <see cref="IMethodWeaver" /> instance to traverse any <see cref="IReflectionVisitable" />
+        ///     instance.
         /// </summary>
         /// <param name="visitable">The visitable object.</param>
         /// <param name="methodWeaver">The method weaver.</param>

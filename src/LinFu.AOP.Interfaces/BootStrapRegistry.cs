@@ -5,7 +5,7 @@ using LinFu.Reflection;
 namespace LinFu.AOP.Interfaces
 {
     /// <summary>
-    /// Represents a registry class that bootstraps components into memory when the application starts.
+    ///     Represents a registry class that bootstraps components into memory when the application starts.
     /// </summary>
     public sealed class BootStrapRegistry
     {
@@ -17,15 +17,12 @@ namespace LinFu.AOP.Interfaces
         }
 
         /// <summary>
-        /// Gets the value indicating the BootStrapRegistry instance.
+        ///     Gets the value indicating the BootStrapRegistry instance.
         /// </summary>
-        public static BootStrapRegistry Instance
-        {
-            get { return NestedLoader.Instance; }
-        }
+        public static BootStrapRegistry Instance => NestedLoader.Instance;
 
         /// <summary>
-        /// Initializes the BootStrapRegistry.
+        ///     Initializes the BootStrapRegistry.
         /// </summary>
         private void Initialize()
         {
@@ -33,7 +30,6 @@ namespace LinFu.AOP.Interfaces
             {
                 _components.LoadFrom(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
                 foreach (var component in _components)
-                {
                     try
                     {
                         component.Initialize();
@@ -47,12 +43,11 @@ namespace LinFu.AOP.Interfaces
 
                         throw new BootstrapException(message, ex);
                     }
-                }
             }
         }
 
         /// <summary>
-        /// Returns the list of components that have been initialized by the bootstrapper.
+        ///     Returns the list of components that have been initialized by the bootstrapper.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<IBootStrappedComponent> GetComponents()

@@ -6,30 +6,32 @@ using LinFu.Reflection;
 namespace LinFu.AOP.Cecil.Loaders
 {
     /// <summary>
-    /// Represents an <see cref="AssemblyLoader"/> class that adds support for loading PDB files into memory every time an assembly is loaded into memory.
+    ///     Represents an <see cref="AssemblyLoader" /> class that adds support for loading PDB files into memory every time an
+    ///     assembly is loaded into memory.
     /// </summary>
     public class AssemblyLoaderWithPdbSupport : AssemblyLoader
     {
         /// <summary>
-        /// Initializes a new instance of the AssemblyLoaderWithPdbSupport class.
+        ///     Initializes a new instance of the AssemblyLoaderWithPdbSupport class.
         /// </summary>
-        /// <param name="loader">The <see cref="IAssemblyLoader"/> that will perform the actual load operation.</param>
+        /// <param name="loader">The <see cref="IAssemblyLoader" /> that will perform the actual load operation.</param>
         public AssemblyLoaderWithPdbSupport(IAssemblyLoader loader)
         {
             AssemblyLoader = loader;
         }
 
         /// <summary>
-        /// Gets or sets the value indicating the <see cref="IAssemblyLoader"/> instance that will be used to load assemblies into memory.
+        ///     Gets or sets the value indicating the <see cref="IAssemblyLoader" /> instance that will be used to load assemblies
+        ///     into memory.
         /// </summary>
         public virtual IAssemblyLoader AssemblyLoader { get; set; }
 
         /// <summary>
-        /// Loads the target assembly (and its corresponding PDB file) into memory.
+        ///     Loads the target assembly (and its corresponding PDB file) into memory.
         /// </summary>
         /// <param name="assemblyFile">The full path and filename of the assembly to load.</param>
-        /// <returns>A loaded <see cref="Assembly"/> instance.</returns>
-        public override sealed Assembly Load(string assemblyFile)
+        /// <returns>A loaded <see cref="Assembly" /> instance.</returns>
+        public sealed override Assembly Load(string assemblyFile)
         {
             if (AssemblyLoader == null)
                 throw new NullReferenceException("The AssemblyLoader property cannot be null");
@@ -65,7 +67,7 @@ namespace LinFu.AOP.Cecil.Loaders
         }
 
         /// <summary>
-        /// Removes the temporary backup files that were created during the load operation.
+        ///     Removes the temporary backup files that were created during the load operation.
         /// </summary>
         /// <param name="assemblyFile">The full path and location of the original assembly file.</param>
         /// <param name="pdbFile">The full path and location of the original PDB file.</param>

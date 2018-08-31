@@ -6,7 +6,7 @@ using Mono.Cecil.Cil;
 namespace LinFu.AOP.Cecil
 {
     /// <summary>
-    /// Represents an instruction emitter that adds the original method instructions to a given method body.
+    ///     Represents an instruction emitter that adds the original method instructions to a given method body.
     /// </summary>
     public class AddOriginalInstructions : IInstructionEmitter
     {
@@ -14,7 +14,7 @@ namespace LinFu.AOP.Cecil
         private readonly IEnumerable<Instruction> _oldInstructions;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AddOriginalInstructions"/> class.
+        ///     Initializes a new instance of the <see cref="AddOriginalInstructions" /> class.
         /// </summary>
         /// <param name="oldInstructions">The original method instructions.</param>
         /// <param name="endLabel">The instruction label that marks the end of the method body.</param>
@@ -26,9 +26,9 @@ namespace LinFu.AOP.Cecil
 
 
         /// <summary>
-        /// Adds the original instructions to a given method body.
+        ///     Adds the original instructions to a given method body.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> responsible for the target method body.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> responsible for the target method body.</param>
         public void Emit(CilWorker IL)
         {
             var originalInstructions = new List<Instruction>(_oldInstructions);
@@ -58,10 +58,7 @@ namespace LinFu.AOP.Cecil
             }
 
             // Emit the original instructions
-            foreach (var instruction in originalInstructions)
-            {
-                IL.Append(instruction);
-            }
+            foreach (var instruction in originalInstructions) IL.Append(instruction);
         }
     }
 }

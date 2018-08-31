@@ -51,6 +51,7 @@ namespace LinFu.UnitTests.Reflection
 
                     File.Delete(file);
                 }
+
                 _disposalList.Clear();
             }
         }
@@ -128,6 +129,7 @@ namespace LinFu.UnitTests.Reflection
                 if (File.Exists(peVerifyLocation))
                     break;
             }
+
             return peVerifyLocation;
         }
     }

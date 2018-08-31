@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace LinFu.Proxy
 {
     /// <summary>
-    /// Represents a cached proxy type.
+    ///     Represents a cached proxy type.
     /// </summary>
     internal class ProxyCacheEntry
     {
@@ -33,8 +33,8 @@ namespace LinFu.Proxy
 
                 // If one set of interfaces is null and the other one is not
                 // null, then there is no match
-                if ((x.Interfaces == null && y.Interfaces != null) ||
-                    (y.Interfaces == null && x.Interfaces != null))
+                if (x.Interfaces == null && y.Interfaces != null ||
+                    y.Interfaces == null && x.Interfaces != null)
                     return false;
 
                 // Initialize both interface lists and 
@@ -53,10 +53,8 @@ namespace LinFu.Proxy
                     return false;
 
                 foreach (var current in targetList)
-                {
                     if (!interfaceList.Contains(current))
                         return false;
-                }
 
                 return true;
             }
@@ -71,10 +69,7 @@ namespace LinFu.Proxy
                 // by XORing all the types together
                 var baseType = obj.BaseType;
                 var result = baseType.GetHashCode();
-                foreach (var type in types)
-                {
-                    result ^= type.GetHashCode();
-                }
+                foreach (var type in types) result ^= type.GetHashCode();
 
                 return result;
             }

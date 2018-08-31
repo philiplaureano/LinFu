@@ -6,8 +6,8 @@ using LinFu.Reflection;
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// A class that initializes service instances that use
-    /// the <see cref="IInitialize{T}"/> interface.
+    ///     A class that initializes service instances that use
+    ///     the <see cref="IInitialize{T}" /> interface.
     /// </summary>
     public class Initializer<T> : IPostProcessor
     {
@@ -18,9 +18,12 @@ namespace LinFu.IoC.Configuration
         private readonly Func<IServiceRequestResult, T> _getSource;
 
         /// <summary>
-        /// Initializes the class with the given <paramref name="getSource"/> delegate.
+        ///     Initializes the class with the given <paramref name="getSource" /> delegate.
         /// </summary>
-        /// <param name="getSource">The functor that will obtain the object instance that will be used to initialize a given service.</param>
+        /// <param name="getSource">
+        ///     The functor that will obtain the object instance that will be used to initialize a given
+        ///     service.
+        /// </param>
         public Initializer(Func<IServiceRequestResult, T> getSource)
         {
             _getSource = getSource;
@@ -28,10 +31,13 @@ namespace LinFu.IoC.Configuration
 
 
         /// <summary>
-        /// Initializes every service that implements
-        /// the <see cref="IInitialize{T}"/> interface.
+        ///     Initializes every service that implements
+        ///     the <see cref="IInitialize{T}" /> interface.
         /// </summary>
-        /// <param name="result">The <see cref="IServiceRequestResult"/> instance that contains the service instance to be initialized.</param>
+        /// <param name="result">
+        ///     The <see cref="IServiceRequestResult" /> instance that contains the service instance to be
+        ///     initialized.
+        /// </param>
         public void PostProcess(IServiceRequestResult result)
         {
             var originalResult = result.OriginalResult as IInitialize<T>;
@@ -48,16 +54,16 @@ namespace LinFu.IoC.Configuration
 
 
         /// <summary>
-        /// Initializes the <paramref name="target"/> with the given <paramref name="source"/> instance.
+        ///     Initializes the <paramref name="target" /> with the given <paramref name="source" /> instance.
         /// </summary>
         /// <param name="target">The target to initialize.</param>
-        /// <param name="source">The instance that will be introduced to the <see cref="IInitialize{T}"/> instance.</param>        
+        /// <param name="source">The instance that will be introduced to the <see cref="IInitialize{T}" /> instance.</param>
         private static void Initialize(IInitialize<T> target, T source)
         {
             if (target == null)
                 return;
 
-            if ((_initializeCallCount = ++_initializeCallCount%100) == 0)
+            if ((_initializeCallCount = ++_initializeCallCount % 100) == 0)
                 _instances.RemoveWhere(w => w != null && !w.IsAlive);
 
             // Make sure that the target is initialized only once
@@ -100,10 +106,7 @@ namespace LinFu.IoC.Configuration
 
             int IEqualityComparer<HashableWeakReference>.GetHashCode(HashableWeakReference obj)
             {
-                if (obj == null)
-                {
-                    throw new ArgumentNullException("obj");
-                }
+                if (obj == null) throw new ArgumentNullException("obj");
                 return obj.GetHashCode();
             }
         }

@@ -3,13 +3,13 @@
 namespace LinFu.Reflection.Emit
 {
     /// <summary>
-    /// A class that extends the <see cref="ParameterDefinition"/> class
-    /// to emulate features found in the System.Reflection.Emit namespace.
+    ///     A class that extends the <see cref="ParameterDefinition" /> class
+    ///     to emulate features found in the System.Reflection.Emit namespace.
     /// </summary>
     public static class ParameterDefinitionExtensions
     {
         /// <summary>
-        /// Determines whether or not a parameter is passed by reference.
+        ///     Determines whether or not a parameter is passed by reference.
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>

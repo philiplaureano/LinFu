@@ -5,14 +5,14 @@ using Mono.Cecil;
 namespace LinFu.AOP.Cecil.Extensions
 {
     /// <summary>
-    /// Represents an extension class that adds field interception support to a given type.
+    ///     Represents an extension class that adds field interception support to a given type.
     /// </summary>
     public static class FieldInterceptionExtensions
     {
         /// <summary>
-        /// Adds field interception support to the target type.
+        ///     Adds field interception support to the target type.
         /// </summary>
-        /// <param name="targetType">The type that will be modified.</param>        
+        /// <param name="targetType">The type that will be modified.</param>
         public static void InterceptAllFields(this IReflectionStructureVisitable targetType)
         {
             var methodFilter = GetMethodFilter();
@@ -20,9 +20,9 @@ namespace LinFu.AOP.Cecil.Extensions
         }
 
         /// <summary>
-        /// Adds field interception support intercepting all instance fields on the target type.
+        ///     Adds field interception support intercepting all instance fields on the target type.
         /// </summary>
-        /// <param name="targetType">The type that will be modified.</param>        
+        /// <param name="targetType">The type that will be modified.</param>
         public static void InterceptAllInstanceFields(this IReflectionStructureVisitable targetType)
         {
             var methodFilter = GetMethodFilter();
@@ -32,9 +32,9 @@ namespace LinFu.AOP.Cecil.Extensions
         }
 
         /// <summary>
-        /// Adds field interception support intercepting all static fields on the target type.
+        ///     Adds field interception support intercepting all static fields on the target type.
         /// </summary>
-        /// <param name="targetType">The type that will be modified.</param>     
+        /// <param name="targetType">The type that will be modified.</param>
         public static void InterceptAllStaticFields(this IReflectionStructureVisitable targetType)
         {
             var methodFilter = GetMethodFilter();
@@ -44,9 +44,9 @@ namespace LinFu.AOP.Cecil.Extensions
         }
 
         /// <summary>
-        /// Adds field interception support to the target type.
+        ///     Adds field interception support to the target type.
         /// </summary>
-        /// <param name="targetType">The type that will be modified.</param>        
+        /// <param name="targetType">The type that will be modified.</param>
         public static void InterceptAllFields(this IReflectionVisitable targetType)
         {
             var methodFilter = GetMethodFilter();
@@ -54,9 +54,9 @@ namespace LinFu.AOP.Cecil.Extensions
         }
 
         /// <summary>
-        /// Adds field interception support intercepting all instance fields on the target type.
+        ///     Adds field interception support intercepting all instance fields on the target type.
         /// </summary>
-        /// <param name="targetType">The type that will be modified.</param>        
+        /// <param name="targetType">The type that will be modified.</param>
         public static void InterceptAllInstanceFields(this IReflectionVisitable targetType)
         {
             var methodFilter = GetMethodFilter();
@@ -66,9 +66,9 @@ namespace LinFu.AOP.Cecil.Extensions
         }
 
         /// <summary>
-        /// Adds field interception support intercepting all static fields on the target type.
+        ///     Adds field interception support intercepting all static fields on the target type.
         /// </summary>
-        /// <param name="targetType">The type that will be modified.</param>     
+        /// <param name="targetType">The type that will be modified.</param>
         public static void InterceptAllStaticFields(this IReflectionVisitable targetType)
         {
             var methodFilter = GetMethodFilter();
@@ -78,10 +78,13 @@ namespace LinFu.AOP.Cecil.Extensions
         }
 
         /// <summary>
-        /// Adds field interception support to the target type.
+        ///     Adds field interception support to the target type.
         /// </summary>
         /// <param name="targetType">The type that will be modified.</param>
-        /// <param name="methodFilter">The filter that determines which methods on the target type will be modified to support field interception.</param>
+        /// <param name="methodFilter">
+        ///     The filter that determines which methods on the target type will be modified to support
+        ///     field interception.
+        /// </param>
         /// <param name="fieldFilter">The filter that determines which fields should be intercepted.</param>
         public static void InterceptFields(this IReflectionVisitable targetType,
             Func<MethodReference, bool> methodFilter,
@@ -95,7 +98,7 @@ namespace LinFu.AOP.Cecil.Extensions
         }
 
         /// <summary>
-        /// Adds field interception support to the target type.
+        ///     Adds field interception support to the target type.
         /// </summary>
         /// <param name="targetType">The type that will be modified.</param>
         /// <param name="hostTypeFilter">The filter that determines the host types to be modified.</param>
@@ -111,10 +114,13 @@ namespace LinFu.AOP.Cecil.Extensions
         }
 
         /// <summary>
-        /// Adds field interception support to the target type.
+        ///     Adds field interception support to the target type.
         /// </summary>
         /// <param name="targetType">The type that will be modified.</param>
-        /// <param name="methodFilter">The filter that determines which methods on the target type will be modified to support field interception.</param>
+        /// <param name="methodFilter">
+        ///     The filter that determines which methods on the target type will be modified to support
+        ///     field interception.
+        /// </param>
         /// <param name="fieldFilter">The filter that determines which fields should be intercepted.</param>
         public static void InterceptFields(this IReflectionStructureVisitable targetType,
             Func<MethodReference, bool> methodFilter,

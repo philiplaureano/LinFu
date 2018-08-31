@@ -4,17 +4,12 @@ namespace SampleLibrary.AOP
 {
     public class SampleMethodReplacement : IInterceptor
     {
-        private bool _called;
-
-        public bool HasBeenCalled
-        {
-            get { return _called; }
-        }
+        public bool HasBeenCalled { get; private set; }
 
 
         public object Intercept(IInvocationInfo info)
         {
-            _called = true;
+            HasBeenCalled = true;
             return null;
         }
     }

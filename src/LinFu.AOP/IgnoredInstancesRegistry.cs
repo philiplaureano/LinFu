@@ -4,8 +4,8 @@ using System.Collections.Generic;
 namespace LinFu.AOP.Cecil
 {
     /// <summary>
-    /// Represents a class that keeps track of the internal object instances that should be ignored
-    /// by the interception routines.
+    ///     Represents a class that keeps track of the internal object instances that should be ignored
+    ///     by the interception routines.
     /// </summary>
     public static class IgnoredInstancesRegistry
     {
@@ -18,7 +18,7 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Determines whether or not the registry contains the given ignored object.
+        ///     Determines whether or not the registry contains the given ignored object.
         /// </summary>
         /// <param name="target">The target object.</param>
         /// <returns>Returns <c>true</c> if the object should be ignored; otherwise, it will return <c>false</c>.</returns>
@@ -33,7 +33,7 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Adds an instance to the list of ignored instances.
+        ///     Adds an instance to the list of ignored instances.
         /// </summary>
         /// <param name="target">The target instance to be ignored by the interception routines.</param>
         public static void AddInstance(object target)

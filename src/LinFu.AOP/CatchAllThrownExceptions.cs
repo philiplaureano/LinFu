@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using MethodBody = Mono.Cecil.Cil.MethodBody;
 
 namespace LinFu.AOP.Cecil
 {
     /// <summary>
-    /// Represents a method rewriter that modifies a method body to support dynamic exception handling.
+    ///     Represents a method rewriter that modifies a method body to support dynamic exception handling.
     /// </summary>
     public class CatchAllThrownExceptions : BaseMethodRewriter
     {
@@ -23,16 +21,16 @@ namespace LinFu.AOP.Cecil
         private TypeReference _voidType;
 
         /// <summary>
-        /// Adds additional references to the target module.
+        ///     Adds additional references to the target module.
         /// </summary>
         /// <param name="module">The host module.</param>
         public override void ImportReferences(ModuleDefinition module)
         {
-            _voidType = module.Import(typeof (void));
+            _voidType = module.Import(typeof(void));
         }
 
         /// <summary>
-        /// Adds local variables to the <paramref name="hostMethod"/>.
+        ///     Adds local variables to the <paramref name="hostMethod" />.
         /// </summary>
         /// <param name="hostMethod">The target method.</param>
         public override void AddLocals(MethodDefinition hostMethod)
@@ -48,10 +46,10 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Rewrites the instructions in the target method body to support dynamic exception handling.
+        ///     Rewrites the instructions in the target method body to support dynamic exception handling.
         /// </summary>
         /// <param name="targetMethod">The target method.</param>
-        /// <param name="IL">The <see cref="CilWorker"/> instance that represents the method body.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> instance that represents the method body.</param>
         /// <param name="oldInstructions">The IL instructions of the original method body.</param>
         protected override void RewriteMethodBody(MethodDefinition targetMethod, CilWorker IL,
             IEnumerable<Instruction> oldInstructions)
@@ -88,10 +86,7 @@ namespace LinFu.AOP.Cecil
             addOriginalInstructions.Emit(IL);
 
             IL.Append(endOfOriginalInstructionBlock);
-            if (returnType != _voidType && _returnValue != null)
-            {
-                IL.Emit(OpCodes.Stloc, _returnValue);
-            }
+            if (returnType != _voidType && _returnValue != null) IL.Emit(OpCodes.Stloc, _returnValue);
 
             IL.Emit(OpCodes.Leave, endLabel);
 
@@ -104,7 +99,7 @@ namespace LinFu.AOP.Cecil
             SaveExceptionInfo(targetMethod, emitter);
             IL.Emit(OpCodes.Ldloc, _exceptionInfo);
 
-            var getHandlerMethodInfo = typeof (ExceptionHandlerRegistry).GetMethod("GetHandler");
+            var getHandlerMethodInfo = typeof(ExceptionHandlerRegistry).GetMethod("GetHandler");
             var getHandlerMethod = module.Import(getHandlerMethodInfo);
             IL.Emit(OpCodes.Call, getHandlerMethod);
             IL.Emit(OpCodes.Stloc, _exceptionHandler);
@@ -168,10 +163,10 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Saves the current <see cref="IExceptionHandlerInfo"/> instance.
+        ///     Saves the current <see cref="IExceptionHandlerInfo" /> instance.
         /// </summary>
         /// <param name="targetMethod">The target method.</param>
-        /// <param name="emitter">The <see cref="IEmitInvocationInfo"/> instance that will emit the current method context.</param>
+        /// <param name="emitter">The <see cref="IEmitInvocationInfo" /> instance that will emit the current method context.</param>
         private void SaveExceptionInfo(MethodDefinition targetMethod, IEmitInvocationInfo emitter)
         {
             var IL = targetMethod.GetILGenerator();
@@ -182,8 +177,8 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Ldloc, _invocationInfo);
 
             var exceptionInfoConstructor = module.ImportConstructor<ExceptionHandlerInfo>(
-                typeof (Exception),
-                typeof (IInvocationInfo));
+                typeof(Exception),
+                typeof(IInvocationInfo));
             IL.Emit(OpCodes.Newobj, exceptionInfoConstructor);
             IL.Emit(OpCodes.Stloc, _exceptionInfo);
 

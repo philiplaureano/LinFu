@@ -9,25 +9,25 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// A class that injects custom <see cref="IFactory"/> and <see cref="IFactory{T}"/>
-    /// instances into an <see cref="IServiceContainer"/> instance.
+    ///     A class that injects custom <see cref="IFactory" /> and <see cref="IFactory{T}" />
+    ///     instances into an <see cref="IServiceContainer" /> instance.
     /// </summary>
     public class FactoryAttributeLoader : ITypeLoader
     {
         /// <summary>
-        /// Loads an <see cref="IFactory"/> and <see cref="IFactory{T}"/> instance
-        /// into a <see cref="IServiceContainer"/> instance using the given
-        /// <paramref name="sourceType"/>.
+        ///     Loads an <see cref="IFactory" /> and <see cref="IFactory{T}" /> instance
+        ///     into a <see cref="IServiceContainer" /> instance using the given
+        ///     <paramref name="sourceType" />.
         /// </summary>
         /// <param name="sourceType">The input type from which one or more factories will be created.</param>
-        /// <returns>A set of <see cref="Action{T}"/> instances. This cannot be null.</returns>
+        /// <returns>A set of <see cref="Action{T}" /> instances. This cannot be null.</returns>
         public IEnumerable<Action<IServiceContainer>> Load(Type sourceType)
         {
             if (sourceType == null)
                 throw new ArgumentNullException("sourceType");
 
             // Extract the factory attributes from the current type
-            var attributes = sourceType.GetCustomAttributes(typeof (FactoryAttribute), false);
+            var attributes = sourceType.GetCustomAttributes(typeof(FactoryAttribute), false);
             var attributeList = attributes.Cast<FactoryAttribute>()
                 .Where(f => f != null).ToList();
 
@@ -50,8 +50,8 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// Determines whether or not the current <paramref name="sourceType"/>
-        /// can be loaded.
+        ///     Determines whether or not the current <paramref name="sourceType" />
+        ///     can be loaded.
         /// </summary>
         /// <param name="sourceType">The source type currently being loaded.</param>
         /// <returns>Returns <c>true</c> if the type is a class type; otherwise, it returns <c>false</c>.</returns>
@@ -75,11 +75,14 @@ namespace LinFu.IoC.Configuration
 
 
         /// <summary>
-        /// Instantiates the <see cref="IFactory"/> instances associated with the <paramref name="sourceType"/> and
-        /// adds those factories to the target container upon initialization.
+        ///     Instantiates the <see cref="IFactory" /> instances associated with the <paramref name="sourceType" /> and
+        ///     adds those factories to the target container upon initialization.
         /// </summary>
-        /// <param name="sourceType">The <see cref="System.Type"/> currently being inspected.</param>
-        /// <param name="attributeList">The list of <see cref="FactoryAttribute"/> instances currently declared on on the source type.</param>
+        /// <param name="sourceType">The <see cref="System.Type" /> currently being inspected.</param>
+        /// <param name="attributeList">
+        ///     The list of <see cref="FactoryAttribute" /> instances currently declared on on the source
+        ///     type.
+        /// </param>
         /// <param name="getFactoryInstance">The functor that will be responsible for generating the factory instance.</param>
         /// <returns>A list of actions that will add the factories to the target container.</returns>
         private static IEnumerable<Action<IServiceContainer>> GetResults(Type sourceType,
@@ -90,12 +93,12 @@ namespace LinFu.IoC.Configuration
             var results = new List<Action<IServiceContainer>>();
             // The factory instance must implement either
             // IFactory or IFactory<T>
-            var factoryInterfaces = (from t in sourceType.GetInterfaces()
+            var factoryInterfaces = from t in sourceType.GetInterfaces()
                 where t.IsGenericType &&
-                      t.GetGenericTypeDefinition() == typeof (IFactory<>)
-                select t);
+                      t.GetGenericTypeDefinition() == typeof(IFactory<>)
+                select t;
 
-            if (!typeof (IFactory).IsAssignableFrom(sourceType) && factoryInterfaces.Count() == 0)
+            if (!typeof(IFactory).IsAssignableFrom(sourceType) && factoryInterfaces.Count() == 0)
             {
                 var message =
                     string.Format(
@@ -122,16 +125,12 @@ namespace LinFu.IoC.Configuration
 
                             // Check to see if the object is IFactory<T>, if so we need to adapt it to 
                             // IFactory.
-                            var genericType = typeof (IFactory<>).MakeGenericType(currentServiceType);
-                            if (!genericType.IsInstanceOfType(result))
-                            {
-                                // It isn't an IFactory or IFactory<T>, who knows what it is, return null.
-                                return null;
-                            }
+                            var genericType = typeof(IFactory<>).MakeGenericType(currentServiceType);
+                            if (!genericType.IsInstanceOfType(result)) return null;
 
                             // Adapt IFactory<T> to IFactory.
-                            var adapterType = typeof (FactoryAdapter<>).MakeGenericType(currentServiceType);
-                            var adapter = (IFactory) Activator.CreateInstance(adapterType, new[] {result});
+                            var adapterType = typeof(FactoryAdapter<>).MakeGenericType(currentServiceType);
+                            var adapter = (IFactory) Activator.CreateInstance(adapterType, result);
                             return adapter;
                         };
 
@@ -168,6 +167,7 @@ namespace LinFu.IoC.Configuration
                     var injector = new CustomFactoryInjector(serviceType, factory);
                     results.Add(container => container.PreProcessors.Add(injector));
                 }
+
                 // Add each service to the container on initialization
                 results.Add(container => container.AddFactory(serviceName, serviceType, argumentTypes, factory));
             }
@@ -176,17 +176,20 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// Instantiates the given factory using the <paramref name="getStronglyTypedFactory">factory functor.</paramref>
+        ///     Instantiates the given factory using the <paramref name="getStronglyTypedFactory">factory functor.</paramref>
         /// </summary>
         /// <param name="currentServiceType">The service type that will be created by the factory.</param>
         /// <param name="getStronglyTypedFactory">The functor that will be responsible for creating the factory itself.</param>
-        /// <param name="implementedInterfaces">The list of <see cref="IFactory{T}"/> interfaces that are implemented by the source type.</param>
+        /// <param name="implementedInterfaces">
+        ///     The list of <see cref="IFactory{T}" /> interfaces that are implemented by the
+        ///     source type.
+        /// </param>
         /// <returns>A valid factory instance.</returns>
         private static IFactory GetFactory(Type currentServiceType,
             Func<IFactoryRequest, IFactory> getStronglyTypedFactory,
             ICollection<Type> implementedInterfaces)
         {
-            var genericType = typeof (IFactory<>).MakeGenericType(currentServiceType);
+            var genericType = typeof(IFactory<>).MakeGenericType(currentServiceType);
 
             // Lazy-instantiate the factories so that they can be injected by the container
             IFactory lazyFactory = new LazyFactory(getStronglyTypedFactory);
@@ -196,11 +199,11 @@ namespace LinFu.IoC.Configuration
             {
                 // Convert the IFactory<T> instance down to an IFactory
                 // instance so that it can be used by the target container 
-                var lazyFactoryType = typeof (LazyFactory<>).MakeGenericType(currentServiceType);
-                var adapterType = typeof (FactoryAdapter<>).MakeGenericType(currentServiceType);
+                var lazyFactoryType = typeof(LazyFactory<>).MakeGenericType(currentServiceType);
+                var adapterType = typeof(FactoryAdapter<>).MakeGenericType(currentServiceType);
 
-                lazyFactory = (IFactory) Activator.CreateInstance(lazyFactoryType, new[] {getStronglyTypedFactory});
-                result = (IFactory) Activator.CreateInstance(adapterType, new[] {lazyFactory});
+                lazyFactory = (IFactory) Activator.CreateInstance(lazyFactoryType, getStronglyTypedFactory);
+                result = (IFactory) Activator.CreateInstance(adapterType, lazyFactory);
 
                 return result;
             }

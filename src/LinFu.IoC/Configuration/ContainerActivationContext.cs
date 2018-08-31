@@ -7,15 +7,13 @@ using ActivationContext = LinFu.AOP.Interfaces.ActivationContext;
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// Represents a class that describes a request to instantiate a particular object type using a given
-    /// <see cref="IServiceContainer"/> instance.
+    ///     Represents a class that describes a request to instantiate a particular object type using a given
+    ///     <see cref="IServiceContainer" /> instance.
     /// </summary>
     public class ContainerActivationContext : ActivationContext, IContainerActivationContext
     {
-        private readonly IServiceContainer _container;
-
         /// <summary>
-        /// Initializes the class with the given parameters.
+        ///     Initializes the class with the given parameters.
         /// </summary>
         /// <param name="concreteType">The type to be instantiated.</param>
         /// <param name="container">The container that will be used to instantiate the target type.</param>
@@ -23,17 +21,14 @@ namespace LinFu.IoC.Configuration
         public ContainerActivationContext(Type concreteType, IServiceContainer container, object[] additionalArguments)
             : base(concreteType, additionalArguments)
         {
-            _container = container;
+            Container = container;
         }
 
 
         /// <summary>
-        /// Gets the value indicating the <see cref="IServiceContainer"/> instance
-        /// that will instantiate the <see cref="IActivationContext.TargetType"/>.
+        ///     Gets the value indicating the <see cref="IServiceContainer" /> instance
+        ///     that will instantiate the <see cref="IActivationContext.TargetType" />.
         /// </summary>
-        public IServiceContainer Container
-        {
-            get { return _container; }
-        }
+        public IServiceContainer Container { get; }
     }
 }

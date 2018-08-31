@@ -4,14 +4,13 @@ using System.Diagnostics;
 using System.Reflection;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using MethodBody = Mono.Cecil.Cil.MethodBody;
 
 namespace LinFu.Reflection.Emit
 {
     /// <summary>
-    /// A class that extends the <see cref="CilWorker"/> class
-    /// with helper methods that make it easier to save
-    /// information about the method currently being implemented.
+    ///     A class that extends the <see cref="CilWorker" /> class
+    ///     with helper methods that make it easier to save
+    ///     information about the method currently being implemented.
     /// </summary>
     public static class CilWorkerExtensions
     {
@@ -37,8 +36,8 @@ namespace LinFu.Reflection.Emit
         }
 
         /// <summary>
-        /// Emits a Console.WriteLine call to using the current CilWorker that will only be called if the contents
-        /// of the target variable are null at runtime.
+        ///     Emits a Console.WriteLine call to using the current CilWorker that will only be called if the contents
+        ///     of the target variable are null at runtime.
         /// </summary>
         /// <param name="IL">The target CilWorker.</param>
         /// <param name="text">The text that will be written to the console.</param>
@@ -53,7 +52,7 @@ namespace LinFu.Reflection.Emit
         }
 
         /// <summary>
-        /// Emits a Console.WriteLine call using the current CilWorker.
+        ///     Emits a Console.WriteLine call using the current CilWorker.
         /// </summary>
         /// <param name="IL">The target CilWorker.</param>
         /// <param name="text">The text that will be written to the console.</param>
@@ -64,24 +63,24 @@ namespace LinFu.Reflection.Emit
             var declaringType = method.DeclaringType;
             var module = declaringType.Module;
 
-            var writeLineMethod = typeof (Console).GetMethod("WriteLine",
+            var writeLineMethod = typeof(Console).GetMethod("WriteLine",
                 BindingFlags.Public | BindingFlags.Static, null,
-                new[] {typeof (string)}, null);
+                new[] {typeof(string)}, null);
             IL.Emit(OpCodes.Ldstr, text);
             IL.Emit(OpCodes.Call, module.Import(writeLineMethod));
         }
 
         /// <summary>
-        /// Pushes the current <paramref name="method"/> onto the stack.
+        ///     Pushes the current <paramref name="method" /> onto the stack.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> that will be used to create the instructions.</param>
-        /// <param name="method">The method that represents the <see cref="MethodInfo"/> that will be pushed onto the stack.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> that will be used to create the instructions.</param>
+        /// <param name="method">The method that represents the <see cref="MethodInfo" /> that will be pushed onto the stack.</param>
         /// <param name="module">The module that contains the host method.</param>
         public static void PushMethod(this CilWorker IL, MethodReference method, ModuleDefinition module)
         {
             var getMethodFromHandle = module.ImportMethod<MethodBase>("GetMethodFromHandle",
-                typeof (RuntimeMethodHandle),
-                typeof (RuntimeTypeHandle));
+                typeof(RuntimeMethodHandle),
+                typeof(RuntimeTypeHandle));
 
             var declaringType = method.DeclaringType;
 
@@ -91,9 +90,7 @@ namespace LinFu.Reflection.Emit
             {
                 var genericType = new GenericInstanceType(declaringType);
                 foreach (GenericParameter parameter in declaringType.GenericParameters)
-                {
                     genericType.GenericArguments.Add(parameter);
-                }
 
                 declaringType = genericType;
             }
@@ -105,7 +102,7 @@ namespace LinFu.Reflection.Emit
         }
 
         /// <summary>
-        /// Gets the declaring type for the target method.
+        ///     Gets the declaring type for the target method.
         /// </summary>
         /// <param name="method">The target method.</param>
         /// <returns>The declaring type.</returns>
@@ -116,15 +113,15 @@ namespace LinFu.Reflection.Emit
         }
 
         /// <summary>
-        /// Pushes a <paramref name="Type"/> instance onto the stack.
+        ///     Pushes a <paramref name="Type" /> instance onto the stack.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> that will be used to create the instructions.</param>
-        /// <param name="type">The type that represents the <see cref="Type"/> that will be pushed onto the stack.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> that will be used to create the instructions.</param>
+        /// <param name="type">The type that represents the <see cref="Type" /> that will be pushed onto the stack.</param>
         /// <param name="module">The module that contains the host method.</param>
         public static void PushType(this CilWorker IL, TypeReference type, ModuleDefinition module)
         {
             var getTypeFromHandle = module.ImportMethod<Type>("GetTypeFromHandle",
-                typeof (RuntimeTypeHandle));
+                typeof(RuntimeTypeHandle));
 
             // Instantiate the generic type before pushing it onto the stack
             var declaringType = GetDeclaringType(type);
@@ -134,16 +131,16 @@ namespace LinFu.Reflection.Emit
         }
 
         /// <summary>
-        /// Pushes the current <paramref name="field"/> onto the stack.
+        ///     Pushes the current <paramref name="field" /> onto the stack.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> that will be used to create the instructions.</param>
-        /// <param name="field">The field that represents the <see cref="FieldInfo"/> that will be pushed onto the stack.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> that will be used to create the instructions.</param>
+        /// <param name="field">The field that represents the <see cref="FieldInfo" /> that will be pushed onto the stack.</param>
         /// <param name="module">The module that contains the target field.</param>
         public static void PushField(this CilWorker IL, FieldReference field, ModuleDefinition module)
         {
             var getFieldFromHandle = module.ImportMethod<FieldInfo>("GetFieldFromHandle",
-                typeof (RuntimeFieldHandle),
-                typeof (RuntimeTypeHandle));
+                typeof(RuntimeFieldHandle),
+                typeof(RuntimeTypeHandle));
 
             var declaringType = GetDeclaringType(field.DeclaringType);
 
@@ -153,16 +150,16 @@ namespace LinFu.Reflection.Emit
         }
 
         /// <summary>
-        /// Pushes the arguments of a method onto the stack.
+        ///     Pushes the arguments of a method onto the stack.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> that will be used to create the instructions.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> that will be used to create the instructions.</param>
         /// <param name="module">The module that contains the host method.</param>
         /// <param name="method">The target method.</param>
         /// <param name="arguments">The <see cref="VariableDefinition">local variable</see> that will hold the array of arguments.</param>
         public static void PushArguments(this CilWorker IL, IMethodSignature method, ModuleDefinition module,
             VariableDefinition arguments)
         {
-            var objectType = module.ImportType(typeof (object));
+            var objectType = module.ImportType(typeof(object));
             var parameterCount = method.Parameters.Count;
             IL.Emit(OpCodes.Ldc_I4, parameterCount);
             IL.Emit(OpCodes.Newarr, objectType);
@@ -172,22 +169,19 @@ namespace LinFu.Reflection.Emit
                 return;
 
             var index = 0;
-            foreach (ParameterDefinition param in method.Parameters)
-            {
-                IL.PushParameter(index++, arguments, param);
-            }
+            foreach (ParameterDefinition param in method.Parameters) IL.PushParameter(index++, arguments, param);
         }
 
 
         /// <summary>
-        /// Pushes the stack trace of the currently executing method onto the stack.
+        ///     Pushes the stack trace of the currently executing method onto the stack.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> that will be used to create the instructions.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> that will be used to create the instructions.</param>
         /// <param name="module">The module that contains the host method.</param>
         public static void PushStackTrace(this CilWorker IL, ModuleDefinition module)
         {
             var stackTraceConstructor =
-                typeof (StackTrace).GetConstructor(new[] {typeof (int), typeof (bool)});
+                typeof(StackTrace).GetConstructor(new[] {typeof(int), typeof(bool)});
             var stackTraceCtor = module.Import(stackTraceConstructor);
 
             var addDebugSymbols = OpCodes.Ldc_I4_0;
@@ -197,12 +191,15 @@ namespace LinFu.Reflection.Emit
         }
 
         /// <summary>
-        /// Saves the generic type arguments that were used to construct the method.
+        ///     Saves the generic type arguments that were used to construct the method.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> that will be used to create the instructions.</param>
-        /// <param name="method">The target method whose generic type arguments (if any) will be saved into the <paramref name="typeArguments">local variable</paramref>.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> that will be used to create the instructions.</param>
+        /// <param name="method">
+        ///     The target method whose generic type arguments (if any) will be saved into the
+        ///     <paramref name="typeArguments">local variable</paramref>.
+        /// </param>
         /// <param name="module">The module that contains the host method.</param>
-        /// <param name="typeArguments">The local variable that will store the resulting array of <see cref="Type"/> objects.</param>
+        /// <param name="typeArguments">The local variable that will store the resulting array of <see cref="Type" /> objects.</param>
         public static void PushGenericArguments(this CilWorker IL, IGenericParameterProvider method,
             ModuleDefinition module, VariableDefinition typeArguments)
         {
@@ -224,12 +221,12 @@ namespace LinFu.Reflection.Emit
         }
 
         /// <summary>
-        /// Saves the current method signature of a method into an array
-        /// of <see cref="System.Type"/> objects. This can be used to determine the
-        /// signature of methods with generic type parameters or methods that have
-        /// parameters that are generic parameters specified by the type itself.
+        ///     Saves the current method signature of a method into an array
+        ///     of <see cref="System.Type" /> objects. This can be used to determine the
+        ///     signature of methods with generic type parameters or methods that have
+        ///     parameters that are generic parameters specified by the type itself.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> that will be used to create the instructions.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> that will be used to create the instructions.</param>
         /// <param name="method">The target method whose generic type arguments (if any) will be saved into the local variable .</param>
         /// <param name="module">The module that contains the host method.</param>
         /// <param name="parameterTypes">The local variable that will store the current method signature.</param>
@@ -251,15 +248,15 @@ namespace LinFu.Reflection.Emit
         }
 
         /// <summary>
-        /// Converts the return value of a method into the <paramref name="returnType">target type</paramref>.
-        /// If the target type is void, then the value will simply be popped from the stack.
+        ///     Converts the return value of a method into the <paramref name="returnType">target type</paramref>.
+        ///     If the target type is void, then the value will simply be popped from the stack.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> that will be used to create the instructions.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> that will be used to create the instructions.</param>
         /// <param name="module">The module that contains the host method.</param>
         /// <param name="returnType">The method return type itself.</param>
         public static void PackageReturnValue(this CilWorker IL, ModuleDefinition module, TypeReference returnType)
         {
-            var voidType = module.ImportType(typeof (void));
+            var voidType = module.ImportType(typeof(void));
             if (returnType == voidType)
             {
                 IL.Emit(OpCodes.Pop);
@@ -270,9 +267,9 @@ namespace LinFu.Reflection.Emit
         }
 
         /// <summary>
-        /// Emits the proper Stind (store indirect) IL instruction for the <paramref name="currentType"/>.
+        ///     Emits the proper Stind (store indirect) IL instruction for the <paramref name="currentType" />.
         /// </summary>
-        /// <param name="IL">The target <see cref="CilWorker"/> that will emit the IL.</param>
+        /// <param name="IL">The target <see cref="CilWorker" /> that will emit the IL.</param>
         /// <param name="currentType">The type of data being stored.</param>
         public static void Stind(this CilWorker IL, TypeReference currentType)
         {
@@ -287,10 +284,10 @@ namespace LinFu.Reflection.Emit
         }
 
         /// <summary>
-        /// Stores the <paramref name="param">current parameter value</paramref>
-        /// into the array of method <paramref name="arguments"/>.
+        ///     Stores the <paramref name="param">current parameter value</paramref>
+        ///     into the array of method <paramref name="arguments" />.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> that will be used to create the instructions.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> that will be used to create the instructions.</param>
         /// <param name="arguments">The local variable that will store the method arguments.</param>
         /// <param name="index">The array index that indicates where the parameter value will be stored in the array of arguments.</param>
         /// <param name="param">The current argument value being stored.</param>
@@ -318,9 +315,9 @@ namespace LinFu.Reflection.Emit
         }
 
         /// <summary>
-        /// Obtains the method definition that contains the current <see cref="CilWorker"/>.
+        ///     Obtains the method definition that contains the current <see cref="CilWorker" />.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> responsible for the method body.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> responsible for the method body.</param>
         /// <returns>A method definition.</returns>
         public static MethodDefinition GetMethod(this CilWorker IL)
         {
@@ -331,9 +328,9 @@ namespace LinFu.Reflection.Emit
         }
 
         /// <summary>
-        /// Obtains the module that contains the current <see cref="CilWorker"/>.
+        ///     Obtains the module that contains the current <see cref="CilWorker" />.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> responsible for the method body.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> responsible for the method body.</param>
         /// <returns>The host module.</returns>
         public static ModuleDefinition GetModule(this CilWorker IL)
         {
@@ -343,7 +340,7 @@ namespace LinFu.Reflection.Emit
         }
 
         /// <summary>
-        /// Obtains the declaring type for a given type reference.
+        ///     Obtains the declaring type for a given type reference.
         /// </summary>
         /// <param name="declaringType">The declaring ty pe.</param>
         /// <returns>The actual declaring type.</returns>
@@ -355,12 +352,11 @@ namespace LinFu.Reflection.Emit
             {
                 var genericType = new GenericInstanceType(declaringType);
                 foreach (GenericParameter parameter in declaringType.GenericParameters)
-                {
                     genericType.GenericArguments.Add(parameter);
-                }
 
                 declaringType = genericType;
             }
+
             return declaringType;
         }
     }

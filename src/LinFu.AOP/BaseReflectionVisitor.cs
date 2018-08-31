@@ -46,26 +46,17 @@ namespace LinFu.AOP.Cecil
 
         public virtual void VisitAssemblyNameReferenceCollection(AssemblyNameReferenceCollection names)
         {
-            foreach (AssemblyNameReference nameRef in names)
-            {
-                VisitAssemblyNameReference(nameRef);
-            }
+            foreach (AssemblyNameReference nameRef in names) VisitAssemblyNameReference(nameRef);
         }
 
         public virtual void VisitModuleDefinitionCollection(ModuleDefinitionCollection modules)
         {
-            foreach (ModuleDefinition module in modules)
-            {
-                VisitModuleDefinition(module);
-            }
+            foreach (ModuleDefinition module in modules) VisitModuleDefinition(module);
         }
 
         public virtual void VisitModuleReferenceCollection(ModuleReferenceCollection modules)
         {
-            foreach (ModuleReference module in modules)
-            {
-                VisitModuleReference(module);
-            }
+            foreach (ModuleReference module in modules) VisitModuleReference(module);
         }
 
         public virtual void VisitResourceCollection(ResourceCollection resources)
@@ -102,66 +93,42 @@ namespace LinFu.AOP.Cecil
 
         public virtual void VisitConstructorCollection(ConstructorCollection ctors)
         {
-            foreach (MethodDefinition ctor in ctors)
-            {
-                VisitConstructor(ctor);
-            }
+            foreach (MethodDefinition ctor in ctors) VisitConstructor(ctor);
         }
 
         public virtual void VisitCustomAttributeCollection(CustomAttributeCollection customAttrs)
         {
-            foreach (CustomAttribute ca in customAttrs)
-            {
-                VisitCustomAttribute(ca);
-            }
+            foreach (CustomAttribute ca in customAttrs) VisitCustomAttribute(ca);
         }
 
         public virtual void VisitEventDefinitionCollection(EventDefinitionCollection events)
         {
-            foreach (EventDefinition eventDef in events)
-            {
-                VisitEventDefinition(eventDef);
-            }
+            foreach (EventDefinition eventDef in events) VisitEventDefinition(eventDef);
         }
 
         public virtual void VisitExternTypeCollection(ExternTypeCollection externs)
         {
-            foreach (TypeReference type in externs)
-            {
-                VisitExternType(type);
-            }
+            foreach (TypeReference type in externs) VisitExternType(type);
         }
 
         public virtual void VisitFieldDefinitionCollection(FieldDefinitionCollection fields)
         {
-            foreach (FieldDefinition field in fields)
-            {
-                VisitFieldDefinition(field);
-            }
+            foreach (FieldDefinition field in fields) VisitFieldDefinition(field);
         }
 
         public virtual void VisitGenericParameterCollection(GenericParameterCollection genparams)
         {
-            foreach (GenericParameter param in genparams)
-            {
-                VisitGenericParameter(param);
-            }
+            foreach (GenericParameter param in genparams) VisitGenericParameter(param);
         }
 
         public virtual void VisitInterfaceCollection(InterfaceCollection interfaces)
         {
-            foreach (TypeReference interfaceType in interfaces)
-            {
-                VisitInterface(interfaceType);
-            }
+            foreach (TypeReference interfaceType in interfaces) VisitInterface(interfaceType);
         }
 
         public virtual void VisitMemberReferenceCollection(MemberReferenceCollection members)
         {
-            foreach (MemberReference memberRef in members)
-            {
-                VisitMemberReference(memberRef);
-            }
+            foreach (MemberReference memberRef in members) VisitMemberReference(memberRef);
         }
 
         public virtual void VisitMethodDefinition(MethodDefinition method)
@@ -181,58 +148,37 @@ namespace LinFu.AOP.Cecil
 
         public virtual void VisitMethodDefinitionCollection(MethodDefinitionCollection methods)
         {
-            foreach (MethodDefinition method in methods)
-            {
-                VisitMethodDefinition(method);
-            }
+            foreach (MethodDefinition method in methods) VisitMethodDefinition(method);
         }
 
         public virtual void VisitOverrideCollection(OverrideCollection overrides)
         {
-            foreach (MethodReference method in overrides)
-            {
-                VisitOverride(method);
-            }
+            foreach (MethodReference method in overrides) VisitOverride(method);
         }
 
         public virtual void VisitParameterDefinitionCollection(ParameterDefinitionCollection parameters)
         {
-            foreach (ParameterDefinition param in parameters)
-            {
-                VisitParameterDefinition(param);
-            }
+            foreach (ParameterDefinition param in parameters) VisitParameterDefinition(param);
         }
 
         public virtual void VisitPropertyDefinitionCollection(PropertyDefinitionCollection properties)
         {
-            foreach (PropertyDefinition property in properties)
-            {
-                VisitPropertyDefinition(property);
-            }
+            foreach (PropertyDefinition property in properties) VisitPropertyDefinition(property);
         }
 
         public virtual void VisitSecurityDeclarationCollection(SecurityDeclarationCollection secDecls)
         {
-            foreach (SecurityDeclaration securityDeclaration in secDecls)
-            {
-                VisitSecurityDeclaration(securityDeclaration);
-            }
+            foreach (SecurityDeclaration securityDeclaration in secDecls) VisitSecurityDeclaration(securityDeclaration);
         }
 
         public virtual void VisitTypeDefinitionCollection(TypeDefinitionCollection types)
         {
-            foreach (TypeDefinition typeDef in types)
-            {
-                VisitTypeDefinition(typeDef);
-            }
+            foreach (TypeDefinition typeDef in types) VisitTypeDefinition(typeDef);
         }
 
         public virtual void VisitTypeReferenceCollection(TypeReferenceCollection refs)
         {
-            foreach (TypeReference type in refs)
-            {
-                VisitTypeReference(type);
-            }
+            foreach (TypeReference type in refs) VisitTypeReference(type);
         }
 
 
@@ -291,10 +237,7 @@ namespace LinFu.AOP.Cecil
 
         public virtual void VisitNestedTypeCollection(NestedTypeCollection nestedTypes)
         {
-            foreach (TypeDefinition nestedType in nestedTypes)
-            {
-                VisitNestedType(nestedType);
-            }
+            foreach (TypeDefinition nestedType in nestedTypes) VisitNestedType(nestedType);
         }
 
         public virtual void VisitOverride(MethodReference ov)

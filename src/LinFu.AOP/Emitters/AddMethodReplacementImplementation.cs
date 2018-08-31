@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using LinFu.AOP.Cecil.Interfaces;
 using LinFu.Reflection.Emit;
-using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 namespace LinFu.AOP.Cecil
 {
     /// <summary>
-    /// Represents an instruction emitter that adds method body replacement support to a given method body.
+    ///     Represents an instruction emitter that adds method body replacement support to a given method body.
     /// </summary>
     public class AddMethodReplacementImplementation : IInstructionEmitter
     {
@@ -19,7 +18,7 @@ namespace LinFu.AOP.Cecil
         private readonly VariableDefinition _returnValue;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AddMethodReplacementImplementation"/> class.
+        ///     Initializes a new instance of the <see cref="AddMethodReplacementImplementation" /> class.
         /// </summary>
         /// <param name="parameters">The set of parameters that describe the target method body.</param>
         public AddMethodReplacementImplementation(IMethodBodyRewriterParameters parameters)
@@ -34,9 +33,9 @@ namespace LinFu.AOP.Cecil
 
 
         /// <summary>
-        /// Adds method body interception to the target method.
+        ///     Adds method body interception to the target method.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> pointing to the target method body.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> pointing to the target method body.</param>
         public void Emit(CilWorker IL)
         {
             var method = IL.GetMethod();

@@ -4,7 +4,7 @@ using LinFu.IoC.Interfaces;
 
 namespace SampleLibrary.IOC.BugFixes
 {
-    [Factory(typeof (MyClass<string>))]
+    [Factory(typeof(MyClass<string>))]
     public class MyFactory :
         //IFactory<MyClass<string>>
         IFactory

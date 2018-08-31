@@ -3,15 +3,15 @@
 namespace LinFu.IoC.Configuration.Interfaces
 {
     /// <summary>
-    /// Represents a type that can invoke a method
-    /// using a given set of method arguments.
+    ///     Represents a type that can invoke a method
+    ///     using a given set of method arguments.
     /// </summary>
     public interface IMethodInvoke<TMethod>
         where TMethod : MethodBase
     {
         /// <summary>
-        /// Invokes the <paramref name="targetMethod"/>
-        /// using the given <paramref name="arguments"/>.
+        ///     Invokes the <paramref name="targetMethod" />
+        ///     using the given <paramref name="arguments" />.
         /// </summary>
         /// <param name="target">The target object instance.</param>
         /// <param name="targetMethod">The target method to invoke.</param>

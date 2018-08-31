@@ -16,17 +16,18 @@ namespace LinFu.UnitTests.Proxy
     [TestFixture]
     public class ProxySerializationTests : BaseTestFixture
     {
-        [Test, Ignore]
+        [Test]
+        [Ignore]
         public void ShouldBeAbleToSerializeInvocationInfo()
         {
             var target = 42;
-            var targetMethod = typeof (object).GetMethod("ToString");
+            var targetMethod = typeof(object).GetMethod("ToString");
             var stackTrace = new StackTrace();
-            var parameterTypes = new[] {typeof (int)};
-            var typeArguments = new[] {typeof (string)};
+            var parameterTypes = new[] {typeof(int)};
+            var typeArguments = new[] {typeof(string)};
             var arguments = new object[] {1, 2, 3};
             var info = new InvocationInfo(target, targetMethod, stackTrace, parameterTypes, typeArguments,
-                typeof (string), arguments);
+                typeof(string), arguments);
 
             var memoryStream = new MemoryStream();
             var formatter = new BinaryFormatter();
@@ -67,8 +68,8 @@ namespace LinFu.UnitTests.Proxy
             var serializationConstructor = proxyType.GetConstructor(constructorFlags, null,
                 new[]
                 {
-                    typeof (SerializationInfo),
-                    typeof (StreamingContext)
+                    typeof(SerializationInfo),
+                    typeof(StreamingContext)
                 }, null);
             Assert.IsNotNull(serializationConstructor);
 
@@ -82,7 +83,7 @@ namespace LinFu.UnitTests.Proxy
             var restoredProxy = (IProxy) formatter.Deserialize(stream);
             Assert.IsNotNull(restoredProxy);
             Assert.IsNotNull(restoredProxy.Interceptor);
-            Assert.IsTrue(restoredProxy.Interceptor.GetType() == typeof (SerializableInterceptor));
+            Assert.IsTrue(restoredProxy.Interceptor.GetType() == typeof(SerializableInterceptor));
 
             var otherInterceptor = (SerializableInterceptor) restoredProxy.Interceptor;
             Assert.AreEqual(otherInterceptor.Identifier, interceptor.Identifier);

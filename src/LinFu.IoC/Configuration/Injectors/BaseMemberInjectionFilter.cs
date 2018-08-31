@@ -8,7 +8,7 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// Defines the basic behavior of the <see cref="IMemberInjectionFilter{TMember}"/> interface.
+    ///     Defines the basic behavior of the <see cref="IMemberInjectionFilter{TMember}" /> interface.
     /// </summary>
     /// <typeparam name="TMember">The member type that will be filtered.</typeparam>
     public abstract class BaseMemberInjectionFilter<TMember> : IMemberInjectionFilter<TMember>, IInitialize
@@ -21,7 +21,7 @@ namespace LinFu.IoC.Configuration
 
 
         /// <summary>
-        /// Initializes the <see cref="BaseMemberInjectionFilter{TMember}"/> class.
+        ///     Initializes the <see cref="BaseMemberInjectionFilter{TMember}" /> class.
         /// </summary>
         /// <param name="source">The host container.</param>
         public virtual void Initialize(IServiceContainer source)
@@ -31,10 +31,10 @@ namespace LinFu.IoC.Configuration
 
 
         /// <summary>
-        /// Returns the list of <typeparamref name="TMember"/> objects
-        /// whose setters will injected with arbitrary values.
+        ///     Returns the list of <typeparamref name="TMember" /> objects
+        ///     whose setters will injected with arbitrary values.
         /// </summary>
-        /// <remarks>This implementation selects properties that are marked with the <see cref="InjectAttribute"/>.</remarks>
+        /// <remarks>This implementation selects properties that are marked with the <see cref="InjectAttribute" />.</remarks>
         /// <param name="targetType">The target type that contains the target properties.</param>
         /// <returns>A set of properties that describe which parameters should be injected.</returns>
         public virtual IEnumerable<TMember> GetInjectableMembers(Type targetType)
@@ -63,16 +63,16 @@ namespace LinFu.IoC.Configuration
 
 
         /// <summary>
-        /// Determines which members should be selected from the <paramref name="targetType"/>
-        /// using the <paramref name="container"/>
+        ///     Determines which members should be selected from the <paramref name="targetType" />
+        ///     using the <paramref name="container" />
         /// </summary>
         /// <param name="targetType">The target type that will supply the list of members that will be filtered.</param>
         /// <param name="container">The target container.</param>
-        /// <returns>A list of <typeparamref name="TMember"/> objects that pass the filter description.</returns>
+        /// <returns>A list of <typeparamref name="TMember" /> objects that pass the filter description.</returns>
         protected abstract IEnumerable<TMember> GetMembers(Type targetType, IServiceContainer container);
 
         /// <summary>
-        /// Determines which items should be injected from the <see cref="IServiceContainer"/> instance.
+        ///     Determines which items should be injected from the <see cref="IServiceContainer" /> instance.
         /// </summary>
         /// <param name="container">The source container that will supply the values for the selected members.</param>
         /// <param name="items">The list of properties that will be filtered.</param>

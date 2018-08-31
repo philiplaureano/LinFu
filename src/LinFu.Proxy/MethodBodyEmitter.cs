@@ -12,19 +12,18 @@ using LinFu.Proxy.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using MethodBody = Mono.Cecil.Cil.MethodBody;
 
 namespace LinFu.Proxy
 {
     /// <summary>
-    /// Provides the default implementation for the
-    /// <see cref="IMethodBodyEmitter"/> interface.
+    ///     Provides the default implementation for the
+    ///     <see cref="IMethodBodyEmitter" /> interface.
     /// </summary>
-    [Implements(typeof (IMethodBodyEmitter), LifecycleType.OncePerRequest)]
+    [Implements(typeof(IMethodBodyEmitter), LifecycleType.OncePerRequest)]
     internal class MethodBodyEmitter : IMethodBodyEmitter, IInitialize
     {
         /// <summary>
-        /// Initializes the class with the default values.
+        ///     Initializes the class with the default values.
         /// </summary>
         public MethodBodyEmitter()
         {
@@ -32,23 +31,23 @@ namespace LinFu.Proxy
         }
 
         /// <summary>
-        /// The <see cref="IEmitInvocationInfo"/> instance that
+        ///     The <see cref="IEmitInvocationInfo" /> instance that
         /// </summary>
         public IEmitInvocationInfo InvocationInfoEmitter { get; set; }
 
 
         /// <summary>
-        /// Initializes the MethodBodyEmitter class.
+        ///     Initializes the MethodBodyEmitter class.
         /// </summary>
         /// <param name="source"></param>
         public void Initialize(IServiceContainer source)
         {
-            InvocationInfoEmitter = (IEmitInvocationInfo) source.GetService(typeof (IEmitInvocationInfo));
+            InvocationInfoEmitter = (IEmitInvocationInfo) source.GetService(typeof(IEmitInvocationInfo));
         }
 
 
         /// <summary>
-        /// Generates a method body for the <paramref name="targetMethod"/>.
+        ///     Generates a method body for the <paramref name="targetMethod" />.
         /// </summary>
         /// <param name="originalMethod">The method currently being intercepted.</param>
         /// <param name="targetMethod">The target method that will contain the new method body.</param>
@@ -65,7 +64,7 @@ namespace LinFu.Proxy
             var declaringType = targetMethod.DeclaringType;
             var module = declaringType.Module;
             var proxyType = module.ImportType<IProxy>();
-            var getInterceptorMethod = module.ImportMethod("get_Interceptor", typeof (IProxy));
+            var getInterceptorMethod = module.ImportMethod("get_Interceptor", typeof(IProxy));
             var interceptor = targetMethod.AddLocal<IInterceptor>();
             var arguments = targetMethod.AddLocal<object[]>();
 
@@ -88,8 +87,8 @@ namespace LinFu.Proxy
 
 
             // var returnValue = interceptor.Intercept(info);
-            var voidType = module.ImportType(typeof (void));
-            var interceptMethod = module.ImportMethod<IInterceptor>("Intercept", typeof (IInvocationInfo));
+            var voidType = module.ImportType(typeof(void));
+            var interceptMethod = module.ImportMethod<IInterceptor>("Intercept", typeof(IInvocationInfo));
             IL.Emit(OpCodes.Ldloc, interceptor);
             IL.Emit(OpCodes.Ldloc, invocationInfo);
             IL.Emit(OpCodes.Callvirt, interceptMethod);
@@ -120,9 +119,9 @@ namespace LinFu.Proxy
 
 
         /// <summary>
-        /// Emits the IL instructions to obtain an <see cref="IInterceptor"/> instance for the proxy type.
+        ///     Emits the IL instructions to obtain an <see cref="IInterceptor" /> instance for the proxy type.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> responsible for emitting the method body.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> responsible for emitting the method body.</param>
         /// <param name="proxyType">The proxy type.</param>
         /// <param name="getInterceptorMethod">The getter method for the interceptor.</param>
         protected virtual void EmitGetInterceptorInstruction(CilWorker IL, TypeReference proxyType,
@@ -134,10 +133,10 @@ namespace LinFu.Proxy
         }
 
         /// <summary>
-        /// Causes the <see cref="CilWorker"/> to make the method throw a
-        /// <see cref="NotImplementedException"/> if the method cannot be found.
+        ///     Causes the <see cref="CilWorker" /> to make the method throw a
+        ///     <see cref="NotImplementedException" /> if the method cannot be found.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> responsible for emitting the method body.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> responsible for emitting the method body.</param>
         protected virtual void ImplementNotFound(CilWorker IL)
         {
             var body = IL.GetBody();
@@ -151,14 +150,17 @@ namespace LinFu.Proxy
         }
 
         /// <summary>
-        /// Saves the ref arguments of a given method using the
-        /// <paramref name="arguments"/> from the <paramref name="invocationInfo"/>
-        /// object.
+        ///     Saves the ref arguments of a given method using the
+        ///     <paramref name="arguments" /> from the <paramref name="invocationInfo" />
+        ///     object.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> that will emit the method body.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> that will emit the method body.</param>
         /// <param name="parameters">The parameters of the target method.</param>
-        /// <param name="invocationInfo">The local variable that contains the <see cref="IInvocationInfo"/> instance.</param>
-        /// <param name="arguments">The local variable that will store the arguments from the <see cref="IInvocationInfo"/> instance.</param>
+        /// <param name="invocationInfo">The local variable that contains the <see cref="IInvocationInfo" /> instance.</param>
+        /// <param name="arguments">
+        ///     The local variable that will store the arguments from the <see cref="IInvocationInfo" />
+        ///     instance.
+        /// </param>
         private static void SaveRefArguments(CilWorker IL, IEnumerable<ParameterDefinition> parameters,
             VariableDefinition invocationInfo, VariableDefinition arguments)
         {
@@ -182,6 +184,7 @@ namespace LinFu.Proxy
                     index++;
                     continue;
                 }
+
                 // Load the destination address
                 IL.Emit(OpCodes.Ldarg, index + 1);
 

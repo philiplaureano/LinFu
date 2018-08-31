@@ -9,6 +9,6 @@ namespace SampleLibrary.IOC
             Services = services;
         }
 
-        public IEnumerable<ISampleService> Services { get; private set; }
+        public IEnumerable<ISampleService> Services { get; }
     }
 }

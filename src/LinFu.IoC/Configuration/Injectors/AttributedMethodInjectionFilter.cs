@@ -8,26 +8,26 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// A default implementation of the <see cref="IMemberInjectionFilter{TMember}"/>
-    /// class that returns methods which have the <see cref="InjectAttribute"/>
-    /// defined.
+    ///     A default implementation of the <see cref="IMemberInjectionFilter{TMember}" />
+    ///     class that returns methods which have the <see cref="InjectAttribute" />
+    ///     defined.
     /// </summary>
     public class AttributedMethodInjectionFilter : BaseMemberInjectionFilter<MethodInfo>
     {
         private readonly Type _attributeType;
 
         /// <summary>
-        /// Initializes the class with the <see cref="InjectAttribute"/> as the
-        /// default injection attribute.
+        ///     Initializes the class with the <see cref="InjectAttribute" /> as the
+        ///     default injection attribute.
         /// </summary>
         public AttributedMethodInjectionFilter()
         {
-            _attributeType = typeof (InjectAttribute);
+            _attributeType = typeof(InjectAttribute);
         }
 
         /// <summary>
-        /// Initializes the class and uses the <paramref name="attributeType"/>
-        /// as the custom injection attribute.
+        ///     Initializes the class and uses the <paramref name="attributeType" />
+        ///     as the custom injection attribute.
         /// </summary>
         /// <param name="attributeType"></param>
         public AttributedMethodInjectionFilter(Type attributeType)
@@ -36,7 +36,7 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// Returns the methods that have the custom attribute type defined.
+        ///     Returns the methods that have the custom attribute type defined.
         /// </summary>
         /// <param name="targetType">The target type that contains the target methods.</param>
         /// <param name="container">The host container.</param>

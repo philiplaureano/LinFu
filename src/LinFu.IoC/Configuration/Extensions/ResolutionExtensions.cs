@@ -10,40 +10,44 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// Adds methods that extend LinFu.IoC to support automatic constructor resolution.
+    ///     Adds methods that extend LinFu.IoC to support automatic constructor resolution.
     /// </summary>
     public static class ResolutionExtensions
     {
         /// <summary>
-        /// Generates a predicate that determines whether or not a specific parameter type
-        /// exists in a container.
+        ///     Generates a predicate that determines whether or not a specific parameter type
+        ///     exists in a container.
         /// </summary>
-        /// <param name="parameterType">The target <see cref="Type"/>. </param>
-        /// <returns>A a predicate that determines whether or not a specific type
-        /// exists in a container</returns>
+        /// <param name="parameterType">The target <see cref="Type" />. </param>
+        /// <returns>
+        ///     A a predicate that determines whether or not a specific type
+        ///     exists in a container
+        /// </returns>
         public static Func<IServiceContainer, bool> MustExistInContainer(this Type parameterType)
         {
             return container => container.Contains(parameterType);
         }
 
         /// <summary>
-        /// Generates a predicate that determines whether or not a specific type is actually
-        /// a list of services that can be created from a given container.
+        ///     Generates a predicate that determines whether or not a specific type is actually
+        ///     a list of services that can be created from a given container.
         /// </summary>
-        /// <param name="parameterType">The target <see cref="Type"/>. </param>
-        /// <returns>A a predicate that determines whether or not a specific type
-        /// exists as a list of services in a container</returns>
+        /// <param name="parameterType">The target <see cref="Type" />. </param>
+        /// <returns>
+        ///     A a predicate that determines whether or not a specific type
+        ///     exists as a list of services in a container
+        /// </returns>
         public static Func<IServiceContainer, bool> ExistsAsEnumerableSetOfServices(this Type parameterType)
         {
             // The type must be derived from IEnumerable<T>            
-            var enumerableDefinition = typeof (IEnumerable<>);
+            var enumerableDefinition = typeof(IEnumerable<>);
 
             if (!parameterType.IsGenericType || parameterType.GetGenericTypeDefinition() != enumerableDefinition)
                 return container => false;
 
             // Determine the individual service type
             var elementType = parameterType.GetGenericArguments()[0];
-            var enumerableType = typeof (IEnumerable<>).MakeGenericType(elementType);
+            var enumerableType = typeof(IEnumerable<>).MakeGenericType(elementType);
 
             // If this type isn't an IEnumerable<T> type, there's no point in testing
             // if it is a list of services that exists in the container
@@ -69,12 +73,14 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// Generates a predicate that determines whether or not a specific type is actually
-        /// a list of services that can be created from a given container.
+        ///     Generates a predicate that determines whether or not a specific type is actually
+        ///     a list of services that can be created from a given container.
         /// </summary>
-        /// <param name="parameterType">The target <see cref="Type"/>. </param>
-        /// <returns>A a predicate that determines whether or not a specific type
-        /// exists as a list of services in a container</returns>
+        /// <param name="parameterType">The target <see cref="Type" />. </param>
+        /// <returns>
+        ///     A a predicate that determines whether or not a specific type
+        ///     exists as a list of services in a container
+        /// </returns>
         public static Func<IServiceContainer, bool> ExistsAsServiceArray(this Type parameterType)
         {
             // The type must be an array
@@ -101,8 +107,8 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// Builds an argument list for the <paramref name="method"/>
-        /// using the given <paramref name="container"/> instance.
+        ///     Builds an argument list for the <paramref name="method" />
+        ///     using the given <paramref name="container" /> instance.
         /// </summary>
         /// <param name="method">The method that will be used to instantiate an object instance.</param>
         /// <param name="container">The container that will provide the method arguments.</param>
@@ -116,10 +122,10 @@ namespace LinFu.IoC.Configuration
 
 
         /// <summary>
-        /// Builds an argument list for the target <paramref name="method"/> from
-        /// services embedded inside the <paramref name="container"/> instance.
+        ///     Builds an argument list for the target <paramref name="method" /> from
+        ///     services embedded inside the <paramref name="container" /> instance.
         /// </summary>
-        /// <param name="resolver">The <see cref="IArgumentResolver"/> instance that will determine the method arguments.</param>
+        /// <param name="resolver">The <see cref="IArgumentResolver" /> instance that will determine the method arguments.</param>
         /// <param name="method">The target method.</param>
         /// <param name="container">The container that will provide the method arguments.</param>
         /// <param name="additionalArguments">The additional arguments that will be passed to the target method.</param>
@@ -135,15 +141,15 @@ namespace LinFu.IoC.Configuration
 
 
         /// <summary>
-        /// Casts an <see cref="IEnumerable"/> set of items into an array of
-        /// <paramref name="targetElementType"/> items.
+        ///     Casts an <see cref="IEnumerable" /> set of items into an array of
+        ///     <paramref name="targetElementType" /> items.
         /// </summary>
         /// <param name="items">The items being converted.</param>
         /// <param name="targetElementType">The element type of the resulting array.</param>
-        /// <returns>An array of items that match the <paramref name="targetElementType"/>.</returns>
+        /// <returns>An array of items that match the <paramref name="targetElementType" />.</returns>
         public static object Cast(this IEnumerable items, Type targetElementType)
         {
-            var castMethodDefinition = typeof (ResolutionExtensions).GetMethod("Cast",
+            var castMethodDefinition = typeof(ResolutionExtensions).GetMethod("Cast",
                 BindingFlags.NonPublic |
                 BindingFlags.Static);
             var castMethod = castMethodDefinition.MakeGenericMethod(targetElementType);
@@ -154,11 +160,11 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// Performs a strongly typed cast against an <see cref="IEnumerable"/> instance.
+        ///     Performs a strongly typed cast against an <see cref="IEnumerable" /> instance.
         /// </summary>
         /// <typeparam name="T">The target element type.</typeparam>
         /// <param name="items">The list of items being converted.</param>
-        /// <returns>An array of items that match the <typeparamref name="T"/> element type.</returns>
+        /// <returns>An array of items that match the <typeparamref name="T" /> element type.</returns>
         private static T[] Cast<T>(IEnumerable items)
         {
             var results = new List<T>();

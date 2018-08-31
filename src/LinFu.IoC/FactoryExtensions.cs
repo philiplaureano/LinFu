@@ -4,12 +4,12 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC
 {
     /// <summary>
-    /// Extends the <see cref="IFactory"/> instance with a few helper methods.
+    ///     Extends the <see cref="IFactory" /> instance with a few helper methods.
     /// </summary>
     public static class FactoryExtensions
     {
         /// <summary>
-        /// Creates an object instance.
+        ///     Creates an object instance.
         /// </summary>
         /// <param name="factory">The target factory.</param>
         /// <param name="serviceType">The requested service type.</param>

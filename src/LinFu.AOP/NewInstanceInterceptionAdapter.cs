@@ -5,15 +5,15 @@ using Mono.Cecil;
 namespace LinFu.AOP.Cecil
 {
     /// <summary>
-    /// Represents an adapter class that maps <see cref="INewInstanceFilter"/> instances to 
-    /// functors.
+    ///     Represents an adapter class that maps <see cref="INewInstanceFilter" /> instances to
+    ///     functors.
     /// </summary>
     public class NewInstanceInterceptionAdapter : INewInstanceFilter
     {
         private readonly Func<MethodReference, TypeReference, MethodReference, bool> _filter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NewInstanceInterceptionAdapter"/> class.
+        ///     Initializes a new instance of the <see cref="NewInstanceInterceptionAdapter" /> class.
         /// </summary>
         /// <param name="filter">The filter that determines which instances will be intercepted.</param>
         public NewInstanceInterceptionAdapter(Func<MethodReference, TypeReference, MethodReference, bool> filter)
@@ -23,7 +23,7 @@ namespace LinFu.AOP.Cecil
 
 
         /// <summary>
-        /// Determines whether or not a particular constructor call should be intercepted by the postweaver.
+        ///     Determines whether or not a particular constructor call should be intercepted by the postweaver.
         /// </summary>
         /// <param name="currentConstructor">The constructor used to instantiate the current instance.</param>
         /// <param name="concreteType">The concrete type that contains the new instance call.</param>

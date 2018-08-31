@@ -17,9 +17,9 @@ namespace LinFu.UnitTests.Finders
             var container = new ServiceContainer();
             container.LoadFromBaseDirectory("*.dll");
 
-            var context = new MethodFinderContext(new[] {typeof (object)}, new object[0], typeof (void));
+            var context = new MethodFinderContext(new[] {typeof(object)}, new object[0], typeof(void));
             var methods =
-                typeof (SampleClassWithGenericMethod).GetMethods(BindingFlags.Public | BindingFlags.Instance);
+                typeof(SampleClassWithGenericMethod).GetMethods(BindingFlags.Public | BindingFlags.Instance);
             var finder = container.GetService<IMethodFinder<MethodInfo>>();
             var result = finder.GetBestMatch(methods, context);
 

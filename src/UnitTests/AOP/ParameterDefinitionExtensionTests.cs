@@ -11,7 +11,7 @@ namespace LinFu.UnitTests.AOP
         [Test]
         public void ShouldBeAbleToDetermineIfMethodIsByRef()
         {
-            var location = typeof (SampleClassWithByRefMethod).Assembly.Location;
+            var location = typeof(SampleClassWithByRefMethod).Assembly.Location;
             var assembly = AssemblyFactory.GetAssembly(location);
             var module = assembly.MainModule;
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using LinFu.AOP.Cecil;
 using LinFu.AOP.Cecil.Extensions;
 using LinFu.AOP.Cecil.Interfaces;
@@ -28,8 +27,8 @@ namespace LinFu.UnitTests.Proxy
 
             container.LoadFrom(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
 
-            LoadAssemblyUsing(typeof (ProxyFactory));
-            LoadAssemblyUsing(typeof (InvocationInfoEmitter));
+            LoadAssemblyUsing(typeof(ProxyFactory));
+            LoadAssemblyUsing(typeof(InvocationInfoEmitter));
 
             filename = string.Format("{0}.dll", Guid.NewGuid());
 
@@ -79,24 +78,21 @@ namespace LinFu.UnitTests.Proxy
         {
             IInterceptor interceptor = new MockInterceptor(body => null);
 
-            var interfaces = new[] {typeof (IList<int>), typeof (IList<double>), typeof (IList<object>)};
+            var interfaces = new[] {typeof(IList<int>), typeof(IList<double>), typeof(IList<object>)};
             var factory = container.GetService<IProxyFactory>();
             var proxy = factory.CreateProxy<object>(interceptor, interfaces);
 
             var proxyType = proxy.GetType();
 
             // The proxy must implement all of the given interfaces
-            foreach (var currentType in interfaces)
-            {
-                Assert.IsTrue(currentType.IsAssignableFrom(proxyType));
-            }
+            foreach (var currentType in interfaces) Assert.IsTrue(currentType.IsAssignableFrom(proxyType));
         }
 
         [Test]
         public void ShouldCacheProxyTypes()
         {
             var factory = new ProxyFactory();
-            var baseType = typeof (ISampleService);
+            var baseType = typeof(ISampleService);
 
             var proxyType = factory.CreateProxyType(baseType, new Type[0]);
             var runCount = 10;
@@ -117,7 +113,7 @@ namespace LinFu.UnitTests.Proxy
             var mockInterceptor = new MockInterceptor(i => null);
 
             // Create the proxy instance and then make the call
-            var proxyInstance = (ITest) factory.CreateProxy(typeof (object), mockInterceptor, typeof (ITest));
+            var proxyInstance = (ITest) factory.CreateProxy(typeof(object), mockInterceptor, typeof(ITest));
             proxyInstance.Execute();
 
             // The interceptor must be called
@@ -158,7 +154,7 @@ namespace LinFu.UnitTests.Proxy
         public void ShouldHaveDefaultConstructor()
         {
             var factory = container.GetService<IProxyFactory>();
-            var proxyType = factory.CreateProxyType(typeof (object), new Type[0]);
+            var proxyType = factory.CreateProxyType(typeof(object), new Type[0]);
             Assert.IsNotNull(proxyType);
 
             var constructor = proxyType.GetConstructor(new Type[0]);
@@ -173,44 +169,41 @@ namespace LinFu.UnitTests.Proxy
         {
             var factory = container.GetService<IProxyFactory>();
             Assert.IsNotNull(factory);
-            Assert.IsTrue(factory.GetType() == typeof (ProxyFactory));
+            Assert.IsTrue(factory.GetType() == typeof(ProxyFactory));
         }
 
         [Test]
         public void ShouldHaveSerializableAttribute()
         {
             var factory = new ProxyFactory();
-            var proxyType = factory.CreateProxyType(typeof (ISampleService), new Type[0]);
+            var proxyType = factory.CreateProxyType(typeof(ISampleService), new Type[0]);
 
-            var customAttributes = proxyType.GetCustomAttributes(typeof (SerializableAttribute), false);
+            var customAttributes = proxyType.GetCustomAttributes(typeof(SerializableAttribute), false);
             Assert.IsTrue(customAttributes != null && customAttributes.Count() > 0);
         }
 
         [Test]
         public void ShouldImplementGivenInterfaces()
         {
-            var interfaces = new[] {typeof (ISampleService), typeof (ISampleGenericService<int>)};
+            var interfaces = new[] {typeof(ISampleService), typeof(ISampleGenericService<int>)};
 
             // Note: The interceptor will never be executed
             var interceptor = new MockInterceptor(info => { throw new NotImplementedException(); });
             var factory = container.GetService<IProxyFactory>();
 
-            var proxy = factory.CreateProxy(typeof (object), interceptor, interfaces.ToArray());
+            var proxy = factory.CreateProxy(typeof(object), interceptor, interfaces.ToArray());
             var proxyType = proxy.GetType();
 
             // Make sure that the generated proxy implements
             // all of the given interfaces
-            foreach (var currentType in interfaces)
-            {
-                Assert.IsTrue(currentType.IsAssignableFrom(proxyType));
-            }
+            foreach (var currentType in interfaces) Assert.IsTrue(currentType.IsAssignableFrom(proxyType));
         }
 
         [Test]
         public void ShouldImplementIProxy()
         {
             var factory = container.GetService<IProxyFactory>();
-            var proxyType = factory.CreateProxyType(typeof (object), new[] {typeof (ISampleService)});
+            var proxyType = factory.CreateProxyType(typeof(object), new[] {typeof(ISampleService)});
 
             var instance = Activator.CreateInstance(proxyType);
             Assert.IsTrue(instance is IProxy);
@@ -220,7 +213,7 @@ namespace LinFu.UnitTests.Proxy
         [Test]
         public void ShouldReportTypeArgumentsUsedInGenericMethodCall()
         {
-            var genericParameterType = typeof (int);
+            var genericParameterType = typeof(int);
             var proxy = CreateProxy<ClassWithGenericMethod>(info =>
             {
                 // The generic parameter type must match the given parameter type
@@ -230,6 +223,131 @@ namespace LinFu.UnitTests.Proxy
             });
 
             proxy.DoSomething<int>();
+        }
+
+        [Test]
+        public void ShouldSupportMethodCallsWithGenericParametersFromGenericMethodTypeArguments()
+        {
+            var genericParameterType = typeof(int);
+            var proxy = CreateProxy<ClassWithParametersFromGenericMethodTypeArguments>(info =>
+            {
+                // Match the type argument
+                Assert.IsTrue(
+                    info.TypeArguments.Contains(
+                        genericParameterType));
+                Assert.AreEqual(1,
+                    info.Arguments
+                        [0]);
+                Assert.AreEqual(1,
+                    info.Arguments
+                        [1]);
+                return null;
+            });
+
+            proxy.DoSomething(1, 1);
+        }
+
+        [Test]
+        public void ShouldSupportMethodCallsWithGenericParametersFromHostGenericTypeArguments()
+        {
+            var proxy = CreateProxy<ClassWithParametersFromHostGenericTypeArguments<double, string>>(info =>
+            {
+                // Match the type arguments
+                Assert.AreEqual
+                (info.ParameterTypes
+                    [0
+                    ],
+                    typeof
+                    (
+                        double
+                    ));
+                Assert.AreEqual
+                (info.ParameterTypes
+                    [1
+                    ],
+                    typeof
+                    (
+                        string
+                    ));
+
+                // Match the argument values
+                Assert.AreEqual
+                (1.0,
+                    info.Arguments
+                    [0
+                    ]);
+                Assert.AreEqual
+                ("Test",
+                    info.Arguments
+                    [1
+                    ]);
+                return null;
+            });
+
+            proxy.DoSomething(1.0, "Test");
+        }
+
+        [Test]
+        public void ShouldSupportMethodCallsWithGenericReturnValuesFromGenericMethodTypeArguments()
+        {
+            var dummyList = new List<int>();
+
+            // The dummy list will be altered if the method body is called
+            Func<IInvocationInfo, object> methodBody = info =>
+            {
+                var typeArguments = info.TypeArguments;
+
+                // Match the type arguments
+                Assert.AreEqual(typeArguments[0], typeof(int));
+                dummyList.Add(12345);
+                return 12345;
+            };
+
+            var proxy = CreateProxy<ClassWithMethodReturnTypeFromGenericTypeArguments>(methodBody);
+            proxy.DoSomething<int>();
+
+            Assert.IsTrue(dummyList.Count > 0);
+        }
+
+        [Test]
+        public void ShouldSupportMethodCallsWithGenericReturnValuesFromHostGenericTypeArguments()
+        {
+            var proxy = CreateProxy<ClassWithMethodReturnValueFromTypeArgument<int>>(
+                info =>
+                {
+                    // Make sure that the method return type 
+                    // matches the given return type
+                    Assert.IsTrue(info.ReturnType == typeof(int));
+                    return 54321;
+                });
+
+            var result = proxy.DoSomething();
+
+            Assert.AreEqual(54321, result);
+        }
+
+        [Test]
+        public void ShouldSupportMethodCallsWithOpenGenericParameters()
+        {
+            var dummyList = new List<int>();
+
+            // The dummy list will be altered if the method body is called
+            Func<IInvocationInfo, object> methodBody = info =>
+            {
+                var typeArguments = info.TypeArguments;
+
+                // Match the type arguments
+
+                Assert.AreEqual(typeArguments[0], typeof(int));
+
+                dummyList.Add(12345);
+
+                return dummyList;
+            };
+
+            var proxy = CreateProxy<ClassWithOpenGenericParameters>(methodBody);
+            proxy.DoSomething(dummyList);
+            Assert.IsTrue(dummyList.Count > 0);
         }
 
         [Test]
@@ -257,142 +375,6 @@ namespace LinFu.UnitTests.Proxy
         }
 
         [Test]
-        public void ShouldSupportMethodCallsWithGenericParametersFromGenericMethodTypeArguments()
-        {
-            var genericParameterType = typeof (int);
-            var proxy = CreateProxy<ClassWithParametersFromGenericMethodTypeArguments>(info =>
-            {
-                // Match the type argument
-                Assert.IsTrue(
-                    info.TypeArguments.
-                        Contains(
-                            genericParameterType));
-                Assert.AreEqual(1,
-                    info.
-                        Arguments
-                        [0]);
-                Assert.AreEqual(1,
-                    info.
-                        Arguments
-                        [1]);
-                return null;
-            });
-
-            proxy.DoSomething(1, 1);
-        }
-
-        [Test]
-        public void ShouldSupportMethodCallsWithGenericParametersFromHostGenericTypeArguments()
-        {
-            var proxy = CreateProxy<ClassWithParametersFromHostGenericTypeArguments<double, string>>(info =>
-            {
-                // Match the type arguments
-                Assert.
-                    AreEqual
-                    (info.
-                        ParameterTypes
-                        [0
-                        ],
-                        typeof
-                            (
-                            double
-                            ));
-                Assert.
-                    AreEqual
-                    (info.
-                        ParameterTypes
-                        [1
-                        ],
-                        typeof
-                            (
-                            string
-                            ));
-
-                // Match the argument values
-                Assert.
-                    AreEqual
-                    (1.0,
-                        info.
-                            Arguments
-                            [0
-                            ]);
-                Assert.
-                    AreEqual
-                    ("Test",
-                        info.
-                            Arguments
-                            [1
-                            ]);
-                return null;
-            });
-
-            proxy.DoSomething(1.0, "Test");
-        }
-
-        [Test]
-        public void ShouldSupportMethodCallsWithGenericReturnValuesFromGenericMethodTypeArguments()
-        {
-            var dummyList = new List<int>();
-
-            // The dummy list will be altered if the method body is called
-            Func<IInvocationInfo, object> methodBody = info =>
-            {
-                var typeArguments = info.TypeArguments;
-
-                // Match the type arguments
-                Assert.AreEqual(typeArguments[0], typeof (int));
-                dummyList.Add(12345);
-                return 12345;
-            };
-
-            var proxy = CreateProxy<ClassWithMethodReturnTypeFromGenericTypeArguments>(methodBody);
-            proxy.DoSomething<int>();
-
-            Assert.IsTrue(dummyList.Count > 0);
-        }
-
-        [Test]
-        public void ShouldSupportMethodCallsWithGenericReturnValuesFromHostGenericTypeArguments()
-        {
-            var proxy = CreateProxy<ClassWithMethodReturnValueFromTypeArgument<int>>(
-                info =>
-                {
-                    // Make sure that the method return type 
-                    // matches the given return type
-                    Assert.IsTrue(info.ReturnType == typeof (int));
-                    return 54321;
-                });
-
-            var result = proxy.DoSomething();
-
-            Assert.AreEqual(54321, result);
-        }
-
-        [Test]
-        public void ShouldSupportMethodCallsWithOpenGenericParameters()
-        {
-            var dummyList = new List<int>();
-
-            // The dummy list will be altered if the method body is called
-            Func<IInvocationInfo, object> methodBody = info =>
-            {
-                var typeArguments = info.TypeArguments;
-
-                // Match the type arguments
-
-                Assert.AreEqual(typeArguments[0], typeof (int));
-
-                dummyList.Add(12345);
-
-                return dummyList;
-            };
-
-            var proxy = CreateProxy<ClassWithOpenGenericParameters>(methodBody);
-            proxy.DoSomething(dummyList);
-            Assert.IsTrue(dummyList.Count > 0);
-        }
-
-        [Test]
         public void ShouldSupportMethodsCallsWithGenericTypeDefinitionReturnType()
         {
             var dummyList = new List<int>();
@@ -404,7 +386,7 @@ namespace LinFu.UnitTests.Proxy
 
                 // Match the type arguments
 
-                Assert.AreEqual(typeArguments[0], typeof (int));
+                Assert.AreEqual(typeArguments[0], typeof(int));
                 dummyList.Add(12345);
                 return dummyList;
             };
@@ -471,7 +453,7 @@ namespace LinFu.UnitTests.Proxy
 
                 // Match the type arguments
 
-                Assert.AreEqual(typeArguments[0], typeof (int));
+                Assert.AreEqual(typeArguments[0], typeof(int));
                 dummyList.Add(12345);
                 return dummyList;
             };

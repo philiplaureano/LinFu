@@ -2,13 +2,12 @@
 using LinFu.AOP.Cecil.Interfaces;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
-using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 namespace LinFu.AOP.Cecil
 {
     /// <summary>
-    /// Represents a class that surrounds a call site with calls to an <see cref="IAroundInvoke"/> instance.
+    ///     Represents a class that surrounds a call site with calls to an <see cref="IAroundInvoke" /> instance.
     /// </summary>
     public class SurroundMethodBody : ISurroundMethodBody
     {
@@ -25,10 +24,10 @@ namespace LinFu.AOP.Cecil
         private VariableDefinition _surroundingImplementation;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="IMethodBodyRewriterParameters"/> class.
+        ///     Initializes a new instance of the <see cref="IMethodBodyRewriterParameters" /> class.
         /// </summary>
         /// <param name="parameters">The parameters that describe the context of the emitter call.</param>
-        /// <param name="providerName">The name of the <see cref="IAroundInvokeProvider"/> property.</param>
+        /// <param name="providerName">The name of the <see cref="IAroundInvokeProvider" /> property.</param>
         public SurroundMethodBody(IMethodBodyRewriterParameters parameters, string providerName)
         {
             _methodReplacementProvider = parameters.MethodReplacementProvider;
@@ -40,23 +39,28 @@ namespace LinFu.AOP.Cecil
 
             var getMethodReplacementProvider = new GetMethodReplacementProvider(_methodReplacementProvider,
                 parameters.TargetMethod,
-                parameters.
-                    GetMethodReplacementProviderMethod);
+                parameters.GetMethodReplacementProviderMethod);
 
             _getMethodReplacementProvider = getMethodReplacementProvider;
             _registryType = parameters.RegistryType;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="IMethodBodyRewriterParameters"/> class.
+        ///     Initializes a new instance of the <see cref="IMethodBodyRewriterParameters" /> class.
         /// </summary>
-        /// <param name="methodReplacementProvider">The variable that contains the <see cref="IMethodReplacementProvider"/> instance.</param>
-        /// <param name="aroundInvokeProvider">The variable that contains the <see cref="IAroundInvokeProvider"/> instance</param>
-        /// <param name="invocationInfo">The variable that contains the <see cref="IInvocationInfo"/> instance.</param>
+        /// <param name="methodReplacementProvider">
+        ///     The variable that contains the <see cref="IMethodReplacementProvider" />
+        ///     instance.
+        /// </param>
+        /// <param name="aroundInvokeProvider">The variable that contains the <see cref="IAroundInvokeProvider" /> instance</param>
+        /// <param name="invocationInfo">The variable that contains the <see cref="IInvocationInfo" /> instance.</param>
         /// <param name="interceptionDisabled">The variable that determines whether or not interception is disabled</param>
         /// <param name="returnValue">The variable that contains the method return value.</param>
-        /// <param name="registryType">The interception registry type that will be responsible for handling class-level interception events.</param>
-        /// <param name="providerName">The name of the <see cref="IAroundInvokeProvider"/> property.</param>
+        /// <param name="registryType">
+        ///     The interception registry type that will be responsible for handling class-level
+        ///     interception events.
+        /// </param>
+        /// <param name="providerName">The name of the <see cref="IAroundInvokeProvider" /> property.</param>
         public SurroundMethodBody(VariableDefinition methodReplacementProvider,
             VariableDefinition aroundInvokeProvider,
             VariableDefinition invocationInfo,
@@ -76,9 +80,9 @@ namespace LinFu.AOP.Cecil
 
 
         /// <summary>
-        /// Adds a prolog to the given method body.
+        ///     Adds a prolog to the given method body.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> that points to the given method body.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> that points to the given method body.</param>
         public void AddProlog(CilWorker IL)
         {
             var method = IL.GetMethod();
@@ -128,9 +132,9 @@ namespace LinFu.AOP.Cecil
         }
 
         /// <summary>
-        /// Adds an epilog to the given method body.
+        ///     Adds an epilog to the given method body.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker"/> that points to the given method body.</param>
+        /// <param name="IL">The <see cref="CilWorker" /> that points to the given method body.</param>
         public void AddEpilog(CilWorker IL)
         {
             var skipEpilog = IL.Create(OpCodes.Nop);

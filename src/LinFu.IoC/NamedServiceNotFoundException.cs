@@ -3,9 +3,9 @@
 namespace LinFu.IoC
 {
     /// <summary>
-    /// The exception thrown when a service name and a service type is
-    /// requested from a named container and that named container
-    /// is unable to find or create that particular service instance.
+    ///     The exception thrown when a service name and a service type is
+    ///     requested from a named container and that named container
+    ///     is unable to find or create that particular service instance.
     /// </summary>
     [Serializable]
     public class NamedServiceNotFoundException : ServiceNotFoundException
@@ -14,9 +14,9 @@ namespace LinFu.IoC
         private readonly Type _serviceType;
 
         /// <summary>
-        /// Initializes the service exception using the
-        /// given <paramref name="serviceType"/> as
-        /// the service that was not found.
+        ///     Initializes the service exception using the
+        ///     given <paramref name="serviceType" /> as
+        ///     the service that was not found.
         /// </summary>
         /// <param name="serviceType">The service type being requested.</param>
         /// <param name="serviceName">The name of the service being requested.</param>
@@ -27,16 +27,11 @@ namespace LinFu.IoC
         }
 
         /// <summary>
-        /// The error message that this particular exception
-        /// will display.
+        ///     The error message that this particular exception
+        ///     will display.
         /// </summary>
-        public override string Message
-        {
-            get
-            {
-                return string.Format("Unable to find a service named '{0}' with type '{1}'", _serviceName,
-                    _serviceType.AssemblyQualifiedName);
-            }
-        }
+        public override string Message => string.Format("Unable to find a service named '{0}' with type '{1}'",
+            _serviceName,
+            _serviceType.AssemblyQualifiedName);
     }
 }

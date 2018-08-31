@@ -8,19 +8,19 @@ using LinFu.Reflection;
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// A class responsible for setting property values.
+    ///     A class responsible for setting property values.
     /// </summary>
-    [Implements(typeof (IPropertySetter), LifecycleType.OncePerRequest)]
+    [Implements(typeof(IPropertySetter), LifecycleType.OncePerRequest)]
     public class PropertySetter : IPropertySetter
     {
         private static readonly Dictionary<PropertyInfo, Action<object, object>> _setters =
             new Dictionary<PropertyInfo, Action<object, object>>();
 
-        private static readonly Type[] _parameterTypes = {typeof (object), typeof (object)};
+        private static readonly Type[] _parameterTypes = {typeof(object), typeof(object)};
 
 
         /// <summary>
-        /// Sets the value of the <paramref name="targetProperty"/>.
+        ///     Sets the value of the <paramref name="targetProperty" />.
         /// </summary>
         /// <param name="target">The target instance that contains the property to be modified.</param>
         /// <param name="targetProperty">The property that will store the given value.</param>
@@ -52,8 +52,8 @@ namespace LinFu.IoC.Configuration
 
 
         /// <summary>
-        /// Generates an <see cref="Action{T1, T2}"/> delegate that will be used
-        /// as the property setter for a particular type.
+        ///     Generates an <see cref="Action{T1, T2}" /> delegate that will be used
+        ///     as the property setter for a particular type.
         /// </summary>
         /// <param name="targetProperty">The property that will be modified.</param>
         /// <returns>A property setter.</returns>
@@ -76,7 +76,7 @@ namespace LinFu.IoC.Configuration
             if (Runtime.IsRunningOnMono)
                 return (target, value) => setterMethod.Invoke(target, new[] {value});
 
-            var dynamicMethod = new DynamicMethod(string.Empty, typeof (void), _parameterTypes);
+            var dynamicMethod = new DynamicMethod(string.Empty, typeof(void), _parameterTypes);
             var IL = dynamicMethod.GetILGenerator();
 
             // Push the target instance onto the stack
@@ -97,7 +97,7 @@ namespace LinFu.IoC.Configuration
             IL.Emit(callInstruction, setterMethod);
             IL.Emit(OpCodes.Ret);
 
-            var setter = (Action<object, object>) dynamicMethod.CreateDelegate(typeof (Action<object, object>));
+            var setter = (Action<object, object>) dynamicMethod.CreateDelegate(typeof(Action<object, object>));
             return setter;
         }
     }

@@ -47,12 +47,12 @@ namespace LinFu.UnitTests.IOC.Configuration
         public void FactoryAttributeLoaderMustInjectOpenGenericServiceTypeIntoContainer()
         {
             var mockContainer = new Mock<IServiceContainer>();
-            var serviceType = typeof (ISampleGenericService<>);
+            var serviceType = typeof(ISampleGenericService<>);
             var mockPostProcessors = new Mock<IList<IPostProcessor>>();
             var mockPreProcessors = new Mock<IList<IPreProcessor>>();
 
             ITypeLoader loader = new FactoryAttributeLoader();
-            var actions = loader.Load(typeof (SampleOpenGenericFactory));
+            var actions = loader.Load(typeof(SampleOpenGenericFactory));
 
 
             // The loader should load the mock container
@@ -76,10 +76,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             Action<IServiceContainer> applyActions =
                 container =>
                 {
-                    foreach (var action in actions)
-                    {
-                        action(container);
-                    }
+                    foreach (var action in actions) action(container);
                 };
 
             applyActions(mockContainer.Object);
@@ -94,18 +91,15 @@ namespace LinFu.UnitTests.IOC.Configuration
         public void FactoryAttributeLoaderMustInjectStronglyTypedFactoryIntoContainer()
         {
             var container = new ServiceContainer();
-            var serviceType = typeof (ISampleService);
+            var serviceType = typeof(ISampleService);
 
             ITypeLoader loader = new FactoryAttributeLoader();
-            var actions = loader.Load(typeof (SampleStronglyTypedFactory));
+            var actions = loader.Load(typeof(SampleStronglyTypedFactory));
 
             // The factory loader should return a set of actions
             // that will inject that custom factory into the container
             // itself
-            foreach (var action in actions)
-            {
-                action(container);
-            }
+            foreach (var action in actions) action(container);
 
             Assert.IsTrue(container.Contains(serviceType));
         }
@@ -115,7 +109,7 @@ namespace LinFu.UnitTests.IOC.Configuration
         {
             var mockContainer = new Mock<IServiceContainer>();
             var mockPreProcessors = new Mock<IList<IPreProcessor>>();
-            var serviceType = typeof (ISampleService);
+            var serviceType = typeof(ISampleService);
             string serviceName = null;
 
             // The container should add the expected
@@ -132,15 +126,12 @@ namespace LinFu.UnitTests.IOC.Configuration
             mockPreProcessors.Expect(p => p.Add(It.IsAny<IPreProcessor>()));
 
             ITypeLoader loader = new FactoryAttributeLoader();
-            var actions = loader.Load(typeof (SampleFactory));
+            var actions = loader.Load(typeof(SampleFactory));
 
             // The factory loader should return a set of actions
             // that will inject that custom factory into the container
             // itself
-            foreach (var action in actions)
-            {
-                action(mockContainer.Object);
-            }
+            foreach (var action in actions) action(mockContainer.Object);
 
             mockContainer.VerifyAll();
         }
@@ -148,7 +139,7 @@ namespace LinFu.UnitTests.IOC.Configuration
         [Test]
         public void LoaderMustLoadSingletonTypesAndThoseTypesMustBeTheSameInstance()
         {
-            var location = typeof (SamplePostProcessor).Assembly.Location ?? string.Empty;
+            var location = typeof(SamplePostProcessor).Assembly.Location ?? string.Empty;
             var loader = new Loader();
             var directory = Path.GetDirectoryName(location);
 
@@ -176,7 +167,7 @@ namespace LinFu.UnitTests.IOC.Configuration
         [Test]
         public void LoaderMustLoadTheCorrectOncePerRequestTypes()
         {
-            var location = typeof (SamplePostProcessor).Assembly.Location ?? string.Empty;
+            var location = typeof(SamplePostProcessor).Assembly.Location ?? string.Empty;
             var loader = new Loader();
             var directory = Path.GetDirectoryName(location);
 
@@ -198,14 +189,14 @@ namespace LinFu.UnitTests.IOC.Configuration
 
             Assert.IsNotNull(first);
             Assert.IsNotNull(second);
-            Assert.IsTrue(first.GetType() == typeof (FirstOncePerRequestService));
-            Assert.IsTrue(second.GetType() == typeof (SecondOncePerRequestService));
+            Assert.IsTrue(first.GetType() == typeof(FirstOncePerRequestService));
+            Assert.IsTrue(second.GetType() == typeof(SecondOncePerRequestService));
         }
 
         [Test]
         public void LoaderMustLoadTheCorrectSingletonTypes()
         {
-            var location = typeof (SamplePostProcessor).Assembly.Location ?? string.Empty;
+            var location = typeof(SamplePostProcessor).Assembly.Location ?? string.Empty;
             var loader = new Loader();
             var directory = Path.GetDirectoryName(location);
 
@@ -227,15 +218,15 @@ namespace LinFu.UnitTests.IOC.Configuration
 
             Assert.IsNotNull(first);
             Assert.IsNotNull(second);
-            Assert.IsTrue(first.GetType() == typeof (FirstSingletonService));
-            Assert.IsTrue(second.GetType() == typeof (SecondSingletonService));
+            Assert.IsTrue(first.GetType() == typeof(FirstSingletonService));
+            Assert.IsTrue(second.GetType() == typeof(SecondSingletonService));
         }
 
         [Test]
         public void NamedOncePerRequestFactoryMustBeCreatedFromTypeWithImplementsAttribute()
         {
-            var implementingType = typeof (NamedOncePerRequestSampleService);
-            var serviceType = typeof (ISampleService);
+            var implementingType = typeof(NamedOncePerRequestSampleService);
+            var serviceType = typeof(ISampleService);
             var converter = new ImplementsAttributeLoader();
 
             TestFactoryConverterWith<OncePerRequestFactory<ISampleService>>("MyService",
@@ -246,8 +237,8 @@ namespace LinFu.UnitTests.IOC.Configuration
         public void NamedOncePerThreadFactoryMustBeCreatedFromTypeWithImplementsAttribute()
         {
             TestFactoryConverterWith<OncePerThreadFactory<ISampleService>>("MyService",
-                typeof (ISampleService),
-                typeof (NamedOncePerThreadSampleService),
+                typeof(ISampleService),
+                typeof(NamedOncePerThreadSampleService),
                 new ImplementsAttributeLoader());
         }
 
@@ -255,16 +246,16 @@ namespace LinFu.UnitTests.IOC.Configuration
         public void NamedSingletonFactoryMustBeCreatedFromTypeWithImplementsAttribute()
         {
             TestFactoryConverterWith<SingletonFactory<ISampleService>>("MyService",
-                typeof (ISampleService),
-                typeof (NamedSingletonSampleService),
+                typeof(ISampleService),
+                typeof(NamedSingletonSampleService),
                 new ImplementsAttributeLoader());
         }
 
         [Test]
         public void OncePerRequestFactoryMustBeCreatedFromTypeWithImplementsAttribute()
         {
-            var implementingType = typeof (OncePerRequestSampleService);
-            var serviceType = typeof (ISampleService);
+            var implementingType = typeof(OncePerRequestSampleService);
+            var serviceType = typeof(ISampleService);
             var converter = new ImplementsAttributeLoader();
 
             TestFactoryConverterWith<OncePerRequestFactory<ISampleService>>(null,
@@ -275,8 +266,8 @@ namespace LinFu.UnitTests.IOC.Configuration
         public void OncePerThreadFactoryMustBeCreatedFromTypeWithImplementsAttribute()
         {
             TestFactoryConverterWith<OncePerThreadFactory<ISampleService>>(null,
-                typeof (ISampleService),
-                typeof (OncePerThreadSampleService),
+                typeof(ISampleService),
+                typeof(OncePerThreadSampleService),
                 new ImplementsAttributeLoader());
         }
 
@@ -293,7 +284,7 @@ namespace LinFu.UnitTests.IOC.Configuration
 
 
             container.LoadFrom(AppDomain.CurrentDomain.BaseDirectory, "LinFu*.dll");
-            container.AddFactory("MyService", typeof (ISampleGenericService<>), mockFactory.Object);
+            container.AddFactory("MyService", typeof(ISampleGenericService<>), mockFactory.Object);
 
             var result = container.GetService<ISampleGenericService<int>>("MyService");
             var areSame = ReferenceEquals(serviceInstance, result);
@@ -321,8 +312,8 @@ namespace LinFu.UnitTests.IOC.Configuration
         public void SingletonFactoryMustBeCreatedFromTypeWithImplementsAttribute()
         {
             TestFactoryConverterWith<SingletonFactory<ISampleService>>(null,
-                typeof (ISampleService),
-                typeof (SingletonSampleService),
+                typeof(ISampleService),
+                typeof(SingletonSampleService),
                 new ImplementsAttributeLoader());
         }
     }

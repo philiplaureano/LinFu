@@ -8,7 +8,7 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// The default implementation of the <see cref="IFactoryBuilder"/> class.
+    ///     The default implementation of the <see cref="IFactoryBuilder" /> class.
     /// </summary>
     internal class FactoryBuilder : IFactoryBuilder
     {
@@ -16,25 +16,25 @@ namespace LinFu.IoC.Configuration
         private static readonly IServiceContainer _dummyContainer = new ServiceContainer();
 
         /// <summary>
-        /// Initializes the list of factory types.
+        ///     Initializes the list of factory types.
         /// </summary>
         static FactoryBuilder()
         {
-            _factoryTypes[LifecycleType.OncePerRequest] = typeof (OncePerRequestFactory<>);
-            _factoryTypes[LifecycleType.OncePerThread] = typeof (OncePerThreadFactory<>);
-            _factoryTypes[LifecycleType.Singleton] = typeof (SingletonFactory<>);
+            _factoryTypes[LifecycleType.OncePerRequest] = typeof(OncePerRequestFactory<>);
+            _factoryTypes[LifecycleType.OncePerThread] = typeof(OncePerThreadFactory<>);
+            _factoryTypes[LifecycleType.Singleton] = typeof(SingletonFactory<>);
         }
 
 
         /// <summary>
-        /// Creates a factory instance that can create instaces of the given
-        /// <paramref name="serviceType"/>  using the <paramref name="implementingType"/>
-        /// as the implementation.
+        ///     Creates a factory instance that can create instaces of the given
+        ///     <paramref name="serviceType" />  using the <paramref name="implementingType" />
+        ///     as the implementation.
         /// </summary>
         /// <param name="serviceType">The service being implemented.</param>
         /// <param name="implementingType">The actual type that will implement the service.</param>
-        /// <param name="lifecycle">The <see cref="LifecycleType"/> that determines the lifetime of each instance being created.</param>
-        /// <returns>A valid <see cref="IFactory"/> instance.</returns>
+        /// <param name="lifecycle">The <see cref="LifecycleType" /> that determines the lifetime of each instance being created.</param>
+        /// <returns>A valid <see cref="IFactory" /> instance.</returns>
         public IFactory CreateFactory(Type serviceType, Type implementingType, LifecycleType lifecycle)
         {
             // Determine the factory type
@@ -85,14 +85,14 @@ namespace LinFu.IoC.Configuration
 
 
         /// <summary>
-        /// Creates a factory instance that can create instaces of the given
-        /// <paramref name="serviceType"/>  using the <paramref name="actualType"/>
-        /// as the implementation.
+        ///     Creates a factory instance that can create instaces of the given
+        ///     <paramref name="serviceType" />  using the <paramref name="actualType" />
+        ///     as the implementation.
         /// </summary>
         /// <param name="serviceType">The service being implemented.</param>
         /// <param name="actualType">The actual type that will implement the service.</param>
         /// <param name="factoryType">The factory type that will instantiate the target service.</param>
-        /// <returns>A valid <see cref="IFactory"/> instance.</returns>
+        /// <returns>A valid <see cref="IFactory" /> instance.</returns>
         private IFactory CreateFactory(Type serviceType, Type actualType, Type factoryType)
         {
             // Create the factory itself
@@ -105,7 +105,7 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// Determines the implementing concrete type from the given <paramref name="serviceType"/>.
+        ///     Determines the implementing concrete type from the given <paramref name="serviceType" />.
         /// </summary>
         /// <param name="serviceType">The service type.</param>
         /// <param name="implementingType">The concrete class that will implement the service type.</param>
@@ -143,12 +143,12 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// A <c>private</c> method that creates the factory method delegate
-        /// for use with a particular factory class.
+        ///     A <c>private</c> method that creates the factory method delegate
+        ///     for use with a particular factory class.
         /// </summary>
-        /// <seealso cref="SingletonFactory{T}"/>
-        /// <seealso cref="OncePerRequestFactory{T}"/>
-        /// <seealso cref="OncePerThreadFactory{T}"/>
+        /// <seealso cref="SingletonFactory{T}" />
+        /// <seealso cref="OncePerRequestFactory{T}" />
+        /// <seealso cref="OncePerThreadFactory{T}" />
         /// <param name="serviceType">The service type being instantiated.</param>
         /// <param name="implementingType">The type that will provide the implementation for the actual service.</param>
         /// <returns>A factory method delegate that can create the given service.</returns>
@@ -156,7 +156,7 @@ namespace LinFu.IoC.Configuration
         {
             var flags = BindingFlags.NonPublic | BindingFlags.Static;
 
-            var factoryMethodDefinition = typeof (FactoryBuilder).GetMethod("CreateFactoryMethodInternal", flags);
+            var factoryMethodDefinition = typeof(FactoryBuilder).GetMethod("CreateFactoryMethodInternal", flags);
             var factoryMethod = factoryMethodDefinition.MakeGenericMethod(serviceType, implementingType);
 
             // Create the Func<IFactoryRequest, TService> factory delegate
@@ -166,8 +166,8 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// A method that generates the actual lambda function that creates
-        /// the new service instance.
+        ///     A method that generates the actual lambda function that creates
+        ///     the new service instance.
         /// </summary>
         /// <typeparam name="TService">The service type being instantiated.</typeparam>
         /// <typeparam name="TImplementation">The type that will provide the implementation for the actual service.</typeparam>
@@ -184,10 +184,10 @@ namespace LinFu.IoC.Configuration
                 // Attempt to autoresolve the constructor
                 if (serviceContainer != null)
                     return
-                        (TService) serviceContainer.AutoCreateInternal(typeof (TImplementation), arguments);
+                        (TService) serviceContainer.AutoCreateInternal(typeof(TImplementation), arguments);
 
                 // Otherwise, use the default constructor
-                return (TService) Activator.CreateInstance(typeof (TImplementation), arguments);
+                return (TService) Activator.CreateInstance(typeof(TImplementation), arguments);
             };
         }
     }

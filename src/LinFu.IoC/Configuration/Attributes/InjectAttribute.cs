@@ -3,10 +3,9 @@
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// The attribute used to mark a property for autoinjection.
+    ///     The attribute used to mark a property for autoinjection.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method | AttributeTargets.Field,
-        AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method | AttributeTargets.Field)]
     public class InjectAttribute : Attribute
     {
     }

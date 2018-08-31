@@ -5,18 +5,17 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC
 {
     /// <summary>
-    /// Represents a service container with additional
-    /// extension points for customizing service instances
+    ///     Represents a service container with additional
+    ///     extension points for customizing service instances
     /// </summary>
     public class ServiceContainer : IServiceContainer
     {
-        private readonly IFactoryStorage _factoryStorage = new FactoryStorage();
         private readonly IGetService _getServiceBehavior;
         private readonly List<IPostProcessor> _postProcessors = new List<IPostProcessor>();
         private readonly List<IPreProcessor> _preprocessors = new List<IPreProcessor>();
 
         /// <summary>
-        /// Initializes the container with the default services.
+        ///     Initializes the container with the default services.
         /// </summary>
         public ServiceContainer()
         {
@@ -25,10 +24,13 @@ namespace LinFu.IoC
         }
 
         /// <summary>
-        /// Initializes the container with a custom <see cref="ICreateInstance"/> type.
+        ///     Initializes the container with a custom <see cref="ICreateInstance" /> type.
         /// </summary>
         /// <param name="getServiceBehavior">The instance that will be responsible for generating service instances.</param>
-        /// <param name="factoryStorage">The <see cref="IFactoryStorage"/> instance responsible for determining which factory instance will instantiate a given service request.</param>
+        /// <param name="factoryStorage">
+        ///     The <see cref="IFactoryStorage" /> instance responsible for determining which factory
+        ///     instance will instantiate a given service request.
+        /// </param>
         public ServiceContainer(IGetService getServiceBehavior, IFactoryStorage factoryStorage)
         {
             if (getServiceBehavior == null)
@@ -38,38 +40,35 @@ namespace LinFu.IoC
                 throw new ArgumentNullException("factoryStorage");
 
             _getServiceBehavior = getServiceBehavior;
-            _factoryStorage = factoryStorage;
+            FactoryStorage = factoryStorage;
 
             this.AddDefaultServices();
         }
 
         /// <summary>
-        /// Gets the value indicating the <see cref="IFactoryStorage"/> instance
-        /// that will be used to store each <see cref="IFactory"/> instance.
+        ///     Gets the value indicating the <see cref="IFactoryStorage" /> instance
+        ///     that will be used to store each <see cref="IFactory" /> instance.
         /// </summary>
-        internal IFactoryStorage FactoryStorage
-        {
-            get { return _factoryStorage; }
-        }
+        internal IFactoryStorage FactoryStorage { get; } = new FactoryStorage();
 
 
         /// <summary>
-        /// Gets or sets a <see cref="bool">System.Boolean</see> value
-        /// that determines whether or not the container should throw
-        /// a <see cref="ServiceNotFoundException"/> if a requested service
-        /// cannot be found or created.
+        ///     Gets or sets a <see cref="bool">System.Boolean</see> value
+        ///     that determines whether or not the container should throw
+        ///     a <see cref="ServiceNotFoundException" /> if a requested service
+        ///     cannot be found or created.
         /// </summary>
         public virtual bool SuppressErrors { get; set; }
 
         /// <summary>
-        /// Adds an <see cref="IFactory"/> instance and associates it
-        /// with the given <paramref name="serviceType">service type</paramref> and
-        /// <paramref name="serviceName">service name</paramref>.
+        ///     Adds an <see cref="IFactory" /> instance and associates it
+        ///     with the given <paramref name="serviceType">service type</paramref> and
+        ///     <paramref name="serviceName">service name</paramref>.
         /// </summary>
-        /// <param name="serviceName">The name of the service to associate with the given <see cref="IFactory"/> instance.</param>
+        /// <param name="serviceName">The name of the service to associate with the given <see cref="IFactory" /> instance.</param>
         /// <param name="serviceType">The type of service that the factory will be able to create.</param>
         /// <param name="additionalParameterTypes">The list of additional parameters that this factory type will support.</param>
-        /// <param name="factory">The <see cref="IFactory"/> instance that will create the object instance.</param>
+        /// <param name="factory">The <see cref="IFactory" /> instance that will create the object instance.</param>
         public virtual void AddFactory(string serviceName, Type serviceType, IEnumerable<Type> additionalParameterTypes,
             IFactory factory)
         {
@@ -77,20 +76,20 @@ namespace LinFu.IoC
         }
 
         /// <summary>
-        /// Adds an <see cref="IFactory"/> instance and associates it
-        /// with the given <paramref name="serviceType">service type</paramref>.
+        ///     Adds an <see cref="IFactory" /> instance and associates it
+        ///     with the given <paramref name="serviceType">service type</paramref>.
         /// </summary>
         /// <param name="serviceType">The service type to associate with the factory</param>
         /// <param name="additionalParameterTypes">The list of additional parameters that this factory type will support.</param>
-        /// <param name="factory">The <see cref="IFactory"/> instance that will be responsible for creating the service instance</param>
+        /// <param name="factory">The <see cref="IFactory" /> instance that will be responsible for creating the service instance</param>
         public virtual void AddFactory(Type serviceType, IEnumerable<Type> additionalParameterTypes, IFactory factory)
         {
             AddFactory(null, serviceType, additionalParameterTypes, factory);
         }
 
         /// <summary>
-        /// Determines whether or not the given <paramref name="serviceType"/>
-        /// can be instantiated by the container.
+        ///     Determines whether or not the given <paramref name="serviceType" />
+        ///     can be instantiated by the container.
         /// </summary>
         /// <param name="serviceType">The type of service to instantiate.</param>
         /// <param name="additionalParameterTypes">The list of additional parameters that this factory type will support.</param>
@@ -101,36 +100,40 @@ namespace LinFu.IoC
         }
 
         /// <summary>
-        /// Overridden. Causes the container to instantiate the service with the given
-        /// <paramref name="serviceType">service type</paramref>. If the service type cannot be created, then an
-        /// exception will be thrown if the <see cref="IContainer.SuppressErrors"/> property
-        /// is set to false. Otherwise, it will simply return null.
+        ///     Overridden. Causes the container to instantiate the service with the given
+        ///     <paramref name="serviceType">service type</paramref>. If the service type cannot be created, then an
+        ///     exception will be thrown if the <see cref="IContainer.SuppressErrors" /> property
+        ///     is set to false. Otherwise, it will simply return null.
         /// </summary>
         /// <remarks>
-        /// This overload of the <c>GetService</c> method has been overridden
-        /// so that its results can be handled by the postprocessors.
+        ///     This overload of the <c>GetService</c> method has been overridden
+        ///     so that its results can be handled by the postprocessors.
         /// </remarks>
-        /// <seealso cref="IPostProcessor"/>
+        /// <seealso cref="IPostProcessor" />
         /// <param name="serviceType">The service type to instantiate.</param>
         /// <param name="additionalArguments">The additional arguments that will be used to instantiate the service type.</param>
-        /// <returns>If successful, it will return a service instance that is compatible with the given type;
-        /// otherwise, it will just return a null value.</returns>
+        /// <returns>
+        ///     If successful, it will return a service instance that is compatible with the given type;
+        ///     otherwise, it will just return a null value.
+        /// </returns>
         public object GetService(Type serviceType, params object[] additionalArguments)
         {
             return GetService(null, serviceType, additionalArguments);
         }
 
         /// <summary>
-        /// Causes the container to instantiate the service with the given
-        /// <paramref name="serviceType">service type</paramref>. If the service type cannot be created, then an
-        /// exception will be thrown if the <see cref="IContainer.SuppressErrors"/> property
-        /// is set to false. Otherwise, it will simply return null.
+        ///     Causes the container to instantiate the service with the given
+        ///     <paramref name="serviceType">service type</paramref>. If the service type cannot be created, then an
+        ///     exception will be thrown if the <see cref="IContainer.SuppressErrors" /> property
+        ///     is set to false. Otherwise, it will simply return null.
         /// </summary>
         /// <param name="serviceName">The name of the service to instantiate.</param>
-        /// <param name="serviceType">The service type to instantiate.</param>        
+        /// <param name="serviceType">The service type to instantiate.</param>
         /// <param name="additionalArguments">The additional arguments that will be used to instantiate the service type.</param>
-        /// <returns>If successful, it will return a service instance that is compatible with the given type;
-        /// otherwise, it will just return a <c>null</c> value.</returns>
+        /// <returns>
+        ///     If successful, it will return a service instance that is compatible with the given type;
+        ///     otherwise, it will just return a <c>null</c> value.
+        /// </returns>
         public virtual object GetService(string serviceName, Type serviceType, params object[] additionalArguments)
         {
             IFactory factory = null;
@@ -151,11 +154,11 @@ namespace LinFu.IoC
         }
 
         /// <summary>
-        /// Determines whether or not a service can be created using
-        /// the given <paramref name="serviceName">service name</paramref>
-        /// and <paramref name="serviceType">service type</paramref>.
+        ///     Determines whether or not a service can be created using
+        ///     the given <paramref name="serviceName">service name</paramref>
+        ///     and <paramref name="serviceType">service type</paramref>.
         /// </summary>
-        /// <param name="serviceName">The name of the service to associate with the given <see cref="IFactory"/> instance.</param>
+        /// <param name="serviceName">The name of the service to associate with the given <see cref="IFactory" /> instance.</param>
         /// <param name="serviceType">The type of service that the factory will be able to create.</param>
         /// <param name="additionalParameterTypes">The list of additional parameters that this factory type will support.</param>
         /// <returns>Returns <c>true</c> if the service exists; otherwise, it will return <c>false</c>.</returns>
@@ -165,29 +168,20 @@ namespace LinFu.IoC
         }
 
         /// <summary>
-        /// The list of postprocessors that will handle every
-        /// service request result.
+        ///     The list of postprocessors that will handle every
+        ///     service request result.
         /// </summary>
-        public IList<IPostProcessor> PostProcessors
-        {
-            get { return _postProcessors; }
-        }
+        public IList<IPostProcessor> PostProcessors => _postProcessors;
 
         /// <summary>
-        /// The list of preprocessors that will handle
-        /// every service request before each actual service is created.
+        ///     The list of preprocessors that will handle
+        ///     every service request before each actual service is created.
         /// </summary>
-        public IList<IPreProcessor> PreProcessors
-        {
-            get { return _preprocessors; }
-        }
+        public IList<IPreProcessor> PreProcessors => _preprocessors;
 
         /// <summary>
-        /// The list of services currently available inside the container.
+        ///     The list of services currently available inside the container.
         /// </summary>
-        public virtual IEnumerable<IServiceInfo> AvailableServices
-        {
-            get { return FactoryStorage.AvailableFactories; }
-        }
+        public virtual IEnumerable<IServiceInfo> AvailableServices => FactoryStorage.AvailableFactories;
     }
 }

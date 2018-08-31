@@ -8,48 +8,43 @@ using LinFu.Reflection;
 namespace LinFu.IoC.Configuration
 {
     /// <summary>
-    /// Represents the default implementation of the <see cref="IMethodInvoke{TMethod}"/> interface.
+    ///     Represents the default implementation of the <see cref="IMethodInvoke{TMethod}" /> interface.
     /// </summary>
     public abstract class BaseMethodInvoke<TMethod> : IMethodInvoke<TMethod>, IInitialize
         where TMethod : MethodBase
     {
         private static readonly Dictionary<TMethod, MethodBase> _cache = new Dictionary<TMethod, MethodBase>();
-        private IMethodBuilder<TMethod> _builder;
 
         /// <summary>
-        /// Initializes the class with the default values.
+        ///     Initializes the class with the default values.
         /// </summary>
         public BaseMethodInvoke()
         {
             // HACK: Set the ReflectionMethodBuilder as the default builder
-            if (typeof (TMethod) == typeof (MethodInfo))
-                _builder = new ReflectionMethodBuilder<MethodInfo>() as IMethodBuilder<TMethod>;
+            if (typeof(TMethod) == typeof(MethodInfo))
+                MethodBuilder = new ReflectionMethodBuilder<MethodInfo>() as IMethodBuilder<TMethod>;
         }
 
         /// <summary>
-        /// Gets or sets the value indicating the method builder that will be used to
-        /// create the target method.
+        ///     Gets or sets the value indicating the method builder that will be used to
+        ///     create the target method.
         /// </summary>
-        protected IMethodBuilder<TMethod> MethodBuilder
-        {
-            get { return _builder; }
-            set { _builder = value; }
-        }
+        protected IMethodBuilder<TMethod> MethodBuilder { get; set; }
 
 
         /// <summary>
-        /// Initializes the class with the <paramref name="source">source service container.</paramref>
+        ///     Initializes the class with the <paramref name="source">source service container.</paramref>
         /// </summary>
-        /// <param name="source">The <see cref="IServiceContainer"/> instance that will initialize this class.</param>
+        /// <param name="source">The <see cref="IServiceContainer" /> instance that will initialize this class.</param>
         public void Initialize(IServiceContainer source)
         {
-            _builder = source.GetService<IMethodBuilder<TMethod>>();
+            MethodBuilder = source.GetService<IMethodBuilder<TMethod>>();
         }
 
 
         /// <summary>
-        /// Instantiates an object instance with the <paramref name="targetMethod"/>
-        /// and <paramref name="arguments"/>.
+        ///     Instantiates an object instance with the <paramref name="targetMethod" />
+        ///     and <paramref name="arguments" />.
         /// </summary>
         /// <param name="target">The target object reference. In this particular case, this parameter will be ignored.</param>
         /// <param name="targetMethod">The target method.</param>
@@ -80,7 +75,7 @@ namespace LinFu.IoC.Configuration
 
 
         /// <summary>
-        /// Invokes the <paramref name="targetMethod"/> with the given <paramref name="arguments"/>.
+        ///     Invokes the <paramref name="targetMethod" /> with the given <paramref name="arguments" />.
         /// </summary>
         /// <param name="target">The target instance.</param>
         /// <param name="originalMethod">The original method that describes the target method.</param>
@@ -96,8 +91,8 @@ namespace LinFu.IoC.Configuration
         }
 
         /// <summary>
-        /// Creates a <see cref="DynamicMethod"/> that will be used as the 
-        /// factory method and stores it in the method cache.
+        ///     Creates a <see cref="DynamicMethod" /> that will be used as the
+        ///     factory method and stores it in the method cache.
         /// </summary>
         /// <param name="targetMethod">The constructor that will be used to instantiate the target type.</param>
         protected virtual void GenerateTargetMethod(TMethod targetMethod)
@@ -106,7 +101,7 @@ namespace LinFu.IoC.Configuration
 
             // HACK: Since the Mono runtime does not yet implement the DynamicMethod class,
             // we'll actually have to use the constructor itself to construct the target type            
-            result = Runtime.IsRunningOnMono ? targetMethod : _builder.CreateMethod(targetMethod);
+            result = Runtime.IsRunningOnMono ? targetMethod : MethodBuilder.CreateMethod(targetMethod);
 
             // Save the results
             lock (_cache)

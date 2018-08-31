@@ -5,17 +5,18 @@ using Mono.Cecil;
 namespace LinFu.Reflection.Emit
 {
     /// <summary>
-    /// A class that adds extension methods to the <see cref="AssemblyDefinition"/>
-    /// class.
+    ///     A class that adds extension methods to the <see cref="AssemblyDefinition" />
+    ///     class.
     /// </summary>
     public static class AssemblyDefinitionExtensions
     {
         /// <summary>
-        /// Converts an <see cref="AssemblyDefinition"/>
-        /// into a running <see cref="Assembly"/>.
+        ///     Converts an <see cref="AssemblyDefinition" />
+        ///     into a running <see cref="Assembly" />.
         /// </summary>
-        /// <param name="definition">The <see cref="AssemblyDefinition"/> to convert.</param>
-        /// <returns>An <see cref="Assembly"/> that represents the <see cref="AssemblyDefinition"/> instance.
+        /// <param name="definition">The <see cref="AssemblyDefinition" /> to convert.</param>
+        /// <returns>
+        ///     An <see cref="Assembly" /> that represents the <see cref="AssemblyDefinition" /> instance.
         /// </returns>
         public static Assembly ToAssembly(this AssemblyDefinition definition)
         {
@@ -32,7 +33,7 @@ namespace LinFu.Reflection.Emit
         }
 
         /// <summary>
-        /// Saves the assembly to disk.
+        ///     Saves the assembly to disk.
         /// </summary>
         /// <param name="definition">The target assembly definition.</param>
         /// <param name="filename">The output file name.</param>
@@ -42,7 +43,7 @@ namespace LinFu.Reflection.Emit
         }
 
         /// <summary>
-        /// Saves the assembly to disk.
+        ///     Saves the assembly to disk.
         /// </summary>
         /// <param name="definition">The target assembly definition.</param>
         /// <param name="outputStream">The destination file stream.</param>

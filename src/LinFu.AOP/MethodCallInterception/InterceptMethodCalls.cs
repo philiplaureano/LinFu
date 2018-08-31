@@ -7,7 +7,6 @@ using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using MethodBody = Mono.Cecil.Cil.MethodBody;
 
 namespace LinFu.AOP.Cecil
 {
@@ -15,33 +14,33 @@ namespace LinFu.AOP.Cecil
     {
         private readonly IMethodCallFilter _callFilter;
         private VariableDefinition _aroundInvokeProvider;
-        private TypeReference _hostInterfaceType;
-        private VariableDefinition _interceptionDisabled;
-        private MethodReference _invocationInfoCtor;
-        private VariableDefinition _methodReplacementProvider;
-        private VariableDefinition _returnValue;
-        private MethodReference _stackCtor;
 
 
         private MethodReference _canReplace;
-        private MethodReference _getProvider;
-        private MethodReference _getReplacement;
-        private MethodReference _getStaticProvider;
-        private MethodReference _intercept;
-        private MethodReference _popMethod;
-        private MethodReference _pushMethod;
-        private MethodReference _toArray;
 
 
         private VariableDefinition _canReplaceFlag;
         private VariableDefinition _currentArgument;
         private VariableDefinition _currentArguments;
+        private MethodReference _getProvider;
+        private MethodReference _getReplacement;
+        private MethodReference _getStaticProvider;
+        private TypeReference _hostInterfaceType;
         private VariableDefinition _instanceProvider;
+        private MethodReference _intercept;
+        private VariableDefinition _interceptionDisabled;
         private VariableDefinition _invocationInfo;
+        private MethodReference _invocationInfoCtor;
+        private VariableDefinition _methodReplacementProvider;
         private VariableDefinition _parameterTypes;
+        private MethodReference _popMethod;
+        private MethodReference _pushMethod;
         private VariableDefinition _replacement;
+        private VariableDefinition _returnValue;
+        private MethodReference _stackCtor;
         private VariableDefinition _staticProvider;
         private VariableDefinition _target;
+        private MethodReference _toArray;
         private VariableDefinition _typeArguments;
 
 
@@ -60,23 +59,23 @@ namespace LinFu.AOP.Cecil
         {
             var types = new[]
             {
-                typeof (object),
-                typeof (MethodBase),
-                typeof (StackTrace),
-                typeof (Type[]),
-                typeof (Type[]),
-                typeof (Type),
-                typeof (object[])
+                typeof(object),
+                typeof(MethodBase),
+                typeof(StackTrace),
+                typeof(Type[]),
+                typeof(Type[]),
+                typeof(Type),
+                typeof(object[])
             };
 
             _invocationInfoCtor = module.ImportConstructor<InvocationInfo>(types);
-            _stackCtor = module.ImportConstructor<Stack<object>>(new Type[0]);
+            _stackCtor = module.ImportConstructor<Stack<object>>();
 
             _pushMethod = module.ImportMethod<Stack<object>>("Push");
             _popMethod = module.ImportMethod<Stack<object>>("Pop");
             _toArray = module.ImportMethod<Stack<object>>("ToArray");
             _getProvider = module.ImportMethod<IMethodReplacementHost>("get_MethodCallReplacementProvider");
-            _getStaticProvider = module.ImportMethod("GetProvider", typeof (MethodCallReplacementProviderRegistry));
+            _getStaticProvider = module.ImportMethod("GetProvider", typeof(MethodCallReplacementProviderRegistry));
 
             _canReplace = module.ImportMethod<IMethodReplacementProvider>("CanReplace");
             _getReplacement = module.ImportMethod<IMethodReplacementProvider>("GetMethodReplacement");
@@ -133,7 +132,7 @@ namespace LinFu.AOP.Cecil
 
             var surroundMethodBody = new SurroundMethodBody(_methodReplacementProvider, _aroundInvokeProvider,
                 _invocationInfo, _interceptionDisabled, _returnValue,
-                typeof (AroundInvokeMethodCallRegistry),
+                typeof(AroundInvokeMethodCallRegistry),
                 "AroundMethodCallProvider");
 
             surroundMethodBody.AddProlog(IL);
@@ -150,7 +149,7 @@ namespace LinFu.AOP.Cecil
         {
             IL.Emit(OpCodes.Ldloc, targetVariable);
 
-            var addInstance = module.Import(typeof (IgnoredInstancesRegistry).GetMethod("AddInstance"));
+            var addInstance = module.Import(typeof(IgnoredInstancesRegistry).GetMethod("AddInstance"));
             IL.Emit(OpCodes.Call, addInstance);
         }
 
@@ -289,7 +288,7 @@ namespace LinFu.AOP.Cecil
                 IL.Emit(OpCodes.Ldnull);
 
             // Box the target, if necessary
-            TypeReference declaringType = targetMethod.GetDeclaringType();
+            var declaringType = targetMethod.GetDeclaringType();
             if (targetMethod.HasThis && (declaringType.IsValueType || declaringType is GenericParameter))
                 IL.Emit(OpCodes.Box, declaringType);
 
@@ -303,7 +302,7 @@ namespace LinFu.AOP.Cecil
             // Push the stack trace
             PushStackTrace(IL, module);
 
-            var systemType = module.Import(typeof (Type));
+            var systemType = module.Import(typeof(Type));
 
             // Save the parameter types
             var parameterCount = targetMethod.Parameters.Count;

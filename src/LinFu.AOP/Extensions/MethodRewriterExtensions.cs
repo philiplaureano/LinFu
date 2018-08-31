@@ -5,12 +5,12 @@ using Mono.Cecil;
 namespace LinFu.AOP.Cecil.Extensions
 {
     /// <summary>
-    /// A helper class that extends Cecil to support the <see cref="IMethodRewriter"/> interface.
+    ///     A helper class that extends Cecil to support the <see cref="IMethodRewriter" /> interface.
     /// </summary>
     public static class MethodRewriterExtensions
     {
         /// <summary>
-        /// Transforms the methods in the <paramref name="target"/> using the given method rewriter.
+        ///     Transforms the methods in the <paramref name="target" /> using the given method rewriter.
         /// </summary>
         /// <param name="target">The transformation target.</param>
         /// <param name="rewriter">The method rewriter.</param>
@@ -23,7 +23,7 @@ namespace LinFu.AOP.Cecil.Extensions
         }
 
         /// <summary>
-        /// Transforms the methods in the <paramref name="target"/> using the given method rewriter.
+        ///     Transforms the methods in the <paramref name="target" /> using the given method rewriter.
         /// </summary>
         /// <param name="target">The transformation target.</param>
         /// <param name="rewriter">The method rewriter.</param>

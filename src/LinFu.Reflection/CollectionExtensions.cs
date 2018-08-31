@@ -5,13 +5,13 @@ using System.Linq;
 namespace LinFu.Reflection
 {
     /// <summary>
-    /// Adds additional support methods to the standard System.Collection classes.
+    ///     Adds additional support methods to the standard System.Collection classes.
     /// </summary>
     public static class CollectionExtensions
     {
         /// <summary>
-        /// Determines whether or not an element exists that matches the given
-        /// <paramref name="predicate"/>.
+        ///     Determines whether or not an element exists that matches the given
+        ///     <paramref name="predicate" />.
         /// </summary>
         /// <typeparam name="T">The element type.</typeparam>
         /// <param name="items">The list of items being searched.</param>
@@ -27,7 +27,7 @@ namespace LinFu.Reflection
         }
 
         /// <summary>
-        /// Loads a list of types that match the given <typeparamref name="T">target type</typeparamref>.
+        ///     Loads a list of types that match the given <typeparamref name="T">target type</typeparamref>.
         /// </summary>
         /// <typeparam name="T">The target type to be loaded.</typeparam>
         /// <param name="list">The list that will hold the instances of the target type.</param>

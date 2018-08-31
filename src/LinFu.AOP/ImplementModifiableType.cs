@@ -44,9 +44,9 @@ namespace LinFu.AOP.Cecil
                 return;
 
             item.Interfaces.Add(_modifiableInterfaceType);
-            item.AddProperty("IsInterceptionDisabled", typeof (bool));
-            item.AddProperty("AroundMethodCallProvider", typeof (IAroundInvokeProvider));
-            item.AddProperty("AroundMethodBodyProvider", typeof (IAroundInvokeProvider));
+            item.AddProperty("IsInterceptionDisabled", typeof(bool));
+            item.AddProperty("AroundMethodCallProvider", typeof(IAroundInvokeProvider));
+            item.AddProperty("AroundMethodBodyProvider", typeof(IAroundInvokeProvider));
         }
     }
 }

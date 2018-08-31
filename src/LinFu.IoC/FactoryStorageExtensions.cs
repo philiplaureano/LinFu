@@ -6,19 +6,19 @@ using LinFu.IoC.Interfaces;
 namespace LinFu.IoC
 {
     /// <summary>
-    /// An extension class that adds a few helper methods to the
-    /// <see cref="IFactoryStorage"/> interface.
+    ///     An extension class that adds a few helper methods to the
+    ///     <see cref="IFactoryStorage" /> interface.
     /// </summary>
     public static class FactoryStorageExtensions
     {
         /// <summary>
-        /// Adds a factory to the current <see cref="IFactoryStorage"/> instance.
+        ///     Adds a factory to the current <see cref="IFactoryStorage" /> instance.
         /// </summary>
-        /// <param name="storage">The <see cref="IFactoryStorage"/> object that will store the target factory.</param>
+        /// <param name="storage">The <see cref="IFactoryStorage" /> object that will store the target factory.</param>
         /// <param name="serviceName">The name that will be associated with the target factory.</param>
         /// <param name="serviceType">The service type that the factory will be able to create.</param>
         /// <param name="additionalParameterTypes">The list of additional parameters that this factory type will support.</param>
-        /// <param name="factory">The <see cref="IFactory"/> instance that will create the object instance.</param>
+        /// <param name="factory">The <see cref="IFactory" /> instance that will create the object instance.</param>
         public static void AddFactory(this IFactoryStorage storage, string serviceName,
             Type serviceType, IEnumerable<Type> additionalParameterTypes, IFactory factory)
         {
@@ -27,19 +27,22 @@ namespace LinFu.IoC
         }
 
         /// <summary>
-        /// Determines which factories should be used
-        /// for a particular service request.
+        ///     Determines which factories should be used
+        ///     for a particular service request.
         /// </summary>
-        /// <param name="storage">The <see cref="IFactoryStorage"/> object that holds the target factory.</param>
+        /// <param name="storage">The <see cref="IFactoryStorage" /> object that holds the target factory.</param>
         /// <param name="serviceName">The name that will be associated with the target factory.</param>
         /// <param name="serviceType">The service type that the factory will be able to create.</param>
-        /// <param name="additionalParameters">The list of additional parameter values that this factory type will use to instantiate the service.</param>
+        /// <param name="additionalParameters">
+        ///     The list of additional parameter values that this factory type will use to
+        ///     instantiate the service.
+        /// </param>
         /// <returns>A factory instance.</returns>
         public static IFactory GetFactory(this IFactoryStorage storage, string serviceName, Type serviceType,
             IEnumerable<object> additionalParameters)
         {
             var additionalParameterTypes = from arg in additionalParameters
-                let argType = arg != null ? arg.GetType() : typeof (object)
+                let argType = arg != null ? arg.GetType() : typeof(object)
                 select argType;
 
             var info = new ServiceInfo(serviceName, serviceType, additionalParameterTypes);
@@ -47,10 +50,10 @@ namespace LinFu.IoC
         }
 
         /// <summary>
-        /// Determines which factories should be used
-        /// for a particular service request.
+        ///     Determines which factories should be used
+        ///     for a particular service request.
         /// </summary>
-        /// <param name="storage">The <see cref="IFactoryStorage"/> object that holds the target factory.</param>
+        /// <param name="storage">The <see cref="IFactoryStorage" /> object that holds the target factory.</param>
         /// <param name="serviceName">The name that will be associated with the target factory.</param>
         /// <param name="serviceType">The service type that the factory will be able to create.</param>
         /// <param name="additionalParameterTypes">The list of additional parameters that this factory type will support.</param>
@@ -63,9 +66,9 @@ namespace LinFu.IoC
         }
 
         /// <summary>
-        /// Determines whether or not a factory exists in storage.
+        ///     Determines whether or not a factory exists in storage.
         /// </summary>
-        /// <param name="storage">The <see cref="IFactoryStorage"/> object that holds the target factory.</param>
+        /// <param name="storage">The <see cref="IFactoryStorage" /> object that holds the target factory.</param>
         /// <param name="serviceName">The name that will be associated with the target factory.</param>
         /// <param name="serviceType">The service type that the factory will be able to create.</param>
         /// <param name="additionalParameterTypes">The list of additional parameters that this factory type will support.</param>

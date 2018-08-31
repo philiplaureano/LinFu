@@ -8,10 +8,8 @@ namespace LinFu.AOP.Cecil
 {
     internal class InterceptNewCalls : InstructionSwapper
     {
-        private MethodReference _getCurrentMethod;
-
-
         private readonly INewObjectWeaver _emitter;
+        private MethodReference _getCurrentMethod;
 
         public InterceptNewCalls(INewObjectWeaver emitter)
         {
@@ -57,7 +55,7 @@ namespace LinFu.AOP.Cecil
                 return false;
 
             var constructor = (MethodReference) oldInstruction.Operand;
-            TypeReference declaringType = constructor.GetDeclaringType();
+            var declaringType = constructor.GetDeclaringType();
             return _emitter.ShouldIntercept(constructor, declaringType, hostMethod);
         }
     }

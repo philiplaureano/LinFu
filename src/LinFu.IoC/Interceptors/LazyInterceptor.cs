@@ -5,8 +5,8 @@ using LinFu.AOP.Interfaces;
 namespace LinFu.IoC.Interceptors
 {
     /// <summary>
-    /// An interceptor class that instantiates a target type only when
-    /// the methods for that target are invoked.
+    ///     An interceptor class that instantiates a target type only when
+    ///     the methods for that target are invoked.
     /// </summary>
     /// <typeparam name="T">The type of object to intercept.</typeparam>
     public class LazyInterceptor<T> : BaseInterceptor
@@ -15,8 +15,8 @@ namespace LinFu.IoC.Interceptors
         private readonly Func<T> _getInstance;
 
         /// <summary>
-        /// Initializes the class with the <paramref name="getInstance"/>
-        /// factory method.
+        ///     Initializes the class with the <paramref name="getInstance" />
+        ///     factory method.
         /// </summary>
         /// <param name="getInstance">The functor that will be used to create the actual object instance.</param>
         public LazyInterceptor(Func<T> getInstance)
@@ -25,10 +25,10 @@ namespace LinFu.IoC.Interceptors
         }
 
         /// <summary>
-        /// A method that uses the given factory method to provide a target
-        /// for the method currently being invoked.
+        ///     A method that uses the given factory method to provide a target
+        ///     for the method currently being invoked.
         /// </summary>
-        /// <param name="info">The <see cref="IInvocationInfo"/> object that describes the current invocation context.</param>
+        /// <param name="info">The <see cref="IInvocationInfo" /> object that describes the current invocation context.</param>
         /// <returns>The target itself.</returns>
         protected override object GetTarget(IInvocationInfo info)
         {
@@ -36,10 +36,10 @@ namespace LinFu.IoC.Interceptors
         }
 
         /// <summary>
-        /// Intercepts the method and initializes the target instance before the 
-        /// actual object is invoked.
+        ///     Intercepts the method and initializes the target instance before the
+        ///     actual object is invoked.
         /// </summary>
-        /// <param name="info">The <see cref="IInvocationInfo"/> that describes the execution context.</param>
+        /// <param name="info">The <see cref="IInvocationInfo" /> that describes the execution context.</param>
         /// <returns>The return value of the target method.</returns>
         public override object Intercept(IInvocationInfo info)
         {

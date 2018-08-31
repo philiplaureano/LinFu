@@ -33,8 +33,8 @@
             // to attempt to confuse the fuzzy constructor search
         }
 
-        public ISampleService FirstService { get; private set; }
+        public ISampleService FirstService { get; }
 
-        public ISampleService SecondService { get; private set; }
+        public ISampleService SecondService { get; }
     }
 }

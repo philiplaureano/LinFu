@@ -57,7 +57,7 @@ namespace LinFu.UnitTests.Reflection
         [Test]
         public void CecilShouldExtractSampleClassFromSignedAssembly()
         {
-            var location = typeof (SampleHelloClass).Assembly.Location;
+            var location = typeof(SampleHelloClass).Assembly.Location;
 
             var sourceAssembly = AssemblyFactory.GetAssembly(location);
             Assert.IsNotNull(sourceAssembly);
@@ -65,10 +65,8 @@ namespace LinFu.UnitTests.Reflection
             var definition = AssemblyFactory.DefineAssembly("testAssembly", AssemblyKind.Dll);
             var targetModule = definition.MainModule;
             foreach (TypeDefinition typeDef in sourceAssembly.MainModule.Types)
-            {
                 // Copy the source type to the target assembly
                 targetModule.Inject(typeDef);
-            }
 
             // Convert the new assemblyDef into an actual assembly
             var assembly = definition.ToAssembly();
@@ -80,7 +78,7 @@ namespace LinFu.UnitTests.Reflection
             // The imported type must match the original type
             var firstType = types.FirstOrDefault();
             Assert.IsNotNull(firstType);
-            Assert.AreEqual(firstType.Name, typeof (SampleHelloClass).Name);
+            Assert.AreEqual(firstType.Name, typeof(SampleHelloClass).Name);
 
             var instance = Activator.CreateInstance(firstType);
             Assert.IsNotNull(instance);
@@ -88,13 +86,13 @@ namespace LinFu.UnitTests.Reflection
             var speakMethod = firstType.GetMethod("Speak");
             Assert.IsNotNull(speakMethod);
 
-            speakMethod.Invoke(instance, new object[] {});
+            speakMethod.Invoke(instance, new object[] { });
         }
 
         [Test]
         public void CecilShouldRemoveStrongNameFromAssembly()
         {
-            var location = typeof (SampleHelloClass).Assembly.Location;
+            var location = typeof(SampleHelloClass).Assembly.Location;
 
             var sourceAssembly = AssemblyFactory.GetAssembly(location);
 
@@ -115,7 +113,7 @@ namespace LinFu.UnitTests.Reflection
         [Test]
         public void MethodInvokerShouldProperlyHandleReturnValues()
         {
-            var targetMethod = typeof (object).GetMethod("GetHashCode");
+            var targetMethod = typeof(object).GetMethod("GetHashCode");
             var instance = new object();
 
             var hash = instance.GetHashCode();
@@ -124,7 +122,7 @@ namespace LinFu.UnitTests.Reflection
             var invoker = container.GetService<IMethodInvoke<MethodInfo>>();
             Assert.IsNotNull(invoker);
 
-            var result = invoker.Invoke(instance, targetMethod, new object[] {});
+            var result = invoker.Invoke(instance, targetMethod);
             Assert.AreEqual(result, hash);
         }
     }

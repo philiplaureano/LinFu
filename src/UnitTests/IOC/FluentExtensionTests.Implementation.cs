@@ -36,7 +36,7 @@ namespace LinFu.UnitTests.IOC
         {
             // The container must be able to create the
             // ISampleService instance
-            Assert.IsTrue(container.Contains(serviceName, typeof (ISampleService)));
+            Assert.IsTrue(container.Contains(serviceName, typeof(ISampleService)));
 
             // The container should return the singleton
             var first = container.GetService<ISampleService>(serviceName);
@@ -60,7 +60,7 @@ namespace LinFu.UnitTests.IOC
                 return null;
             };
 
-            Assert.IsTrue(container.Contains(serviceName, typeof (ISampleService)));
+            Assert.IsTrue(container.Contains(serviceName, typeof(ISampleService)));
 
             // Create the other instance from another thread
             var asyncResult = createService.BeginInvoke(null, null);
@@ -90,7 +90,7 @@ namespace LinFu.UnitTests.IOC
         {
             // The container must be able to create an
             // ISampleService instance
-            Assert.IsTrue(container.Contains(serviceName, typeof (ISampleService)), "Service not found!");
+            Assert.IsTrue(container.Contains(serviceName, typeof(ISampleService)), "Service not found!");
 
             // Both instances must be unique
             var first = container.GetService<ISampleService>(serviceName);
