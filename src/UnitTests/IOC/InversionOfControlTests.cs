@@ -108,7 +108,7 @@ namespace LinFu.UnitTests.IOC
             var result = container.GetService<ISampleInterceptedInterface>();
             Assert.AreNotSame(mockInstance, result);
 
-            var proxy = (IProxy) result;
+            var proxy = (IProxy)result;
             Assert.IsNotNull(proxy.Interceptor);
         }
 
@@ -127,7 +127,7 @@ namespace LinFu.UnitTests.IOC
             var result = container.GetService<ISampleWrappedInterface>();
             Assert.AreNotSame(mockInstance, result);
 
-            var proxy = (IProxy) result;
+            var proxy = (IProxy)result;
             Assert.IsNotNull(proxy.Interceptor);
         }
 
@@ -200,12 +200,14 @@ namespace LinFu.UnitTests.IOC
         }
 
         [Test]
-        [ExpectedException(typeof(NamedServiceNotFoundException))]
         public void ContainerMustBeAbleToSuppressNamedServiceNotFoundErrors()
         {
-            var container = new ServiceContainer();
-            var instance = container.GetService("MyService", typeof(ISerializable));
-            Assert.IsNull(instance, "The container is supposed to return a null instance");
+            ExpectException<NamedServiceNotFoundException>(() =>
+            {
+                var container = new ServiceContainer();
+                var instance = container.GetService("MyService", typeof(ISerializable));
+                Assert.IsNull(instance, "The container is supposed to return a null instance");
+            });
         }
 
         [Test]
@@ -273,7 +275,7 @@ namespace LinFu.UnitTests.IOC
             var instances = container.GetServices<ISampleService>();
             foreach (var serviceInstance in instances)
             {
-                Assert.IsInstanceOfType(typeof(ISampleService), serviceInstance);
+                Assert.True(serviceInstance?.GetType() == typeof(ISampleService));
                 Assert.IsNotNull(serviceInstance);
             }
         }
@@ -293,7 +295,7 @@ namespace LinFu.UnitTests.IOC
             }
             catch (Exception ex)
             {
-                Assert.IsNotInstanceOfType(typeof(StackOverflowException), ex);
+                Assert.True(ex?.GetType() != typeof(StackOverflowException));
             }
         }
 
@@ -345,7 +347,7 @@ namespace LinFu.UnitTests.IOC
             container.AddFactory(mockFactory.Object);
 
             var instance =
-                (SampleClassWithFactoryDependency) container.AutoCreate(typeof(SampleClassWithFactoryDependency));
+                (SampleClassWithFactoryDependency)container.AutoCreate(typeof(SampleClassWithFactoryDependency));
 
             Assert.IsNotNull(instance);
 
@@ -367,10 +369,10 @@ namespace LinFu.UnitTests.IOC
             // There should be a matching service type
             // at this point
             var matches = from s in availableServices
-                where
-                    s.ServiceType == typeof(ISampleService) &&
-                    s.ServiceName == "MyService"
-                select s;
+                          where
+                              s.ServiceType == typeof(ISampleService) &&
+                              s.ServiceName == "MyService"
+                          select s;
 
             Assert.IsTrue(matches.Count() > 0);
         }
@@ -387,8 +389,8 @@ namespace LinFu.UnitTests.IOC
             // There should be a matching service type
             // at this point
             var matches = from s in availableServices
-                where s.ServiceType == typeof(ISampleService)
-                select s;
+                          where s.ServiceType == typeof(ISampleService)
+                          select s;
 
             Assert.IsTrue(matches.Count() > 0);
         }
@@ -520,12 +522,14 @@ namespace LinFu.UnitTests.IOC
         }
 
         [Test]
-        [ExpectedException(typeof(ServiceNotFoundException))]
         public void ContainerMustThrowErrorIfServiceNotFound()
         {
-            var container = new ServiceContainer();
-            var instance = container.GetService(typeof(ISerializable));
-            Assert.IsNull(instance, "The container is supposed to return a null instance");
+            ExpectException<ServiceNotFoundException>(() =>
+            {
+                var container = new ServiceContainer();
+                var instance = container.GetService(typeof(ISerializable));
+                Assert.IsNull(instance, "The container is supposed to return a null instance");
+            });
         }
 
         [Test]
@@ -700,16 +704,33 @@ namespace LinFu.UnitTests.IOC
         }
 
         [Test]
-        [ExpectedException(typeof(NamedServiceNotFoundException))]
         public void ShouldNotReturnNamedServicesForGetServiceCallsForAnonymousServices()
         {
-            var container = new ServiceContainer();
-            var myService = new MyService();
-            container.AddService<IMyService>(myService);
+            ExpectException<NamedServiceNotFoundException>(() =>
+           {
+               var container = new ServiceContainer();
+               var myService = new MyService();
+               container.AddService<IMyService>(myService);
 
-            Assert.IsNotNull(container.GetService<IMyService>());
+               Assert.IsNotNull(container.GetService<IMyService>());
 
-            Assert.IsNull(container.GetService<IMyService>("frobozz"));
+               Assert.IsNull(container.GetService<IMyService>("frobozz"));
+           });
+        }
+
+        private void ExpectException<TException>(Action testToRun)
+            where TException : Exception
+        {
+            try
+            {
+                testToRun();
+            }
+            catch (TException)
+            {
+                return;
+            }
+
+            Assert.Fail($"Expected exception type '{typeof(TException).FullName}' not thrown");
         }
     }
 }

@@ -49,7 +49,7 @@ namespace LinFu.UnitTests.IOC
             // On initialization, the instance.SomeProperty value
             // should be a SampleClass type
             Assert.IsNotNull(instance.SomeProperty);
-            Assert.IsInstanceOfType(typeof(SampleClass), instance.SomeProperty);
+            Assert.AreEqual(typeof(SampleClass), instance.SomeProperty?.GetType());
         }
 
         [Test]
@@ -73,7 +73,7 @@ namespace LinFu.UnitTests.IOC
 
             // Ensure that the injection occurred
             Assert.IsNotNull(instance.SomeProperty);
-            Assert.IsInstanceOfType(typeof(SampleClass), instance.SomeProperty);
+            Assert.AreEqual(typeof(SampleClass), instance.SomeProperty?.GetType());
         }
 
         [Test]

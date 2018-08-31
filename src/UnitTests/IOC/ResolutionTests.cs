@@ -275,7 +275,7 @@ namespace LinFu.UnitTests.IOC
             var result = constructorInvoke.Invoke(null, targetConstructor, arguments);
 
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(typeof(SampleClassWithMultipleConstructors), result);
+            Assert.AreEqual(result?.GetType(), typeof(SampleClassWithMultipleConstructors));
         }
 
         [Test]

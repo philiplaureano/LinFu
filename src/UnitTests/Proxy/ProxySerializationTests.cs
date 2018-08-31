@@ -17,7 +17,7 @@ namespace LinFu.UnitTests.Proxy
     public class ProxySerializationTests : BaseTestFixture
     {
         [Test]
-        [Ignore]
+        [Ignore("Invocation Info doesn't need to be serialized")]
         public void ShouldBeAbleToSerializeInvocationInfo()
         {
             var target = 42;

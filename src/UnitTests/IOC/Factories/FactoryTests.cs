@@ -43,7 +43,7 @@ namespace LinFu.UnitTests.IOC.Factories
             mockFactory.Expect(f => f.CreateInstance(It.Is<IFactoryRequest>(request => request.Container == container)))
                 .Returns(mockService.Object);
 
-            Assert.IsInstanceOfType(typeof(IFactory), adapter);
+            Assert.AreEqual(typeof(IFactory), adapter?.GetType());
 
             var factoryRequest = new FactoryRequest
             {

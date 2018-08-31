@@ -116,7 +116,7 @@ namespace LinFu.IoC
         ///     If successful, it will return a service instance that is compatible with the given type;
         ///     otherwise, it will just return a null value.
         /// </returns>
-        public object GetService(Type serviceType, params object[] additionalArguments)
+        public virtual object GetService(Type serviceType, params object[] additionalArguments)
         {
             return GetService(null, serviceType, additionalArguments);
         }
@@ -171,13 +171,16 @@ namespace LinFu.IoC
         ///     The list of postprocessors that will handle every
         ///     service request result.
         /// </summary>
-        public IList<IPostProcessor> PostProcessors => _postProcessors;
+        public virtual IList<IPostProcessor> PostProcessors => _postProcessors;
 
         /// <summary>
         ///     The list of preprocessors that will handle
         ///     every service request before each actual service is created.
         /// </summary>
-        public IList<IPreProcessor> PreProcessors => _preprocessors;
+        public virtual IList<IPreProcessor> PreProcessors
+        {
+            get { return _preprocessors; }
+        }
 
         /// <summary>
         ///     The list of services currently available inside the container.

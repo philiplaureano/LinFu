@@ -27,7 +27,7 @@ namespace LinFu.UnitTests.IOC
             // On initialization, the instance.Property value
             // should be a SampleClass type
             Assert.IsNotNull(instance.Property);
-            Assert.IsInstanceOfType(typeof(SampleClass), instance.Property);
+            Assert.AreEqual(typeof(SampleClass), instance.Property?.GetType());
         }
     }
 }
