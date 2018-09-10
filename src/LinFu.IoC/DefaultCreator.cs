@@ -25,6 +25,6 @@ namespace LinFu.IoC
                 instance = factory.CreateInstance(factoryRequest);
 
             return instance;
-        }
+        }        
     }
 }

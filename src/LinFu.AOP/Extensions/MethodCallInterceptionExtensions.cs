@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using LinFu.AOP.Cecil.Interfaces;
+using LinFu.AOP.Interfaces;
 using Mono.Cecil;
 
 namespace LinFu.AOP.Cecil.Extensions
@@ -14,7 +16,7 @@ namespace LinFu.AOP.Cecil.Extensions
         ///     calls made inside the target.
         /// </summary>
         /// <param name="target">The target object.</param>
-        public static void InterceptAllMethodCalls(this IReflectionStructureVisitable target)
+        public static void InterceptAllMethodCalls(this AssemblyDefinition target)
         {
             target.InterceptMethodCalls(GetDefaultTypeFilter());
         }
@@ -24,7 +26,7 @@ namespace LinFu.AOP.Cecil.Extensions
         ///     calls made inside the target.
         /// </summary>
         /// <param name="target">The target object.</param>
-        public static void InterceptAllMethodCalls(this IReflectionVisitable target)
+        public static void InterceptAllMethodCalls(this TypeDefinition target)
         {
             var hostMethodFilter = GetHostMethodFilter();
             Func<MethodReference, bool> methodCallFilter = m => true;
@@ -38,7 +40,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// </summary>
         /// <param name="target">The target object.</param>
         /// <param name="typeFilter">The type filter that determines which types will be modified for interception.</param>
-        public static void InterceptMethodCalls(this IReflectionStructureVisitable target,
+        public static void InterceptMethodCalls(this AssemblyDefinition target,
             Func<TypeReference, bool> typeFilter)
         {
             var hostMethodFilter = GetHostMethodFilter();
@@ -53,7 +55,7 @@ namespace LinFu.AOP.Cecil.Extensions
         /// </summary>
         /// <param name="target">The target object.</param>
         /// <param name="typeFilter">The type filter that determines the types that will be modified.</param>
-        public static void InterceptMethodCalls(this IReflectionVisitable target, Func<TypeReference, bool> typeFilter)
+        public static void InterceptMethodCalls(this TypeDefinition target, Func<TypeReference, bool> typeFilter)
         {
             var hostMethodFilter = GetHostMethodFilter();
             Func<MethodReference, bool> methodCallFilter = m => true;
@@ -74,12 +76,12 @@ namespace LinFu.AOP.Cecil.Extensions
         ///     The <see cref="IMethodFilter" /> instance that determines the host method calls that
         ///     will be modified
         /// </param>
-        public static void InterceptMethodCalls(this IReflectionVisitable target, IMethodCallFilter methodCallFilter,
+        public static void InterceptMethodCalls(this TypeDefinition target, IMethodCallFilter methodCallFilter,
             IMethodFilter hostMethodFilter)
         {
             var rewriter = new InterceptMethodCalls(methodCallFilter);
             target.Accept(new ImplementModifiableType(GetDefaultTypeFilter()));
-            target.WeaveWith(rewriter, hostMethodFilter.ShouldWeave);
+            target.WeaveWith(rewriter);
         }
 
         /// <summary>
@@ -95,13 +97,17 @@ namespace LinFu.AOP.Cecil.Extensions
         ///     The <see cref="IMethodFilter" /> instance that determines the host method calls that
         ///     will be modified
         /// </param>
-        public static void InterceptMethodCalls(this IReflectionStructureVisitable target,
+        public static void InterceptMethodCalls(this AssemblyDefinition target,
             IMethodCallFilter methodCallFilter,
             IMethodFilter hostMethodFilter)
         {
+            var module = target.MainModule;
+            var methods = module.Types.Where(t => GetDefaultTypeFilter()(t)).SelectMany(t => t.Methods)
+                .Where(hostMethodFilter.ShouldWeave).ToArray();
+
             var rewriter = new InterceptMethodCalls(methodCallFilter);
             target.Accept(new ImplementModifiableType(GetDefaultTypeFilter()));
-            target.WeaveWith(rewriter, hostMethodFilter.ShouldWeave);
+            target.WeaveWith(rewriter);
         }
 
         /// <summary>
@@ -114,14 +120,14 @@ namespace LinFu.AOP.Cecil.Extensions
         ///     The filter that will determine which third-party methods will be intercepted on the
         ///     target type.
         /// </param>
-        public static void InterceptMethodCalls(this IReflectionStructureVisitable target,
+        public static void InterceptMethodCalls(this AssemblyDefinition target,
             Func<TypeReference, bool> typeFilter,
             Func<MethodReference, bool> hostMethodFilter,
             Func<MethodReference, bool> methodCallFilter)
         {
             var rewriter = new InterceptMethodCalls(hostMethodFilter, methodCallFilter);
             target.Accept(new ImplementModifiableType(typeFilter));
-            target.WeaveWith(rewriter, hostMethodFilter);
+            target.WeaveWith(rewriter);
         }
 
         /// <summary>
@@ -134,13 +140,13 @@ namespace LinFu.AOP.Cecil.Extensions
         ///     The filter that will determine which third-party methods will be intercepted on the
         ///     target type.
         /// </param>
-        public static void InterceptMethodCalls(this IReflectionVisitable target, Func<TypeReference, bool> typeFilter,
+        public static void InterceptMethodCalls(this TypeDefinition target, Func<TypeReference, bool> typeFilter,
             Func<MethodReference, bool> hostMethodFilter,
             Func<MethodReference, bool> methodCallFilter)
         {
             var rewriter = new InterceptMethodCalls(hostMethodFilter, methodCallFilter);
             target.Accept(new ImplementModifiableType(typeFilter));
-            target.WeaveWith(rewriter, hostMethodFilter);
+            target.WeaveWith(rewriter);
         }
 
         private static Func<TypeReference, bool> GetDefaultTypeFilter()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security;
 using LinFu.IoC.Interfaces;
 
 namespace LinFu.IoC
@@ -8,6 +9,7 @@ namespace LinFu.IoC
     ///     Represents a service container with additional
     ///     extension points for customizing service instances
     /// </summary>
+    [SecurityCritical]
     public class ServiceContainer : IServiceContainer
     {
         private readonly IGetService _getServiceBehavior;

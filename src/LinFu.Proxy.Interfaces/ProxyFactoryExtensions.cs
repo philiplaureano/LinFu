@@ -126,7 +126,7 @@ namespace LinFu.Proxy.Interfaces
 
         /// <summary>
         ///     Uses the <paramref name="proxyFactory" /> to create a proxy instance
-        ///     that directly derives from the <typeparamref name="T" /> type
+        ///     that directly derives from the given> type
         ///     and implements the given <paramref name="baseInterfaces" />.
         /// </summary>
         /// <remarks>

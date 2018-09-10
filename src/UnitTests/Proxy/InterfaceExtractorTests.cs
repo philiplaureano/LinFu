@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using LinFu.Proxy;
-using NUnit.Framework;
+using Xunit;
 using SampleLibrary;
 
 namespace LinFu.UnitTests.Proxy
 {
-    [TestFixture]
     public class InterfaceExtractorTests
     {
-        [Test]
+        [Fact]
         public void InterfaceExtractorShouldReturnTheCorrectResults()
         {
             var baseType = typeof(SampleClass);
@@ -19,15 +18,15 @@ namespace LinFu.UnitTests.Proxy
 
             extractor.GetInterfaces(baseType, interfaces);
 
-            Assert.IsTrue(interfaces.Contains(typeof(ISampleService)));
-            Assert.IsTrue(interfaces.Contains(typeof(ISampleGenericService<int>)));
+            Assert.Contains(typeof(ISampleService), interfaces);
+            Assert.Contains(typeof(ISampleGenericService<int>), interfaces);
 
             // The result list must only contain interface types
             var nonInterfaceTypes = from t in interfaces
                 where !t.IsInterface
                 select t;
 
-            Assert.IsTrue(nonInterfaceTypes.Count() == 0);
+            Assert.True(nonInterfaceTypes.Count() == 0);
         }
     }
 }

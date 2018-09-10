@@ -26,7 +26,7 @@ namespace LinFu.AOP.Interfaces
         }
 
         /// <summary>
-        ///     Instantiates the <paramref name="targetType" /> with the given <paramref name="activator" /> and
+        ///     Instantiates the target type with the given <paramref name="activator" /> and
         ///     <paramref name="constructorArguments" />.
         /// </summary>
         /// <param name="activator">
@@ -35,7 +35,7 @@ namespace LinFu.AOP.Interfaces
         /// </param>
         /// <param name="constructorArguments">The arguments that will be passed to the constructor.</param>
         /// <typeparam name="T">The target type that will be instantiated by the activator.</typeparam>
-        /// <returns>An object reference that matches the given <paramref name="targetType" />.</returns>
+        /// <returns>An object reference that matches the given target type.</returns>
         public static T CreateInstance<T>(this IActivator<IActivationContext> activator, object[] constructorArguments)
         {
             return (T) activator.CreateInstance(typeof(T), constructorArguments);

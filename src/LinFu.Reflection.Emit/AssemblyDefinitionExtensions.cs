@@ -24,7 +24,7 @@ namespace LinFu.Reflection.Emit
             using (var stream = new MemoryStream())
             {
                 // Persist the assembly to the stream
-                AssemblyFactory.SaveAssembly(definition, stream);
+                definition.Save(stream);
                 var buffer = stream.GetBuffer();
                 result = Assembly.Load(buffer);
             }
@@ -39,7 +39,10 @@ namespace LinFu.Reflection.Emit
         /// <param name="filename">The output file name.</param>
         public static void Save(this AssemblyDefinition definition, string filename)
         {
-            AssemblyFactory.SaveAssembly(definition, filename);
+            var memoryStream = new MemoryStream();
+            definition.Save(memoryStream);
+            
+            File.WriteAllBytes(filename, memoryStream.ToArray());
         }
 
         /// <summary>
@@ -49,7 +52,7 @@ namespace LinFu.Reflection.Emit
         /// <param name="outputStream">The destination file stream.</param>
         public static void Save(this AssemblyDefinition definition, Stream outputStream)
         {
-            AssemblyFactory.SaveAssembly(definition, outputStream);
+            definition.Write(outputStream);
         }
     }
 }

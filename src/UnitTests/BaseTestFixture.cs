@@ -1,16 +1,32 @@
-﻿using NUnit.Framework;
+﻿
+
+using System;
 
 namespace LinFu.UnitTests
 {
-    public abstract class BaseTestFixture
+    public abstract class BaseTestFixture : IDisposable
     {
-        [SetUp]
-        public virtual void Init()
+        private bool _disposed = false;
+        protected BaseTestFixture()
+        {
+            var self = this;
+            self.Init();
+        }
+
+        public virtual void Dispose()
+        {
+            if (!_disposed)
+            {
+                Term();
+                _disposed = true;
+            }
+        }
+
+        protected virtual void Init()
         {
         }
 
-        [TearDown]
-        public virtual void Term()
+        protected virtual void Term()
         {
         }
     }

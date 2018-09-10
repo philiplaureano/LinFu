@@ -2,11 +2,10 @@ using System;
 using LinFu.IoC;
 using LinFu.IoC.Configuration;
 using LinFu.IoC.Interfaces;
-using NUnit.Framework;
+using Xunit;
 
 namespace LinFu.UnitTests.IOC.Configuration
 {
-    [TestFixture]
     public class InitializerTests
     {
         public class InitializableObject : IInitialize
@@ -28,19 +27,19 @@ namespace LinFu.UnitTests.IOC.Configuration
             }
         }
 
-        [Test]
+        [Fact]
         public void InitializerDoesNotHoldRerenceToInitializedObjects()
         {
             var container = new TestServiceContainer();
 
             var initializable = container.GetService<InitializableObject>();
-            Assert.IsTrue(initializable.InitializeCalled);
+            Assert.True(initializable.InitializeCalled);
             var weakRef = new WeakReference(initializable);
-            Assert.IsTrue(weakRef.IsAlive);
+            Assert.True(weakRef.IsAlive);
 
             initializable = null;
             GC.Collect(0, GCCollectionMode.Forced);
-            Assert.IsFalse(weakRef.IsAlive);
+            Assert.False(weakRef.IsAlive);
         }
     }
 }

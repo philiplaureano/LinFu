@@ -28,10 +28,11 @@ namespace LinFu.AOP.Cecil
         /// <summary>
         ///     Saves the return value from a given method call.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker" /> pointing to the target method body.</param>
-        public void Emit(CilWorker IL)
+        /// <param name="IL">The <see cref="ILProcessor" /> pointing to the target method body.</param>
+        public void Emit(ILProcessor IL)
         {
-            var module = IL.GetModule();
+            var module = IL.Body.Method.DeclaringType.Module;
+            
             var voidType = module.ImportType(typeof(void));
             var returnTypeIsValueType = _returnType != voidType && _returnType.IsValueType;
 

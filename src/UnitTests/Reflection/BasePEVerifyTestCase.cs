@@ -22,22 +22,20 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
-using NUnit.Framework;
+using Xunit;
 
 namespace LinFu.UnitTests.Reflection
 {
-    public abstract class BasePEVerifyTestCase
+    public abstract class BasePEVerifyTestCase : BaseTestFixture
     {
         private static readonly List<string> _disposalList = new List<string>();
 
-        [SetUp]
-        public void Init()
+        protected override void Init()
         {
             OnInit();
         }
 
-        [TearDown]
-        public void Term()
+        protected override void Term()
         {
             OnTerm();
 
@@ -66,10 +64,14 @@ namespace LinFu.UnitTests.Reflection
 
         protected static void AutoDelete(string filename)
         {
-            if (_disposalList.Contains(filename) || !File.Exists(filename))
-                return;
+            lock (_disposalList)
+            {
+                if (_disposalList.Contains(filename) || !File.Exists(filename))
+                    return;
 
-            _disposalList.Add(filename);
+
+                _disposalList.Add(filename);
+            }
         }
 
         protected void PEVerify(string assemblyLocation)
@@ -112,7 +114,7 @@ namespace LinFu.UnitTests.Reflection
                 return;
 
             Console.WriteLine(processOutput);
-            Assert.Fail("PEVerify output: " + Environment.NewLine + processOutput, result);
+            Assert.True(false, $"PEVerify output: {Environment.NewLine}{processOutput}{result}");
         }
 
         private static string GetPEVerifyLocation(IEnumerable<string> pathKeys, string peVerifyLocation)

@@ -4,13 +4,12 @@ using LinFu.AOP.Cecil.Extensions;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
-using NUnit.Framework;
+using Xunit;
 using SampleLibrary;
 using SampleLibrary.AOP;
 
 namespace LinFu.UnitTests.AOP
 {
-    [TestFixture]
     public class NewOperatorInterceptionTests : BaseTestFixture
     {
         private class OtherSampleService : ISampleService
@@ -20,10 +19,10 @@ namespace LinFu.UnitTests.AOP
             }
         }
 
-        [Test]
+        [Fact]
         public void ShouldInterceptObjectInstantiation()
         {
-            var assembly = AssemblyFactory.GetAssembly("SampleLibrary.dll");
+            var assembly = AssemblyDefinition.ReadAssembly("SampleLibrary.dll");
 
             var module = assembly.MainModule;
             var typeName = "SampleClassWithNewInstanceCall";
@@ -35,9 +34,9 @@ namespace LinFu.UnitTests.AOP
 
             var modifiedAssembly = assembly.ToAssembly();
 
-            var modifiedTargetType = modifiedAssembly.GetTypes().Where(t => t.Name == typeName).First();
+            var modifiedTargetType = modifiedAssembly.GetTypes().First(t => t.Name == typeName);
             var instance = Activator.CreateInstance(modifiedTargetType);
-            Assert.IsNotNull(instance);
+            Assert.NotNull(instance);
 
             // The activator will return a new OtherSampleService() instance instead
             // of a SampleServiceImplementation instance if the interception works
@@ -46,10 +45,13 @@ namespace LinFu.UnitTests.AOP
             host.Activator = activator;
 
             var targetMethod = modifiedTargetType.GetMethod("DoSomething");
+            
+            Assert.NotNull(targetMethod);
+            
             var result = targetMethod.Invoke(instance, null);
 
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result is OtherSampleService);
+            Assert.NotNull(result);
+            Assert.True(result is OtherSampleService);
         }
     }
 }

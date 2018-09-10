@@ -35,11 +35,11 @@ namespace LinFu.AOP.Cecil
         /// <summary>
         ///     Adds method body interception to the target method.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker" /> pointing to the target method body.</param>
-        public void Emit(CilWorker IL)
+        /// <param name="IL">The <see cref="ILProcessor" /> pointing to the target method body.</param>
+        public void Emit(ILProcessor IL)
         {
-            var method = IL.GetMethod();
-            var returnType = method.ReturnType.ReturnType;
+            var method = IL.Body.Method;
+            var returnType = method.ReturnType;
 
             var endLabel = IL.Create(OpCodes.Nop);
             var executeOriginalInstructions = IL.Create(OpCodes.Nop);

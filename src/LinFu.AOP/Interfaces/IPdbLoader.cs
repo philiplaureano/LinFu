@@ -24,7 +24,7 @@ namespace LinFu.AOP.Cecil.Interfaces
 
 
         /// <summary>
-        ///     Saves the debug symbols for the  target<paramref name="assembly" />.
+        ///     Saves the debug symbols for the  target<paramref name="targetAssembly" />.
         /// </summary>
         /// <param name="targetAssembly">The assembly that contains the symbols to be saved.</param>
         void SaveSymbols(AssemblyDefinition targetAssembly);

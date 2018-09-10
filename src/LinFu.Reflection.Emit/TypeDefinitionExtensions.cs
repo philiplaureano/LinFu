@@ -135,14 +135,14 @@ namespace LinFu.Reflection.Emit
                 ImplAttributes = MethodImplAttributes.IL | MethodImplAttributes.Managed
             };
 
-            var IL = ctor.Body.CilWorker;
+            var IL = ctor.Body.GetILProcessor();
 
             // Call the constructor for System.Object, and exit
             IL.Emit(OpCodes.Ldarg_0);
             IL.Emit(OpCodes.Call, baseConstructor);
             IL.Emit(OpCodes.Ret);
 
-            targetType.Constructors.Add(ctor);
+            targetType.Methods.Add(ctor);
 
             return ctor;
         }
@@ -170,9 +170,7 @@ namespace LinFu.Reflection.Emit
             TypeReference propertyType)
         {
             var fieldName = string.Format("__{0}_backingField", propertyName);
-            var actualField = new FieldDefinition(fieldName,
-                propertyType, FieldAttributes.Private);
-
+            var actualField = new FieldDefinition(fieldName, FieldAttributes.Private, propertyType);
 
             typeDef.Fields.Add(actualField);
 
@@ -211,8 +209,7 @@ namespace LinFu.Reflection.Emit
         public static void AddProperty(this TypeDefinition typeDef, string propertyName, TypeReference propertyType,
             MethodDefinition getter, MethodDefinition setter)
         {
-            var newProperty = new PropertyDefinition(propertyName,
-                propertyType, PropertyAttributes.Unused)
+            var newProperty = new PropertyDefinition(propertyName, PropertyAttributes.Unused, propertyType)
             {
                 GetMethod = getter,
                 SetMethod = setter

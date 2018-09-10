@@ -14,19 +14,19 @@ namespace LinFu.AOP.Cecil
 
 
         /// <summary>
-        ///     Rewrites a target method using the given CilWorker.
+        ///     Rewrites a target method using the given ILProcessor.
         /// </summary>
         /// <param name="method">The target method.</param>
-        /// <param name="IL">The CilWorker that will be used to rewrite the target method.</param>
+        /// <param name="IL">The ILProcessor that will be used to rewrite the target method.</param>
         /// <param name="oldInstructions">The original instructions from the target method body.</param>
-        public void Rewrite(MethodDefinition method, CilWorker IL, IEnumerable<Instruction> oldInstructions)
+        public void Rewrite(MethodDefinition method, ILProcessor IL, IEnumerable<Instruction> oldInstructions)
         {
             if (!ShouldRewrite(method))
                 return;
 
             var declaringType = method.DeclaringType;
 
-            var body = IL.GetBody();
+            var body = IL.Body;
             body.InitLocals = true;
 
             var module = declaringType.Module;
@@ -88,9 +88,9 @@ namespace LinFu.AOP.Cecil
         ///     Rewrites the instructions in the target method body.
         /// </summary>
         /// <param name="method">The target method.</param>
-        /// <param name="IL">The <see cref="CilWorker" /> instance that represents the method body.</param>
+        /// <param name="IL">The <see cref="ILProcessor" /> instance that represents the method body.</param>
         /// <param name="oldInstructions">The IL instructions of the original method body.</param>
-        protected abstract void RewriteMethodBody(MethodDefinition method, CilWorker IL,
+        protected abstract void RewriteMethodBody(MethodDefinition method, ILProcessor IL,
             IEnumerable<Instruction> oldInstructions);
     }
 }

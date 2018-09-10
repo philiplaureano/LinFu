@@ -80,16 +80,13 @@ namespace LinFu.AOP.Tasks
             {
                 Log.LogMessage("PostWeaving Assembly '{0}' -> '{1}'", TargetFile, outputFile);
 
-                var assembly = AssemblyFactory.GetAssembly(TargetFile);
+                var assembly = AssemblyDefinition.ReadAssembly(TargetFile);
 
                 var filenameWithoutExtension = Path.GetFileNameWithoutExtension(TargetFile);
                 var pdbFileName = string.Format("{0}.pdb", filenameWithoutExtension);
                 var pdbExists = File.Exists(pdbFileName);
 
                 var module = assembly.MainModule;
-
-                if (pdbExists)
-                    module.LoadSymbols();
 
                 if (InterceptAllMethodCalls)
                     assembly.InterceptAllMethodCalls();
@@ -105,10 +102,6 @@ namespace LinFu.AOP.Tasks
 
                 if (InterceptAllExceptions)
                     assembly.InterceptAllExceptions();
-
-                // Update the PDB info if it exists
-                if (pdbExists)
-                    module.SaveSymbols();
 
                 assembly.Save(outputFile);
             }

@@ -99,7 +99,7 @@ namespace LinFu.Proxy
 
             // Determine the return type
             var returnType = targetMethod.ReturnType != null
-                ? targetMethod.ReturnType.ReturnType
+                ? targetMethod.ReturnType
                 : voidType;
 
             IL.PackageReturnValue(module, returnType);
@@ -121,10 +121,10 @@ namespace LinFu.Proxy
         /// <summary>
         ///     Emits the IL instructions to obtain an <see cref="IInterceptor" /> instance for the proxy type.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker" /> responsible for emitting the method body.</param>
+        /// <param name="IL">The <see cref="ILProcessor" /> responsible for emitting the method body.</param>
         /// <param name="proxyType">The proxy type.</param>
         /// <param name="getInterceptorMethod">The getter method for the interceptor.</param>
-        protected virtual void EmitGetInterceptorInstruction(CilWorker IL, TypeReference proxyType,
+        protected virtual void EmitGetInterceptorInstruction(ILProcessor IL, TypeReference proxyType,
             MethodReference getInterceptorMethod)
         {
             IL.Emit(OpCodes.Ldarg_0);
@@ -133,13 +133,13 @@ namespace LinFu.Proxy
         }
 
         /// <summary>
-        ///     Causes the <see cref="CilWorker" /> to make the method throw a
+        ///     Causes the <see cref="ILProcessor" /> to make the method throw a
         ///     <see cref="NotImplementedException" /> if the method cannot be found.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker" /> responsible for emitting the method body.</param>
-        protected virtual void ImplementNotFound(CilWorker IL)
+        /// <param name="IL">The <see cref="ILProcessor" /> responsible for emitting the method body.</param>
+        protected virtual void ImplementNotFound(ILProcessor IL)
         {
-            var body = IL.GetBody();
+            var body = IL.Body;
             var declaringType = body.Method.DeclaringType;
             var module = declaringType.Module;
 
@@ -154,17 +154,17 @@ namespace LinFu.Proxy
         ///     <paramref name="arguments" /> from the <paramref name="invocationInfo" />
         ///     object.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker" /> that will emit the method body.</param>
+        /// <param name="IL">The <see cref="ILProcessor" /> that will emit the method body.</param>
         /// <param name="parameters">The parameters of the target method.</param>
         /// <param name="invocationInfo">The local variable that contains the <see cref="IInvocationInfo" /> instance.</param>
         /// <param name="arguments">
         ///     The local variable that will store the arguments from the <see cref="IInvocationInfo" />
         ///     instance.
         /// </param>
-        private static void SaveRefArguments(CilWorker IL, IEnumerable<ParameterDefinition> parameters,
+        private static void SaveRefArguments(ILProcessor IL, IEnumerable<ParameterDefinition> parameters,
             VariableDefinition invocationInfo, VariableDefinition arguments)
         {
-            var body = IL.GetBody();
+            var body = IL.Body;
             var targetMethod = body.Method;
             var declaringType = targetMethod.DeclaringType;
             var module = declaringType.Module;
@@ -194,11 +194,10 @@ namespace LinFu.Proxy
                 IL.Emit(OpCodes.Ldelem_Ref);
 
                 // Determine the actual parameter type
-                var referenceType = param.ParameterType as ReferenceType;
-                if (referenceType == null)
+                if (param.ParameterType.IsByReference)
                     continue;
 
-                var actualParameterType = referenceType.ElementType;
+                var actualParameterType = param.ParameterType;
                 IL.Emit(OpCodes.Unbox_Any, actualParameterType);
                 IL.Stind(param.ParameterType);
             }

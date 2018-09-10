@@ -89,11 +89,14 @@
     <Compile Include="IInterceptor.cs" />
     <Compile Include="IInvocationInfo.cs" />
     <Compile Include="IInvokeWrapper.cs" />
+    <Compile Include="IReflectionStructureVisitable.cs" />
+    <Compile Include="IReflectionVisitable.cs" />
     <Compile Include="ITypeActivationContext.cs" />
     <Compile Include="ITypeActivator.cs" />
     <Compile Include="IMethodReplacementHost.cs" />
     <Compile Include="IMethodReplacementProvider.cs" />
     <Compile Include="IModifiableType.cs" />
+    <Compile Include="IVisitable.cs" />
     <Compile Include="MethodBodyReplacementProviderRegistry.cs" />
     <Compile Include="MethodCallReplacementProviderRegistry.cs" />
     <Compile Include="MultithreadedCallCounter.cs" />

@@ -114,8 +114,8 @@ namespace LinFu.AOP.Cecil
         /// </summary>
         /// <param name="oldInstruction">The instruction currently being evaluated.</param>
         /// <param name="hostMethod">The method that contains the target instruction.</param>
-        /// <param name="IL">The CilWorker that will be used to emit the method body instructions.</param>
-        protected override void Replace(Instruction oldInstruction, MethodDefinition hostMethod, CilWorker IL)
+        /// <param name="IL">The ILProcessor that will be used to emit the method body instructions.</param>
+        protected override void Replace(Instruction oldInstruction, MethodDefinition hostMethod, ILProcessor IL)
         {
             var targetField = (FieldReference) oldInstruction.Operand;
             var fieldType = targetField.FieldType;

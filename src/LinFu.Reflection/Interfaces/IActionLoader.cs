@@ -23,7 +23,7 @@ namespace LinFu.Reflection
         /// <summary>
         ///     Determines if the PluginLoader can load the <paramref name="inputType" />.
         /// </summary>
-        /// <param name="inputType">The target type that might contain the target <typeparamref name="TAttribute" /> instance.</param>
+        /// <param name="inputType">The target type that might contain the target instance.</param>
         /// <returns><c>true</c> if the type can be loaded; otherwise, it returns <c>false</c>.</returns>
         bool CanLoad(TInput inputType);
     }

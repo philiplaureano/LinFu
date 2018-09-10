@@ -1,15 +1,14 @@
 ﻿using System;
 using LinFu.IoC;
-using NUnit.Framework;
+using Xunit;
 using SampleLibrary;
 using SampleLibrary.IOC;
 
 namespace LinFu.UnitTests.IOC
 {
-    [TestFixture]
     public class MethodInjectionTests : BaseTestFixture
     {
-        [Test]
+        [Fact]
         public void ShouldAutoInjectMethod()
         {
             var container = new ServiceContainer();
@@ -22,12 +21,12 @@ namespace LinFu.UnitTests.IOC
             container.Inject<ISampleService>("MyService").Using(c => instance).OncePerRequest();
 
             var result = container.GetService<ISampleService>("MyService");
-            Assert.AreSame(result, instance);
+            Assert.Same(result, instance);
 
             // On initialization, the instance.Property value
             // should be a SampleClass type
-            Assert.IsNotNull(instance.Property);
-            Assert.AreEqual(typeof(SampleClass), instance.Property?.GetType());
+            Assert.NotNull(instance.Property);
+            Assert.Equal(typeof(SampleClass), instance.Property?.GetType());
         }
     }
 }

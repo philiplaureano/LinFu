@@ -7,11 +7,20 @@
     {
         private readonly ICallCounter _counter = new MultiThreadedCallCounter();
 
+        /// <summary>
+        /// The hook method that is called after each intercepted method is called.
+        /// </summary>
+        /// <param name="context">The context of the method call that is being intercepted.</param>
+        /// <param name="returnValue">The value returned from the method call</param>
         public void AfterInvoke(IInvocationInfo context, object returnValue)
         {
             _counter.Decrement(context);
         }
 
+        /// <summary>
+        /// The hook method that is called after each intercepted method is called.
+        /// </summary>
+        /// <param name="context">The context of the method call that is being intercepted.</param>
         public void BeforeInvoke(IInvocationInfo context)
         {
             _counter.Increment(context);
@@ -50,6 +59,12 @@
             return new CountingInterceptor(_counter, methodReplacement);
         }
 
+        /// <summary>
+        /// Determines whether or not a given method should be intercepted or replaced.
+        /// </summary>
+        /// <param name="host">The actual object or target instance that hosts the method</param>
+        /// <param name="context">The context that describes the method call</param>
+        /// <returns></returns>
         protected virtual bool ShouldReplace(object host, IInvocationInfo context)
         {
             return _counter.GetPendingCalls(context) == 0;

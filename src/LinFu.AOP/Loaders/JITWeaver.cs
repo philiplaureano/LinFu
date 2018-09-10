@@ -58,7 +58,7 @@ namespace LinFu.AOP.Cecil.Loaders
         /// <returns>A valid assembly.</returns>
         public override Assembly Load(string assemblyFile)
         {
-            var targetAssembly = AssemblyFactory.GetAssembly(assemblyFile);
+            var targetAssembly = AssemblyDefinition.ReadAssembly(assemblyFile);
 
             // Strongly-named assemblies cannot be modified
             if (targetAssembly.Name.HasPublicKey)
@@ -89,7 +89,7 @@ namespace LinFu.AOP.Cecil.Loaders
                 PdbLoader.SaveSymbols(targetAssembly);
 
             // Save the modifed assembly
-            AssemblyFactory.SaveAssembly(targetAssembly, memoryStream);
+            targetAssembly.Save(memoryStream);
 
             if (PdbLoader == null || !hasSymbols)
                 return targetAssembly.ToAssembly();

@@ -3,14 +3,13 @@ using System.Threading;
 using LinFu.IoC;
 using LinFu.IoC.Interfaces;
 using Moq;
-using NUnit.Framework;
+using Xunit;
 
 namespace LinFu.UnitTests.IOC
 {
-    [TestFixture]
     public class ScopeTests : BaseTestFixture
     {
-        [Test]
+        [Fact]
         public void ScopeShouldCallDisposableOnScopedObject()
         {
             var mock = new Mock<IDisposable>();
@@ -26,7 +25,7 @@ namespace LinFu.UnitTests.IOC
             }
         }
 
-        [Test]
+        [Fact]
         public void ScopeShouldNeverCallDisposableOnNonScopedObject()
         {
             var mock = new Mock<IDisposable>();
@@ -42,7 +41,7 @@ namespace LinFu.UnitTests.IOC
             var instance = container.GetService<IDisposable>();
         }
 
-        [Test]
+        [Fact]
         public void ScopeShouldNeverCallDisposableOnScopedObjectCreatedInAnotherThread()
         {
             var mock = new Mock<IDisposable>();

@@ -28,11 +28,11 @@ namespace LinFu.AOP.Cecil
         /// <summary>
         ///     Emits the call to obtain the <see cref="IAroundInvokeProvider" /> instance.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker" /> pointing to the target method body.</param>
-        public void Emit(CilWorker IL)
+        /// <param name="IL">The <see cref="ILProcessor" /> pointing to the target method body.</param>
+        public void Emit(ILProcessor IL)
         {
-            var method = IL.GetMethod();
-            var module = IL.GetModule();
+            var method = IL.Body.Method;
+            var module = method.DeclaringType.Module;
 
             // var aroundInvokeProvider = this.AroundInvokeProvider;
             var propertyName = string.Format("get_{0}", _providerName);

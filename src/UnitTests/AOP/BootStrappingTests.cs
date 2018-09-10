@@ -1,14 +1,13 @@
 ﻿using System.Linq;
 using LinFu.AOP.Interfaces;
-using NUnit.Framework;
+using Xunit;
 using SampleLibrary.AOP;
 
 namespace LinFu.UnitTests.AOP
 {
-    [TestFixture]
     public class BootStrappingTests : BaseTestFixture
     {
-        [Test]
+        [Fact]
         public void ShouldCallTypeThatImplementsBootstrapInterface()
         {
             var registry = BootStrapRegistry.Instance;
@@ -19,7 +18,7 @@ namespace LinFu.UnitTests.AOP
                 select c).First();
 
             var component = (SampleBootstrapComponent) targetComponent;
-            Assert.IsTrue(component.Called);
+            Assert.True(component.Called);
         }
     }
 }

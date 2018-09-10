@@ -65,17 +65,17 @@ namespace LinFu.AOP.Cecil
 
 
         /// <summary>
-        ///     Rewrites a target method using the given CilWorker.
+        ///     Rewrites a target method using the given ILProcessor.
         /// </summary>
         /// <param name="method">The target method.</param>
-        /// <param name="IL">The CilWorker that will be used to rewrite the target method.</param>
+        /// <param name="IL">The ILProcessor that will be used to rewrite the target method.</param>
         /// <param name="oldInstructions">The original instructions from the target method body.</param>
-        public void Rewrite(MethodDefinition method, CilWorker IL,
+        public void Rewrite(MethodDefinition method, ILProcessor IL,
             IEnumerable<Instruction> oldInstructions)
         {
             var targetMethod = _parameters.TargetMethod;
             var worker = targetMethod.GetILGenerator();
-            var module = worker.GetModule();
+            var module = worker.Body.Method.DeclaringType.Module;
 
 
             _getInterceptionDisabled.Emit(worker);
@@ -102,12 +102,9 @@ namespace LinFu.AOP.Cecil
             worker.Append(skipInvocationInfo);
             _getClassMethodReplacementProvider.Emit(worker);
 
-
-            var returnType = targetMethod.ReturnType.ReturnType;
             _addMethodReplacement.Emit(worker);
 
             // Save the return value
-            var voidType = module.Import(typeof(void));
             _surroundMethodBody.AddEpilog(worker);
 
             //if (returnType != voidType)

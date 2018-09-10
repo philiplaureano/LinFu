@@ -55,11 +55,11 @@ namespace LinFu.AOP.Cecil
         /// <summary>
         ///     Emits the instructions that obtain a class-level <see cref="IMethodReplacementProvider" /> instance.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker" /> instance that points to the instructions in the method body.</param>
-        public void Emit(CilWorker IL)
+        /// <param name="IL">The <see cref="ILProcessor" /> instance that points to the instructions in the method body.</param>
+        public void Emit(ILProcessor IL)
         {
-            var module = IL.GetModule();
-            var method = IL.GetMethod();
+            var method = IL.Body.Method;
+            var module =  method.Module;
 
             var getProvider = _resolveGetProviderMethod(module);
 

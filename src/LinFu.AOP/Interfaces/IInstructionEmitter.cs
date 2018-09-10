@@ -10,7 +10,7 @@ namespace LinFu.AOP.Cecil.Interfaces
         /// <summary>
         ///     Emits a set of instructions to the given <paramref name="IL">CilWorker</paramref>.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker" /> responsible for the target method body.</param>
-        void Emit(CilWorker IL);
+        /// <param name="IL">The <see cref="ILProcessor" /> responsible for the target method body.</param>
+        void Emit(ILProcessor IL);
     }
 }

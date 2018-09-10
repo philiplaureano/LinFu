@@ -1,16 +1,15 @@
 ﻿using LinFu.IoC;
 using LinFu.Proxy;
 using Moq;
-using NUnit.Framework;
+using Xunit;
 using SampleLibrary;
 using SampleLibrary.IOC;
 
 namespace LinFu.UnitTests.Reflection
 {
-    [TestFixture]
     public class DuckTypingTests
     {
-        [Test]
+        [Fact]
         public void ShouldBeAbleToRedirectInterfaceCallToTarget()
         {
             var container = new ServiceContainer();

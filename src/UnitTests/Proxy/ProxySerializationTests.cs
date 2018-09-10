@@ -7,46 +7,15 @@ using System.Runtime.Serialization.Formatters.Binary;
 using LinFu.AOP.Cecil;
 using LinFu.Proxy;
 using LinFu.Proxy.Interfaces;
-using NUnit.Framework;
+using Xunit;
 using SampleLibrary;
 using SampleLibrary.Proxy;
 
 namespace LinFu.UnitTests.Proxy
 {
-    [TestFixture]
     public class ProxySerializationTests : BaseTestFixture
     {
-        [Test]
-        [Ignore("Invocation Info doesn't need to be serialized")]
-        public void ShouldBeAbleToSerializeInvocationInfo()
-        {
-            var target = 42;
-            var targetMethod = typeof(object).GetMethod("ToString");
-            var stackTrace = new StackTrace();
-            var parameterTypes = new[] {typeof(int)};
-            var typeArguments = new[] {typeof(string)};
-            var arguments = new object[] {1, 2, 3};
-            var info = new InvocationInfo(target, targetMethod, stackTrace, parameterTypes, typeArguments,
-                typeof(string), arguments);
-
-            var memoryStream = new MemoryStream();
-            var formatter = new BinaryFormatter();
-            formatter.Serialize(memoryStream, info);
-
-            memoryStream.Seek(0, SeekOrigin.Begin);
-            var otherInfo = formatter.Deserialize(memoryStream) as InvocationInfo;
-            Assert.IsNotNull(otherInfo);
-
-            Assert.AreEqual(target, otherInfo.Target);
-            Assert.AreEqual(targetMethod, otherInfo.TargetMethod);
-
-            Assert.IsTrue(parameterTypes.AreEqualTo(otherInfo.ParameterTypes));
-            Assert.IsTrue(typeArguments.AreEqualTo(otherInfo.TypeArguments));
-            Assert.IsTrue(arguments.AreEqualTo(otherInfo.Arguments));
-        }
-
-
-        [Test]
+        [Fact]
         public void ShouldSupportSerialization()
         {
             var factory = new ProxyFactory();
@@ -63,7 +32,7 @@ namespace LinFu.UnitTests.Proxy
             // and a serialization constructor
             var constructorFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
             var constructors = proxyType.GetConstructors(constructorFlags);
-            Assert.IsTrue(constructors.Length == 2);
+            Assert.True(constructors.Length == 2);
 
             var serializationConstructor = proxyType.GetConstructor(constructorFlags, null,
                 new[]
@@ -71,7 +40,8 @@ namespace LinFu.UnitTests.Proxy
                     typeof(SerializationInfo),
                     typeof(StreamingContext)
                 }, null);
-            Assert.IsNotNull(serializationConstructor);
+            
+            Assert.NotNull(serializationConstructor);
 
             // Serialize the proxy
             var stream = new MemoryStream();
@@ -81,12 +51,12 @@ namespace LinFu.UnitTests.Proxy
             // Deserialize the proxy from the stream
             stream.Seek(0, SeekOrigin.Begin);
             var restoredProxy = (IProxy) formatter.Deserialize(stream);
-            Assert.IsNotNull(restoredProxy);
-            Assert.IsNotNull(restoredProxy.Interceptor);
-            Assert.IsTrue(restoredProxy.Interceptor.GetType() == typeof(SerializableInterceptor));
+            Assert.NotNull(restoredProxy);
+            Assert.NotNull(restoredProxy.Interceptor);
+            Assert.True(restoredProxy.Interceptor.GetType() == typeof(SerializableInterceptor));
 
             var otherInterceptor = (SerializableInterceptor) restoredProxy.Interceptor;
-            Assert.AreEqual(otherInterceptor.Identifier, interceptor.Identifier);
+            Assert.Equal(otherInterceptor.Identifier, interceptor.Identifier);
         }
     }
 }

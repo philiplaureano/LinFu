@@ -1,5 +1,6 @@
 ﻿using System;
 using LinFu.AOP.Cecil.Interfaces;
+using LinFu.AOP.Interfaces;
 using Mono.Cecil;
 
 namespace LinFu.AOP.Cecil.Extensions

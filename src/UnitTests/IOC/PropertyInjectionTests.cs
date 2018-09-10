@@ -4,16 +4,15 @@ using System.Reflection;
 using LinFu.IoC;
 using LinFu.IoC.Configuration.Interfaces;
 using Moq;
-using NUnit.Framework;
+using Xunit;
 using SampleLibrary;
 using SampleLibrary.IOC;
 
 namespace LinFu.UnitTests.IOC
 {
-    [TestFixture]
     public class PropertyInjectionTests : BaseTestFixture
     {
-        [Test]
+        [Fact]
         public void ShouldAutoInjectClassCreatedWithAutoCreate()
         {
             // Configure the container
@@ -27,11 +26,11 @@ namespace LinFu.UnitTests.IOC
                 (SampleClassWithInjectionProperties) container.AutoCreate(typeof(SampleClassWithInjectionProperties));
 
             // The container should initialize the SomeProperty method to match the mock ISampleService instance
-            Assert.IsNotNull(instance.SomeProperty);
-            Assert.AreSame(instance.SomeProperty, sampleService.Object);
+            Assert.NotNull(instance.SomeProperty);
+            Assert.Same(instance.SomeProperty, sampleService.Object);
         }
 
-        [Test]
+        [Fact]
         public void ShouldAutoInjectProperty()
         {
             var container = new ServiceContainer();
@@ -44,15 +43,15 @@ namespace LinFu.UnitTests.IOC
             container.Inject<ISampleService>("MyService").Using(c => instance).OncePerRequest();
 
             var result = container.GetService<ISampleService>("MyService");
-            Assert.AreSame(result, instance);
+            Assert.Same(result, instance);
 
             // On initialization, the instance.SomeProperty value
             // should be a SampleClass type
-            Assert.IsNotNull(instance.SomeProperty);
-            Assert.AreEqual(typeof(SampleClass), instance.SomeProperty?.GetType());
+            Assert.NotNull(instance.SomeProperty);
+            Assert.Equal(typeof(SampleClass), instance.SomeProperty?.GetType());
         }
 
-        [Test]
+        [Fact]
         public void ShouldAutoInjectPropertyWithoutCustomAttribute()
         {
             var container = new ServiceContainer();
@@ -69,14 +68,14 @@ namespace LinFu.UnitTests.IOC
 
             // Get the service instance
             var result = container.GetService<ISampleService>("MyService");
-            Assert.AreSame(result, instance);
+            Assert.Same(result, instance);
 
             // Ensure that the injection occurred
-            Assert.IsNotNull(instance.SomeProperty);
-            Assert.AreEqual(typeof(SampleClass), instance.SomeProperty?.GetType());
+            Assert.NotNull(instance.SomeProperty);
+            Assert.Equal(typeof(SampleClass), instance.SomeProperty?.GetType());
         }
 
-        [Test]
+        [Fact]
         public void ShouldAutoInjectServiceListIntoArrayDependency()
         {
             var container = new ServiceContainer();
@@ -90,19 +89,19 @@ namespace LinFu.UnitTests.IOC
 
             var result = container.GetService<SampleClassWithArrayPropertyDependency>();
 
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Property);
+            Assert.NotNull(result);
+            Assert.NotNull(result.Property);
 
             var serviceCount = result.Property.Count();
-            Assert.IsTrue(serviceCount > 0);
+            Assert.True(serviceCount > 0);
         }
 
-        [Test]
+        [Fact]
         public void ShouldDetermineWhichPropertiesShouldBeInjected()
         {
             var targetType = typeof(SampleClassWithInjectionProperties);
             var targetProperty = targetType.GetProperty("SomeProperty");
-            Assert.IsNotNull(targetProperty);
+            Assert.NotNull(targetProperty);
 
             // Load the property injection filter by default
             var container = new ServiceContainer();
@@ -110,22 +109,22 @@ namespace LinFu.UnitTests.IOC
 
             var filter = container.GetService<IMemberInjectionFilter<PropertyInfo>>();
 
-            Assert.IsNotNull(filter);
+            Assert.NotNull(filter);
 
             // The filter should return the targetProperty
-            var properties = filter.GetInjectableMembers(targetType);
-            Assert.IsTrue(properties.Count() > 0);
+            var properties = filter.GetInjectableMembers(targetType).ToArray();
+            Assert.True(properties.Any());
 
             var result = properties.First();
-            Assert.AreEqual(targetProperty, result);
+            Assert.Equal(targetProperty, result);
         }
 
-        [Test]
+        [Fact]
         public void ShouldSetPropertyValue()
         {
             var targetType = typeof(SampleClassWithInjectionProperties);
             var targetProperty = targetType.GetProperty("SomeProperty");
-            Assert.IsNotNull(targetProperty);
+            Assert.NotNull(targetProperty);
 
             // Configure the target
             var instance = new SampleClassWithInjectionProperties();
@@ -139,12 +138,12 @@ namespace LinFu.UnitTests.IOC
             container.LoadFrom(AppDomain.CurrentDomain.BaseDirectory, "LinFu*.dll");
 
             var setter = container.GetService<IPropertySetter>();
-            Assert.IsNotNull(setter);
+            Assert.NotNull(setter);
 
             setter.Set(instance, targetProperty, service);
 
-            Assert.IsNotNull(instance.SomeProperty);
-            Assert.AreSame(service, instance.SomeProperty);
+            Assert.NotNull(instance.SomeProperty);
+            Assert.Same(service, instance.SomeProperty);
         }
     }
 }

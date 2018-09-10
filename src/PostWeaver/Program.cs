@@ -5,6 +5,7 @@ using System.Linq;
 using LinFu.AOP.Cecil;
 using LinFu.AOP.Cecil.Extensions;
 using LinFu.AOP.Cecil.Interfaces;
+using LinFu.AOP.Interfaces;
 using LinFu.Reflection;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
@@ -26,7 +27,7 @@ namespace PostWeaver
                 throw new FileNotFoundException(inputFile);
 
             var targetFile = inputFile;
-            var assembly = AssemblyFactory.GetAssembly(targetFile);
+            var assembly = AssemblyDefinition.ReadAssembly(targetFile);
             var targetDirectory = Path.GetDirectoryName(targetFile);
 
             var filenameWithoutExtension = Path.GetFileNameWithoutExtension(targetFile);
@@ -35,25 +36,18 @@ namespace PostWeaver
 
             var module = assembly.MainModule;
 
-            if (pdbExists)
-                module.LoadSymbols();
-
             InterceptMethodCalls(assembly, targetDirectory);
             InterceptNewInstances(assembly, targetDirectory);
             InterceptMethodBodies(assembly, targetDirectory);
             InterceptFields(assembly, targetDirectory);
-            InterceptExceptions(assembly, targetDirectory);
-
-            // Update the PDB info if it exists
-            if (pdbExists)
-                module.SaveSymbols();
+            InterceptExceptions(assembly, targetDirectory);            
 
             assembly.Save(targetFile);
 
             Console.WriteLine("PostWeaving Assembly '{0}' -> '{0}'", targetFile);
         }
 
-        private static void InterceptExceptions(IReflectionStructureVisitable assembly, string targetDirectory)
+        private static void InterceptExceptions(AssemblyDefinition assembly, string targetDirectory)
         {
             var methodFilter = LoadFirstInstanceOf<IMethodFilter>(targetDirectory);
 
@@ -66,7 +60,7 @@ namespace PostWeaver
             assembly.InterceptAllExceptions();
         }
 
-        private static void InterceptFields(IReflectionStructureVisitable assembly, string targetDirectory)
+        private static void InterceptFields(AssemblyDefinition assembly, string targetDirectory)
         {
             var fieldFilter = LoadFirstInstanceOf<IFieldFilter>(targetDirectory);
             var hostTypeFilter = LoadFirstInstanceOf<ITypeFilter>(targetDirectory);
@@ -80,7 +74,7 @@ namespace PostWeaver
             assembly.InterceptAllFields();
         }
 
-        private static void InterceptMethodBodies(IReflectionStructureVisitable assembly, string targetDirectory)
+        private static void InterceptMethodBodies(AssemblyDefinition assembly, string targetDirectory)
         {
             var methodFilter = LoadFirstInstanceOf<IMethodFilter>(targetDirectory);
             if (methodFilter != null)
@@ -92,7 +86,7 @@ namespace PostWeaver
             assembly.InterceptAllMethodBodies();
         }
 
-        private static void InterceptNewInstances(IReflectionStructureVisitable assembly, string targetDirectory)
+        private static void InterceptNewInstances(AssemblyDefinition assembly, string targetDirectory)
         {
             var newInstanceFilter = LoadFirstInstanceOf<INewInstanceFilter>(targetDirectory);
             var methodFilter = LoadFirstInstanceOf<IMethodFilter>(targetDirectory);
@@ -106,7 +100,7 @@ namespace PostWeaver
             assembly.InterceptAllNewInstances();
         }
 
-        private static void InterceptMethodCalls(IReflectionStructureVisitable assembly, string sourceDirectory)
+        private static void InterceptMethodCalls(AssemblyDefinition assembly, string sourceDirectory)
         {
             var methodCallFilter = LoadFirstInstanceOf<IMethodCallFilter>(sourceDirectory);
             var hostMethodFilter = LoadFirstInstanceOf<IMethodFilter>(sourceDirectory);

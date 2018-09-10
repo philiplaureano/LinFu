@@ -10,13 +10,13 @@ namespace LinFu.AOP.Cecil
         /// <summary>
         ///     Adds a prolog to the given method body.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker" /> that points to the given method body.</param>
-        void AddProlog(CilWorker IL);
+        /// <param name="IL">The <see cref="ILProcessor" /> that points to the given method body.</param>
+        void AddProlog(ILProcessor IL);
 
         /// <summary>
         ///     Adds an epilog to the given method body.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker" /> that points to the given method body.</param>
-        void AddEpilog(CilWorker IL);
+        /// <param name="IL">The <see cref="ILProcessor" /> that points to the given method body.</param>
+        void AddEpilog(ILProcessor IL);
     }
 }

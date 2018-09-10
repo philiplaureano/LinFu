@@ -3,24 +3,21 @@ using LinFu.IoC.Configuration;
 using LinFu.IoC.Interfaces;
 using LinFu.Reflection;
 using Moq;
-using NUnit.Framework;
+using Xunit;
 using SampleLibrary;
 
 namespace LinFu.UnitTests.IOC.Configuration
 {
-    [TestFixture]
-    public class AssemblyContainerLoaderTests
+    public class AssemblyContainerLoaderTests : BaseTestFixture
     {
-        [SetUp]
-        public void Init()
+        protected override void Init()
         {
             _mockAssemblyLoader = new Mock<IAssemblyLoader>();
             _mockTypeExtractor = new Mock<ITypeExtractor>();
             _mockTypeLoader = new Mock<ITypeLoader>();
         }
 
-        [TearDown]
-        public void Term()
+        protected override void Term()
         {
             _mockAssemblyLoader.VerifyAll();
             _mockTypeExtractor.VerifyAll();
@@ -36,7 +33,7 @@ namespace LinFu.UnitTests.IOC.Configuration
         private Mock<ITypeExtractor> _mockTypeExtractor;
         private Mock<ITypeLoader> _mockTypeLoader;
 
-        [Test]
+        [Fact]
         public void AssemblyContainerLoaderShouldCallAssemblyLoader()
         {
             var containerLoader = new AssemblyContainerLoader();
@@ -51,7 +48,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             containerLoader.Load(filename);
         }
 
-        [Test]
+        [Fact]
         public void AssemblyContainerLoaderShouldCallTypeExtractor()
         {
             var containerLoader = new AssemblyContainerLoader();
@@ -75,7 +72,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             containerLoader.Load(filename);
         }
 
-        [Test]
+        [Fact]
         public void AssemblyContainerLoaderShouldCallTypeLoader()
         {
             // HACK: The Cut&Paste is ugly, but it works
@@ -109,7 +106,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             containerLoader.Load(filename);
         }
 
-        [Test]
+        [Fact]
         public void AssemblyContainerLoaderShouldOnlyLoadDllFiles()
         {
             var mockTypeLoader = new Mock<ITypeLoader>();
@@ -118,11 +115,11 @@ namespace LinFu.UnitTests.IOC.Configuration
 
             // This should return true
             var validFile = typeof(AssemblyContainerLoaderTests).Assembly.Location;
-            Assert.IsTrue(containerLoader.CanLoad(validFile));
+            Assert.True(containerLoader.CanLoad(validFile));
 
             // This should return false;
             var invalidFile = "input.txt";
-            Assert.IsFalse(containerLoader.CanLoad(invalidFile));
+            Assert.False(containerLoader.CanLoad(invalidFile));
         }
     }
 }

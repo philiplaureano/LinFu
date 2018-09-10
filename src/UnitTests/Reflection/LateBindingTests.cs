@@ -1,15 +1,15 @@
 ﻿using LinFu.IoC.Reflection;
 using Moq;
-using NUnit.Framework;
+using Xunit;
+    
 using SampleLibrary;
 using SampleLibrary.IOC;
 
 namespace LinFu.UnitTests.Reflection
 {
-    [TestFixture]
     public class LateBindingTests
     {
-        [Test]
+        [Fact]
         public void ShouldCallLateBoundGenericMethodWithFourGenericArguments()
         {
             var mock = new Mock<ISampleServiceWithGenericMethods>();
@@ -21,7 +21,7 @@ namespace LinFu.UnitTests.Reflection
             mock.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void ShouldCallLateBoundGenericMethodWithThreeGenericArguments()
         {
             var mock = new Mock<ISampleServiceWithGenericMethods>();
@@ -33,7 +33,7 @@ namespace LinFu.UnitTests.Reflection
             mock.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void ShouldCallLateBoundGenericMethodWithTwoGenericArguments()
         {
             var mock = new Mock<ISampleServiceWithGenericMethods>();
@@ -45,7 +45,7 @@ namespace LinFu.UnitTests.Reflection
             mock.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void ShouldCallLateBoundMethod()
         {
             var mock = new Mock<ISampleService>();
@@ -57,7 +57,7 @@ namespace LinFu.UnitTests.Reflection
             mock.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void ShouldCallLateBoundMethodWithGenericMethod()
         {
             var mock = new Mock<ISampleServiceWithGenericMethods>();

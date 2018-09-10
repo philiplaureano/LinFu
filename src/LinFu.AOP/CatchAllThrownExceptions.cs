@@ -11,8 +11,9 @@ namespace LinFu.AOP.Cecil
     /// <summary>
     ///     Represents a method rewriter that modifies a method body to support dynamic exception handling.
     /// </summary>
-    public class CatchAllThrownExceptions : BaseMethodRewriter
+    public class CatchAllThrownExceptions : BaseMethodRewriter, IMethodWeaver
     {
+        private readonly Func<MethodReference, bool> _methodFilter;
         private VariableDefinition _exception;
         private VariableDefinition _exceptionHandler;
         private VariableDefinition _exceptionInfo;
@@ -20,6 +21,24 @@ namespace LinFu.AOP.Cecil
         private VariableDefinition _returnValue;
         private TypeReference _voidType;
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="CatchAllThrownExceptions"/> class...
+        /// </summary>
+        public CatchAllThrownExceptions()
+        {
+            // Rewrite everything by default
+            _methodFilter = _ => true;
+        }
+
+        /// <summary>
+        /// Creates a new instance of the type that supports selecting method rewriting.
+        /// </summary>
+        /// <param name="methodFilter">The filter that determines which methods will be rewritten.</param>
+        public CatchAllThrownExceptions(Func<MethodReference, bool> methodFilter)
+        {
+            _methodFilter = methodFilter;
+        }
+        
         /// <summary>
         ///     Adds additional references to the target module.
         /// </summary>
@@ -40,18 +59,28 @@ namespace LinFu.AOP.Cecil
             _exceptionHandler = hostMethod.AddLocal<IExceptionHandler>();
             _exceptionInfo = hostMethod.AddLocal<IExceptionHandlerInfo>();
 
-            var returnType = hostMethod.ReturnType.ReturnType;
+            var returnType = hostMethod.ReturnType;
             if (returnType != _voidType)
                 _returnValue = hostMethod.AddLocal<object>();
+        }
+
+        /// <summary>
+        ///     Determines whether or not the given method should be modified.
+        /// </summary>
+        /// <param name="targetMethod">The target method.</param>
+        /// <returns>A <see cref="bool" /> indicating whether or not a method should be rewritten.</returns>
+        protected override bool ShouldRewrite(MethodDefinition targetMethod)
+        {
+            return _methodFilter(targetMethod);
         }
 
         /// <summary>
         ///     Rewrites the instructions in the target method body to support dynamic exception handling.
         /// </summary>
         /// <param name="targetMethod">The target method.</param>
-        /// <param name="IL">The <see cref="CilWorker" /> instance that represents the method body.</param>
+        /// <param name="IL">The <see cref="ILProcessor" /> instance that represents the method body.</param>
         /// <param name="oldInstructions">The IL instructions of the original method body.</param>
-        protected override void RewriteMethodBody(MethodDefinition targetMethod, CilWorker IL,
+        protected override void RewriteMethodBody(MethodDefinition targetMethod, ILProcessor IL,
             IEnumerable<Instruction> oldInstructions)
         {
             var endOfOriginalInstructionBlock = IL.Create(OpCodes.Nop);
@@ -59,12 +88,12 @@ namespace LinFu.AOP.Cecil
 
 
             var endLabel = IL.Create(OpCodes.Nop);
-            var tryStart = IL.Emit(OpCodes.Nop);
-            var tryEnd = IL.Emit(OpCodes.Nop);
-            var catchStart = IL.Emit(OpCodes.Nop);
-            var catchEnd = IL.Emit(OpCodes.Nop);
+            var tryStart = IL.Create(OpCodes.Nop);
+            var tryEnd = IL.Create(OpCodes.Nop);
+            var catchStart = IL.Create(OpCodes.Nop);
+            var catchEnd = IL.Create(OpCodes.Nop);
 
-            var module = IL.GetModule();
+            var module = IL.Body.Method.DeclaringType.Module;
             var handler = new ExceptionHandler(ExceptionHandlerType.Catch);
             var body = targetMethod.Body;
             body.ExceptionHandlers.Add(handler);
@@ -79,7 +108,7 @@ namespace LinFu.AOP.Cecil
 
             var emitter = new InvocationInfoEmitter(true);
 
-            var returnType = targetMethod.ReturnType.ReturnType;
+            var returnType = targetMethod.ReturnType;
 
             // try {
             IL.Append(tryStart);
@@ -182,7 +211,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Newobj, exceptionInfoConstructor);
             IL.Emit(OpCodes.Stloc, _exceptionInfo);
 
-            var returnType = targetMethod.ReturnType.ReturnType;
+            var returnType = targetMethod.ReturnType;
             if (returnType == _voidType || _returnValue == null)
                 return;
 
@@ -191,6 +220,25 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Ldloc, _exceptionInfo);
             IL.Emit(OpCodes.Ldloc, _returnValue);
             IL.Emit(OpCodes.Callvirt, setReturnValue);
+        }
+
+        /// <summary>
+        ///     Determines whether or not the current item should be modified.
+        /// </summary>
+        /// <param name="item">The target item.</param>
+        /// <returns>Returns <c>true</c> if the current item can be modified; otherwise, it should return <c>false.</c></returns>
+        public bool ShouldWeave(MethodDefinition item)
+        {
+            return base.ShouldRewrite(item);
+        }
+
+        /// <summary>
+        ///     Modifies the target <paramref name="item" />.
+        /// </summary>
+        /// <param name="item">The item to be modified.</param>
+        public void Weave(MethodDefinition item)
+        {
+            Rewrite(item, item.GetILGenerator(), item.Body.Instructions.ToArray());
         }
     }
 }

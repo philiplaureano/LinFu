@@ -14,9 +14,9 @@ namespace LinFu.AOP.Cecil
         ///     Rewrites the instructions in the target method body.
         /// </summary>
         /// <param name="method">The target method.</param>
-        /// <param name="IL">The <see cref="CilWorker" /> instance that represents the method body.</param>
+        /// <param name="IL">The <see cref="ILProcessor" /> instance that represents the method body.</param>
         /// <param name="oldInstructions">The IL instructions of the original method body.</param>
-        protected override void RewriteMethodBody(MethodDefinition method, CilWorker IL,
+        protected override void RewriteMethodBody(MethodDefinition method, ILProcessor IL,
             IEnumerable<Instruction> oldInstructions)
         {
             var newInstructions = new Queue<Instruction>();
@@ -45,7 +45,7 @@ namespace LinFu.AOP.Cecil
         /// </summary>
         /// <param name="oldInstruction">The instruction currently being evaluated.</param>
         /// <param name="hostMethod">The method that contains the target instruction.</param>
-        /// <param name="IL">The CilWorker for the target method body.</param>
-        protected abstract void Replace(Instruction oldInstruction, MethodDefinition hostMethod, CilWorker IL);
+        /// <param name="IL">The ILProcessor for the target method body.</param>
+        protected abstract void Replace(Instruction oldInstruction, MethodDefinition hostMethod, ILProcessor IL);
     }
 }

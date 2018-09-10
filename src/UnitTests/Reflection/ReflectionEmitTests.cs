@@ -8,12 +8,11 @@ using LinFu.IoC.Configuration;
 using LinFu.IoC.Configuration.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
-using NUnit.Framework;
+using Xunit;
 using SampleStronglyNamedLibrary;
 
 namespace LinFu.UnitTests.Reflection
 {
-    [TestFixture]
     public class ReflectionEmitTests : BasePEVerifyTestCase
     {
         private Loader loader;
@@ -45,72 +44,75 @@ namespace LinFu.UnitTests.Reflection
         }
 
 
-        [Test]
+        [Fact]
         public void AssemblyDefinitionMustBeConvertibleToActualAssembly()
         {
-            var definition = AssemblyFactory.DefineAssembly("testAssembly", AssemblyKind.Dll);
+            var name = new AssemblyNameDefinition("testAssembly", new Version(1, 0));
+            var definition = AssemblyDefinition.CreateAssembly(name, "testModule", ModuleKind.Dll);
 
             var assembly = definition.ToAssembly();
-            Assert.IsTrue(assembly != null);
+            Assert.True(assembly != null);
         }
 
-        [Test]
+        [Fact]
         public void CecilShouldExtractSampleClassFromSignedAssembly()
         {
             var location = typeof(SampleHelloClass).Assembly.Location;
 
-            var sourceAssembly = AssemblyFactory.GetAssembly(location);
-            Assert.IsNotNull(sourceAssembly);
+            var sourceAssembly = AssemblyDefinition.ReadAssembly(location);
+            Assert.NotNull(sourceAssembly);
 
-            var definition = AssemblyFactory.DefineAssembly("testAssembly", AssemblyKind.Dll);
+            var name = new AssemblyNameDefinition("testAssembly", new Version(1, 0));
+            var definition = AssemblyDefinition.CreateAssembly(name, "testModule", ModuleKind.Dll);
             var targetModule = definition.MainModule;
             foreach (TypeDefinition typeDef in sourceAssembly.MainModule.Types)
+            {
                 // Copy the source type to the target assembly
-                targetModule.Inject(typeDef);
+                targetModule.Types.Add(typeDef);   
+            }        
 
             // Convert the new assemblyDef into an actual assembly
             var assembly = definition.ToAssembly();
-            Assert.IsNotNull(assembly);
+            Assert.NotNull(assembly);
 
             var types = assembly.GetTypes();
-            Assert.IsTrue(types.Length > 0);
+            Assert.True(types.Length > 0);
 
             // The imported type must match the original type
             var firstType = types.FirstOrDefault();
-            Assert.IsNotNull(firstType);
-            Assert.AreEqual(firstType.Name, typeof(SampleHelloClass).Name);
+            Assert.NotNull(firstType);
+            Assert.Equal(firstType.Name, typeof(SampleHelloClass).Name);
 
             var instance = Activator.CreateInstance(firstType);
-            Assert.IsNotNull(instance);
+            Assert.NotNull(instance);
 
             var speakMethod = firstType.GetMethod("Speak");
-            Assert.IsNotNull(speakMethod);
+            Assert.NotNull(speakMethod);
 
             speakMethod.Invoke(instance, new object[] { });
         }
 
-        [Test]
+        [Fact]
         public void CecilShouldRemoveStrongNameFromAssembly()
         {
             var location = typeof(SampleHelloClass).Assembly.Location;
 
-            var sourceAssembly = AssemblyFactory.GetAssembly(location);
+            var sourceAssembly = AssemblyDefinition.ReadAssembly(location);
 
-
-            Assert.IsNotNull(sourceAssembly);
+            Assert.NotNull(sourceAssembly);
             sourceAssembly.RemoveStrongName();
 
             var assembly = sourceAssembly.ToAssembly();
-            Assert.IsNotNull(assembly);
+            Assert.NotNull(assembly);
 
             var assemblyName = assembly.GetName();
 
             // The public key should be empty
             var bytes = assemblyName.GetPublicKey();
-            Assert.IsTrue(bytes.Length == 0);
+            Assert.True(bytes.Length == 0);
         }
 
-        [Test]
+        [Fact]
         public void MethodInvokerShouldProperlyHandleReturnValues()
         {
             var targetMethod = typeof(object).GetMethod("GetHashCode");
@@ -120,10 +122,10 @@ namespace LinFu.UnitTests.Reflection
             container.AddDefaultServices();
 
             var invoker = container.GetService<IMethodInvoke<MethodInfo>>();
-            Assert.IsNotNull(invoker);
+            Assert.NotNull(invoker);
 
             var result = invoker.Invoke(instance, targetMethod);
-            Assert.AreEqual(result, hash);
+            Assert.Equal(result, hash);
         }
     }
 }

@@ -12,12 +12,12 @@ namespace LinFu.AOP.Cecil
     /// </summary>
     public class MethodBodyRewriterParameters : IMethodBodyRewriterParameters
     {
-        private readonly CilWorker _cilWorker;
+        private readonly ILProcessor _cilWorker;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MethodBodyRewriterParameters" /> class.
         /// </summary>
-        /// <param name="IL">The CilWorker that is responsible for the current method body.</param>
+        /// <param name="IL">The ILProcessor that is responsible for the current method body.</param>
         /// <param name="oldInstructions">The value indicating the list of old instructions in the current method body.</param>
         /// <param name="interceptionDisabled">The value that determines whether or not interception is disabled.</param>
         /// <param name="invocationInfo">The local variable that will store the <see cref="IInvocationInfo" /> instance.</param>
@@ -30,7 +30,7 @@ namespace LinFu.AOP.Cecil
         ///     The interception registry type that will be responsible for handling class-level
         ///     interception events.
         /// </param>
-        public MethodBodyRewriterParameters(CilWorker IL, IEnumerable<Instruction> oldInstructions,
+        public MethodBodyRewriterParameters(ILProcessor IL, IEnumerable<Instruction> oldInstructions,
             VariableDefinition interceptionDisabled,
             VariableDefinition invocationInfo,
             VariableDefinition returnValue,
@@ -87,7 +87,7 @@ namespace LinFu.AOP.Cecil
         ///     Gets the value indicating the TargetMethod to be modified.
         /// </summary>
         /// <value>The method to be modified.</value>
-        public MethodDefinition TargetMethod => _cilWorker.GetMethod();
+        public MethodDefinition TargetMethod => _cilWorker.Body.Method;
 
         /// <summary>
         ///     Gets the value indicating the local variable that will store the value that determines whether or not

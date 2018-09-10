@@ -1,114 +1,113 @@
-﻿using NUnit.Framework;
+﻿using Xunit;
 using SampleLibrary;
 
 namespace LinFu.UnitTests.IOC
 {
-    [TestFixture]
     public partial class FluentExtensionTests
     {
-        [Test]
+        [Fact]
         public void ServiceContainerShouldSupportInjectingNamedOncePerRequestServices()
         {
             TestOncePerRequest("MyService", inject => inject.Using<SampleClass>());
         }
 
-        [Test]
+        [Fact]
         public void ServiceContainerShouldSupportInjectingNamedOncePerThreadServicesUsingContainerLambdas()
         {
             TestOncePerThread("MyService", inject => inject.Using(container => new SampleClass()));
         }
 
-        [Test]
+        [Fact]
         public void ServiceContainerShouldSupportInjectingNamedOncePerThreadServicesUsingLambdas()
         {
             TestOncePerThread("MyService", inject => inject.Using(() => new SampleClass()));
         }
 
-        [Test]
+        [Fact]
         public void ServiceContainerShouldSupportInjectingNamedServicesOncePerThread()
         {
             TestOncePerThread("MyService", inject => inject.Using<SampleClass>());
         }
 
-        [Test]
+        [Fact]
         public void ServiceContainerShouldSupportInjectingNamedSingletons()
         {
             TestSingleton("MyService", inject => inject.Using<SampleClass>());
         }
 
-        [Test]
+        [Fact]
         public void ServiceContainerShouldSupportInjectingNamedSingletonsUsingContainerLambdas()
         {
             TestSingleton("MyService", inject => inject.Using(container => new SampleClass()));
         }
 
-        [Test]
+        [Fact]
         public void ServiceContainerShouldSupportInjectingNamedSingletonsUsingLambdas()
         {
             TestSingleton("MyService", inject => inject.Using(() => new SampleClass()));
         }
 
-        [Test]
+        [Fact]
         public void ServiceContainerShouldSupportInjectingOncePerRequestServicesUsingContainerLambdas()
         {
             TestOncePerRequest("MyService", inject => inject.Using(container => new SampleClass()));
         }
 
-        [Test]
+        [Fact]
         public void ServiceContainerShouldSupportInjectingOncePerRequestServicesUsingLambdas()
         {
             TestOncePerRequest("MyService", inject => inject.Using(() => new SampleClass()));
         }
 
-        [Test]
+        [Fact]
         public void ServiceContainerShouldSupportInjectingServicesOncePerRequest()
         {
             TestOncePerRequest(string.Empty, inject => inject.Using<SampleClass>());
         }
 
-        [Test]
+        [Fact]
         public void ServiceContainerShouldSupportInjectingServicesOncePerRequestUsingContainerLambdas()
         {
             TestOncePerRequest(string.Empty, inject => inject.Using(container => new SampleClass()));
         }
 
-        [Test]
+        [Fact]
         public void ServiceContainerShouldSupportInjectingServicesOncePerRequestUsingLambdas()
         {
             TestOncePerRequest(string.Empty, inject => inject.Using(() => new SampleClass()));
         }
 
-        [Test]
+        [Fact]
         public void ServiceContainerShouldSupportInjectingServicesOncePerThread()
         {
             TestOncePerThread(string.Empty, inject => inject.Using<SampleClass>());
         }
 
-        [Test]
+        [Fact]
         public void ServiceContainerShouldSupportInjectingServicesOncePerThreadUsingContainerLambdas()
         {
             TestOncePerThread(string.Empty, inject => inject.Using(container => new SampleClass()));
         }
 
-        [Test]
+        [Fact]
         public void ServiceContainerShouldSupportInjectingServicesOncePerThreadUsingLambdas()
         {
             TestOncePerThread(string.Empty, inject => inject.Using(() => new SampleClass()));
         }
 
-        [Test]
+        [Fact]
         public void ServiceContainerShouldSupportInjectingSingletons()
         {
             TestSingleton(string.Empty, inject => inject.Using<SampleClass>());
         }
 
-        [Test]
+        [Fact]
         public void ServiceContainerShouldSupportInjectingSingletonsUsingContainerLambdas()
         {
             TestSingleton(string.Empty, inject => inject.Using(container => new SampleClass()));
         }
 
-        [Test]
+        [Fact]
         public void ServiceContainerShouldSupportInjectingSingletonsUsingLambdas()
         {
             TestSingleton(string.Empty, inject => inject.Using(() => new SampleClass()));

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using LinFu.IoC;
 using LinFu.IoC.Configuration;
 using LinFu.IoC.Interfaces;
-using NUnit.Framework;
+using Xunit;
 using SampleLibrary;
 
 namespace LinFu.UnitTests.IOC
@@ -36,12 +36,12 @@ namespace LinFu.UnitTests.IOC
         {
             // The container must be able to create the
             // ISampleService instance
-            Assert.IsTrue(container.Contains(serviceName, typeof(ISampleService)));
+            Assert.True(container.Contains(serviceName, typeof(ISampleService)));
 
             // The container should return the singleton
             var first = container.GetService<ISampleService>(serviceName);
             var second = container.GetService<ISampleService>(serviceName);
-            Assert.AreSame(first, second);
+            Assert.Same(first, second);
 
             return true;
         }
@@ -60,7 +60,7 @@ namespace LinFu.UnitTests.IOC
                 return null;
             };
 
-            Assert.IsTrue(container.Contains(serviceName, typeof(ISampleService)));
+            Assert.True(container.Contains(serviceName, typeof(ISampleService)));
 
             // Create the other instance from another thread
             var asyncResult = createService.BeginInvoke(null, null);
@@ -70,17 +70,17 @@ namespace LinFu.UnitTests.IOC
             var first = container.GetService<ISampleService>(serviceName);
             var second = container.GetService<ISampleService>(serviceName);
 
-            Assert.IsNotNull(first);
-            Assert.AreSame(first, second);
+            Assert.NotNull(first);
+            Assert.Same(first, second);
 
             // Wait for the other thread to finish executing
             createService.EndInvoke(asyncResult);
-            Assert.IsTrue(results.Count > 0);
+            Assert.True(results.Count > 0);
 
             // The service instance created in the other thread
             // must be unique
-            Assert.IsNotNull(results[0]);
-            Assert.AreNotSame(first, results[0]);
+            Assert.NotNull(results[0]);
+            Assert.NotSame(first, results[0]);
 
             // NOTE: The return value will be ignored
             return true;
@@ -90,12 +90,12 @@ namespace LinFu.UnitTests.IOC
         {
             // The container must be able to create an
             // ISampleService instance
-            Assert.IsTrue(container.Contains(serviceName, typeof(ISampleService)), "Service not found!");
+            Assert.True(container.Contains(serviceName, typeof(ISampleService)), "Service not found!");
 
             // Both instances must be unique
             var first = container.GetService<ISampleService>(serviceName);
             var second = container.GetService<ISampleService>(serviceName);
-            Assert.AreNotSame(first, second, "The two instances returned from the container must be unique!");
+            Assert.NotSame(first, second);
 
             return true;
         }

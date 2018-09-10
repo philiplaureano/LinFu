@@ -5,33 +5,29 @@ using LinFu.IoC;
 using LinFu.IoC.Factories;
 using LinFu.IoC.Interfaces;
 using Moq;
-using NUnit.Framework;
+using Xunit;
 using SampleLibrary;
 using SampleLibrary.IOC.BugFixes;
 
 namespace LinFu.UnitTests.IOC.Factories
 {
-    [TestFixture]
-    public class FactoryTests
+    public class FactoryTests : BaseTestFixture
     {
-        [SetUp]
-        public void Init()
+        private Func<IFactoryRequest, ISerializable> _createInstance;
+
+        protected override void Init()
         {
             // Create a new mock service instance on each
             // factory method call
-            createInstance = request => new Mock<ISerializable>().Object;
+            _createInstance = request => new Mock<ISerializable>().Object;
         }
 
-        [TearDown]
-        public void Term()
+        protected override void Term()
         {
-            createInstance = null;
+            _createInstance = null;
         }
 
-
-        private Func<IFactoryRequest, ISerializable> createInstance;
-
-        [Test]
+        [Fact]
         public void GenericFactoryAdapterShouldCallUntypedFactoryInstance()
         {
             var container = new ServiceContainer();
@@ -43,7 +39,7 @@ namespace LinFu.UnitTests.IOC.Factories
             mockFactory.Expect(f => f.CreateInstance(It.Is<IFactoryRequest>(request => request.Container == container)))
                 .Returns(mockService.Object);
 
-            Assert.AreEqual(typeof(IFactory), adapter?.GetType());
+            Assert.NotNull(adapter);
 
             var factoryRequest = new FactoryRequest
             {
@@ -57,38 +53,38 @@ namespace LinFu.UnitTests.IOC.Factories
             mockFactory.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void OncePerRequestFactoryShouldCreateUniqueInstances()
         {
-            var factory = new OncePerRequestFactory<ISerializable>(createInstance);
+            var factory = new OncePerRequestFactory<ISerializable>(_createInstance);
 
             var first = factory.CreateInstance(null);
             var second = factory.CreateInstance(null);
 
             // Both instances must be unique
-            Assert.AreNotSame(first, second);
-            Assert.IsNotNull(first);
-            Assert.IsNotNull(second);
+            Assert.NotSame(first, second);
+            Assert.NotNull(first);
+            Assert.NotNull(second);
         }
 
-        [Test]
+        [Fact]
         public void OncePerThreadFactoryShouldCreateTheSameInstanceFromWithinTheSameThread()
         {
-            IFactory<ISerializable> localFactory = new OncePerThreadFactory<ISerializable>(createInstance);
+            IFactory<ISerializable> localFactory = new OncePerThreadFactory<ISerializable>(_createInstance);
 
             var first = localFactory.CreateInstance(null);
             var second = localFactory.CreateInstance(null);
 
             // The two instances should be the same
             // since they were created from the same thread
-            Assert.IsNotNull(first);
-            Assert.AreSame(first, second);
+            Assert.NotNull(first);
+            Assert.Same(first, second);
         }
 
-        [Test]
+        [Fact]
         public void OncePerThreadFactoryShouldCreateUniqueInstancesFromDifferentThreads()
         {
-            IFactory<ISerializable> localFactory = new OncePerThreadFactory<ISerializable>(createInstance);
+            IFactory<ISerializable> localFactory = new OncePerThreadFactory<ISerializable>(_createInstance);
             var resultList = new List<ISerializable>();
 
             Action<IFactory<ISerializable>> doCreate = factory =>
@@ -98,7 +94,7 @@ namespace LinFu.UnitTests.IOC.Factories
 
                 // The two instances 
                 // within the same thread must match
-                Assert.AreSame(instance, otherInstance);
+                Assert.Same(instance, otherInstance);
                 lock (resultList)
                 {
                     resultList.Add(instance);
@@ -114,17 +110,17 @@ namespace LinFu.UnitTests.IOC.Factories
             // to finish executing
             doCreate.EndInvoke(asyncResult);
 
-            Assert.IsTrue(resultList.Count > 0);
+            Assert.True(resultList.Count > 0);
 
             // Collect the results from the other thread
             var instanceFromOtherThread = resultList[0];
 
-            Assert.IsNotNull(localInstance);
-            Assert.IsNotNull(instanceFromOtherThread);
-            Assert.AreNotSame(localInstance, instanceFromOtherThread);
+            Assert.NotNull(localInstance);
+            Assert.NotNull(instanceFromOtherThread);
+            Assert.NotSame(localInstance, instanceFromOtherThread);
         }
 
-        [Test]
+        [Fact]
         public void ShouldBeAbleToCreateClosedGenericTypeUsingACustomFactoryInstance()
         {
             var container = new ServiceContainer();
@@ -136,10 +132,10 @@ namespace LinFu.UnitTests.IOC.Factories
             var service = container.GetService<MyClass<string>>(serviceName);
 
             Console.WriteLine("foo");
-            Assert.AreEqual(serviceName, service.Value);
+            Assert.Equal(serviceName, service.Value);
         }
 
-        [Test]
+        [Fact]
         public void ShouldBeAbleToInstantiateCustomFactoryWithServiceArgumentsInConstructor()
         {
             var mock = new Mock<ISampleService>();
@@ -149,24 +145,24 @@ namespace LinFu.UnitTests.IOC.Factories
             container.AddService(mock.Object);
             var result = container.GetService<string>("SampleFactoryWithConstructorArguments");
 
-            Assert.IsNotNull(result);
-            Assert.IsNotEmpty(result);
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
         }
 
-        [Test]
+        [Fact]
         public void ShouldLoadStronglyTypedFactoryFromLoadFromExtensionMethod()
         {
             var container = new ServiceContainer();
             container.LoadFrom(typeof(SampleClass).Assembly);
 
             var serviceInstance = container.GetService<ISampleService>("Test");
-            Assert.IsNotNull(serviceInstance);
+            Assert.NotNull(serviceInstance);
         }
 
-        [Test]
+        [Fact]
         public void SingletonFactoryShouldCreateTheSameInstanceOnce()
         {
-            var factory = new SingletonFactory<ISerializable>(createInstance);
+            var factory = new SingletonFactory<ISerializable>(_createInstance);
             var container = new ServiceContainer();
 
             var request = new FactoryRequest
@@ -181,9 +177,9 @@ namespace LinFu.UnitTests.IOC.Factories
             var second = factory.CreateInstance(request);
 
             // Both instances must be the same
-            Assert.AreSame(first, second);
-            Assert.IsNotNull(first);
-            Assert.IsNotNull(second);
+            Assert.Same(first, second);
+            Assert.NotNull(first);
+            Assert.NotNull(second);
         }
     }
 }

@@ -30,18 +30,16 @@ namespace LinFu.AOP.Cecil.Loaders
         /// <param name="assembly">The assembly that contains the symbols to be loaded.</param>
         public void LoadSymbols(AssemblyDefinition assembly)
         {
-            var mainModule = assembly.MainModule;
-            mainModule.LoadSymbols();
+            // TODO: How does Cecil 0.9.x load symbols??
         }
 
         /// <summary>
-        ///     Saves the debug symbols for the  target<paramref name="assembly" />.
+        ///     Saves the debug symbols for the  target<paramref name="targetAssembly" />.
         /// </summary>
         /// <param name="targetAssembly">The assembly that contains the symbols to be saved.</param>
         public void SaveSymbols(AssemblyDefinition targetAssembly)
         {
-            // Update the debug symbols
-            targetAssembly.MainModule.SaveSymbols();
+            // TODO: How does Cecil 0.9.x save symbols??
         }
     }
 }

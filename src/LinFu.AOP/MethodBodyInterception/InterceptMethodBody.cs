@@ -12,7 +12,7 @@ namespace LinFu.AOP.Cecil
     /// <summary>
     ///     Represents a method rewriter type that adds interception capabilities to any given method body.
     /// </summary>
-    public class InterceptMethodBody : BaseMethodRewriter
+    public class InterceptMethodBody : BaseMethodRewriter, IMethodWeaver
     {
         private readonly Func<MethodReference, bool> _methodFilter;
 
@@ -42,9 +42,9 @@ namespace LinFu.AOP.Cecil
         ///     Rewrites the instructions in the target method body.
         /// </summary>
         /// <param name="method">The target method.</param>
-        /// <param name="IL">The <see cref="CilWorker" /> instance that represents the method body.</param>
+        /// <param name="IL">The <see cref="ILProcessor" /> instance that represents the method body.</param>
         /// <param name="oldInstructions">The IL instructions of the original method body.</param>
-        protected override void RewriteMethodBody(MethodDefinition method, CilWorker IL,
+        protected override void RewriteMethodBody(MethodDefinition method, ILProcessor IL,
             IEnumerable<Instruction> oldInstructions)
         {
             if (IsExcluded(method))
@@ -101,7 +101,7 @@ namespace LinFu.AOP.Cecil
             rewriter.Rewrite(method, IL, oldInstructions);
         }
 
-        private void AddOriginalInstructions(CilWorker IL, IEnumerable<Instruction> oldInstructions)
+        private void AddOriginalInstructions(ILProcessor IL, IEnumerable<Instruction> oldInstructions)
         {
             foreach (var instruction in oldInstructions) IL.Append(instruction);
         }
@@ -120,6 +120,26 @@ namespace LinFu.AOP.Cecil
 
             var methodName = method.Name;
             return excludedMethods.Contains(methodName);
+        }
+
+        /// <summary>
+        ///     Determines whether or not the current item should be modified.
+        /// </summary>
+        /// <param name="item">The target item.</param>
+        /// <returns>Returns <c>true</c> if the current item can be modified; otherwise, it should return <c>false.</c></returns>
+        public bool ShouldWeave(MethodDefinition item)
+        {
+            return ShouldRewrite(item);
+        }
+
+        /// <summary>
+        ///     Modifies the target <paramref name="item" />.
+        /// </summary>
+        /// <param name="item">The item to be modified.</param>
+        public void Weave(MethodDefinition item)
+        {
+            var oldInstructions = item.Body.Instructions.ToArray();
+            Rewrite(item, item.GetILGenerator(), oldInstructions);
         }
     }
 }

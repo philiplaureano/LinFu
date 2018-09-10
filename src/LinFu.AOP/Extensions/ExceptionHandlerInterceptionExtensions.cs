@@ -1,5 +1,6 @@
 ﻿using System;
 using LinFu.AOP.Cecil.Interfaces;
+using LinFu.AOP.Interfaces;
 using Mono.Cecil;
 
 namespace LinFu.AOP.Cecil.Extensions
@@ -13,7 +14,7 @@ namespace LinFu.AOP.Cecil.Extensions
         ///     Enables exception interception on the given type.
         /// </summary>
         /// <param name="visitable">The target type.</param>
-        public static void InterceptAllExceptions(this IReflectionVisitable visitable)
+        public static void InterceptAllExceptions(this TypeDefinition visitable)
         {
             var filter = GetMethodFilter();
             InterceptExceptions(visitable, filter);
@@ -23,7 +24,7 @@ namespace LinFu.AOP.Cecil.Extensions
         ///     Enables exception interception on the given type.
         /// </summary>
         /// <param name="visitable">The target type.</param>
-        public static void InterceptAllExceptions(this IReflectionStructureVisitable visitable)
+        public static void InterceptAllExceptions(this AssemblyDefinition visitable)
         {
             var filter = GetMethodFilter();
             InterceptExceptions(visitable, filter);
@@ -37,7 +38,7 @@ namespace LinFu.AOP.Cecil.Extensions
         ///     The <see cref="IMethodFilter" /> instance that will determine which methods should support
         ///     exception interception.
         /// </param>
-        public static void InterceptExceptions(this IReflectionVisitable visitable, IMethodFilter methodFilter)
+        public static void InterceptExceptions(this TypeDefinition visitable, IMethodFilter methodFilter)
         {
             visitable.InterceptExceptions(methodFilter.ShouldWeave);
         }
@@ -50,7 +51,7 @@ namespace LinFu.AOP.Cecil.Extensions
         ///     The <see cref="IMethodFilter" /> instance that will determine which methods should support
         ///     exception interception.
         /// </param>
-        public static void InterceptExceptions(this IReflectionStructureVisitable visitable, IMethodFilter methodFilter)
+        public static void InterceptExceptions(this AssemblyDefinition visitable, IMethodFilter methodFilter)
         {
             visitable.InterceptExceptions(methodFilter.ShouldWeave);
         }
@@ -63,13 +64,13 @@ namespace LinFu.AOP.Cecil.Extensions
         ///     The method filter functor that will determine which methods should support exception
         ///     interception.
         /// </param>
-        public static void InterceptExceptions(this IReflectionStructureVisitable visitable,
+        public static void InterceptExceptions(this AssemblyDefinition visitable,
             Func<MethodReference, bool> methodFilter)
         {
             if (visitable == null)
                 throw new ArgumentNullException("visitable");
 
-            var catchAllThrownExceptions = new CatchAllThrownExceptions();
+            IMethodWeaver catchAllThrownExceptions = new CatchAllThrownExceptions();
             visitable.WeaveWith(catchAllThrownExceptions, methodFilter);
         }
 
@@ -81,13 +82,13 @@ namespace LinFu.AOP.Cecil.Extensions
         ///     The method filter functor that will determine which methods should support exception
         ///     interception.
         /// </param>
-        public static void InterceptExceptions(this IReflectionVisitable visitable,
+        public static void InterceptExceptions(this TypeDefinition visitable,
             Func<MethodReference, bool> methodFilter)
         {
             if (visitable == null)
                 throw new ArgumentNullException("visitable");
 
-            var catchAllThrownExceptions = new CatchAllThrownExceptions();
+            IMethodWeaver catchAllThrownExceptions = new CatchAllThrownExceptions();
             visitable.WeaveWith(catchAllThrownExceptions, methodFilter);
         }
 

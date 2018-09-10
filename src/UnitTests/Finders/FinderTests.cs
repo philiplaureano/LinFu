@@ -2,11 +2,10 @@
 using LinFu.Finders;
 using LinFu.Finders.Interfaces;
 using Moq;
-using NUnit.Framework;
+using Xunit;
 
 namespace LinFu.UnitTests.Finders
 {
-    [TestFixture]
     public class FinderTests : BaseTestFixture
     {
         private Mock<ICriteria<object>> GetMockCriteria(bool predicateResult, CriteriaType criteriaType, int weight)
@@ -18,7 +17,7 @@ namespace LinFu.UnitTests.Finders
             return criteria;
         }
 
-        [Test]
+        [Fact]
         public void ShouldBeAbleToAddCriteriaToList()
         {
             // Return a predicate that always returns true
@@ -42,7 +41,7 @@ namespace LinFu.UnitTests.Finders
             mockFuzzyItem.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void ShouldBeAbleToAddLambdasAsCriteria()
         {
             var fuzzyList = new List<IFuzzyItem<int>>();
@@ -52,10 +51,10 @@ namespace LinFu.UnitTests.Finders
             // having to manually construct the criteria
             fuzzyList.AddCriteria(item => item == 5);
 
-            Assert.AreEqual(5, fuzzyList.BestMatch().Item);
+            Assert.Equal(5, fuzzyList.BestMatch().Item);
         }
 
-        [Test]
+        [Fact]
         public void ShouldBeAbleToDetermineBestFuzzyMatch()
         {
             var mockFuzzyItem = new Mock<IFuzzyItem<object>>();
@@ -74,10 +73,10 @@ namespace LinFu.UnitTests.Finders
             var fuzzyList = new List<IFuzzyItem<object>> {fuzzyItem, fauxFuzzyItem};
 
             var bestMatch = fuzzyList.BestMatch();
-            Assert.AreSame(bestMatch, fuzzyItem);
+            Assert.Same(bestMatch, fuzzyItem);
         }
 
-        [Test]
+        [Fact]
         public void ShouldBeAbleToIgnoreFailedOptionalCriteria()
         {
             // The criteria will be set up to fail by default            
@@ -99,10 +98,10 @@ namespace LinFu.UnitTests.Finders
             // since the criteria is optional and
             // the failed predicate does not count
             // against the current fuzzy item.
-            Assert.AreEqual(fuzzyItem.Confidence, 1);
+            Assert.Equal(1.0, fuzzyItem.Confidence);
         }
 
-        [Test]
+        [Fact]
         public void ShouldNotBeAbleToIgnoreFailedCriticalCriteria()
         {
             var fuzzyList = new List<IFuzzyItem<object>>();
@@ -125,7 +124,7 @@ namespace LinFu.UnitTests.Finders
 
             // The first item should be the best match at this point
             var bestMatch = fuzzyList.BestMatch();
-            Assert.AreSame(bestMatch, fuzzyItem);
+            Assert.Same(bestMatch, fuzzyItem);
 
             // Remove the second item from the list to avoid the
             // failed critical match
@@ -145,10 +144,10 @@ namespace LinFu.UnitTests.Finders
             // The second item should be the best possible match,
             // and the first item should be ignored
             // because of the failed criteria            
-            Assert.AreSame(bestMatch, secondItem);
+            Assert.Same(bestMatch, secondItem);
         }
 
-        [Test]
+        [Fact]
         public void ShouldReturnNullIfAllMatchScoresAreZero()
         {
             var fuzzyItem = new FuzzyItem<object>(new object());
@@ -156,7 +155,7 @@ namespace LinFu.UnitTests.Finders
 
             var bestMatch = fuzzyList.BestMatch();
 
-            Assert.IsNull(bestMatch);
+            Assert.Null(bestMatch);
         }
     }
 }

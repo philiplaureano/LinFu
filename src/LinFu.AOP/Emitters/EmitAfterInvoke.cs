@@ -40,10 +40,10 @@ namespace LinFu.AOP.Cecil
         /// <summary>
         ///     Emits the call to the <see cref="IAfterInvoke" /> instance.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker" /> that points to the current method body.</param>
-        public void Emit(CilWorker IL)
+        /// <param name="IL">The <see cref="ILProcessor" /> that points to the current method body.</param>
+        public void Emit(ILProcessor IL)
         {
-            var module = IL.GetModule();
+            var module = IL.Body.Method.DeclaringType.Module;
 
             // instanceAroundInvoke.AfterInvoke(info, returnValue);
             Emit(IL, module, _surroundingImplementation, _invocationInfo, _returnValue);
@@ -53,7 +53,7 @@ namespace LinFu.AOP.Cecil
         }
 
 
-        private static void Emit(CilWorker IL, ModuleDefinition module,
+        private static void Emit(ILProcessor IL, ModuleDefinition module,
             VariableDefinition surroundingImplementation,
             VariableDefinition invocationInfo,
             VariableDefinition returnValue)

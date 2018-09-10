@@ -1,15 +1,14 @@
 ﻿using System;
 using LinFu.IoC;
-using NUnit.Framework;
+using Xunit;
 using SampleLibrary;
 using SampleLibrary.IOC;
 
 namespace LinFu.UnitTests.IOC
 {
-    [TestFixture]
     public class FieldInjectionTests : BaseTestFixture
     {
-        [Test]
+        [Fact]
         public void ShouldAutoInjectField()
         {
             var container = new ServiceContainer();
@@ -22,12 +21,12 @@ namespace LinFu.UnitTests.IOC
             container.Inject<ISampleService>("MyService").Using(c => instance).OncePerRequest();
 
             var result = container.GetService<ISampleService>("MyService");
-            Assert.AreSame(result, instance);
+            Assert.Same(result, instance);
 
             // On initialization, the instance.SomeField value
             // should be a SampleClass type
-            Assert.IsNotNull(instance.SomeField);
-            Assert.AreEqual(typeof(SampleClass), instance?.SomeField?.GetType());
+            Assert.NotNull(instance.SomeField);
+            Assert.Equal(typeof(SampleClass), instance?.SomeField?.GetType());
         }
     }
 }

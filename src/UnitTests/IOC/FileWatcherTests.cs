@@ -2,15 +2,14 @@
 using System.IO;
 using System.Threading;
 using LinFu.IoC;
-using NUnit.Framework;
+using Xunit;
 using SampleLibrary;
 
 namespace LinFu.UnitTests.IOC
 {
-    [TestFixture]
     public class FileWatcherTests
     {
-        [Test]
+        [Fact]
         public void ShouldLoadAssemblyIntoLoaderAtRuntime()
         {
             var path = Path.Combine(@"..\..\..\SampleFileWatcherLibrary\bin\Debug",
@@ -23,7 +22,7 @@ namespace LinFu.UnitTests.IOC
 
             // There should be nothing loaded at this point since the assembly hasn't
             // been copied to the target directory yet
-            Assert.IsFalse(container.Contains(typeof(ISampleService)));
+            Assert.False(container.Contains(typeof(ISampleService)));
 
             // Copy the assembly to the target directory
             // and watch for changes
@@ -32,13 +31,13 @@ namespace LinFu.UnitTests.IOC
 
             // Give the watcher thread enough time to load the assembly into memory
             Thread.Sleep(500);
-            Assert.IsTrue(container.Contains(typeof(ISampleService)));
+            Assert.True(container.Contains(typeof(ISampleService)));
 
             var instance = container.GetService<ISampleService>();
-            Assert.IsNotNull(instance);
+            Assert.NotNull(instance);
 
             var typeName = instance.GetType().Name;
-            Assert.AreEqual("SampleFileWatcherServiceClassAddedAtRuntime", typeName);
+            Assert.Equal("SampleFileWatcherServiceClassAddedAtRuntime", typeName);
         }
     }
 }

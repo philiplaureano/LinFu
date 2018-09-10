@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using LinFu.IoC;
 using LinFu.IoC.Interfaces;
 using Moq;
-using NUnit.Framework;
+using Xunit;
 
 namespace LinFu.UnitTests.IOC
 {
-    [TestFixture]
     public class FactoryStorageTests : BaseTestFixture
     {
-        public override void Init()
+        protected override void Init()
         {
             _storage = new FactoryStorage();
         }
 
-        public override void Term()
+        protected override void Term()
         {
             _storage = null;
         }
@@ -23,7 +22,7 @@ namespace LinFu.UnitTests.IOC
 
         private IFactoryStorage _storage;
 
-        [Test]
+        [Fact]
         public void ShouldDistinguishBetweenTwoServicesOfTheSameTypeButDifferentParameters()
         {
             var firstFactory = new Mock<IFactory>();
@@ -37,15 +36,15 @@ namespace LinFu.UnitTests.IOC
             _storage.AddFactory("", serviceType, firstParameters, firstFactory.Object);
             _storage.AddFactory("", serviceType, secondParameters, secondFactory.Object);
 
-            Assert.IsTrue(_storage.ContainsFactory("", serviceType, firstParameters));
-            Assert.IsTrue(_storage.ContainsFactory("", serviceType, secondParameters));
+            Assert.True(_storage.ContainsFactory("", serviceType, firstParameters));
+            Assert.True(_storage.ContainsFactory("", serviceType, secondParameters));
 
             // Make sure that the factory returns the correct container
             var firstResult = _storage.GetFactory("", serviceType, firstParameters);
-            Assert.AreSame(firstFactory.Object, firstResult);
+            Assert.Same(firstFactory.Object, firstResult);
 
             var secondResult = _storage.GetFactory("", serviceType, secondParameters);
-            Assert.AreSame(secondFactory.Object, secondResult);
+            Assert.Same(secondFactory.Object, secondResult);
         }
     }
 }

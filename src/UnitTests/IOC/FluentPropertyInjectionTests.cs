@@ -1,11 +1,10 @@
 ﻿using LinFu.IoC;
 using Moq;
-using NUnit.Framework;
+using Xunit;
 using SampleLibrary;
 
 namespace LinFu.UnitTests.IOC
 {
-    [TestFixture]
     public class FluentPropertyInjectionTests
     {
         private static void TestPropertyInjection(string serviceName)
@@ -26,14 +25,14 @@ namespace LinFu.UnitTests.IOC
                 container.Initialize<IInjectionTarget>()
                     .With(service => service.SetValue(123));
             var result = container.GetService<IInjectionTarget>(serviceName);
-            Assert.IsNotNull(result);
+            Assert.NotNull(result);
 
             // The container should initialize the
             // service on every request
             mockTarget.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void NamedPropertyMustBeInjectedIntoInjectionTarget()
         {
             var serviceName = "MyService";
@@ -41,7 +40,7 @@ namespace LinFu.UnitTests.IOC
             TestPropertyInjection(serviceName);
         }
 
-        [Test]
+        [Fact]
         public void UnnamedPropertyMustBeInjectedIntoInjectionTarget()
         {
             string serviceName = null;

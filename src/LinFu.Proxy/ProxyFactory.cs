@@ -124,7 +124,9 @@ namespace LinFu.Proxy
 
 
             var assemblyName = "LinFu.Proxy";
-            var assembly = AssemblyFactory.DefineAssembly(assemblyName, AssemblyKind.Dll);
+            var assembly = AssemblyDefinition.CreateAssembly(
+                new AssemblyNameDefinition(assemblyName, new Version(1, 0)),
+                $"anonymousmodule-{Guid.NewGuid().ToString()}", ModuleKind.Dll);
             var mainModule = assembly.MainModule;
             var importedBaseType = mainModule.Import(actualBaseType);
             var attributes = TypeAttributes.AutoClass | TypeAttributes.Class |

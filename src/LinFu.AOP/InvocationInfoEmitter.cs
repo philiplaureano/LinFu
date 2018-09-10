@@ -79,7 +79,7 @@ namespace LinFu.AOP.Cecil
             var typeArguments = MethodDefinitionExtensions.AddLocal(targetMethod, typeof(Type[]));
             var systemType = module.ImportType(typeof(Type));
 
-            var IL = targetMethod.GetILGenerator();
+            var IL = targetMethod.Body.GetILProcessor();
 
 
             // Type[] typeArguments = new Type[genericTypeCount];
@@ -150,7 +150,7 @@ namespace LinFu.AOP.Cecil
             // Save the return type
             var getTypeFromHandle = module.Import(_getTypeFromHandle);
 
-            var returnType = targetMethod.ReturnType.ReturnType;
+            var returnType = targetMethod.ReturnType;
             IL.Emit(OpCodes.Ldtoken, returnType);
             IL.Emit(OpCodes.Call, getTypeFromHandle);
 

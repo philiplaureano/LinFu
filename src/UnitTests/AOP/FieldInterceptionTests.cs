@@ -4,11 +4,10 @@ using LinFu.AOP.Cecil.Extensions;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
-using NUnit.Framework;
+using Xunit;
 
 namespace LinFu.UnitTests.AOP
 {
-    [TestFixture]
     public class FieldInterceptionTests
     {
         public class FieldInterceptorImpl : IFieldInterceptor
@@ -30,10 +29,10 @@ namespace LinFu.UnitTests.AOP
             }
         }
 
-        [Test]
+        [Fact]
         public void ShouldSetAndGetTheSameFieldValue()
         {
-            var myLibrary = AssemblyFactory.GetAssembly("SampleLibrary.dll");
+            var myLibrary = AssemblyDefinition.ReadAssembly("SampleLibrary.dll");
             var module = myLibrary.MainModule;
 
             foreach (TypeDefinition type in myLibrary.MainModule.Types)
@@ -50,19 +49,19 @@ namespace LinFu.UnitTests.AOP
                 select t).First();
 
             var instance = Activator.CreateInstance(targetType);
-            Assert.IsNotNull(instance);
+            Assert.NotNull(instance);
 
             var host = (IFieldInterceptionHost) instance;
-            Assert.IsNotNull(host);
+            Assert.NotNull(host);
 
             host.FieldInterceptor = new FieldInterceptorImpl();
 
             var targetProperty = targetType.GetProperty("Value");
-            targetProperty.SetValue(instance, "OtherValue", null);
+            targetProperty?.SetValue(instance, "OtherValue", null);
 
-            var actualValue = targetProperty.GetValue(instance, null);
+            var actualValue = targetProperty?.GetValue(instance, null);
 
-            Assert.AreEqual("freeze!", actualValue);
+            Assert.Equal("freeze!", actualValue);
         }
     }
 }

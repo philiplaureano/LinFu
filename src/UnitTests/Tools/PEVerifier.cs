@@ -4,21 +4,22 @@ using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using LinFu.AOP.Cecil.Interfaces;
+using LinFu.Reflection.Emit;
 using Mono.Cecil;
-using NUnit.Framework;
+using Xunit;
 
 namespace LinFu.UnitTests.Tools
 {
-    internal class PEVerifier : IVerifier
+    internal class PeVerifier : IVerifier
     {
-        private readonly string location = string.Empty;
+        private readonly string _location = string.Empty;
         private bool _failed;
         private string _filename = string.Empty;
 
-        internal PEVerifier(string filename)
+        internal PeVerifier(string filename)
         {
             var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            location = Path.Combine(baseDirectory, filename);
+            _location = Path.Combine(baseDirectory, filename);
 
             _filename = filename;
         }
@@ -26,18 +27,18 @@ namespace LinFu.UnitTests.Tools
 
         public void Verify(AssemblyDefinition assembly)
         {
-            // Save the assembly to the temporary file and verify it
-            AssemblyFactory.SaveAssembly(assembly, location);
-            PEVerify(location);
+            // Save the assembly to the temporary file and verify it            
+            assembly.Save(_location);
+            PeVerify(_location);
         }
 
 
-        ~PEVerifier()
+        ~PeVerifier()
         {
             try
             {
-                if (File.Exists(location) && !_failed)
-                    File.Delete(location);
+                if (File.Exists(_location) && !_failed)
+                    File.Delete(_location);
             }
             catch
             {
@@ -45,7 +46,7 @@ namespace LinFu.UnitTests.Tools
             }
         }
 
-        private void PEVerify(string assemblyLocation)
+        private void PeVerify(string assemblyLocation)
         {
             var pathKeys = new[]
             {
@@ -87,7 +88,7 @@ namespace LinFu.UnitTests.Tools
 
             Console.WriteLine(processOutput);
             _failed = true;
-            Assert.Fail("PEVerify output: " + Environment.NewLine + processOutput, result);
+            Assert.True(false, $"PEVerify output: {Environment.NewLine}{processOutput}{result}");
         }
 
         private static string GetPEVerifyLocation(IEnumerable<string> pathKeys, string peVerifyLocation)

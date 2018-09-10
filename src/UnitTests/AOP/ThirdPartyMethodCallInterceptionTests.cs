@@ -5,25 +5,21 @@ using LinFu.AOP.Cecil.Extensions;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection.Emit;
 using Mono.Cecil;
-using NUnit.Framework;
+using Xunit;
 using SampleLibrary.AOP;
 
 namespace LinFu.UnitTests.AOP
 {
-    [TestFixture]
     public class ThirdPartyMethodCallInterceptionTests : BaseTestFixture
     {
-        [SetUp]
-        public override void Init()
+        protected override void Init()
         {
         }
 
-        [TearDown]
-        public override void Term()
+        protected override void Term()
         {
             AroundInvokeMethodCallRegistry.Clear();
         }
-
 
         private Type GetModifiedTargetType()
         {
@@ -32,7 +28,7 @@ namespace LinFu.UnitTests.AOP
 
         private Type GetModifiedTargetType(Action<string, TypeDefinition> modify)
         {
-            var assembly = AssemblyFactory.GetAssembly("SampleLibrary.dll");
+            var assembly = AssemblyDefinition.ReadAssembly("SampleLibrary.dll");
             var module = assembly.MainModule;
 
             // Intercept all calls to the System.Console.WriteLine method from the DoSomething method
@@ -57,7 +53,7 @@ namespace LinFu.UnitTests.AOP
                     methodCall.DeclaringType.Name == "Console" && methodCall.Name == "WriteLine");
         }
 
-        [Test]
+        [Fact]
         public void ShouldCallInstanceAroundInvokeProvider()
         {
             var modifiedTargetType = GetModifiedTargetType();
@@ -69,13 +65,14 @@ namespace LinFu.UnitTests.AOP
             modified.AroundMethodCallProvider = provider;
             var targetMethod = modifiedTargetType.GetMethod("DoSomething");
 
+            Assert.NotNull(targetMethod);
             targetMethod.Invoke(instance, null);
 
-            Assert.IsTrue(aroundInvoke.BeforeInvokeWasCalled);
-            Assert.IsTrue(aroundInvoke.AfterInvokeWasCalled);
+            Assert.True(aroundInvoke.BeforeInvokeWasCalled);
+            Assert.True(aroundInvoke.AfterInvokeWasCalled);
         }
 
-        [Test]
+        [Fact]
         public void ShouldCallStaticAroundInvokeProvider()
         {
             var modifiedTargetType = GetModifiedTargetType();
@@ -86,21 +83,22 @@ namespace LinFu.UnitTests.AOP
             AroundInvokeMethodCallRegistry.AddProvider(provider);
 
             var targetMethod = modifiedTargetType.GetMethod("DoSomething");
-
+            Assert.NotNull(targetMethod);
+            
             targetMethod.Invoke(instance, null);
 
-            Assert.IsTrue(aroundInvoke.BeforeInvokeWasCalled);
-            Assert.IsTrue(aroundInvoke.AfterInvokeWasCalled);
+            Assert.True(aroundInvoke.BeforeInvokeWasCalled);
+            Assert.True(aroundInvoke.AfterInvokeWasCalled);
         }
 
-        [Test]
+        [Fact]
         public void ShouldImplementIMethodReplacementHostOnTargetType()
         {
             var modifiedTargetType = GetModifiedTargetType();
 
             var instance = Activator.CreateInstance(modifiedTargetType);
-            Assert.IsNotNull(instance);
-            Assert.IsTrue(instance is IMethodReplacementHost);
+            Assert.NotNull(instance);
+            Assert.True(instance is IMethodReplacementHost);
 
             var host = (IMethodReplacementHost) instance;
 
@@ -109,6 +107,7 @@ namespace LinFu.UnitTests.AOP
             host.MethodCallReplacementProvider = new SampleMethodReplacementProvider(interceptor);
 
             var targetMethod = modifiedTargetType.GetMethod("DoSomething");
+            Assert.NotNull(targetMethod);
             try
             {
                 targetMethod.Invoke(instance, null);
@@ -117,13 +116,17 @@ namespace LinFu.UnitTests.AOP
             {
                 var innerException = ex.InnerException;
                 Console.WriteLine(ex.ToString());
-                throw innerException;
+
+                if (innerException != null)
+                    throw innerException;
+
+                throw;
             }
 
-            Assert.IsTrue(interceptor.HasBeenCalled);
+            Assert.True(interceptor.HasBeenCalled);
         }
 
-        [Test]
+        [Fact]
         public void ShouldNotInterceptConstructorsWhenIntereptingAllMethodCalls()
         {
             var modifiedTargetType = GetModifiedTargetType((name, type) => type.InterceptAllMethodCalls());
@@ -133,10 +136,12 @@ namespace LinFu.UnitTests.AOP
 
             AroundInvokeMethodCallRegistry.AddProvider(provider);
             var targetMethod = modifiedTargetType.GetMethod("DoSomething");
+            Assert.NotNull(targetMethod);
+
             targetMethod.Invoke(instance, null);
 
-            Assert.IsTrue(aroundInvoke.BeforeInvokeWasCalled);
-            Assert.IsTrue(aroundInvoke.AfterInvokeWasCalled);
+            Assert.True(aroundInvoke.BeforeInvokeWasCalled);
+            Assert.True(aroundInvoke.AfterInvokeWasCalled);
         }
     }
 }

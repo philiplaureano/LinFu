@@ -28,8 +28,8 @@ namespace LinFu.AOP.Cecil
         /// <summary>
         ///     Adds the original instructions to a given method body.
         /// </summary>
-        /// <param name="IL">The <see cref="CilWorker" /> responsible for the target method body.</param>
-        public void Emit(CilWorker IL)
+        /// <param name="IL">The <see cref="ILProcessor" /> responsible for the target method body.</param>
+        public void Emit(ILProcessor IL)
         {
             var originalInstructions = new List<Instruction>(_oldInstructions);
             var lastInstruction = originalInstructions.LastOrDefault();

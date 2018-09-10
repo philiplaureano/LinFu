@@ -33,10 +33,10 @@ namespace LinFu.AOP.Cecil.Interfaces
         ///     the <paramref name="concreteType" />.
         /// </summary>
         /// <param name="hostMethod">The method that contains the activation request.</param>
-        /// <param name="IL">The CilWorker that will be used to replace the existing instructions in the method body.</param>
+        /// <param name="IL">The ILProcessor that will be used to replace the existing instructions in the method body.</param>
         /// <param name="targetConstructor">The constructor that is currently being used to instantiate the concrete type.</param>
         /// <param name="concreteType">The <see cref="System.Type" /> that describes the object type that needs to be instantiated.</param>
-        void EmitNewObject(MethodDefinition hostMethod, CilWorker IL, MethodReference targetConstructor,
+        void EmitNewObject(MethodDefinition hostMethod, ILProcessor IL, MethodReference targetConstructor,
             TypeReference concreteType);
     }
 }

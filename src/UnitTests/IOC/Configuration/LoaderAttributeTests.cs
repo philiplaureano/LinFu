@@ -8,12 +8,11 @@ using LinFu.IoC.Configuration.Loaders;
 using LinFu.IoC.Factories;
 using LinFu.IoC.Interfaces;
 using Moq;
-using NUnit.Framework;
+using Xunit;
 using SampleLibrary;
 
 namespace LinFu.UnitTests.IOC.Configuration
 {
-    [TestFixture]
     public class LoaderAttributeTests
     {
         private static void TestFactoryConverterWith<TFactory>(string serviceName, Type serviceType,
@@ -28,14 +27,14 @@ namespace LinFu.UnitTests.IOC.Configuration
                     It.Is<IFactory>(
                         f => f != null && f is TFactory || f is FunctorFactory)));
 
-            var factoryActions = loader.Load(implementingType);
-            Assert.IsNotNull(factoryActions, "The result cannot be null");
-            Assert.IsTrue(factoryActions.Count() == 1, "There must be at least at least one result");
+            var factoryActions = loader.Load(implementingType).ToArray();
+            Assert.NotNull(factoryActions);
+            Assert.True(factoryActions.Count() == 1);
 
             // There must be at least one factory from
             // the result list
             var firstResult = factoryActions.FirstOrDefault();
-            Assert.IsNotNull(firstResult);
+            Assert.NotNull(firstResult);
 
 
             firstResult(mockContainer.Object);
@@ -43,7 +42,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             mockContainer.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void FactoryAttributeLoaderMustInjectOpenGenericServiceTypeIntoContainer()
         {
             var mockContainer = new Mock<IServiceContainer>();
@@ -87,7 +86,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             applyActions(realContainer);
         }
 
-        [Test]
+        [Fact]
         public void FactoryAttributeLoaderMustInjectStronglyTypedFactoryIntoContainer()
         {
             var container = new ServiceContainer();
@@ -101,10 +100,10 @@ namespace LinFu.UnitTests.IOC.Configuration
             // itself
             foreach (var action in actions) action(container);
 
-            Assert.IsTrue(container.Contains(serviceType));
+            Assert.True(container.Contains(serviceType));
         }
 
-        [Test]
+        [Fact]
         public void FactoryAttributeLoaderMustInjectUnnamedCustomFactoryIntoContainer()
         {
             var mockContainer = new Mock<IServiceContainer>();
@@ -136,7 +135,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             mockContainer.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void LoaderMustLoadSingletonTypesAndThoseTypesMustBeTheSameInstance()
         {
             var location = typeof(SamplePostProcessor).Assembly.Location ?? string.Empty;
@@ -150,7 +149,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             loader.LoadDirectory(directory, Path.GetFileName(location));
 
             var filename = Path.Combine(directory, location);
-            Assert.IsTrue(File.Exists(filename));
+            Assert.True(File.Exists(filename));
 
             var container = new ServiceContainer();
 
@@ -159,12 +158,12 @@ namespace LinFu.UnitTests.IOC.Configuration
             var first = container.GetService<ISampleService>("First");
             var second = container.GetService<ISampleService>("First");
 
-            Assert.IsNotNull(first);
-            Assert.IsNotNull(second);
-            Assert.AreSame(first, second);
+            Assert.NotNull(first);
+            Assert.NotNull(second);
+            Assert.Same(first, second);
         }
 
-        [Test]
+        [Fact]
         public void LoaderMustLoadTheCorrectOncePerRequestTypes()
         {
             var location = typeof(SamplePostProcessor).Assembly.Location ?? string.Empty;
@@ -178,7 +177,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             loader.LoadDirectory(directory, Path.GetFileName(location));
 
             var filename = Path.Combine(directory, location);
-            Assert.IsTrue(File.Exists(filename));
+            Assert.True(File.Exists(filename));
 
             var container = new ServiceContainer();
 
@@ -187,13 +186,13 @@ namespace LinFu.UnitTests.IOC.Configuration
             var first = container.GetService<ISampleService>("FirstOncePerRequestService");
             var second = container.GetService<ISampleService>("SecondOncePerRequestService");
 
-            Assert.IsNotNull(first);
-            Assert.IsNotNull(second);
-            Assert.IsTrue(first.GetType() == typeof(FirstOncePerRequestService));
-            Assert.IsTrue(second.GetType() == typeof(SecondOncePerRequestService));
+            Assert.NotNull(first);
+            Assert.NotNull(second);
+            Assert.True(first.GetType() == typeof(FirstOncePerRequestService));
+            Assert.True(second.GetType() == typeof(SecondOncePerRequestService));
         }
 
-        [Test]
+        [Fact]
         public void LoaderMustLoadTheCorrectSingletonTypes()
         {
             var location = typeof(SamplePostProcessor).Assembly.Location ?? string.Empty;
@@ -207,7 +206,7 @@ namespace LinFu.UnitTests.IOC.Configuration
             loader.LoadDirectory(directory, Path.GetFileName(location));
 
             var filename = Path.Combine(directory, location);
-            Assert.IsTrue(File.Exists(filename));
+            Assert.True(File.Exists(filename));
 
             var container = new ServiceContainer();
 
@@ -216,13 +215,13 @@ namespace LinFu.UnitTests.IOC.Configuration
             var first = container.GetService<ISampleService>("First");
             var second = container.GetService<ISampleService>("Second");
 
-            Assert.IsNotNull(first);
-            Assert.IsNotNull(second);
-            Assert.IsTrue(first.GetType() == typeof(FirstSingletonService));
-            Assert.IsTrue(second.GetType() == typeof(SecondSingletonService));
+            Assert.NotNull(first);
+            Assert.NotNull(second);
+            Assert.True(first.GetType() == typeof(FirstSingletonService));
+            Assert.True(second.GetType() == typeof(SecondSingletonService));
         }
 
-        [Test]
+        [Fact]
         public void NamedOncePerRequestFactoryMustBeCreatedFromTypeWithImplementsAttribute()
         {
             var implementingType = typeof(NamedOncePerRequestSampleService);
@@ -233,7 +232,7 @@ namespace LinFu.UnitTests.IOC.Configuration
                 serviceType, implementingType, converter);
         }
 
-        [Test]
+        [Fact]
         public void NamedOncePerThreadFactoryMustBeCreatedFromTypeWithImplementsAttribute()
         {
             TestFactoryConverterWith<OncePerThreadFactory<ISampleService>>("MyService",
@@ -242,7 +241,7 @@ namespace LinFu.UnitTests.IOC.Configuration
                 new ImplementsAttributeLoader());
         }
 
-        [Test]
+        [Fact]
         public void NamedSingletonFactoryMustBeCreatedFromTypeWithImplementsAttribute()
         {
             TestFactoryConverterWith<SingletonFactory<ISampleService>>("MyService",
@@ -251,7 +250,7 @@ namespace LinFu.UnitTests.IOC.Configuration
                 new ImplementsAttributeLoader());
         }
 
-        [Test]
+        [Fact]
         public void OncePerRequestFactoryMustBeCreatedFromTypeWithImplementsAttribute()
         {
             var implementingType = typeof(OncePerRequestSampleService);
@@ -262,7 +261,7 @@ namespace LinFu.UnitTests.IOC.Configuration
                 serviceType, implementingType, converter);
         }
 
-        [Test]
+        [Fact]
         public void OncePerThreadFactoryMustBeCreatedFromTypeWithImplementsAttribute()
         {
             TestFactoryConverterWith<OncePerThreadFactory<ISampleService>>(null,
@@ -271,7 +270,7 @@ namespace LinFu.UnitTests.IOC.Configuration
                 new ImplementsAttributeLoader());
         }
 
-        [Test]
+        [Fact]
         public void ServicesCreatedFromCustomOpenGenericFactoryMustInvokeIInitialize()
         {
             var mockFactory = new Mock<IFactory>();
@@ -289,26 +288,26 @@ namespace LinFu.UnitTests.IOC.Configuration
             var result = container.GetService<ISampleGenericService<int>>("MyService");
             var areSame = ReferenceEquals(serviceInstance, result);
 
-            Assert.AreSame(serviceInstance, result);
+            Assert.Same(serviceInstance, result);
 
             // Make sure that the IInitialize instance is called
             // on the sample class
-            Assert.IsTrue(serviceInstance.Called);
+            Assert.True(serviceInstance.Called);
 
             mockFactory.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void ShouldInjectInternallyVisibleServiceTypeMarkedWithImplementsAttribute()
         {
             var container = new ServiceContainer();
             container.LoadFromBaseDirectory("*.dll");
 
             var service = container.GetService<ISampleService>("internal");
-            Assert.IsNotNull(service);
+            Assert.NotNull(service);
         }
 
-        [Test]
+        [Fact]
         public void SingletonFactoryMustBeCreatedFromTypeWithImplementsAttribute()
         {
             TestFactoryConverterWith<SingletonFactory<ISampleService>>(null,

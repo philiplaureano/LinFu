@@ -6,7 +6,7 @@ using Mono.Cecil.Cil;
 
 namespace LinFu.AOP.Cecil
 {
-    internal class InterceptNewCalls : InstructionSwapper
+    internal class InterceptNewCalls : InstructionSwapper, IMethodWeaver
     {
         private readonly INewObjectWeaver _emitter;
         private MethodReference _getCurrentMethod;
@@ -28,7 +28,7 @@ namespace LinFu.AOP.Cecil
             _emitter.ImportReferences(module);
         }
 
-        protected override void Replace(Instruction currentInstruction, MethodDefinition method, CilWorker IL)
+        protected override void Replace(Instruction currentInstruction, MethodDefinition method, ILProcessor IL)
         {
             var constructor = (MethodReference) currentInstruction.Operand;
             var concreteType = constructor.DeclaringType;
@@ -57,6 +57,16 @@ namespace LinFu.AOP.Cecil
             var constructor = (MethodReference) oldInstruction.Operand;
             var declaringType = constructor.GetDeclaringType();
             return _emitter.ShouldIntercept(constructor, declaringType, hostMethod);
+        }
+
+        public bool ShouldWeave(MethodDefinition item)
+        {
+            return item.HasBody;
+        }
+
+        public void Weave(MethodDefinition item)
+        {
+            Rewrite(item, item.GetILGenerator(), item.Body.Instructions.ToArray());
         }
     }
 }

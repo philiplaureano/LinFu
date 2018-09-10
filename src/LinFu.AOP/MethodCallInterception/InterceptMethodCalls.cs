@@ -10,7 +10,7 @@ using Mono.Cecil.Cil;
 
 namespace LinFu.AOP.Cecil
 {
-    internal class InterceptMethodCalls : InstructionSwapper
+    internal class InterceptMethodCalls : InstructionSwapper, IMethodWeaver
     {
         private readonly IMethodCallFilter _callFilter;
         private VariableDefinition _aroundInvokeProvider;
@@ -108,12 +108,12 @@ namespace LinFu.AOP.Cecil
         }
 
         protected override void Replace(Instruction oldInstruction, MethodDefinition hostMethod,
-            CilWorker IL)
+            ILProcessor IL)
         {
             var targetMethod = (MethodReference) oldInstruction.Operand;
 
             var callOriginalMethod = IL.Create(OpCodes.Nop);
-            var returnType = targetMethod.ReturnType.ReturnType;
+            var returnType = targetMethod.ReturnType;
             var endLabel = IL.Create(OpCodes.Nop);
             var module = hostMethod.DeclaringType.Module;
 
@@ -145,7 +145,7 @@ namespace LinFu.AOP.Cecil
             surroundMethodBody.AddEpilog(IL);
         }
 
-        private void IgnoreLocal(CilWorker IL, VariableDefinition targetVariable, ModuleDefinition module)
+        private void IgnoreLocal(ILProcessor IL, VariableDefinition targetVariable, ModuleDefinition module)
         {
             IL.Emit(OpCodes.Ldloc, targetVariable);
 
@@ -153,10 +153,10 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Call, addInstance);
         }
 
-        private void Replace(CilWorker IL, Instruction oldInstruction, MethodReference targetMethod,
+        private void Replace(ILProcessor IL, Instruction oldInstruction, MethodReference targetMethod,
             MethodDefinition hostMethod, Instruction endLabel, Instruction callOriginalMethod)
         {
-            var returnType = targetMethod.ReturnType.ReturnType;
+            var returnType = targetMethod.ReturnType;
             var module = hostMethod.DeclaringType.Module;
             if (!hostMethod.IsStatic)
                 GetInstanceProvider(IL);
@@ -229,7 +229,7 @@ namespace LinFu.AOP.Cecil
             IL.Append(oldInstruction);
         }
 
-        private void GetInstanceProvider(CilWorker IL)
+        private void GetInstanceProvider(ILProcessor IL)
         {
             var skipInstanceProvider = IL.Create(OpCodes.Nop);
 
@@ -247,7 +247,7 @@ namespace LinFu.AOP.Cecil
             IL.Append(skipInstanceProvider);
         }
 
-        private void ReconstructMethodArguments(CilWorker IL, MethodReference targetMethod)
+        private void ReconstructMethodArguments(ILProcessor IL, MethodReference targetMethod)
         {
             if (targetMethod.HasThis)
                 IL.Emit(OpCodes.Ldloc, _target);
@@ -261,7 +261,7 @@ namespace LinFu.AOP.Cecil
             }
         }
 
-        private void SaveInvocationInfo(CilWorker IL, MethodReference targetMethod, ModuleDefinition module,
+        private void SaveInvocationInfo(ILProcessor IL, MethodReference targetMethod, ModuleDefinition module,
             TypeReference returnType)
         {
             // If the target method is an instance method, then the remaining item on the stack
@@ -334,12 +334,12 @@ namespace LinFu.AOP.Cecil
             IgnoreLocal(IL, _invocationInfo, module);
         }
 
-        private void PushStackTrace(CilWorker IL, ModuleDefinition module)
+        private void PushStackTrace(ILProcessor IL, ModuleDefinition module)
         {
             IL.PushStackTrace(module);
         }
 
-        private void EmitInterceptorCall(CilWorker IL)
+        private void EmitInterceptorCall(ILProcessor IL)
         {
             // var result = replacement.Intercept(info);
             IL.Emit(OpCodes.Ldloc, _replacement);
@@ -347,7 +347,7 @@ namespace LinFu.AOP.Cecil
             IL.Emit(OpCodes.Callvirt, _intercept);
         }
 
-        private void EmitCanReplace(CilWorker IL, IMethodSignature hostMethod, VariableDefinition provider)
+        private void EmitCanReplace(ILProcessor IL, IMethodSignature hostMethod, VariableDefinition provider)
         {
             var skipGetProvider = IL.Create(OpCodes.Nop);
 
@@ -366,7 +366,7 @@ namespace LinFu.AOP.Cecil
             IL.Append(skipGetProvider);
         }
 
-        private void EmitGetMethodReplacement(CilWorker IL, IMethodSignature hostMethod, VariableDefinition provider)
+        private void EmitGetMethodReplacement(ILProcessor IL, IMethodSignature hostMethod, VariableDefinition provider)
         {
             // var replacement = MethodReplacementProvider.GetReplacement(info);
             IL.Emit(OpCodes.Ldloc, provider);
@@ -392,6 +392,17 @@ namespace LinFu.AOP.Cecil
 
             //return _hostMethodFilter(hostMethod) && _methodCallFilter(targetMethod);
             return _callFilter.ShouldWeave(hostMethod.DeclaringType, hostMethod, targetMethod);
+        }
+
+        public bool ShouldWeave(MethodDefinition item)
+        {
+            // Modify everything by default
+            return item.HasBody;
+        }
+
+        public void Weave(MethodDefinition item)
+        {
+            Rewrite(item,item.GetILGenerator(),item.Body.Instructions.ToArray());
         }
     }
 }

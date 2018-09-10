@@ -80,7 +80,7 @@ namespace LinFu.Reflection.Emit
 
         /// <summary>
         ///     Imports a method with a particular <paramref name="methodName" /> and <see cref="BindingFlags" /> from the
-        ///     <paramref name="declaringType" />
+        ///     declaring type
         ///     into the <paramref name="module">target module</paramref>.
         /// </summary>
         /// <typeparam name="T">The target type that holds the target method.</typeparam>
@@ -94,7 +94,7 @@ namespace LinFu.Reflection.Emit
 
         /// <summary>
         ///     Imports a method with a particular <paramref name="methodName" />, <paramref name="parameterTypes" />, and
-        ///     <see cref="BindingFlags" /> from the <paramref name="declaringType" />
+        ///     <see cref="BindingFlags" /> from the declaring type
         ///     into the <paramref name="module">target module</paramref>.
         /// </summary>
         /// <typeparam name="T">The target type that holds the target method.</typeparam>
@@ -110,7 +110,7 @@ namespace LinFu.Reflection.Emit
 
         /// <summary>
         ///     Imports a method with a particular <paramref name="methodName" /> and <see cref="BindingFlags" /> from the
-        ///     <paramref name="declaringType" />
+        ///     declaring type.
         ///     into the <paramref name="module">target module</paramref>.
         /// </summary>
         /// <typeparam name="T">The target type that holds the target method itself.</typeparam>

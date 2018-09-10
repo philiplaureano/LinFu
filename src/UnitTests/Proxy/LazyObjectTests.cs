@@ -5,23 +5,22 @@ using LinFu.IoC.Configuration.Interfaces;
 using LinFu.IoC.Interceptors;
 using LinFu.Proxy;
 using LinFu.Proxy.Interfaces;
-using NUnit.Framework;
+using Xunit;
 using SampleLibrary;
 using SampleLibrary.IOC;
 
 namespace LinFu.UnitTests.Proxy
 {
-    [TestFixture]
     public class LazyObjectTests : BaseTestFixture
     {
-        [Test]
+        [Fact]
         public void LazyObjectShouldNeverBeInitialized()
         {
             var container = new ServiceContainer();
             container.AddService<IProxyFactory>(new ProxyFactory());
             container.AddService<IMethodBuilder<MethodInfo>>(new MethodBuilder());
 
-            Assert.IsTrue(container.Contains(typeof(IProxyFactory)));
+            Assert.True(container.Contains(typeof(IProxyFactory)));
 
             var proxyFactory = container.GetService<IProxyFactory>();
             var interceptor = new LazyInterceptor<ISampleService>(() => new SampleLazyService());
@@ -29,11 +28,11 @@ namespace LinFu.UnitTests.Proxy
             SampleLazyService.Reset();
             // The instance should be uninitialized at this point
             var proxy = proxyFactory.CreateProxy<ISampleService>(interceptor);
-            Assert.IsFalse(SampleLazyService.IsInitialized);
+            Assert.False(SampleLazyService.IsInitialized);
 
             // The instance should be initialized once the method is called
             proxy.DoSomething();
-            Assert.IsTrue(SampleLazyService.IsInitialized);
+            Assert.True(SampleLazyService.IsInitialized);
         }
     }
 }
