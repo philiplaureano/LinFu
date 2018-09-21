@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<topic id="82464ff4-9e53-483a-8f5c-05360ebd983e" revisionNumber="1">
+	<developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+		<introduction>
+			<para>
+        LinFu is a framework that adds mixins, inversion of control, DbC, and other language features to the Common Language Runtime.
+        Tutorials on <link address="http://www.codeproject.com/KB/cs/LinFuPart1.aspx">CodeProject</link>.
+      </para>
+		</introduction>
+
+		<section>
+			<title>Getting Started</title>
+			<content>
+				<para>To get started, add one of the libraries.</para>
+			</content>
+		</section>
+
+		<relatedTopics>
+			<link xlink:href="f096f3cb-8dc8-47d6-b8eb-09488a5d1f8c" />
+		</relatedTopics>
+	</developerConceptualDocument>
+</topic>
